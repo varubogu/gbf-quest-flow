@@ -4,22 +4,20 @@ import { ActionTableContainer } from "@/components/organisms/ActionTableContaine
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 
 // JSONから必要な部分（ここでは flow 配列）を抽出して利用します
-const always = sampleDataJson.always;
-const sampleData = sampleDataJson.flow;
+const data = sampleDataJson;
 ---
 
 <GranblueActionLayout title="グラブル行動表">
   <div slot="awareness">
     <div>
-      <h2>常時</h2>
-      <pre>{always}</pre>
+      <pre>{data.always}</pre>
     </div>
   </div>
 
   <ActionTableContainer
     slot="action-table"
     client:load
-    data={sampleData}
+    data={data.flow}
     buttonPosition="right"
   />
 </GranblueActionLayout>
