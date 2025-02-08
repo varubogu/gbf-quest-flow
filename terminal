@@ -1,0 +1,4 @@
+mkdir -p src/{components/{atoms,molecules,organisms,templates},layouts,pages,styles,utils}
+bunx create-astro@latest
+bun add @astrojs/react @astrojs/tailwind @shadcn/ui tailwindcss class-variance-authority clsx tailwind-merge lucide-react
+bun add -d prettier prettier-plugin-astro eslint eslint-plugin-astro

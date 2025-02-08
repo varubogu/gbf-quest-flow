@@ -23,7 +23,7 @@
 
 # 採用技術について
 
-- Astro.js(SSG)とReactベースで作成する
+- ランタイムはBun、Astro.js(SSG)とReactベースで作成する
 - レイアウトはTailwind CSS、shadcn/uiを使用する
 - 将来的にはCloudflare Pagesとして動作させることを想定
 
