@@ -27,6 +27,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   buttonPosition,
   onRowSelect,
 }) => {
+  // 追加: スクロール対象となるコンテナのrefを作成
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -42,8 +44,30 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     }
   }, [onRowSelect, currentRow, data.length])
 
+  React.useEffect(() => {
+    const container = containerRef.current;
+    const target = document.getElementById(`action-row-${currentRow}`);
+    if (target && container) {
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      // それぞれの固定部分の高さを取得（上下ボタン部分とヘッダー部分）
+      const controlBar = container.querySelector(".sticky.top-0");
+      const headerBar = container.querySelector(".sticky.top-12");
+      const controlHeight = controlBar ? controlBar.getBoundingClientRect().height : 0;
+      const headerHeight = headerBar ? headerBar.getBoundingClientRect().height : 0;
+      const fixedHeight = controlHeight + headerHeight;
+      // container.scrollTop に、container 内での対象行の位置の差分（targetRect.top - containerRect.top）
+      // から、固定部分の高さを差し引いた値を加算
+      const desiredScrollTop = container.scrollTop + (targetRect.top - containerRect.top) - fixedHeight;
+      container.scrollTo({
+        top: desiredScrollTop,
+        behavior: "smooth",
+      });
+    }
+  }, [currentRow]);
+
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
+    <div ref={containerRef} className="flex flex-col h-full overflow-y-auto">
       <div className="flex justify-between items-center p-2 sticky top-0 bg-white z-20">
         <div className={`flex gap-2 ${buttonPosition === "right" ? "ml-auto" : ""}`}>
           <IconButton
@@ -75,6 +99,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       <div className="min-w-full">
         {data.map((row, index) => (
           <div
+            id={`action-row-${index}`}
             key={index}
             onDoubleClick={() => onRowSelect(index)}
             className={`grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr] border-b cursor-pointer
