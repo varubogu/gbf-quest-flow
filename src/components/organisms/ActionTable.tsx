@@ -2,19 +2,11 @@ import * as React from "react"
 import { ActionCell } from "../molecules/ActionCell"
 import { ChevronUp, ChevronDown } from "lucide-react"
 import { IconButton } from "../atoms/IconButton"
+import type { Action } from "@/types/models"
 
 interface ActionTableProps {
-  data: {
-    hp: string
-    prediction: string
-    ougi: string
-    guard: string
-    action: string
-    note: string
-  }[]
+  data: Action[]
   currentRow: number
-  onMoveUp: () => void
-  onMoveDown: () => void
   buttonPosition: "left" | "right"
   onRowSelect: (index: number) => void
 }
@@ -22,8 +14,6 @@ interface ActionTableProps {
 export const ActionTable: React.FC<ActionTableProps> = ({
   data,
   currentRow,
-  onMoveUp,
-  onMoveDown,
   buttonPosition,
   onRowSelect,
 }) => {

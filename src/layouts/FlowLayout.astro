@@ -1,14 +1,14 @@
 ---
 import FlowBaseLayout from "./FlowBaseLayout.astro";
-
+import type { Flow } from "@/types/models";
 interface Props {
-  title: string;
+  data: Flow;
 }
 
-const { title } = Astro.props;
+const { data } = Astro.props;
 ---
 
-<FlowBaseLayout title={title}>
+<FlowBaseLayout data={data}>
   <!-- グリッドコンテナを3行に分割。中央行がドラッグ可能な仕切り -->
   <div id="resizableContainer" class="h-[calc(100vh-3.5rem)] grid" style="grid-template-rows: 1fr 8px 1fr;">
     <!-- 上部の内容 -->

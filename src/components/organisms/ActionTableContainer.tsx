@@ -1,17 +1,9 @@
 import * as React from "react";
 import { ActionTable } from "./ActionTable";
-
-interface RowData {
-  hp: string;
-  prediction: string;
-  ougi: string;
-  guard: string;
-  action: string;
-  note: string;
-}
+import type { Action } from "@/types/models";
 
 interface ActionTableContainerProps {
-  data: RowData[];
+  data: Action[];
   buttonPosition: "left" | "right";
 }
 

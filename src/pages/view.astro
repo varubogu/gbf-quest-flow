@@ -1,13 +1,14 @@
 ---
-import GranblueActionLayout from "@/layouts/GranblueActionLayout.astro";
+import FlowLayout from "@/layouts/FlowLayout.astro";
 import { ActionTableContainer } from "@/components/organisms/ActionTableContainer";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
+import type { Flow } from "@/types/models";
 
 // JSONから必要な部分（ここでは flow 配列）を抽出して利用します
-const data = sampleDataJson;
+const data: Flow = sampleDataJson;
 ---
 
-<GranblueActionLayout title="グラブル行動表">
+<FlowLayout data={data}>
   <div slot="awareness">
     <div>
       <pre>{data.always}</pre>
@@ -20,4 +21,4 @@ const data = sampleDataJson;
     data={data.flow}
     buttonPosition="right"
   />
-</GranblueActionLayout>
+</FlowLayout>
