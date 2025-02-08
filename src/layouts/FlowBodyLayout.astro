@@ -1,4 +1,5 @@
 ---
+import { HamburgerMenuItems } from "@/components/molecules/HamburgerMenuItems";
 import FlowBaseLayout from "./FlowBaseLayout.astro";
 import type { Flow } from "@/types/models";
 interface Props {
@@ -9,32 +10,48 @@ const { data } = Astro.props;
 ---
 
 <FlowBaseLayout data={data}>
-  <!-- グリッドコンテナを3行に分割。中央行がドラッグ可能な仕切り -->
-  <div id="resizableContainer" class="h-[calc(100vh-3.5rem)] grid" style="grid-template-rows: 1fr 8px 1fr;">
-    <!-- 上部の内容 -->
-    <div class="p-4 overflow-auto">
-      <slot name="awareness" />
-    </div>
+  <div class="min-h-screen flex flex-col">
+    <header
+      class="h-14 border-b flex items-center px-4 fixed w-full bg-background"
+    >
+      <HamburgerMenuItems client:load data={data} />
+      <h1 class="ml-4 text-lg font-medium">{data.title}</h1>
+    </header>
+    <main class="flex-1 pt-14">
+      <!-- グリッドコンテナを3行に分割。中央行がドラッグ可能な仕切り -->
+      <div
+        id="resizableContainer"
+        class="h-[calc(100vh-3.5rem)] grid"
+        style="grid-template-rows: 1fr 8px 1fr;"
+      >
+        <!-- 上部の内容 -->
+        <div class="p-4 overflow-auto">
+          <slot name="awareness" />
+        </div>
 
-    <!-- ドラッグハンドル（仕切り） -->
-    <div id="resizer" class="bg-gray-300 cursor-row-resize"></div>
+        <!-- ドラッグハンドル（仕切り） -->
+        <div id="resizer" class="bg-gray-300 cursor-row-resize"></div>
 
-    <!-- 下部の内容 -->
-    <div class="overflow-hidden">
-      <slot name="action-table" />
-    </div>
+        <!-- 下部の内容 -->
+        <div class="overflow-hidden">
+          <slot name="action-table" />
+        </div>
+      </div>
+    </main>
   </div>
 
   <!-- ドラッグ操作のためのスクリプト -->
   <script>
-    const resizer = document.getElementById('resizer');
-    const container = document.getElementById('resizableContainer');
+    const resizer = document.getElementById("resizer");
+    const container = document.getElementById("resizableContainer");
     let startY, topRowHeight, bottomRowHeight;
 
     // マウスイベントとタッチイベントで共通してY座標を取得するヘルパー関数
     function getClientY(e) {
       // e.clientY があればマウスイベント、なければタッチイベントから取得
-      return e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+      return (
+        e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0)
+      );
     }
 
     // ドラッグ開始（マウス：mousedown / タッチ：touchstart）
@@ -44,14 +61,14 @@ const { data } = Astro.props;
 
       startY = getClientY(e);
       const computedStyle = window.getComputedStyle(container);
-      const rows = computedStyle.gridTemplateRows.split(' ');
+      const rows = computedStyle.gridTemplateRows.split(" ");
       topRowHeight = parseFloat(rows[0]);
       bottomRowHeight = parseFloat(rows[2]);
 
-      document.addEventListener('mousemove', drag, false);
-      document.addEventListener('touchmove', drag, false);
-      document.addEventListener('mouseup', stopDrag, false);
-      document.addEventListener('touchend', stopDrag, false);
+      document.addEventListener("mousemove", drag, false);
+      document.addEventListener("touchmove", drag, false);
+      document.addEventListener("mouseup", stopDrag, false);
+      document.addEventListener("touchend", stopDrag, false);
     }
 
     // ドラッグ中の処理（マウス：mousemove / タッチ：touchmove）
@@ -69,13 +86,13 @@ const { data } = Astro.props;
 
     // ドラッグ終了（マウス：mouseup / タッチ：touchend）
     function stopDrag() {
-      document.removeEventListener('mousemove', drag, false);
-      document.removeEventListener('touchmove', drag, false);
-      document.removeEventListener('mouseup', stopDrag, false);
-      document.removeEventListener('touchend', stopDrag, false);
+      document.removeEventListener("mousemove", drag, false);
+      document.removeEventListener("touchmove", drag, false);
+      document.removeEventListener("mouseup", stopDrag, false);
+      document.removeEventListener("touchend", stopDrag, false);
     }
 
-    resizer.addEventListener('mousedown', initDrag, false);
-    resizer.addEventListener('touchstart', initDrag, false);
+    resizer.addEventListener("mousedown", initDrag, false);
+    resizer.addEventListener("touchstart", initDrag, false);
   </script>
 </FlowBaseLayout>

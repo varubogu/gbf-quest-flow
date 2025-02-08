@@ -1,7 +1,6 @@
 ---
 // グローバルスタイルを最初に読み込む
 import "@/styles/globals.css";
-import { HamburgerMenuItems } from "@/components/molecules/HamburgerMenuItems";
 import type { Flow } from "@/types/models";
 
 interface Props {
@@ -21,14 +20,6 @@ const { data } = Astro.props;
     <title>{data.title}</title>
   </head>
   <body>
-    <div class="min-h-screen flex flex-col">
-      <header class="h-14 border-b flex items-center px-4 fixed w-full bg-background">
-        <HamburgerMenuItems client:load data={data} />
-        <h1 class="ml-4 text-lg font-medium">{data.title}</h1>
-      </header>
-      <main class="flex-1 pt-14">
-        <slot />
-      </main>
-    </div>
+    <slot />
   </body>
 </html>
