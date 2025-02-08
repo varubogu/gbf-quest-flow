@@ -1,0 +1,33 @@
+---
+// グローバルスタイルを最初に読み込む
+import "@/styles/globals.css";
+import { HamburgerMenu } from "@/components/molecules/HamburgerMenu";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col">
+      <header class="h-14 border-b flex items-center px-4 fixed w-full bg-background">
+        <HamburgerMenu client:load onClick={() => {}} />
+        <h1 class="ml-4 text-lg font-medium">{title}</h1>
+      </header>
+      <main class="flex-1 pt-14">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+---
+import GranblueActionLayout from "@/layouts/GranblueActionLayout.astro";
+import { ActionTable } from "@/components/organisms/ActionTable";
+
+// 仮のデータ
+const sampleData = [
+  {
+    hp: "100%",
+    prediction: "特殊技",
+    ougi: "有",
+    guard: "必要",
+    action: "全体攻撃",
+    note: "注意",
+  },
+  {
+    hp: "75%",
+    prediction: "通常攻撃",
+    ougi: "無",
+    guard: "不要",
+    action: "単体攻撃",
+    note: "",
+  },
+  {
+    hp: "50%",
+    prediction: "特殊技",
+    ougi: "有",
+    guard: "必要",
+    action: "全体攻撃+バフ",
+    note: "HP50%トリガー",
+  },
+];
+---
+
+<GranblueActionLayout title="グラブル行動表">
+  <div slot="awareness">
+    <ul class="list-disc list-inside space-y-2">
+      <li>HPトリガーに注意</li>
+      <li>奥義ゲージに注意</li>
+      <li>特殊技の予兆を確認</li>
+    </ul>
+  </div>
+
+  <ActionTable
+    slot="action-table"
+    client:load
+    data={sampleData}
+    currentRow={0}
+    buttonPosition="right"
+    onMoveUp={() => {}}
+    onMoveDown={() => {}}
+  />
+</GranblueActionLayout>
