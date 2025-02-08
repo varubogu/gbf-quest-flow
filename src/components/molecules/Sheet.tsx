@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 // Sheet の状態管理用のコンテキストを作成
@@ -43,7 +43,7 @@ export const SheetTrigger = ({
   return <button onClick={handleClick}>{children}</button>;
 };
 
-// SheetContent は、Sheetが開いているときに表示されるコンテンツです
+// SheetContent は、Sheetが開いているときに表示されるコンテンツです（オーバーレイとアニメーション付き）
 export const SheetContent = ({
   side = "left",
   children,
@@ -56,20 +56,50 @@ export const SheetContent = ({
 
   const closeSheet = () => context.setOpen(false);
 
-  if (!context.open) return null;
+  // アニメーションのため、visibility と animateIn 状態を管理
+  const [isVisible, setIsVisible] = useState(context.open);
+  const [animateIn, setAnimateIn] = useState(false);
 
-  // React Portal を使用して、body直下にSheetを描画します
+  useEffect(() => {
+    if (context.open) {
+      setIsVisible(true);
+      const timer = setTimeout(() => setAnimateIn(true), 20); // 20ms の遅延で開くアニメーションを発動
+      return () => clearTimeout(timer);
+    } else {
+      setAnimateIn(false);
+      const timer = setTimeout(() => setIsVisible(false), 300); // 300ms は閉じるアニメーションの期間
+      return () => clearTimeout(timer);
+    }
+  }, [context.open]);
+
+  if (!isVisible) return null;
+
+  // オーバーレイのクラス（背景を暗くするアニメーション付き）
+  const overlayClasses = `fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out ${
+    context.open ? "opacity-50" : "opacity-0"
+  }`;
+
+  // サイドからのスライドインアニメーション
+  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
+    animateIn
+      ? "translate-x-0"
+      : side === "left"
+      ? "-translate-x-full"
+      : "translate-x-full"
+  }`;
+
   return ReactDOM.createPortal(
-    <div
-      className={`fixed top-0 ${side}-0 h-full w-64 bg-white shadow-xl z-50`}
-    >
-      <div className="p-4">
-        <button onClick={closeSheet} className="mb-4">
-          閉じる
-        </button>
-        {children}
+    <>
+      <div className={overlayClasses} onClick={closeSheet} />
+      <div className={sheetClasses}>
+        <div className="p-4">
+          <button onClick={closeSheet} className="mb-4">
+            閉じる
+          </button>
+          {children}
+        </div>
       </div>
-    </div>,
+    </>,
     document.body
   );
 };
