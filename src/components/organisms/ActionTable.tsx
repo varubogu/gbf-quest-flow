@@ -44,15 +44,19 @@ export const ActionTable: React.FC<ActionTableProps> = ({
         </div>
       </div>
 
+      {/* ヘッダー部分：スクロールしない固定部分 */}
+      <div className="grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr] min-w-full bg-white z-10 shadow-sm sticky top-0 border-b">
+        <ActionCell content="HP" isHeader />
+        <ActionCell content="予兆" isHeader />
+        <ActionCell content="奥義" isHeader />
+        <ActionCell content="ガード" isHeader />
+        <ActionCell content="行動" isHeader />
+        <ActionCell content="備考" isHeader />
+      </div>
+
+      {/* データ部分：縦スクロールする領域 */}
       <div className="overflow-auto flex-1">
         <div className="grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr] min-w-full">
-          <ActionCell content="HP" isHeader />
-          <ActionCell content="予兆" isHeader />
-          <ActionCell content="奥義" isHeader />
-          <ActionCell content="ガード" isHeader />
-          <ActionCell content="行動" isHeader />
-          <ActionCell content="備考" isHeader />
-
           {data.map((row, index) => (
             <React.Fragment key={index}>
               <ActionCell content={row.hp} isCurrentRow={index === currentRow} />

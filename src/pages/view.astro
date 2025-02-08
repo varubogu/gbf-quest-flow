@@ -1,43 +1,19 @@
 ---
 import GranblueActionLayout from "@/layouts/GranblueActionLayout.astro";
 import { ActionTable } from "@/components/organisms/ActionTable";
+import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 
-// 仮のデータ
-const sampleData = [
-  {
-    hp: "100%",
-    prediction: "特殊技",
-    ougi: "有",
-    guard: "必要",
-    action: "全体攻撃",
-    note: "注意",
-  },
-  {
-    hp: "75%",
-    prediction: "通常攻撃",
-    ougi: "無",
-    guard: "不要",
-    action: "単体攻撃",
-    note: "",
-  },
-  {
-    hp: "50%",
-    prediction: "特殊技",
-    ougi: "有",
-    guard: "必要",
-    action: "全体攻撃+バフ",
-    note: "HP50%トリガー",
-  },
-];
+// JSONから必要な部分（ここでは flow 配列）を抽出して利用します
+const always = sampleDataJson.always;
+const sampleData = sampleDataJson.flow;
 ---
 
 <GranblueActionLayout title="グラブル行動表">
   <div slot="awareness">
-    <ul class="list-disc list-inside space-y-2">
-      <li>HPトリガーに注意</li>
-      <li>奥義ゲージに注意</li>
-      <li>特殊技の予兆を確認</li>
-    </ul>
+    <div>
+      <h2>常時</h2>
+      <pre>{always}</pre>
+    </div>
   </div>
 
   <ActionTable
