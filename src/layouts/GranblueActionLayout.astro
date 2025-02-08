@@ -9,13 +9,58 @@ const { title } = Astro.props;
 ---
 
 <FlowBaseLayout title={title}>
-  <div class="h-[calc(100vh-3.5rem)] grid grid-rows-2">
-    <div class="border-b p-4 overflow-auto">
+  <!-- グリッドコンテナを3行に分割。中央行がドラッグ可能な仕切り -->
+  <div id="resizableContainer" class="h-[calc(100vh-3.5rem)] grid" style="grid-template-rows: 1fr 8px 1fr;">
+    <!-- 上部の内容 -->
+    <div class="p-4 overflow-auto">
       <h2 class="text-lg font-medium mb-4">常に意識すること</h2>
       <slot name="awareness" />
     </div>
+
+    <!-- ドラッグハンドル（仕切り） -->
+    <div id="resizer" class="bg-gray-300 cursor-row-resize"></div>
+
+    <!-- 下部の内容 -->
     <div class="overflow-hidden">
       <slot name="action-table" />
     </div>
   </div>
+
+  <!-- ドラッグ操作のためのスクリプト -->
+  <script>
+    const resizer = document.getElementById('resizer');
+    const container = document.getElementById('resizableContainer');
+    let startY, topRowHeight, bottomRowHeight;
+
+    // マウスダウンでドラッグ開始
+    resizer.addEventListener('mousedown', initDrag, false);
+
+    function initDrag(e) {
+      startY = e.clientY;
+      const computedStyle = window.getComputedStyle(container);
+      // grid-template-rows は例: "200px 8px 300px"
+      const rows = computedStyle.gridTemplateRows.split(' ');
+      topRowHeight = parseFloat(rows[0]);
+      bottomRowHeight = parseFloat(rows[2]);
+
+      document.addEventListener('mousemove', drag, false);
+      document.addEventListener('mouseup', stopDrag, false);
+    }
+
+    function drag(e) {
+      const dy = e.clientY - startY;
+      const newTop = topRowHeight + dy;
+      const newBottom = bottomRowHeight - dy;
+
+      // 最低高さの制限（必要に応じて変更してください）
+      if (newTop < 50 || newBottom < 50) return;
+
+      container.style.gridTemplateRows = newTop + "px 8px " + newBottom + "px";
+    }
+
+    function stopDrag() {
+      document.removeEventListener('mousemove', drag, false);
+      document.removeEventListener('mouseup', stopDrag, false);
+    }
+  </script>
 </FlowBaseLayout>
