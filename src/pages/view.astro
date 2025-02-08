@@ -1,5 +1,5 @@
 ---
-import FlowLayout from "@/layouts/FlowLayout.astro";
+import FlowBodyLayout from "@/layouts/FlowBodyLayout.astro";
 import { ActionTableContainer } from "@/components/organisms/ActionTableContainer";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 import type { Flow } from "@/types/models";
@@ -8,7 +8,7 @@ import type { Flow } from "@/types/models";
 const data: Flow = sampleDataJson;
 ---
 
-<FlowLayout data={data}>
+<FlowBodyLayout data={data}>
   <div slot="awareness">
     <div>
       <pre>{data.always}</pre>
@@ -21,4 +21,4 @@ const data: Flow = sampleDataJson;
     data={data.flow}
     buttonPosition="right"
   />
-</FlowLayout>
+</FlowBodyLayout>
