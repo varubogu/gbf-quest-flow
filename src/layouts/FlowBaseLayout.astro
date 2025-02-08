@@ -1,7 +1,7 @@
 ---
 // グローバルスタイルを最初に読み込む
 import "@/styles/globals.css";
-import { HamburgerMenu } from "@/components/molecules/HamburgerMenu";
+import { HamburgerMenuItems } from "@/components/molecules/HamburgerMenuItems";
 
 interface Props {
   title: string;
@@ -22,7 +22,7 @@ const { title } = Astro.props;
   <body>
     <div class="min-h-screen flex flex-col">
       <header class="h-14 border-b flex items-center px-4 fixed w-full bg-background">
-        <HamburgerMenu client:load onClick={() => {}} />
+        <HamburgerMenuItems client:load />
         <h1 class="ml-4 text-lg font-medium">{title}</h1>
       </header>
       <main class="flex-1 pt-14">
