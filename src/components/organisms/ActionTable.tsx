@@ -109,32 +109,26 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             <ActionCell
               content={row.hp}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
             <ActionCell
               content={row.prediction}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
             <ActionCell
               content={row.ougi}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
             <ActionCell
               content={row.guard}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
             <ActionCell
               content={row.action}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
             <ActionCell
               content={row.note}
               isCurrentRow={index === currentRow}
-              isPastRow={index < currentRow}
             />
           </div>
         ))}
