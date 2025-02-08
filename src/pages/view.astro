@@ -1,6 +1,6 @@
 ---
 import GranblueActionLayout from "@/layouts/GranblueActionLayout.astro";
-import { ActionTable } from "@/components/organisms/ActionTable";
+import { ActionTableContainer } from "@/components/organisms/ActionTableContainer";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 
 // JSONから必要な部分（ここでは flow 配列）を抽出して利用します
@@ -16,13 +16,10 @@ const sampleData = sampleDataJson.flow;
     </div>
   </div>
 
-  <ActionTable
+  <ActionTableContainer
     slot="action-table"
     client:load
     data={sampleData}
-    currentRow={0}
     buttonPosition="right"
-    onMoveUp={() => {}}
-    onMoveDown={() => {}}
   />
 </GranblueActionLayout>
