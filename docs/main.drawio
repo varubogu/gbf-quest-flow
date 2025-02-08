@@ -1,0 +1,376 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9">
+  <diagram name="Page-1" id="f1b7ffb7-ca1e-a977-7cf5-a751b3c06c05">
+    <mxGraphModel dx="2161" dy="988" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="826" pageHeight="1169" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SPLofE9Buz34IEQLTMLv-1" value="三" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-2" value="ルシゼロ火マナダイバー" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="40" width="740" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-3" value="▼" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-4" value="&lt;div&gt;フェニーが黄色林檎アンデッドの場合、フェニー2で即消すこと&lt;/div&gt;&lt;div&gt;（フェニー全回復はターン開始時判定のため、アンデッドが残り1ターンでも大丈夫）&lt;/div&gt;&lt;div&gt;ただでさえ回復力が凄まじいのでアンデッドは即消去する&lt;/div&gt;&lt;div&gt;フェニー以外奥義しにくいのでFCゲージはFC予兆以外温存&lt;/div&gt;&lt;div&gt;フェニーは奥義しまくる奥義追撃を撒く、FCゲージを貯める（ターン数をとにかく回したい）&lt;/div&gt;&lt;div&gt;主人公はフェニー杖の都合上HP50%を維持すること（火傷＋6回アビダメが発動しない）&lt;/div&gt;&lt;div&gt;フェニー復活後は1アビはリキャストの度に撃つ&lt;/div&gt;&lt;div&gt;ゼタ1は60区間の奥義5回に合わせてバフ切れ狙い、それ以外は常にゼタ1バフついた状態で良い&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry y="40" width="820" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry y="430" width="820" height="730" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-8" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;strokeWidth=1;shape=mxgraph.mockup.navigation.scrollBar;strokeColor=#999999;barPos=100;fillColor2=#99ddff;strokeColor2=none;direction=north;" vertex="1" parent="1">
+          <mxGeometry x="800" y="40" width="20" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-10" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;strokeWidth=1;shape=mxgraph.mockup.navigation.scrollBar;strokeColor=#999999;barPos=100;fillColor2=#99ddff;strokeColor2=none;direction=north;" vertex="1" parent="1">
+          <mxGeometry x="800" y="510" width="20" height="610" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-11" value="" style="shape=table;startSize=0;container=1;collapsible=0;childLayout=tableLayout;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="2" y="430" width="798" height="730" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-12" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry width="798" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-13" value="HP" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry width="48" height="73" as="geometry">
+            <mxRectangle width="48" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-14" value="予兆" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry x="48" width="160" height="73" as="geometry">
+            <mxRectangle width="160" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-15" value="奥義" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry x="208" width="60" height="73" as="geometry">
+            <mxRectangle width="60" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-24" value="ガード" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry x="268" width="60" height="73" as="geometry">
+            <mxRectangle width="60" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-27" value="行動" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry x="328" width="290" height="73" as="geometry">
+            <mxRectangle width="290" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-30" value="備考" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-12">
+          <mxGeometry x="618" width="180" height="73" as="geometry">
+            <mxRectangle width="180" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-16" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="73" width="798" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-17" value="100" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry width="48" height="50" as="geometry">
+            <mxRectangle width="48" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-18" value="ジ・エンド&lt;div&gt;3500万&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry x="48" width="160" height="50" as="geometry">
+            <mxRectangle width="160" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-19" value="◯" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry x="208" width="60" height="50" as="geometry">
+            <mxRectangle width="60" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-25" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry x="268" width="60" height="50" as="geometry">
+            <mxRectangle width="60" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-28" value="ルシ召喚、ゼタ31、フェニー13、主124、フェニー2" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry x="328" width="290" height="50" as="geometry">
+            <mxRectangle width="290" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-31" value="フェニー2で消去不可アンデッドを速攻消去" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-16">
+          <mxGeometry x="618" width="180" height="50" as="geometry">
+            <mxRectangle width="180" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-20" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="123" width="798" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-21" value="2T目&lt;div&gt;～95&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry width="48" height="65" as="geometry">
+            <mxRectangle width="48" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-22" value="ディスペル2回&lt;br&gt;or&lt;br&gt;弱体7つ" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry x="48" width="160" height="65" as="geometry">
+            <mxRectangle width="160" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-23" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry x="208" width="60" height="65" as="geometry">
+            <mxRectangle width="60" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-26" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry x="268" width="60" height="65" as="geometry">
+            <mxRectangle width="60" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-29" value="&lt;div&gt;サン召喚、&lt;/div&gt;&lt;div&gt;弱体の場合パー1、ディスペルの場合追加アビ無しで攻撃&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry x="328" width="290" height="65" as="geometry">
+            <mxRectangle width="290" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-32" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;fontColor=light-dark(#303030, #5c5c5c);" vertex="1" parent="SPLofE9Buz34IEQLTMLv-20">
+          <mxGeometry x="618" width="180" height="65" as="geometry">
+            <mxRectangle width="180" height="65" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-61" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="188" width="798" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-62" value="95" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry width="48" height="38" as="geometry">
+            <mxRectangle width="48" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-63" value="TA4回" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry x="48" width="160" height="38" as="geometry">
+            <mxRectangle width="160" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-64" value="◯" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry x="208" width="60" height="38" as="geometry">
+            <mxRectangle width="60" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-65" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry x="268" width="60" height="38" as="geometry">
+            <mxRectangle width="60" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-66" value="主4、パー3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry x="328" width="290" height="38" as="geometry">
+            <mxRectangle width="290" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-67" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=default;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-61">
+          <mxGeometry x="618" width="180" height="38" as="geometry">
+            <mxRectangle width="180" height="38" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-54" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="226" width="798" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-55" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry width="48" height="116" as="geometry">
+            <mxRectangle width="48" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-56" value="奥義2000万" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry x="48" width="160" height="116" as="geometry">
+            <mxRectangle width="160" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-57" value="◯" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry x="208" width="60" height="116" as="geometry">
+            <mxRectangle width="60" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-58" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry x="268" width="60" height="116" as="geometry">
+            <mxRectangle width="60" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-59" value="&lt;div&gt;奥義ゲージ50%以上で主3、パー2で解除せずに無理やり突破&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry x="328" width="290" height="116" as="geometry">
+            <mxRectangle width="290" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-60" value="エンドゲージが少ないと衰弱（行動不可）を食らって動けなくなるのでここまででゲージ1本以上減らさないように" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-54">
+          <mxGeometry x="618" width="180" height="116" as="geometry">
+            <mxRectangle width="180" height="116" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-47" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="342" width="798" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-48" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry width="48" height="73" as="geometry">
+            <mxRectangle width="48" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-49" value="アビ1500万" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry x="48" width="160" height="73" as="geometry">
+            <mxRectangle width="160" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-50" value="◯" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry x="208" width="60" height="73" as="geometry">
+            <mxRectangle width="60" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-51" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry x="268" width="60" height="73" as="geometry">
+            <mxRectangle width="60" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-52" value="ゼタ3" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry x="328" width="290" height="73" as="geometry">
+            <mxRectangle width="290" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-53" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-47">
+          <mxGeometry x="618" width="180" height="73" as="geometry">
+            <mxRectangle width="180" height="73" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-40" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="415" width="798" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-41" value="～80" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry width="48" height="160" as="geometry">
+            <mxRectangle width="48" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-42" value="ディスペル2回&lt;br&gt;or&lt;br&gt;弱体7つ" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry x="48" width="160" height="160" as="geometry">
+            <mxRectangle width="160" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-43" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry x="208" width="60" height="160" as="geometry">
+            <mxRectangle width="60" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-44" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry x="268" width="60" height="160" as="geometry">
+            <mxRectangle width="60" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-45" value="&lt;div&gt;弱体7の場合、ゼタ2と通常攻撃時デバフで足りる&lt;/div&gt;&lt;div&gt;ディスペル2の場合、ゼタ1効果のディスペル×ゼタ2で再行動、またはフェニー2＋ゼタ1効果のディスペル&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;以降、主12とルシ召喚は80トリガーまで行って良い&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry x="328" width="290" height="160" as="geometry">
+            <mxRectangle width="290" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-46" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-40">
+          <mxGeometry x="618" width="180" height="160" as="geometry">
+            <mxRectangle width="180" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-33" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="575" width="798" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-34" value="80" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry width="48" height="72" as="geometry">
+            <mxRectangle width="48" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-35" value="神器構え" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry x="48" width="160" height="72" as="geometry">
+            <mxRectangle width="160" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-36" value="◯" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry x="208" width="60" height="72" as="geometry">
+            <mxRectangle width="60" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-37" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry x="268" width="60" height="72" as="geometry">
+            <mxRectangle width="60" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-38" value="&lt;div&gt;以降、ゼタ1は55の奥義5回試練を終えるまで封印&lt;/div&gt;&lt;div&gt;奥義もフェニー以外は封印&lt;/div&gt;" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry x="328" width="290" height="72" as="geometry">
+            <mxRectangle width="290" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-39" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-33">
+          <mxGeometry x="618" width="180" height="72" as="geometry">
+            <mxRectangle width="180" height="72" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-68" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="647" width="798" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-69" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry width="48" height="33" as="geometry">
+            <mxRectangle width="48" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-70" value="★通常ダメルート" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry x="48" width="160" height="33" as="geometry">
+            <mxRectangle width="160" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-71" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry x="208" width="60" height="33" as="geometry">
+            <mxRectangle width="60" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-72" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry x="268" width="60" height="33" as="geometry">
+            <mxRectangle width="60" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-73" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry x="328" width="290" height="33" as="geometry">
+            <mxRectangle width="290" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-74" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-68">
+          <mxGeometry x="618" width="180" height="33" as="geometry">
+            <mxRectangle width="180" height="33" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-75" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-11">
+          <mxGeometry y="680" width="798" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-76" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry width="48" height="50" as="geometry">
+            <mxRectangle width="48" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-77" value="100万10ヒット" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry x="48" width="160" height="50" as="geometry">
+            <mxRectangle width="160" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-78" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry x="208" width="60" height="50" as="geometry">
+            <mxRectangle width="60" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-79" value="×" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry x="268" width="60" height="50" as="geometry">
+            <mxRectangle width="60" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-80" value="攻撃ダウン、連撃しないデバフがついてるなら主4、その後通常攻撃" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry x="328" width="290" height="50" as="geometry">
+            <mxRectangle width="290" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-81" value="通常攻撃で100万超えない可能性あるのでアビダメ少しポチることや召喚も推薦" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;verticalAlign=top;" vertex="1" parent="SPLofE9Buz34IEQLTMLv-75">
+          <mxGeometry x="618" width="180" height="50" as="geometry">
+            <mxRectangle width="180" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-82" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry y="370" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-83" value="▼" style="rounded=1;whiteSpace=wrap;html=1;fontSize=26;" vertex="1" parent="1">
+          <mxGeometry x="720" y="370" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-84" value="▲" style="rounded=1;whiteSpace=wrap;html=1;fontSize=26;" vertex="1" parent="1">
+          <mxGeometry x="622" y="370" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SPLofE9Buz34IEQLTMLv-85" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FFFF00;strokeWidth=6;" vertex="1" parent="1">
+          <mxGeometry x="2" y="620" width="798" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
