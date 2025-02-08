@@ -2,6 +2,7 @@
 import { HamburgerMenuItems } from "@/components/molecules/HamburgerMenuItems";
 import FlowBaseLayout from "./FlowBaseLayout.astro";
 import type { Flow } from "@/types/models";
+import { ActionTableContainer } from "@/components/organisms/ActionTableContainer";
 interface Props {
   data: Flow;
 }
@@ -26,7 +27,9 @@ const { data } = Astro.props;
       >
         <!-- 上部の内容 -->
         <div class="p-4 overflow-auto">
-          <slot name="awareness" />
+          <div>
+            <pre>{data.always}</pre>
+          </div>
         </div>
 
         <!-- ドラッグハンドル（仕切り） -->
@@ -34,7 +37,11 @@ const { data } = Astro.props;
 
         <!-- 下部の内容 -->
         <div class="overflow-hidden">
-          <slot name="action-table" />
+          <ActionTableContainer
+            client:load
+            data={data.flow}
+            buttonPosition="right"
+          />
         </div>
       </div>
     </main>

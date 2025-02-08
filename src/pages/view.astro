@@ -8,17 +8,4 @@ import type { Flow } from "@/types/models";
 const data: Flow = sampleDataJson;
 ---
 
-<FlowBodyLayout data={data}>
-  <div slot="awareness">
-    <div>
-      <pre>{data.always}</pre>
-    </div>
-  </div>
-
-  <ActionTableContainer
-    slot="action-table"
-    client:load
-    data={data.flow}
-    buttonPosition="right"
-  />
-</FlowBodyLayout>
+<FlowBodyLayout data={data} />
