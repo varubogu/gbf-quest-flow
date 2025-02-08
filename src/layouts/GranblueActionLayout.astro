@@ -32,35 +32,51 @@ const { title } = Astro.props;
     const container = document.getElementById('resizableContainer');
     let startY, topRowHeight, bottomRowHeight;
 
-    // マウスダウンでドラッグ開始
-    resizer.addEventListener('mousedown', initDrag, false);
+    // マウスイベントとタッチイベントで共通してY座標を取得するヘルパー関数
+    function getClientY(e) {
+      // e.clientY があればマウスイベント、なければタッチイベントから取得
+      return e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+    }
 
+    // ドラッグ開始（マウス：mousedown / タッチ：touchstart）
     function initDrag(e) {
-      startY = e.clientY;
+      // タッチイベントの場合、不要なスクロールを防ぐための処理
+      e.preventDefault();
+
+      startY = getClientY(e);
       const computedStyle = window.getComputedStyle(container);
-      // grid-template-rows は例: "200px 8px 300px"
       const rows = computedStyle.gridTemplateRows.split(' ');
       topRowHeight = parseFloat(rows[0]);
       bottomRowHeight = parseFloat(rows[2]);
 
       document.addEventListener('mousemove', drag, false);
+      document.addEventListener('touchmove', drag, false);
       document.addEventListener('mouseup', stopDrag, false);
+      document.addEventListener('touchend', stopDrag, false);
     }
 
+    // ドラッグ中の処理（マウス：mousemove / タッチ：touchmove）
     function drag(e) {
-      const dy = e.clientY - startY;
+      const clientY = getClientY(e);
+      const dy = clientY - startY;
       const newTop = topRowHeight + dy;
       const newBottom = bottomRowHeight - dy;
 
-      // 最低高さの制限（必要に応じて変更してください）
+      // 最低高さの制限（必要に応じて変更）
       if (newTop < 50 || newBottom < 50) return;
 
-      container.style.gridTemplateRows = newTop + "px 8px " + newBottom + "px";
+      container.style.gridTemplateRows = `${newTop}px 8px ${newBottom}px`;
     }
 
+    // ドラッグ終了（マウス：mouseup / タッチ：touchend）
     function stopDrag() {
       document.removeEventListener('mousemove', drag, false);
+      document.removeEventListener('touchmove', drag, false);
       document.removeEventListener('mouseup', stopDrag, false);
+      document.removeEventListener('touchend', stopDrag, false);
     }
+
+    resizer.addEventListener('mousedown', initDrag, false);
+    resizer.addEventListener('touchstart', initDrag, false);
   </script>
 </FlowBaseLayout>
