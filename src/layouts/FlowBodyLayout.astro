@@ -49,20 +49,21 @@ const { data } = Astro.props;
 
   <!-- ドラッグ操作のためのスクリプト -->
   <script>
-    const resizer = document.getElementById("resizer");
-    const container = document.getElementById("resizableContainer");
-    let startY, topRowHeight, bottomRowHeight;
+    const resizer: HTMLElement | null = document.getElementById("resizer");
+    const container2: HTMLElement | null = document.getElementById("resizableContainer");
+    const container: HTMLElement = container2 ?? document.body;
+    let startY: number, topRowHeight: number, bottomRowHeight: number;
 
     // マウスイベントとタッチイベントで共通してY座標を取得するヘルパー関数
-    function getClientY(e) {
+    function getClientY(e: MouseEvent | TouchEvent) {
       // e.clientY があればマウスイベント、なければタッチイベントから取得
       return (
-        e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0)
+        'clientY' in e ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0)
       );
     }
 
     // ドラッグ開始（マウス：mousedown / タッチ：touchstart）
-    function initDrag(e) {
+    function initDrag(e: MouseEvent | TouchEvent) {
       // タッチイベントの場合、不要なスクロールを防ぐための処理
       e.preventDefault();
 
@@ -99,7 +100,7 @@ const { data } = Astro.props;
       document.removeEventListener("touchend", stopDrag, false);
     }
 
-    resizer.addEventListener("mousedown", initDrag, false);
-    resizer.addEventListener("touchstart", initDrag, false);
+    resizer?.addEventListener("mousedown", initDrag, false);
+    resizer?.addEventListener("touchstart", initDrag, false);
   </script>
 </FlowBaseLayout>
