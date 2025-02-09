@@ -105,7 +105,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={index === currentRow}
             />
             <ActionCell
-              content={row.ougi}
+              content={row.charge}
               isCurrentRow={index === currentRow}
             />
             <ActionCell
