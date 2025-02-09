@@ -80,7 +80,7 @@ const { data } = Astro.props;
     }
 
     // ドラッグ中の処理（マウス：mousemove / タッチ：touchmove）
-    function drag(e) {
+    function drag(e: MouseEvent | TouchEvent) {
       const clientY = getClientY(e);
       const dy = clientY - startY;
       const newTop = topRowHeight + dy;
