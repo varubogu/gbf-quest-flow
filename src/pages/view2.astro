@@ -1,7 +1,6 @@
 ---
-// Reactコンポーネントとして描画
-// import FlowBodyLayout from "@/layouts/FlowBodyLayout.astro";
-import FlowBodyLayout from "@/layouts/FlowBodyLayout";
+// Astroコンポーネントとして描画
+import FlowBodyLayout from "@/layouts/FlowBodyLayout.astro";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 import type { Flow } from "@/types/models";
 
@@ -11,6 +10,4 @@ const data: Flow = sampleDataJson;
 const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
 ---
 
-<div class="bg-background">
-  <FlowBodyLayout encodedData={encodedData} client:only="react" />
-</div>
+<FlowBodyLayout data={data} client:load />
