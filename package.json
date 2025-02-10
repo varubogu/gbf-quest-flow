@@ -21,6 +21,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "postcss": "^8.5.1",
+    "react-resizable-panels": "^2.1.7",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^4.0.4"
   },
