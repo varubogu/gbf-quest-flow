@@ -5,7 +5,7 @@ import { IconButton } from "../atoms/IconButton"
 import type { Action } from "@/types/models"
 
 // 追加: グリッドのカラムサイズ設定を共通化
-const gridClasses = "min-w-full grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr]"
+const gridClasses = "min-w-full grid grid-cols-[5fr_15fr_4fr_4fr_30fr_20fr]"
 
 interface ActionTableProps {
   data: Action[]
