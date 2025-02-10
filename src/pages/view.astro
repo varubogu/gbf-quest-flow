@@ -4,6 +4,7 @@
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 import type { Flow } from "@/types/models";
+import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 
 // structuredCloneを使用してデータをクローン
 const data: Flow = sampleDataJson;
@@ -11,6 +12,6 @@ const data: Flow = sampleDataJson;
 const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
 ---
 
-<div class="bg-background">
-  <FlowBodyLayout encodedData={encodedData} client:only="react" />
-</div>
+<FlowBaseLayout data={data} client:load>
+  <FlowBodyLayout data={data} client:only="react" />
+</FlowBaseLayout>

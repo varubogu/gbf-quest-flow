@@ -4,6 +4,9 @@ import { ChevronUp, ChevronDown } from "lucide-react"
 import { IconButton } from "../atoms/IconButton"
 import type { Action } from "@/types/models"
 
+// 追加: グリッドのカラムサイズ設定を共通化
+const gridClasses = "min-w-full grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr]"
+
 interface ActionTableProps {
   data: Action[]
   currentRow: number
@@ -76,7 +79,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       </div>
 
       {/* ヘッダー部分：スクロールしない固定部分 */}
-      <div className="grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr] min-w-full bg-white sticky top-12 z-10 shadow-sm border-b">
+      <div className={`${gridClasses} bg-white sticky top-12 z-10 shadow-sm border-b`}>
         <ActionCell content="HP" isHeader />
         <ActionCell content="予兆" isHeader />
         <ActionCell content="奥義" isHeader />
@@ -86,40 +89,24 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       </div>
 
       {/* データ部分 */}
-      <div className="min-w-full">
+      <div className="flex flex-col">
         {data.map((row, index) => (
           <div
             id={`action-row-${index}`}
             key={index}
             onDoubleClick={() => onRowSelect(index)}
-            className={`grid grid-cols-[5fr_15fr_5fr_5fr_30fr_20fr] border-b cursor-pointer
-              ${index === currentRow ? "border-2 border-yellow-500 bg-yellow-200" : ""}
-              ${index < currentRow ? "opacity-50" : ""}`}
+            className={`${gridClasses} border-b cursor-pointer ${
+              index === currentRow
+                ? "border-2 border-yellow-500 bg-yellow-200"
+                : ""
+            } ${index < currentRow ? "opacity-50" : ""}`}
           >
-            <ActionCell
-              content={row.hp}
-              isCurrentRow={index === currentRow}
-            />
-            <ActionCell
-              content={row.prediction}
-              isCurrentRow={index === currentRow}
-            />
-            <ActionCell
-              content={row.charge}
-              isCurrentRow={index === currentRow}
-            />
-            <ActionCell
-              content={row.guard}
-              isCurrentRow={index === currentRow}
-            />
-            <ActionCell
-              content={row.action}
-              isCurrentRow={index === currentRow}
-            />
-            <ActionCell
-              content={row.note}
-              isCurrentRow={index === currentRow}
-            />
+            <ActionCell content={row.hp} isCurrentRow={index === currentRow} />
+            <ActionCell content={row.prediction} isCurrentRow={index === currentRow} />
+            <ActionCell content={row.charge} isCurrentRow={index === currentRow} />
+            <ActionCell content={row.guard} isCurrentRow={index === currentRow} />
+            <ActionCell content={row.action} isCurrentRow={index === currentRow} />
+            <ActionCell content={row.note} isCurrentRow={index === currentRow} />
           </div>
         ))}
       </div>

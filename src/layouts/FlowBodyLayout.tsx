@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
 import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
 import { ResizablePanel } from '@/components/organisms/ResizablePanel';
+import type { Flow } from '@/types/models';
 
 interface FlowBodyLayoutReactProps {
-  encodedData: string;
+  data: Flow;
 }
 
-function FlowBodyLayoutReact({ encodedData }: FlowBodyLayoutReactProps) {
+function FlowBodyLayoutReact({ data }: FlowBodyLayoutReactProps) {
   const [isLoading, setIsLoading] = useState(true);
-
-  // Base64デコードしてデータを復元
-  const data = JSON.parse(decodeURIComponent(atob(encodedData)));
 
   // 初期ロード完了時にローディングを解除
   React.useEffect(() => {
