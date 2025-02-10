@@ -5,10 +5,11 @@ import sampleDataJson from "@/content/sample_data.json"; // JSONファイルを�
 import type { Flow } from "@/types/models";
 import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 
+// structuredCloneを使用してデータをクローン
 const data: Flow = sampleDataJson;
-const title = data.title;
+const title = "グラブル行動表";
 ---
 
 <FlowBaseLayout title={title} client:load>
-  <FlowBodyLayout data={data} client:only="react" />
+  <FlowBodyLayout data={null} client:only="react" />
 </FlowBaseLayout>

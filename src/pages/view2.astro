@@ -1,13 +1,14 @@
 ---
 // Astroコンポーネントとして描画
+import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 import FlowBodyLayout from "@/layouts/FlowBodyLayout.astro";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 import type { Flow } from "@/types/models";
 
-// structuredCloneを使用してデータをクローン
 const data: Flow = sampleDataJson;
-// Base64エンコードしてデータを渡す
-const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+const title = data.title;
 ---
 
-<FlowBodyLayout data={data} client:load />
+<FlowBaseLayout title={title} client:load>
+  <FlowBodyLayout data={data} client:load />
+</FlowBaseLayout>

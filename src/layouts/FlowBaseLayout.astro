@@ -4,10 +4,10 @@ import "@/styles/globals.css";
 import type { Flow } from "@/types/models";
 
 interface Props {
-  data: Flow;
+  title: string;
 }
 
-const { data } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ const { data } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{data.title}</title>
+    <title>{title}</title>
   </head>
   <body>
     <slot />
