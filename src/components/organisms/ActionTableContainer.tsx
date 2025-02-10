@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ActionTable } from "./ActionTable";
 import type { Action } from "@/types/models";
+import useFlowStore from "@/stores/flowStore";
 
 interface ActionTableContainerProps {
   data: Action[];
@@ -11,7 +12,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
   data,
   buttonPosition,
 }) => {
-  const [currentRow, setCurrentRow] = React.useState(0);
+  const { currentRow, setCurrentRow } = useFlowStore();
 
   const handleRowSelect = (index: number) => {
     setCurrentRow(index);

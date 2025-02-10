@@ -6,11 +6,17 @@ interface FlowStore {
   setFlowData: (newData: Flow | null) => void
   updateFlowData: (update: Partial<Flow>) => void
   loadFlowFromFile: () => Promise<void>
+  currentRow: number
+  setCurrentRow: (row: number) => void
 }
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
-  setFlowData: (newData: Flow | null) => set({ flowData: newData }),
+  currentRow: 0,
+  setCurrentRow: (row: number) => set({ currentRow: row }),
+  setFlowData: (newData: Flow | null) => {
+    set({ flowData: newData, currentRow: 0 })
+  },
   updateFlowData: (update: Partial<Flow>) =>
     set({ flowData: { ...get().flowData, ...update } as Flow }),
   loadFlowFromFile: async () => {
@@ -31,7 +37,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
-      set({ flowData: data });
+      set({ flowData: data, currentRow: 0 });
     } catch (error) {
       console.error('ファイルの読み込みに失敗しました:', error);
       throw error;
