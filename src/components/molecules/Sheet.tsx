@@ -10,8 +10,23 @@ interface SheetContextValue {
 const SheetContext = createContext<SheetContextValue | undefined>(undefined);
 
 // Sheet コンポーネントは、Sheet 内の状態を管理するためにコンテキストを提供します
-export const Sheet = ({ children }: { children: React.ReactNode }) => {
-  const [open, setOpen] = useState(false);
+interface SheetProps {
+  children: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const Sheet: React.FC<SheetProps> = ({ children, open: controlledOpen, onOpenChange }) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = (value: boolean) => {
+    if (!isControlled) {
+      setUncontrolledOpen(value);
+    }
+    onOpenChange?.(value);
+  };
+
   return (
     <SheetContext.Provider value={{ open, setOpen }}>
       {children}

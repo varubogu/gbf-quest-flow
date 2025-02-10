@@ -4,11 +4,20 @@ import FlowBodyLayout from "@/layouts/FlowBodyLayout";
 import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
 import type { Flow } from "@/types/models";
 import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
+import useFlowStore from "@/stores/flowStore";
 
 const data: Flow = sampleDataJson;
 const title = data.title;
 ---
 
 <FlowBaseLayout title={title} client:load>
-  <FlowBodyLayout data={data} client:only="react" />
+  <FlowBodyLayout client:only="react" />
 </FlowBaseLayout>
+
+<script>
+  import useFlowStore from "@/stores/flowStore";
+  import sampleDataJson from "@/content/sample_data.json";
+
+  // クライアントサイドでストアに初期データをセット
+  useFlowStore.getState().setFlowData(sampleDataJson);
+</script>

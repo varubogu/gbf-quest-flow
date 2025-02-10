@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import {
   Sheet,
@@ -8,15 +8,13 @@ import {
   SheetTrigger,
 } from "@/components/molecules/Sheet";
 import { Menu } from "lucide-react";
-import type { Action, Flow } from "@/types/models";
+import useFlowStore from "@/stores/flowStore";
 
-
-interface HamburgerMenuItemsProps {
-  data?: Flow;
-}
-
-export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ data }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export const HamburgerMenuItems: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const flowData = useFlowStore((state) => state.flowData);
+  const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
 
   const [menuView, setMenuView] = useState<"menu" | "options">("menu");
   const [language, setLanguage] = useState("日本語");
@@ -32,21 +30,29 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ data }) 
     { id: "help", label: "説明書" },
   ];
 
-  const handleMenuClick = (id: string) => {
+  const handleMenuClick = async (id: string) => {
     switch (id) {
       case "load":
-        fileInputRef.current?.click();
+        try {
+          setIsLoading(true);
+          await loadFlowFromFile();
+          setIsOpen(false); // メニューを閉じる
+        } catch (error) {
+          console.error('ファイルの読み込みに失敗しました:', error);
+        } finally {
+          setIsLoading(false);
+        }
         break;
       case "download":
-        if (!data) {
+        if (!flowData) {
           alert("ダウンロードするデータがありません。");
           break;
         }
 
-        const json = JSON.stringify(data, null, 2);
+        const json = JSON.stringify(flowData, null, 2);
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        const filename = `${data.title}.json`;
+        const filename = `${flowData.title}.json`;
 
         const a = document.createElement("a");
         a.href = url;
@@ -74,15 +80,8 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ data }) 
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      alert(`ファイル "${file.name}" が選択されました。`);
-    }
-  };
-
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon">
           <Menu className="h-6 w-6" />
@@ -95,26 +94,19 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ data }) 
           </SheetTitle>
         </SheetHeader>
         {menuView === "menu" ? (
-          <>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <div className="mt-4 flex flex-col gap-2">
-              {menuItems.map((item) => (
-                <Button
-                  key={item.id}
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => handleMenuClick(item.id)}
-                >
-                  {item.label}
-                </Button>
-              ))}
-            </div>
-          </>
+          <div className="mt-4 flex flex-col gap-2">
+            {menuItems.map((item) => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => handleMenuClick(item.id)}
+                disabled={isLoading && item.id === "load"}
+              >
+                {item.id === "load" && isLoading ? "読み込み中..." : item.label}
+              </Button>
+            ))}
+          </div>
         ) : (
           <div className="mt-4">
             <Button
