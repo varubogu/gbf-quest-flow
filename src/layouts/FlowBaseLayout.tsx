@@ -1,13 +1,15 @@
 import React, { type ReactNode } from 'react';
 import "@/styles/globals.css";
-import type { Flow } from '@/types/models';
+import useFlowStore from '@/stores/flowStore';
 
 interface FlowBaseLayoutReactProps {
-  title: string;
   children: ReactNode;
 }
 
-function FlowBaseLayoutReact({ title, children }: FlowBaseLayoutReactProps) {
+function FlowBaseLayoutReact({ children }: FlowBaseLayoutReactProps) {
+  const flowData = useFlowStore((state) => state.flowData);
+  const title = 'グラブル行動表' + (flowData ? ` - ${flowData.title}` : '');
+
   return (
     <html lang="ja">
       <head>

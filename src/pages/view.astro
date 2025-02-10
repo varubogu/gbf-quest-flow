@@ -1,16 +1,11 @@
 ---
 // Reactコンポーネントとして描画
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
-import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
-import type { Flow } from "@/types/models";
-import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
-import useFlowStore from "@/stores/flowStore";
+import FlowBaseLayout from "@/layouts/FlowBaseLayout";
 
-const data: Flow = sampleDataJson;
-const title = data.title;
 ---
 
-<FlowBaseLayout title={title} client:load>
+<FlowBaseLayout client:load>
   <FlowBodyLayout client:only="react" />
 </FlowBaseLayout>
 

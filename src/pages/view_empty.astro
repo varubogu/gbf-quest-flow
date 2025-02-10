@@ -1,15 +1,10 @@
 ---
 // Reactコンポーネントとして描画
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
-import sampleDataJson from "@/content/sample_data.json"; // JSONファイルをインポート
-import type { Flow } from "@/types/models";
-import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
+import FlowBaseLayout from "@/layouts/FlowBaseLayout";
 
-// structuredCloneを使用してデータをクローン
-const data: Flow = sampleDataJson;
-const title = "グラブル行動表";
 ---
 
-<FlowBaseLayout title={title} client:load>
+<FlowBaseLayout client:load>
   <FlowBodyLayout client:only="react" />
 </FlowBaseLayout>
