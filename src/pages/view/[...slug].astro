@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+// Reactコンポーネントとして描画
+import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
+import FlowBodyLayout from "@/layouts/FlowBodyLayout";
+
+export async function getStaticPaths() {
+    console.log("getStaticPaths");
+    const entries = await getCollection("flows");
+    console.log("entries");
+    console.log(entries);
+
+    return entries.map((entry) => {
+        const filename = entry.id.split("/").pop();
+        const slug = filename?.replace(".json", "") ?? "";
+        return {
+            params: {
+                slug,
+            },
+            props: {
+                entry,
+            },
+        };
+    });
+}
+
+const { entry } = Astro.props;
+
+const dataStr = JSON.stringify(entry.data);
+---
+
+<FlowBaseLayout>
+    <FlowBodyLayout client:only="react" />
+</FlowBaseLayout>
+
+<script type="module" lang="ts">
+    import useFlowStore from "@/stores/flowStore";
+
+
+    // クライアントサイドでストアに初期データをセット
+    const initialData = { ...JSON.parse(dataStr) };
+    console.log(initialData);
+    useFlowStore.getState().setFlowData(initialData);
+</script>

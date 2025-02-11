@@ -1,4 +1,5 @@
 {
+    "$schema": "../../../.astro/collections/flows.schema.json",
     "title": "ルシゼロ火マナ",
     "author": "鈴木太郎",
     "description": "ルシゼロの火マナ編成",
