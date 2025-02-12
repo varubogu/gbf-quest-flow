@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro build",
-    "deploy": "bun install && bunx --bun astro build",
+    "deploy": "bun install && bunx --bun astro build && mkdir -p dist/content && cp -r src/content/flows dist/content/flows",
     "preview": "astro preview --host",
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
