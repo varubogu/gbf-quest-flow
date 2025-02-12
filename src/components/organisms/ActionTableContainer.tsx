@@ -45,6 +45,52 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     });
   };
 
+  const handleDeleteRow = (rowIndex: number) => {
+    if (!flowData) return;
+
+    const newFlow = [...flowData.flow];
+    newFlow.splice(rowIndex, 1);
+
+    setFlowData({
+      ...flowData,
+      flow: newFlow,
+    });
+
+    // 削除した行が現在の選択行より前なら、選択行を1つ上に移動
+    if (rowIndex < currentRow) {
+      setCurrentRow(currentRow - 1);
+    }
+    // 削除した行が現在の選択行なら、選択行をそのままにする（次の行が選択されることになる）
+    else if (rowIndex === currentRow && currentRow >= newFlow.length) {
+      setCurrentRow(Math.max(0, newFlow.length - 1));
+    }
+  };
+
+  const handleAddRow = (rowIndex: number) => {
+    if (!flowData) return;
+
+    const newFlow = [...flowData.flow];
+    const newRow: Action = {
+      hp: "",
+      prediction: "",
+      charge: "",
+      guard: "",
+      action: "",
+      note: "",
+    };
+
+    // 指定された位置の後に新しい行を挿入
+    newFlow.splice(rowIndex + 1, 0, newRow);
+
+    setFlowData({
+      ...flowData,
+      flow: newFlow,
+    });
+
+    // 追加した行を選択
+    setCurrentRow(rowIndex + 1);
+  };
+
   return (
     <ActionTable
       data={data}
@@ -55,6 +101,8 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       onRowSelect={handleRowSelect}
       isEditMode={isEditMode}
       onCellEdit={handleCellEdit}
+      onDeleteRow={handleDeleteRow}
+      onAddRow={handleAddRow}
     />
   );
 };
