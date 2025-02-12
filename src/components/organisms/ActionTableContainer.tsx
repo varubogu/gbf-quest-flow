@@ -14,6 +14,30 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
 }) => {
   const { currentRow, setCurrentRow } = useFlowStore();
   const { flowData, setFlowData } = useFlowStore();
+  const { undo, redo } = useFlowStore();
+
+  // キーボードイベントのハンドラを追加
+  React.useEffect(() => {
+    if (!isEditMode) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl + Z
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undo();
+      }
+      // Cmd/Ctrl + Shift + Z
+      else if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        redo();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isEditMode, undo, redo]);
 
   // flowDataが存在しない場合は何も表示しない
   if (!flowData) {
