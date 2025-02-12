@@ -38,20 +38,29 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   onPasteRows,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const lastWheelTimeRef = React.useRef(0);  // ホイールイベントの制限用
 
-  // マウスホイールイベントのハンドラを追加
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container || isEditMode) return;
 
     const handleWheel = (e: WheelEvent) => {
-      // マウスがテーブル内にあるかチェック
       const target = e.target as HTMLElement;
       if (!container.contains(target)) return;
 
-      e.preventDefault(); // デフォルトのスクロール動作を抑止
+      e.preventDefault();
 
-      // 上下の移動を決定（deltaY > 0 が下方向）
+      // タッチパッドの判定
+      const isTouchpad = e.deltaMode === 0;  // ピクセル単位のスクロール
+
+      if (isTouchpad) {
+        const currentTime = Date.now();
+        if (currentTime - lastWheelTimeRef.current < 500) {  // タッチパッドの場合のみ500ミリ秒のクールダウン
+          return;
+        }
+        lastWheelTimeRef.current = currentTime;
+      }
+
       if (e.deltaY < 0 && currentRow > 0) {
         onRowSelect(currentRow - 1);
       } else if (e.deltaY > 0 && currentRow < data.length - 1) {
@@ -64,6 +73,15 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       container.removeEventListener('wheel', handleWheel);
     };
   }, [currentRow, data.length, onRowSelect, isEditMode]);
+
+  // 上下移動ボタンのクリックハンドラ（クールダウンなし）
+  const handleMove = (direction: 'up' | 'down') => {
+    if (direction === 'up') {
+      onMoveUp();
+    } else {
+      onMoveDown();
+    }
+  };
 
   // キーボードイベントも編集モード時は無効化
   React.useEffect(() => {
@@ -135,13 +153,13 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             <IconButton
               icon={ChevronUp}
               label="上に移動"
-              onClick={onMoveUp}
+              onClick={() => handleMove('up')}
               disabled={currentRow <= 0}
             />
             <IconButton
               icon={ChevronDown}
               label="下に移動"
-              onClick={onMoveDown}
+              onClick={() => handleMove('down')}
               disabled={currentRow >= data.length - 1}
             />
           </div>
