@@ -10,11 +10,17 @@ import {
 import { Menu } from "lucide-react";
 import useFlowStore from "@/stores/flowStore";
 
-export const HamburgerMenuItems: React.FC = () => {
+interface HamburgerMenuItemsProps {
+  onSave?: () => void;
+}
+
+export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const flowData = useFlowStore((state) => state.flowData);
   const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
+  const isEditMode = useFlowStore((state) => state.isEditMode);
+  const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
 
   const [menuView, setMenuView] = useState<"menu" | "options">("menu");
   const [language, setLanguage] = useState("日本語");
@@ -23,7 +29,7 @@ export const HamburgerMenuItems: React.FC = () => {
   const menuItems = [
     { id: "load", label: "データ読み込み" },
     { id: "download", label: "データダウンロード" },
-    { id: "edit", label: "編集" },
+    { id: "edit", label: isEditMode ? "保存" : "編集" },
     { id: "party", label: "編成確認" },
     { id: "info", label: "その他の情報" },
     { id: "options", label: "オプション" },
@@ -61,7 +67,14 @@ export const HamburgerMenuItems: React.FC = () => {
         URL.revokeObjectURL(url);
         break;
       case "edit":
-        alert("編集モードに切り替えます。");
+        if (isEditMode) {
+          if (onSave) {
+            onSave();
+          }
+        } else {
+          setIsEditMode(true);
+        }
+        setIsOpen(false);
         break;
       case "party":
         alert("編成確認を開きます。");

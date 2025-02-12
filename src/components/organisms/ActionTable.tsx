@@ -12,6 +12,10 @@ interface ActionTableProps {
   currentRow: number
   buttonPosition: "left" | "right"
   onRowSelect: (index: number) => void
+  onMoveUp: () => void
+  onMoveDown: () => void
+  isEditMode?: boolean
+  onCellEdit?: (rowIndex: number, field: keyof Action, value: string) => void
 }
 
 export const ActionTable: React.FC<ActionTableProps> = ({
@@ -19,6 +23,10 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   currentRow,
   buttonPosition,
   onRowSelect,
+  onMoveUp,
+  onMoveDown,
+  isEditMode = false,
+  onCellEdit,
 }) => {
   // 追加: スクロール対象となるコンテナのrefを作成
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -87,17 +95,10 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     }
   }, [currentRow]);
 
-  // 追加: HPの値に基づいて行の色を判定する関数
-  const getRowColorClass = (index: number): string => {
-    let colorChangeCount = 0;
-    for (let i = 0; i <= index; i++) {
-      // 空文字やnullでない実際の値が存在する場合のみカウント
-      if (data[i].hp && String(data[i].hp).trim() !== '') {
-        colorChangeCount++;
-      }
+  const handleCellChange = (rowIndex: number, field: keyof Action, value: string) => {
+    if (onCellEdit) {
+      onCellEdit(rowIndex, field, value);
     }
-    // より明確な背景色を設定
-    return colorChangeCount % 2 === 0 ? "bg-white" : "bg-slate-200";
   };
 
   return (
@@ -107,13 +108,13 @@ export const ActionTable: React.FC<ActionTableProps> = ({
           <IconButton
             icon={ChevronUp}
             label="上に移動"
-            onClick={() => currentRow > 0 && onRowSelect(currentRow - 1)}
+            onClick={onMoveUp}
             disabled={currentRow <= 0}
           />
           <IconButton
             icon={ChevronDown}
             label="下に移動"
-            onClick={() => currentRow < data.length - 1 && onRowSelect(currentRow + 1)}
+            onClick={onMoveDown}
             disabled={currentRow >= data.length - 1}
           />
         </div>
@@ -139,15 +140,47 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             className={`${gridClasses} border-b border-gray-400 border-l border-r cursor-pointer ${
               index === currentRow
                 ? "border-2 border-yellow-500 bg-yellow-200"
-                : getRowColorClass(index)
-            } ${index < currentRow ? "opacity-50" : ""}`}
+                : index < currentRow
+                ? "opacity-50"
+                : "bg-white"
+            }`}
           >
-            <ActionCell content={row.hp} isCurrentRow={index === currentRow} />
-            <ActionCell content={row.prediction} isCurrentRow={index === currentRow} />
-            <ActionCell content={row.charge} isCurrentRow={index === currentRow} />
-            <ActionCell content={row.guard} isCurrentRow={index === currentRow} />
-            <ActionCell content={row.action} isCurrentRow={index === currentRow} />
-            <ActionCell content={row.note} isCurrentRow={index === currentRow} />
+            <ActionCell
+              content={row.hp}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "hp", value)}
+            />
+            <ActionCell
+              content={row.prediction}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "prediction", value)}
+            />
+            <ActionCell
+              content={row.charge}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "charge", value)}
+            />
+            <ActionCell
+              content={row.guard}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "guard", value)}
+            />
+            <ActionCell
+              content={row.action}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "action", value)}
+            />
+            <ActionCell
+              content={row.note}
+              isCurrentRow={index === currentRow}
+              isEditable={isEditMode}
+              onChange={(value) => handleCellChange(index, "note", value)}
+            />
           </div>
         ))}
       </div>

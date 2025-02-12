@@ -8,12 +8,16 @@ interface FlowStore {
   loadFlowFromFile: () => Promise<void>
   currentRow: number
   setCurrentRow: (row: number) => void
+  isEditMode: boolean
+  setIsEditMode: (isEdit: boolean) => void
 }
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
   currentRow: 0,
+  isEditMode: false,
   setCurrentRow: (row: number) => set({ currentRow: row }),
+  setIsEditMode: (isEdit: boolean) => set({ isEditMode: isEdit }),
   setFlowData: (newData: Flow | null) => {
     set({ flowData: newData, currentRow: 0 })
   },
