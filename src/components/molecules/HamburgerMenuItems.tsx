@@ -23,24 +23,38 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const cancelEdit = useFlowStore((state) => state.cancelEdit);
+  const createNewFlow = useFlowStore((state) => state.createNewFlow);
 
   const [menuView, setMenuView] = useState<"menu" | "options">("menu");
   const [language, setLanguage] = useState("日本語");
   const [buttonAlignment, setButtonAlignment] = useState("右");
 
   const menuItems = [
+    { id: "new", label: "新しいデータを作る" },
     { id: "load", label: "データ読み込み" },
-    { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード" },
-    { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集" },
-    ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル" }] : []),
-    { id: "party", label: "編成確認" },
-    { id: "info", label: "その他の情報" },
+    ...(flowData ? [
+      { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード" },
+      { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集" },
+      ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル" }] : []),
+      { id: "party", label: "編成確認" },
+      { id: "info", label: "その他の情報" },
+    ] : []),
     { id: "options", label: "オプション" },
     { id: "help", label: "説明書" },
   ];
 
   const handleMenuClick = async (id: string) => {
     switch (id) {
+      case "new":
+        if (isEditMode) {
+          if (!confirm("編集内容を破棄してよろしいですか？")) {
+            break;
+          }
+          cancelEdit();
+        }
+        createNewFlow();
+        setIsOpen(false);
+        break;
       case "load":
         try {
           if (isEditMode) {

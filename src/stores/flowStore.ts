@@ -12,6 +12,7 @@ interface FlowStore {
   setFlowData: (newData: Flow | null) => void
   updateFlowData: (update: Partial<Flow>) => void
   loadFlowFromFile: () => Promise<void>
+  createNewFlow: () => void // 新しいデータを作成する関数を追加
   currentRow: number
   setCurrentRow: (row: number) => void
   isEditMode: boolean
@@ -46,6 +47,50 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       set({ history: { past: [], future: [] }, originalData: null });
     }
     set({ isEditMode: isEdit });
+  },
+
+  createNewFlow: () => {
+    // 空のデータを作成
+    const newData: Flow = {
+      title: "新しいフロー",
+      author: "",
+      description: "",
+      updateDate: new Date().toISOString(),
+      note: "",
+      organization: {
+        job: "",
+        member: {
+          front: [] as { note: string; name: string; awaketype: string; }[],
+          back: [] as { note: string; name: string; awaketype: string; }[],
+        },
+        weapon: {
+          main: { note: "", name: "" },
+          other: [] as { note: string; name: string; }[],
+          additional: [] as { note: string; name: string; }[],
+        },
+        summon: {
+          main: { note: "", name: "" },
+          friend: { note: "", name: "" },
+          other: [] as { note: string; name: string; }[],
+          sub: [] as { note: string; name: string; }[],
+        },
+      },
+      always: "",
+      flow: [{
+        hp: "",
+        prediction: "",
+        charge: "",
+        guard: "",
+        action: "",
+        note: "",
+      }],
+    };
+    set({
+      flowData: newData,
+      currentRow: 0,
+      isEditMode: true, // 編集モードで開始
+      history: { past: [], future: [] },
+    });
   },
 
   setFlowData: (newData: Flow | null) => {
