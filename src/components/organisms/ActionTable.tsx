@@ -59,6 +59,19 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     }
   }, [currentRow]);
 
+  // 追加: HPの値に基づいて行の色を判定する関数
+  const getRowColorClass = (index: number): string => {
+    let colorChangeCount = 0;
+    for (let i = 0; i <= index; i++) {
+      // 空文字やnullでない実際の値が存在する場合のみカウント
+      if (data[i].hp && String(data[i].hp).trim() !== '') {
+        colorChangeCount++;
+      }
+    }
+    // より明確な背景色を設定
+    return colorChangeCount % 2 === 0 ? "bg-white" : "bg-slate-200";
+  };
+
   return (
     <div ref={containerRef} className="flex flex-col h-full overflow-y-auto">
       <div className="flex justify-between items-center p-2 sticky top-0 bg-white z-20">
@@ -98,7 +111,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             className={`${gridClasses} border-b cursor-pointer ${
               index === currentRow
                 ? "border-2 border-yellow-500 bg-yellow-200"
-                : ""
+                : getRowColorClass(index)
             } ${index < currentRow ? "opacity-50" : ""}`}
           >
             <ActionCell content={row.hp} isCurrentRow={index === currentRow} />
