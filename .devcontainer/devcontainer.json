@@ -12,7 +12,8 @@
 		"vscode": {
 			"extensions": [
 				"astro-build.astro-vscode",
-				"hediet.vscode-drawio"
+				"hediet.vscode-drawio",
+				"bradlc.vscode-tailwindcss"
 			]
 		}
 	}
