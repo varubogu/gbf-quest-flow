@@ -43,13 +43,20 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
     switch (id) {
       case "load":
         try {
+          if (isEditMode) {
+            if (!confirm("編集内容を破棄してよろしいですか？")) {
+              break;
+            }
+            cancelEdit();
+          }
+
           setIsLoading(true);
           await loadFlowFromFile();
-          setIsOpen(false); // メニューを閉じる
         } catch (error) {
           console.error('ファイルの読み込みに失敗しました:', error);
         } finally {
           setIsLoading(false);
+          setIsOpen(false); // メニューを閉じる
         }
         break;
       case "download":

@@ -126,15 +126,30 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       input.type = 'file';
       input.accept = '.json';
 
-      const filePromise = new Promise<File>((resolve) => {
+      const filePromise = new Promise<File | null>((resolve) => {
+        // ダイアログが閉じられたときのイベントを追加
+        window.addEventListener('focus', () => {
+          // 少し遅延を入れてファイル選択の有無を確認
+          setTimeout(() => {
+            if (!input.files?.length) {
+              resolve(null);
+            }
+          }, 300);
+        }, { once: true });
+
         input.onchange = (e) => {
           const file = (e.target as HTMLInputElement).files?.[0];
-          if (file) resolve(file);
+          resolve(file || null);
         };
       });
 
       input.click();
       const file = await filePromise;
+
+      // ファイルが選択されなかった場合は処理を中断
+      if (!file) {
+        return;
+      }
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
