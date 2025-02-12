@@ -16,7 +16,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   return (
     <div
       className={cn(
-        "px-3 py-2 border-b border-r",
+        "px-3 py-2 border-b border-r border-gray-400",
         isHeader ? "bg-muted font-medium" : "bg-background",
         isCurrentRow && "bg-accent"
       )}

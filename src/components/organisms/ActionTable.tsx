@@ -94,7 +94,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       </div>
 
       {/* ヘッダー部分：スクロールしない固定部分 */}
-      <div className={`${gridClasses} bg-green-300 sticky top-12 z-10 shadow-sm border-b`}>
+      <div className={`${gridClasses} bg-green-300 sticky top-12 z-10 shadow-sm border-b border-gray-400 border-l border-r`}>
         <ActionCell content="HP" isHeader />
         <ActionCell content="予兆" isHeader />
         <ActionCell content="奥義" isHeader />
@@ -110,7 +110,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             id={`action-row-${index}`}
             key={index}
             onDoubleClick={() => onRowSelect(index)}
-            className={`${gridClasses} border-b cursor-pointer ${
+            className={`${gridClasses} border-b border-gray-400 border-l border-r cursor-pointer ${
               index === currentRow
                 ? "border-2 border-yellow-500 bg-yellow-200"
                 : getRowColorClass(index)
