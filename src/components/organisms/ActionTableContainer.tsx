@@ -6,11 +6,13 @@ import useFlowStore from "@/stores/flowStore";
 interface ActionTableContainerProps {
   buttonPosition: "left" | "right";
   isEditMode?: boolean;
+  data?: Action[];
 }
 
 export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
   buttonPosition,
   isEditMode = false,
+  data,
 }) => {
   const { currentRow, setCurrentRow } = useFlowStore();
   const { flowData, setFlowData } = useFlowStore();
@@ -182,7 +184,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
 
   return (
     <ActionTable
-      data={flowData.flow}
+      data={data ?? flowData.flow}
       currentRow={currentRow}
       buttonPosition={buttonPosition}
       onMoveUp={handleMoveUp}

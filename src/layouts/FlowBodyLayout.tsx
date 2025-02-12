@@ -4,6 +4,7 @@ import { ActionTableContainer } from '@/components/organisms/ActionTableContaine
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import useFlowStore from '@/stores/flowStore';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
+import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData, setTitle } from '@/lib/functions';
 
 function FlowBodyLayoutReact() {
@@ -12,6 +13,7 @@ function FlowBodyLayoutReact() {
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const setFlowData = useFlowStore((state) => state.setFlowData);
+  const createNewFlow = useFlowStore((state) => state.createNewFlow);
 
   // 初期ロード完了時にローディングを解除
   React.useEffect(() => {
@@ -19,6 +21,7 @@ function FlowBodyLayoutReact() {
   }, []);
 
   const handleSave = () => {
+    if (!flowData) return;
     // JSONファイルをダウンロード
     const dataStr = JSON.stringify(flowData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -54,7 +57,10 @@ function FlowBodyLayoutReact() {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col">
         <div className="text-lg mb-4">データが読み込まれていません</div>
-        <LoadFlowButton />
+        <div className="flex gap-4">
+          <CreateFlowButton />
+          <LoadFlowButton />
+        </div>
       </div>
     );
   }
