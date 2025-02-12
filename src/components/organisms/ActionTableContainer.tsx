@@ -71,7 +71,8 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     // 貼り付けるデータを適用
     rows.forEach((row, i) => {
       const targetIndex = rowIndex + i;
-      // 必要に応じて新しい行を作成
+
+      // 必要な数の空の行を追加
       while (targetIndex >= newFlow.length) {
         newFlow.push({
           hp: "",
@@ -83,15 +84,30 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
         });
       }
 
-      // 既存の行データを保持しつつ、新しいデータで上書き
-      newFlow[targetIndex] = {
-        hp: row.hp ?? newFlow[targetIndex].hp ?? "",
-        prediction: row.prediction ?? newFlow[targetIndex].prediction ?? "",
-        charge: row.charge ?? newFlow[targetIndex].charge ?? "",
-        guard: row.guard ?? newFlow[targetIndex].guard ?? "",
-        action: row.action ?? newFlow[targetIndex].action ?? "",
-        note: row.note ?? newFlow[targetIndex].note ?? "",
-      };
+      // 最初の行は上書き、2行目以降は新しい行を挿入
+      if (i === 0) {
+        // 1行目は指定位置に上書き
+        newFlow[targetIndex] = {
+          ...newFlow[targetIndex],
+          ...Object.fromEntries(
+            Object.entries(row).filter(([_, value]) => value !== undefined)
+          ),
+        };
+      } else {
+        // 2行目以降は新しい行を挿入
+        const newRow = {
+          hp: "",
+          prediction: "",
+          charge: "",
+          guard: "",
+          action: "",
+          note: "",
+          ...Object.fromEntries(
+            Object.entries(row).filter(([_, value]) => value !== undefined)
+          ),
+        };
+        newFlow.splice(targetIndex, 0, newRow);
+      }
     });
 
     // 新しいflowDataオブジェクトを作成して一度に更新
