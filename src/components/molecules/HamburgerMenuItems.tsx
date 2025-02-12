@@ -7,7 +7,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/molecules/Sheet";
-import { Menu } from "lucide-react";
+import {
+  Menu,
+  FileText,
+  FolderOpen,
+  Download,
+  Edit2,
+  Save,
+  XCircle,
+  Settings,
+  HelpCircle,
+} from "lucide-react";
 import useFlowStore from "@/stores/flowStore";
 
 interface HamburgerMenuItemsProps {
@@ -30,15 +40,15 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
   const [buttonAlignment, setButtonAlignment] = useState("右");
 
   const menuItems = [
-    { id: "new", label: "新しいデータを作る" },
-    { id: "load", label: "データ読み込み" },
+    { id: "new", label: "新しいデータを作る", icon: FileText },
+    { id: "load", label: "データ読み込み", icon: FolderOpen },
     ...(flowData ? [
-      { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード" },
-      { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集" },
-      ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル" }] : []),
+      { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード", icon: Download },
+      { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集", icon: isEditMode ? Save : Edit2 },
+      ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル", icon: XCircle }] : []),
     ] : []),
-    { id: "options", label: "オプション" },
-    { id: "help", label: "説明書" },
+    { id: "options", label: "オプション", icon: Settings },
+    { id: "help", label: "説明書", icon: HelpCircle },
   ];
 
   const handleMenuClick = async (id: string) => {
@@ -140,10 +150,11 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
               <Button
                 key={item.id}
                 variant="ghost"
-                className="w-full justify-start"
+                className="w-full justify-start gap-2"
                 onClick={() => handleMenuClick(item.id)}
                 disabled={isLoading && item.id === "load"}
               >
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.id === "load" && isLoading ? "読み込み中..." : item.label}
               </Button>
             ))}
@@ -152,9 +163,10 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
           <div className="mt-4">
             <Button
               variant="ghost"
-              className="mb-4"
+              className="mb-4 gap-2"
               onClick={() => setMenuView("menu")}
             >
+              <Menu className="h-4 w-4" />
               ← 戻る
             </Button>
             <div className="mb-4">
