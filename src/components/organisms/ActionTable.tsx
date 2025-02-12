@@ -122,11 +122,6 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
     if (!onCellEdit || !onAddRow) return;
 
-    console.log('=== Paste Event Debug ===');
-    console.log('Starting row index:', rowIndex);
-    console.log('Pasted data:', rows);
-    console.log('Current data length:', data.length);
-
     // 貼り付けられたデータを直接親コンポーネントに渡す
     onPasteRows(rowIndex, rows);
   };

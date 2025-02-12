@@ -39,7 +39,6 @@ useFlowStore.getState().setFlowData(entry.data);
     async function initData() {
         const res = await fetch("/content/flows/sample.json");
         const data = await res.json();
-        console.log(data);
 
         useFlowStore.getState().setFlowData(data);
     }

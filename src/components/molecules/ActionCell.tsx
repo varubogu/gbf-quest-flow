@@ -17,7 +17,6 @@ interface ActionCellProps {
 
 // タブ区切りテキストを解析する関数
 const parseTabSeparatedText = (text: string): string[][] => {
-  console.log('Starting text parsing...');
   const rows: string[][] = [];
   let currentRow: string[] = [];
   let currentCell = '';
@@ -33,17 +32,14 @@ const parseTabSeparatedText = (text: string): string[][] => {
         // エスケープされた引用符
         currentCell += '"';
         i++;
-        console.log('Escaped quote found');
       } else {
         // 引用符の開始または終了
         inQuotes = !inQuotes;
-        console.log('Quote state changed:', inQuotes);
       }
     } else if (char === '\t' && !inQuotes) {
       // タブ区切り（引用符の外）
       currentRow.push(currentCell.trim());
       currentCell = '';
-      console.log('Tab found, current row:', [...currentRow]);
     } else if ((char === '\n' || char === '\r') && !inQuotes) {
       // 引用符の外での改行は新しい行を意味する
       if (char === '\r' && nextChar === '\n') {
@@ -51,7 +47,6 @@ const parseTabSeparatedText = (text: string): string[][] => {
       }
       currentRow.push(currentCell.trim());
       rows.push([...currentRow]); // 現在の行を配列にコピー
-      console.log('New row added:', [...currentRow]);
       currentRow = [];
       currentCell = '';
     } else {
@@ -63,7 +58,6 @@ const parseTabSeparatedText = (text: string): string[][] => {
   if (currentCell || currentRow.length > 0) {
     currentRow.push(currentCell.trim());
     rows.push(currentRow);
-    console.log('Final row added:', currentRow);
   }
 
   // 空の行を除外し、各行のセル数を揃える
@@ -82,7 +76,6 @@ const parseTabSeparatedText = (text: string): string[][] => {
       });
     });
 
-  console.log('Final parsed result:', result);
   return result;
 };
 
@@ -198,17 +191,12 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     if (!onPasteRows || !field) return;
 
     const clipboardText = e.clipboardData.getData('text');
-    console.log('=== Paste Event in ActionCell ===');
-    console.log('Clipboard text:', clipboardText);
-    console.log('Current field:', field);
 
     if (clipboardText.includes('\t')) {
       e.preventDefault();
       try {
         const rows = parseTabSeparatedText(clipboardText);
-        console.log('Parsed rows:', rows);
         const actions = convertToActions(rows, field);
-        console.log('Converted actions:', actions);
         onPasteRows(actions);
       } catch (error) {
         if (error instanceof Error) {

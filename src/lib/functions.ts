@@ -15,7 +15,6 @@ export function setTitle(title: string) {
 export async function loadSlugData(slug: string) {
     const res = await fetch(`/content/flows/${slug}.json`);
     const data = await res.json();
-    console.log(data);
 
     useFlowStore.getState().setFlowData(data);
 }

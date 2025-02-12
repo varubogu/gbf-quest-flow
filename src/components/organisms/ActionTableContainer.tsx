@@ -60,10 +60,6 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
   const handleCellEdit = (rowIndex: number, field: keyof Action, value: string) => {
     if (!flowData) return;
 
-    console.log('=== Cell Edit Debug ===');
-    console.log('Updating:', { rowIndex, field, value });
-    console.log('Current flowData:', flowData);
-
     // 新しいflowデータを作成
     const newFlow = [...flowData.flow];
     newFlow[rowIndex] = {
@@ -77,17 +73,11 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       flow: newFlow,
     };
 
-    console.log('New flowData:', newFlowData);
     setFlowData(newFlowData);
   };
 
   const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
     if (!flowData) return;
-
-    console.log('=== Paste Rows Debug ===');
-    console.log('Starting paste operation at row:', rowIndex);
-    console.log('Current flowData:', flowData);
-    console.log('Rows to paste:', rows);
 
     // 現在のフローデータをコピー
     const newFlow = [...flowData.flow];
@@ -140,7 +130,6 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       flow: newFlow,
     };
 
-    console.log('New flowData after paste:', newFlowData);
     setFlowData(newFlowData);
   };
 
