@@ -26,8 +26,10 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowUp" && currentRow > 0) {
+        e.preventDefault(); // デフォルトのスクロール動作を抑止
         onRowSelect(currentRow - 1)
       } else if (e.key === "ArrowDown" && currentRow < data.length - 1) {
+        e.preventDefault(); // デフォルトのスクロール動作を抑止
         onRowSelect(currentRow + 1)
       }
     }
