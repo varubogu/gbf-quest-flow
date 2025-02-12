@@ -173,95 +173,114 @@ export const ActionTable: React.FC<ActionTableProps> = ({
 
       {/* データ部分 */}
       <div className="flex flex-col">
-        {data.map((row, index) => (
-          <div
-            key={index}
-            id={`action-row-${index}`}
-            onDoubleClick={() => !isEditMode && onRowSelect(index)}
-            className={`${getGridClasses(isEditMode)} border-b border-gray-400 border-l border-r ${
-              !isEditMode && index === currentRow
-                ? "border-2 border-yellow-500 bg-yellow-200"
-                : !isEditMode && index < currentRow
-                ? "opacity-50"
-                : "bg-white"
-            }`}
-          >
-            {isEditMode && (
-              <>
-                <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
-                  <button
-                    onClick={() => onDeleteRow?.(index)}
-                    className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
-                  >
-                    <Minus className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-                <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
-                  <button
-                    onClick={() => onAddRow?.(index)}
-                    className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              </>
-            )}
-            <ActionCell
-              content={row.hp}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "hp", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="hp"
-              alignment="right"
-            />
-            <ActionCell
-              content={row.prediction}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "prediction", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="prediction"
-              alignment="left"
-            />
-            <ActionCell
-              content={row.charge}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "charge", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="charge"
-              alignment="center"
-            />
-            <ActionCell
-              content={row.guard}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "guard", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="guard"
-              alignment="center"
-            />
-            <ActionCell
-              content={row.action}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "action", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="action"
-              alignment="left"
-            />
-            <ActionCell
-              content={row.note}
-              isCurrentRow={!isEditMode && index === currentRow}
-              isEditable={isEditMode}
-              onChange={(value) => handleCellChange(index, "note", value)}
-              onPasteRows={(rows) => handlePasteRows(index, rows)}
-              field="note"
-              alignment="left"
-            />
-          </div>
-        ))}
+        {data.map((row, index) => {
+          // HPが空の場合、直前のHPが存在する行まで遡る
+          let currentIndex = index;
+          let hpRowCount = 0; // HPが入っている行数をカウント
+          for (let i = 0; i <= index; i++) {
+            if (data[i].hp.trim()) {
+              hpRowCount++;
+            }
+          }
+          while (currentIndex > 0 && !data[currentIndex].hp.trim()) {
+            currentIndex--;
+          }
+          // HPが存在する行の番号を使用
+          const isEvenRow = hpRowCount % 2 === 1; // HPが入っている行数で判定
+
+          // 基本の背景色を決定
+          const baseBackground = isEvenRow ? "bg-white" : "bg-gray-300";
+
+          return (
+            <div
+              key={index}
+              id={`action-row-${index}`}
+              onDoubleClick={() => !isEditMode && onRowSelect(index)}
+              className={`${getGridClasses(isEditMode)} border-b border-gray-400 border-l border-r ${
+                !isEditMode && index === currentRow
+                  ? "border-2 border-yellow-500 bg-yellow-200"
+                  : !isEditMode && index < currentRow
+                  ? `opacity-50 ${baseBackground}`
+                  : baseBackground
+              }`}
+            >
+              {isEditMode && (
+                <>
+                  <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
+                    <button
+                      onClick={() => onDeleteRow?.(index)}
+                      className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
+                    >
+                      <Minus className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
+                  <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
+                    <button
+                      onClick={() => onAddRow?.(index)}
+                      className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
+                </>
+              )}
+              <ActionCell
+                content={row.hp}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "hp", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="hp"
+                alignment="right"
+              />
+              <ActionCell
+                content={row.prediction}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "prediction", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="prediction"
+                alignment="left"
+              />
+              <ActionCell
+                content={row.charge}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "charge", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="charge"
+                alignment="center"
+              />
+              <ActionCell
+                content={row.guard}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "guard", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="guard"
+                alignment="center"
+              />
+              <ActionCell
+                content={row.action}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "action", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="action"
+                alignment="left"
+              />
+              <ActionCell
+                content={row.note}
+                isCurrentRow={!isEditMode && index === currentRow}
+                isEditable={isEditMode}
+                onChange={(value) => handleCellChange(index, "note", value)}
+                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                field="note"
+                alignment="left"
+              />
+            </div>
+          )
+        })}
       </div>
     </div>
   )
