@@ -92,7 +92,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       </div>
 
       {/* ヘッダー部分：スクロールしない固定部分 */}
-      <div className={`${gridClasses} bg-white sticky top-12 z-10 shadow-sm border-b`}>
+      <div className={`${gridClasses} bg-green-300 sticky top-12 z-10 shadow-sm border-b`}>
         <ActionCell content="HP" isHeader />
         <ActionCell content="予兆" isHeader />
         <ActionCell content="奥義" isHeader />
