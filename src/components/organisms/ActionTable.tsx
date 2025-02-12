@@ -23,6 +23,32 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   // 追加: スクロール対象となるコンテナのrefを作成
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  // マウスホイールイベントのハンドラを追加
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // マウスがテーブル内にあるかチェック
+      const target = e.target as HTMLElement;
+      if (!container.contains(target)) return;
+
+      e.preventDefault(); // デフォルトのスクロール動作を抑止
+
+      // 上下の移動を決定（deltaY > 0 が下方向）
+      if (e.deltaY < 0 && currentRow > 0) {
+        onRowSelect(currentRow - 1);
+      } else if (e.deltaY > 0 && currentRow < data.length - 1) {
+        onRowSelect(currentRow + 1);
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [currentRow, data.length, onRowSelect]);
+
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowUp" && currentRow > 0) {
