@@ -79,8 +79,9 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       note: "",
     };
 
-    // 指定された位置の後に新しい行を挿入
-    newFlow.splice(rowIndex + 1, 0, newRow);
+    // インデックスが-1の場合は先頭に挿入
+    const insertIndex = rowIndex === -1 ? 0 : rowIndex + 1;
+    newFlow.splice(insertIndex, 0, newRow);
 
     setFlowData({
       ...flowData,
@@ -88,7 +89,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     });
 
     // 追加した行を選択
-    setCurrentRow(rowIndex + 1);
+    setCurrentRow(insertIndex);
   };
 
   return (
