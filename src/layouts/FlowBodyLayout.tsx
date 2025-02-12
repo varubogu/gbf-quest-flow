@@ -6,6 +6,8 @@ import useFlowStore from '@/stores/flowStore';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
 import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData, setTitle } from '@/lib/functions';
+import { Sword, Info } from 'lucide-react';
+import { IconButton } from '@/components/atoms/IconButton';
 
 function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
@@ -87,8 +89,20 @@ function FlowBodyLayoutReact() {
             className="ml-4 flex-1 text-lg font-medium bg-white border rounded px-2"
           />
         ) : (
-          <h1 className="ml-4 text-lg font-medium">{flowData.title}</h1>
+          <h1 className="ml-4 flex-1 text-lg font-medium">{flowData.title}</h1>
         )}
+        <div className="flex gap-2">
+          <IconButton
+            icon={Sword}
+            label="編成確認"
+            onClick={() => alert("編成確認を開きます。")}
+          />
+          <IconButton
+            icon={Info}
+            label="その他の情報"
+            onClick={() => alert("その他の情報を表示します。")}
+          />
+        </div>
       </header>
       <main className="flex-1 pt-14">
         <div className="h-[calc(100vh-3.5rem)]">

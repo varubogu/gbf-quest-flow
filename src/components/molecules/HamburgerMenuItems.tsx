@@ -36,8 +36,6 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
       { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード" },
       { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集" },
       ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル" }] : []),
-      { id: "party", label: "編成確認" },
-      { id: "info", label: "その他の情報" },
     ] : []),
     { id: "options", label: "オプション" },
     { id: "help", label: "説明書" },
@@ -111,12 +109,6 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
           cancelEdit();
           setIsOpen(false);
         }
-        break;
-      case "party":
-        alert("編成確認を開きます。");
-        break;
-      case "info":
-        alert("その他の情報を表示します。");
         break;
       case "options":
         setMenuView("options");
