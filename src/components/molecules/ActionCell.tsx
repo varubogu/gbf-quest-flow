@@ -87,15 +87,44 @@ const parseTabSeparatedText = (text: string): string[][] => {
 };
 
 // 解析したデータをActionオブジェクトに変換する関数
-const convertToActions = (rows: string[][]): Partial<Action>[] => {
+const convertToActions = (rows: string[][], startField: keyof Action): Partial<Action>[] => {
+  // フィールドの順序を定義
+  const fieldOrder: (keyof Action)[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
+
+  // 貼り付け開始位置のインデックスを取得
+  const startIndex = fieldOrder.indexOf(startField);
+
+  // 各行のデータ列数を取得（空の列も含める）
+  const dataColumnCount = Math.max(...rows.map(row => row.length));
+
+  // 残りの列数を計算
+  const remainingColumns = fieldOrder.length - startIndex;
+
+  // データがはみ出す場合の調整
+  let adjustedStartIndex = startIndex;
+  if (dataColumnCount > remainingColumns) {
+    // 左にずらす必要がある分を計算
+    const shiftLeft = dataColumnCount - remainingColumns;
+    adjustedStartIndex = startIndex - shiftLeft;
+
+    // 先頭列よりも左にはみ出す場合はエラー
+    if (adjustedStartIndex < 0) {
+      throw new Error('貼り付ける列数が多すぎます');
+    }
+  }
+
   return rows.map(row => {
     const action: Partial<Action> = {};
-    if (row[0]) action.hp = row[0].trim();
-    if (row[1]) action.prediction = row[1].trim();
-    if (row[2]) action.charge = row[2].trim();
-    if (row[3]) action.guard = row[3].trim();
-    if (row[4]) action.action = row[4].trim();
-    if (row[5]) action.note = row[5].trim();
+
+    // 貼り付け開始位置から順にデータを割り当て
+    row.forEach((value, index) => {
+      const fieldIndex = adjustedStartIndex + index;
+      if (fieldIndex < fieldOrder.length) {
+        const field = fieldOrder[fieldIndex];
+        action[field] = value.trim();
+      }
+    });
+
     return action;
   });
 };
@@ -175,11 +204,19 @@ export const ActionCell: React.FC<ActionCellProps> = ({
 
     if (clipboardText.includes('\t')) {
       e.preventDefault();
-      const rows = parseTabSeparatedText(clipboardText);
-      console.log('Parsed rows:', rows);
-      const actions = convertToActions(rows);
-      console.log('Converted actions:', actions);
-      onPasteRows(actions);
+      try {
+        const rows = parseTabSeparatedText(clipboardText);
+        console.log('Parsed rows:', rows);
+        const actions = convertToActions(rows, field);
+        console.log('Converted actions:', actions);
+        onPasteRows(actions);
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message);
+        } else {
+          alert('貼り付け処理中にエラーが発生しました');
+        }
+      }
     }
   };
 
