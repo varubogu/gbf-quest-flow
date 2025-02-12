@@ -1,4 +1,6 @@
-function setTitle(title: string) {
+import useFlowStore from "@/stores/flowStore";
+
+export function setTitle(title: string) {
     const titleBase = "グラブル行動表";
     let newTitle;
     if (title) {
@@ -9,4 +11,11 @@ function setTitle(title: string) {
     document.title = newTitle;
 }
 
-export { setTitle };
+
+export async function loadSlugData(slug: string) {
+    const res = await fetch(`/content/flows/${slug}.json`);
+    const data = await res.json();
+    console.log(data);
+
+    useFlowStore.getState().setFlowData(data);
+}

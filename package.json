@@ -9,7 +9,7 @@
     "preview": "astro preview --host",
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
-    "postbuild": "cp -r src/content/flows dist/content"
+    "postbuild": "mkdir -p dist/content && cp -r src/content/flows dist/content/flows"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",

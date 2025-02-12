@@ -4,7 +4,7 @@ import { ActionTableContainer } from '@/components/organisms/ActionTableContaine
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import useFlowStore from '@/stores/flowStore';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
-import { setTitle } from '@/lib/functions';
+import { loadSlugData, setTitle } from '@/lib/functions';
 
 function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +24,13 @@ function FlowBodyLayoutReact() {
   }
 
   if (!flowData) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('d')) {
+      const slug = urlParams.get('d');
+      if (slug) {
+        loadSlugData(slug);
+      }
+    }
     return (
       <div className="min-h-screen flex items-center justify-center flex-col">
         <div className="text-lg mb-4">データが読み込まれていません</div>
