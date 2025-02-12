@@ -140,12 +140,12 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       <div className={`${gridClasses} bg-green-300 sticky ${isEditMode ? 'top-0' : 'top-12'} z-10 shadow-sm border-b border-gray-400 border-l border-r`}>
         <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium" />
         <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium" />
-        <ActionCell content="HP" isHeader />
-        <ActionCell content="予兆" isHeader />
-        <ActionCell content="奥義" isHeader />
-        <ActionCell content="ガード" isHeader />
-        <ActionCell content="行動" isHeader />
-        <ActionCell content="備考" isHeader />
+        <ActionCell content="HP" isHeader alignment="right" />
+        <ActionCell content="予兆" isHeader alignment="left" />
+        <ActionCell content="奥義" isHeader alignment="center" />
+        <ActionCell content="ガード" isHeader alignment="center" />
+        <ActionCell content="行動" isHeader alignment="left" />
+        <ActionCell content="備考" isHeader alignment="left" />
       </div>
 
       {/* データ部分 */}
@@ -188,36 +188,42 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "hp", value)}
+              alignment="right"
             />
             <ActionCell
               content={row.prediction}
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "prediction", value)}
+              alignment="left"
             />
             <ActionCell
               content={row.charge}
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "charge", value)}
+              alignment="center"
             />
             <ActionCell
               content={row.guard}
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "guard", value)}
+              alignment="center"
             />
             <ActionCell
               content={row.action}
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "action", value)}
+              alignment="left"
             />
             <ActionCell
               content={row.note}
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "note", value)}
+              alignment="left"
             />
           </div>
         ))}

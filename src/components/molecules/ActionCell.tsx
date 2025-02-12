@@ -9,6 +9,7 @@ interface ActionCellProps {
   isHeader?: boolean
   isEditable?: boolean
   onChange?: (value: string) => void
+  alignment?: "left" | "center" | "right"
 }
 
 export const ActionCell: React.FC<ActionCellProps> = ({
@@ -17,6 +18,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   isHeader = false,
   isEditable = false,
   onChange,
+  alignment = "left",
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(content);
@@ -73,13 +75,20 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     adjustTextareaHeight();
   };
 
+  const alignmentClasses = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+  };
+
   return (
     <div
       className={cn(
         "px-3 py-2 border-b border-r border-gray-400",
         isHeader ? "bg-muted font-medium" : "bg-background",
         isCurrentRow && "bg-accent",
-        !isHeader && "cursor-text"
+        !isHeader && "cursor-text",
+        alignmentClasses[alignment]
       )}
       onClick={handleClick}
     >
@@ -92,13 +101,14 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           onKeyDown={handleKeyDown}
           className={cn(
             "w-full bg-white border rounded px-1 resize-none overflow-hidden",
-            "text-sm leading-normal font-normal"
+            "text-sm leading-normal font-normal",
+            alignmentClasses[alignment]
           )}
           rows={1}
         />
       ) : (
         <Text variant={isHeader ? "default" : isCurrentRow ? "default" : "dimmed"}>
-          <pre className="whitespace-pre-wrap font-sans text-sm leading-normal">{content}</pre>
+          <pre className={cn("whitespace-pre-wrap font-sans text-sm leading-normal", alignmentClasses[alignment])}>{content}</pre>
         </Text>
       )}
     </div>
