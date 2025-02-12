@@ -3,12 +3,11 @@ import { getCollection } from "astro:content";
 // Reactコンポーネントとして描画
 import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
+import useFlowStore from "@/stores/flowStore";
+
 
 export async function getStaticPaths() {
-    console.log("getStaticPaths");
     const entries = await getCollection("flows");
-    console.log("entries");
-    console.log(entries);
 
     return entries.map((entry) => {
         const filename = entry.id.split("/").pop();
@@ -26,19 +25,24 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 
-const dataStr = JSON.stringify(entry.data);
+
+// クライアントサイドでストアに初期データをセット
+useFlowStore.getState().setFlowData(entry.data);
 ---
 
 <FlowBaseLayout>
-    <FlowBodyLayout client:only="react" />
+    <FlowBodyLayout client:load />
 </FlowBaseLayout>
 
-<script type="module" lang="ts">
+<script is:inline type="module">
     import useFlowStore from "@/stores/flowStore";
+    async function initData() {
+        const res = await fetch("/content/flows/sample.json");
+        const data = await res.json();
+        console.log(data);
 
-
-    // クライアントサイドでストアに初期データをセット
-    const initialData = { ...JSON.parse(dataStr) };
-    console.log(initialData);
-    useFlowStore.getState().setFlowData(initialData);
+        useFlowStore.getState().setFlowData(data);
+    }
+    initData();
 </script>
+

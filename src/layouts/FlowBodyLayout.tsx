@@ -4,6 +4,7 @@ import { ActionTableContainer } from '@/components/organisms/ActionTableContaine
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import useFlowStore from '@/stores/flowStore';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
+import { setTitle } from '@/lib/functions';
 
 function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,8 @@ function FlowBodyLayoutReact() {
       </div>
     );
   }
+
+  setTitle(flowData.title);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

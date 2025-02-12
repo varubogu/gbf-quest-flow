@@ -1,12 +1,11 @@
 ---
-// Reactコンポーネントとして描画
-import FlowBaseLayout from "@/layouts/FlowBaseLayout";
+import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
 
 ---
 
-<FlowBaseLayout client:load>
-  <FlowBodyLayout client:only="react" />
+<FlowBaseLayout>
+  <FlowBodyLayout client:load />
 </FlowBaseLayout>
 
 <script>
