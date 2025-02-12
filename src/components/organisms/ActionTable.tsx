@@ -21,6 +21,7 @@ interface ActionTableProps {
   onCellEdit?: (rowIndex: number, field: keyof Action, value: string) => void
   onDeleteRow?: (rowIndex: number) => void
   onAddRow?: (rowIndex: number) => void
+  onPasteRows: (rowIndex: number, rows: Partial<Action>[]) => void
 }
 
 export const ActionTable: React.FC<ActionTableProps> = ({
@@ -34,6 +35,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   onCellEdit,
   onDeleteRow,
   onAddRow,
+  onPasteRows,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -115,6 +117,18 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     if (onCellEdit) {
       onCellEdit(rowIndex, field, value);
     }
+  };
+
+  const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
+    if (!onCellEdit || !onAddRow) return;
+
+    console.log('=== Paste Event Debug ===');
+    console.log('Starting row index:', rowIndex);
+    console.log('Pasted data:', rows);
+    console.log('Current data length:', data.length);
+
+    // 貼り付けられたデータを直接親コンポーネントに渡す
+    onPasteRows(rowIndex, rows);
   };
 
   return (
@@ -202,6 +216,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "hp", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="hp"
               alignment="right"
             />
             <ActionCell
@@ -209,6 +225,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "prediction", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="prediction"
               alignment="left"
             />
             <ActionCell
@@ -216,6 +234,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "charge", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="charge"
               alignment="center"
             />
             <ActionCell
@@ -223,6 +243,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "guard", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="guard"
               alignment="center"
             />
             <ActionCell
@@ -230,6 +252,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "action", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="action"
               alignment="left"
             />
             <ActionCell
@@ -237,6 +261,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               isCurrentRow={!isEditMode && index === currentRow}
               isEditable={isEditMode}
               onChange={(value) => handleCellChange(index, "note", value)}
+              onPasteRows={(rows) => handlePasteRows(index, rows)}
+              field="note"
               alignment="left"
             />
           </div>

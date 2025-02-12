@@ -4,18 +4,21 @@ import type { Action } from "@/types/models";
 import useFlowStore from "@/stores/flowStore";
 
 interface ActionTableContainerProps {
-  data: Action[];
   buttonPosition: "left" | "right";
   isEditMode?: boolean;
 }
 
 export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
-  data,
   buttonPosition,
   isEditMode = false,
 }) => {
   const { currentRow, setCurrentRow } = useFlowStore();
   const { flowData, setFlowData } = useFlowStore();
+
+  // flowDataが存在しない場合は何も表示しない
+  if (!flowData) {
+    return null;
+  }
 
   const handleRowSelect = (index: number) => {
     setCurrentRow(index);
@@ -27,22 +30,78 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
   };
 
   const handleMoveDown = () => {
-    if (currentRow < data.length - 1) setCurrentRow(currentRow + 1);
+    if (currentRow < flowData.flow.length - 1) setCurrentRow(currentRow + 1);
   };
 
   const handleCellEdit = (rowIndex: number, field: keyof Action, value: string) => {
     if (!flowData) return;
 
+    console.log('=== Cell Edit Debug ===');
+    console.log('Updating:', { rowIndex, field, value });
+    console.log('Current flowData:', flowData);
+
+    // 新しいflowデータを作成
     const newFlow = [...flowData.flow];
     newFlow[rowIndex] = {
       ...newFlow[rowIndex],
       [field]: value,
     };
 
-    setFlowData({
+    // 完全な新しいflowDataオブジェクトを作成して更新
+    const newFlowData = {
       ...flowData,
       flow: newFlow,
+    };
+
+    console.log('New flowData:', newFlowData);
+    setFlowData(newFlowData);
+  };
+
+  const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
+    if (!flowData) return;
+
+    console.log('=== Paste Rows Debug ===');
+    console.log('Starting paste operation at row:', rowIndex);
+    console.log('Current flowData:', flowData);
+    console.log('Rows to paste:', rows);
+
+    // 現在のフローデータをコピー
+    const newFlow = [...flowData.flow];
+
+    // 貼り付けるデータを適用
+    rows.forEach((row, i) => {
+      const targetIndex = rowIndex + i;
+      // 必要に応じて新しい行を作成
+      while (targetIndex >= newFlow.length) {
+        newFlow.push({
+          hp: "",
+          prediction: "",
+          charge: "",
+          guard: "",
+          action: "",
+          note: "",
+        });
+      }
+
+      // 既存の行データを保持しつつ、新しいデータで上書き
+      newFlow[targetIndex] = {
+        hp: row.hp ?? newFlow[targetIndex].hp ?? "",
+        prediction: row.prediction ?? newFlow[targetIndex].prediction ?? "",
+        charge: row.charge ?? newFlow[targetIndex].charge ?? "",
+        guard: row.guard ?? newFlow[targetIndex].guard ?? "",
+        action: row.action ?? newFlow[targetIndex].action ?? "",
+        note: row.note ?? newFlow[targetIndex].note ?? "",
+      };
     });
+
+    // 新しいflowDataオブジェクトを作成して一度に更新
+    const newFlowData = {
+      ...flowData,
+      flow: newFlow,
+    };
+
+    console.log('New flowData after paste:', newFlowData);
+    setFlowData(newFlowData);
   };
 
   const handleDeleteRow = (rowIndex: number) => {
@@ -94,7 +153,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
 
   return (
     <ActionTable
-      data={data}
+      data={flowData.flow}
       currentRow={currentRow}
       buttonPosition={buttonPosition}
       onMoveUp={handleMoveUp}
@@ -104,6 +163,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       onCellEdit={handleCellEdit}
       onDeleteRow={handleDeleteRow}
       onAddRow={handleAddRow}
+      onPasteRows={handlePasteRows}
     />
   );
 };
