@@ -8,6 +8,7 @@ interface HistoryState {
 
 interface FlowStore {
   flowData: Flow | null
+  originalData: Flow | null // 編集前のデータを保持
   setFlowData: (newData: Flow | null) => void
   updateFlowData: (update: Partial<Flow>) => void
   loadFlowFromFile: () => Promise<void>
@@ -21,10 +22,13 @@ interface FlowStore {
   undo: () => void
   redo: () => void
   clearHistory: () => void
+  // 編集キャンセル用の関数
+  cancelEdit: () => void
 }
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
+  originalData: null,
   currentRow: 0,
   isEditMode: false,
   history: { past: [], future: [] },
@@ -32,9 +36,14 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   setCurrentRow: (row: number) => set({ currentRow: row }),
 
   setIsEditMode: (isEdit: boolean) => {
+    const { flowData } = get();
+    if (isEdit && flowData) {
+      // 編集モード開始時に現在のデータを保存
+      set({ originalData: structuredClone(flowData) });
+    }
     if (!isEdit) {
       // 編集モード終了時に履歴をクリア
-      set({ history: { past: [], future: [] } });
+      set({ history: { past: [], future: [] }, originalData: null });
     }
     set({ isEditMode: isEdit });
   },
@@ -97,6 +106,18 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
   clearHistory: () => {
     set({ history: { past: [], future: [] } });
+  },
+
+  cancelEdit: () => {
+    const { originalData } = get();
+    if (originalData) {
+      set({
+        flowData: structuredClone(originalData),
+        isEditMode: false,
+        history: { past: [], future: [] },
+        originalData: null,
+      });
+    }
   },
 
   loadFlowFromFile: async () => {

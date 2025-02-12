@@ -18,9 +18,11 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const flowData = useFlowStore((state) => state.flowData);
+  const originalData = useFlowStore((state) => state.originalData);
   const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
+  const cancelEdit = useFlowStore((state) => state.cancelEdit);
 
   const [menuView, setMenuView] = useState<"menu" | "options">("menu");
   const [language, setLanguage] = useState("日本語");
@@ -28,8 +30,9 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
 
   const menuItems = [
     { id: "load", label: "データ読み込み" },
-    { id: "download", label: "データダウンロード" },
-    { id: "edit", label: isEditMode ? "保存" : "編集" },
+    { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード" },
+    { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集" },
+    ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル" }] : []),
     { id: "party", label: "編成確認" },
     { id: "info", label: "その他の情報" },
     { id: "options", label: "オプション" },
@@ -55,10 +58,16 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
           break;
         }
 
-        const json = JSON.stringify(flowData, null, 2);
+        const dataToDownload = isEditMode ? originalData : flowData;
+        if (!dataToDownload) {
+          alert("ダウンロードするデータがありません。");
+          break;
+        }
+
+        const json = JSON.stringify(dataToDownload, null, 2);
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        const filename = `${flowData.title}.json`;
+        const filename = `${dataToDownload.title}.json`;
 
         const a = document.createElement("a");
         a.href = url;
@@ -75,6 +84,12 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
           setIsEditMode(true);
         }
         setIsOpen(false);
+        break;
+      case "cancel":
+        if (confirm("編集内容を破棄してよろしいですか？")) {
+          cancelEdit();
+          setIsOpen(false);
+        }
         break;
       case "party":
         alert("編成確認を開きます。");
