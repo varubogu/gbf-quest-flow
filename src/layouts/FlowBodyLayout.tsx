@@ -78,7 +78,7 @@ function FlowBodyLayoutReact() {
             type="text"
             value={flowData.title}
             onChange={handleTitleChange}
-            className="ml-4 text-lg font-medium bg-white border rounded px-2"
+            className="ml-4 flex-1 text-lg font-medium bg-white border rounded px-2"
           />
         ) : (
           <h1 className="ml-4 text-lg font-medium">{flowData.title}</h1>
@@ -89,15 +89,15 @@ function FlowBodyLayoutReact() {
           <PanelGroup direction="vertical">
             <Panel defaultSize={50} minSize={10}>
               <div className="h-full overflow-auto">
-                <div className="p-4">
+                <div className="p-4 h-full">
                   {isEditMode ? (
                     <textarea
                       value={flowData.always}
                       onChange={handleAlwaysChange}
-                      className="w-full h-[calc(100vh-12rem)] p-2 bg-white border rounded resize-none"
+                      className="w-full h-full p-2 bg-white border rounded resize-none"
                     />
                   ) : (
-                    <pre className="whitespace-pre-wrap">{flowData.always}</pre>
+                    <pre className="whitespace-pre-wrap h-full">{flowData.always}</pre>
                   )}
                 </div>
               </div>
