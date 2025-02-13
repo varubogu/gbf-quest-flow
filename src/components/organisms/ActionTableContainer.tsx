@@ -178,7 +178,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     <ActionTable
       data={data ?? flowData.flow}
       currentRow={currentRow}
-      buttonPosition={settings.buttonAlignment === "右" ? "right" : "left"}
+      buttonPosition={settings.buttonAlignment === "左" ? "left" : "right"}
       onMoveUp={handleMoveUp}
       onMoveDown={handleMoveDown}
       onRowSelect={handleRowSelect}

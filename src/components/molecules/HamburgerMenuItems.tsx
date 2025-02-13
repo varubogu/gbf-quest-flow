@@ -203,23 +203,23 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                   <input
                     type="radio"
                     name="buttonAlignment"
-                    value="右"
-                    checked={settings.buttonAlignment === "右"}
-                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
-                    className="form-radio"
-                  />
-                  <span className="ml-2">右</span>
-                </label>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="buttonAlignment"
                     value="左"
                     checked={settings.buttonAlignment === "左"}
                     onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
                     className="form-radio"
                   />
                   <span className="ml-2">左</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="buttonAlignment"
+                    value="右"
+                    checked={settings.buttonAlignment === "右"}
+                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
+                    className="form-radio"
+                  />
+                  <span className="ml-2">右</span>
                 </label>
               </div>
             </div>
