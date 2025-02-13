@@ -1,6 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -62,9 +63,9 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2">カテゴリ</th>
-            <th className="border p-2">召喚石名</th>
-            <th className="border p-2">解説</th>
+            <th className="border p-2 w-24">カテゴリ</th>
+            <th className="border p-2 w-40">召喚石名</th>
+            <th className="border p-2 min-w-[300px]">解説</th>
           </tr>
         </thead>
         <tbody>
@@ -77,7 +78,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   type="text"
                   value={flowData.organization.summon.main.name}
                   onChange={(e) => handleSummonChange('main', null, 'name', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textInputBaseStyle}
                 />
               ) : (
                 flowData.organization.summon.main.name
@@ -88,7 +89,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 <textarea
                   value={flowData.organization.summon.main.note}
                   onChange={(e) => handleSummonChange('main', null, 'note', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.summon.main.note.split('\n').map((line, i) => (
@@ -110,7 +111,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   type="text"
                   value={flowData.organization.summon.friend.name}
                   onChange={(e) => handleSummonChange('friend', null, 'name', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textInputBaseStyle}
                 />
               ) : (
                 flowData.organization.summon.friend.name
@@ -121,7 +122,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 <textarea
                   value={flowData.organization.summon.friend.note}
                   onChange={(e) => handleSummonChange('friend', null, 'note', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.summon.friend.note.split('\n').map((line, i) => (
@@ -148,7 +149,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                     type="text"
                     value={summon.name}
                     onChange={(e) => handleSummonChange('other', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   summon.name
@@ -159,7 +160,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={summon.note}
                     onChange={(e) => handleSummonChange('other', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   summon.note.split('\n').map((line, i) => (
@@ -187,7 +188,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                     type="text"
                     value={summon.name}
                     onChange={(e) => handleSummonChange('sub', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   summon.name
@@ -198,7 +199,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={summon.note}
                     onChange={(e) => handleSummonChange('sub', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   summon.note.split('\n').map((line, i) => (

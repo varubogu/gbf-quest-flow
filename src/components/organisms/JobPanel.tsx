@@ -1,6 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface JobPanelProps {
   isEditing: boolean;
@@ -66,7 +67,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           <tr className="bg-gray-100">
             <th className="border p-2 w-24">項目</th>
             <th className="border p-2 w-40">名前</th>
-            <th className="border p-2">解説</th>
+            <th className="border p-2 min-w-[300px]">解説</th>
           </tr>
         </thead>
         <tbody>
@@ -79,7 +80,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                   type="text"
                   value={flowData.organization.job.name}
                   onChange={(e) => handleJobChange('name', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textInputBaseStyle}
                 />
               ) : (
                 flowData.organization.job.name
@@ -87,11 +88,10 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             </td>
             <td className="border p-2">
               {isEditing ? (
-                <input
-                  type="text"
+                <textarea
                   value={flowData.organization.job.note}
                   onChange={(e) => handleJobChange('note', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.job.note
@@ -107,7 +107,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                   type="text"
                   value={flowData.organization.job.equipment.name}
                   onChange={(e) => handleEquipmentChange('name', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textInputBaseStyle}
                 />
               ) : (
                 flowData.organization.job.equipment.name
@@ -115,11 +115,10 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             </td>
             <td className="border p-2">
               {isEditing ? (
-                <input
-                  type="text"
+                <textarea
                   value={flowData.organization.job.equipment.note}
                   onChange={(e) => handleEquipmentChange('note', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.job.equipment.note
@@ -140,7 +139,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                     type="text"
                     value={ability.name}
                     onChange={(e) => handleAbilityChange(index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   ability.name
@@ -148,11 +147,10 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
               </td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <textarea
                     value={ability.note}
                     onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   ability.note

@@ -38,3 +38,6 @@ export const IconTextButton = React.forwardRef<HTMLButtonElement, IconTextButton
 )
 
 IconTextButton.displayName = "IconTextButton"
+
+export const textInputBaseStyle = "w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[1.5rem]";
+export const textareaBaseStyle = "w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]";

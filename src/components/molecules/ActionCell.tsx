@@ -3,6 +3,7 @@ import { cn } from "@/utils/cn"
 import { Text } from "../atoms/Text"
 import { useState, useRef, useEffect } from "react"
 import type { Action } from "@/types/models"
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface ActionCellProps {
   content: string
@@ -236,7 +237,8 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           className={cn(
             "w-full bg-white border rounded px-1 resize-none overflow-hidden",
             "text-sm leading-normal font-normal",
-            alignmentClasses[alignment]
+            alignmentClasses[alignment],
+            isHeader ? textInputBaseStyle : textareaBaseStyle
           )}
           rows={1}
         />

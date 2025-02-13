@@ -1,6 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon } from '@/types/models';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -56,10 +57,10 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2">カテゴリ</th>
-            <th className="border p-2">武器名</th>
-            <th className="border p-2">追加スキル</th>
-            <th className="border p-2">解説</th>
+            <th className="border p-2 w-24">カテゴリ</th>
+            <th className="border p-2 w-40">武器名</th>
+            <th className="border p-2 min-w-[200px]">追加スキル</th>
+            <th className="border p-2 min-w-[300px]">解説</th>
           </tr>
         </thead>
         <tbody>
@@ -72,7 +73,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   type="text"
                   value={flowData.organization.weapon.main.name}
                   onChange={(e) => handleWeaponChange('main', null, 'name', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textInputBaseStyle}
                 />
               ) : (
                 flowData.organization.weapon.main.name
@@ -83,7 +84,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 <textarea
                   value={flowData.organization.weapon.main.additionalSkill}
                   onChange={(e) => handleWeaponChange('main', null, 'additionalSkill', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.weapon.main.additionalSkill.split('\n').map((line, i) => (
@@ -99,7 +100,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 <textarea
                   value={flowData.organization.weapon.main.note}
                   onChange={(e) => handleWeaponChange('main', null, 'note', e.target.value)}
-                  className="border p-1 w-full"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.weapon.main.note.split('\n').map((line, i) => (
@@ -126,7 +127,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                     type="text"
                     value={weapon.name}
                     onChange={(e) => handleWeaponChange('other', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   weapon.name
@@ -137,7 +138,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={weapon.additionalSkill}
                     onChange={(e) => handleWeaponChange('other', index, 'additionalSkill', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   weapon.additionalSkill.split('\n').map((line, i) => (
@@ -153,7 +154,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={weapon.note}
                     onChange={(e) => handleWeaponChange('other', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   weapon.note.split('\n').map((line, i) => (
@@ -181,7 +182,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                     type="text"
                     value={weapon.name}
                     onChange={(e) => handleWeaponChange('additional', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   weapon.name
@@ -192,7 +193,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={weapon.additionalSkill}
                     onChange={(e) => handleWeaponChange('additional', index, 'additionalSkill', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   weapon.additionalSkill.split('\n').map((line, i) => (
@@ -208,7 +209,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     value={weapon.note}
                     onChange={(e) => handleWeaponChange('additional', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   weapon.note.split('\n').map((line, i) => (

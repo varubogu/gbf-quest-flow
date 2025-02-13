@@ -1,6 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface CharacterPanelProps {
   isEditing: boolean;
@@ -38,12 +39,12 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2">ポジション</th>
-            <th className="border p-2">キャラ</th>
-            <th className="border p-2">用途</th>
-            <th className="border p-2">覚醒</th>
-            <th className="border p-2">指輪・耳飾り</th>
-            <th className="border p-2">LB</th>
+            <th className="border p-2 w-24">ポジション</th>
+            <th className="border p-2 w-40">キャラ</th>
+            <th className="border p-2 min-w-[300px]">用途</th>
+            <th className="border p-2 w-20">覚醒</th>
+            <th className="border p-2 min-w-[200px]">指輪・耳飾り</th>
+            <th className="border p-2 min-w-[200px]">LB</th>
           </tr>
         </thead>
         <tbody>
@@ -61,7 +62,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                     type="text"
                     value={char.name}
                     onChange={(e) => handleMemberChange('front', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   char.name
@@ -72,7 +73,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     value={char.note}
                     onChange={(e) => handleMemberChange('front', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.note.split('\n').map((line, i) => (
@@ -89,7 +90,8 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                     type="text"
                     value={char.awaketype}
                     onChange={(e) => handleMemberChange('front', index, 'awaketype', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
+                    maxLength={4}
                   />
                 ) : (
                   char.awaketype
@@ -97,11 +99,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               </td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <textarea
                     value={char.accessories}
                     onChange={(e) => handleMemberChange('front', index, 'accessories', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.accessories
@@ -109,11 +110,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               </td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <textarea
                     value={char.limitBonus}
                     onChange={(e) => handleMemberChange('front', index, 'limitBonus', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.limitBonus
@@ -135,7 +135,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                     type="text"
                     value={char.name}
                     onChange={(e) => handleMemberChange('back', index, 'name', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
                   />
                 ) : (
                   char.name
@@ -146,7 +146,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     value={char.note}
                     onChange={(e) => handleMemberChange('back', index, 'note', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.note.split('\n').map((line, i) => (
@@ -163,7 +163,8 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                     type="text"
                     value={char.awaketype}
                     onChange={(e) => handleMemberChange('back', index, 'awaketype', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textInputBaseStyle}
+                    maxLength={4}
                   />
                 ) : (
                   char.awaketype
@@ -171,11 +172,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               </td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <textarea
                     value={char.accessories}
                     onChange={(e) => handleMemberChange('back', index, 'accessories', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.accessories
@@ -183,11 +183,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               </td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <textarea
                     value={char.limitBonus}
                     onChange={(e) => handleMemberChange('back', index, 'limitBonus', e.target.value)}
-                    className="border p-1 w-full"
+                    className={textareaBaseStyle}
                   />
                 ) : (
                   char.limitBonus

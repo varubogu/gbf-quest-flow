@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
 import useFlowStore from '@/stores/flowStore';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           type="text"
                           value={flowData.title || ''}
                           onChange={(e) => handleInfoChange('title', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textInputBaseStyle}
                         />
                       ) : (
                         flowData.title
@@ -68,7 +69,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           type="text"
                           value={flowData.quest || ''}
                           onChange={(e) => handleInfoChange('quest', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textInputBaseStyle}
                         />
                       ) : (
                         flowData.quest
@@ -83,7 +84,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           type="text"
                           value={flowData.author || ''}
                           onChange={(e) => handleInfoChange('author', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textInputBaseStyle}
                         />
                       ) : (
                         flowData.author
@@ -97,7 +98,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                         <textarea
                           value={flowData.description || ''}
                           onChange={(e) => handleInfoChange('description', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textareaBaseStyle}
                           rows={3}
                         />
                       ) : (
@@ -113,7 +114,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           type="datetime-local"
                           value={flowData.updateDate || ''}
                           onChange={(e) => handleInfoChange('updateDate', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textInputBaseStyle}
                         />
                       ) : (
                         flowData.updateDate
@@ -128,7 +129,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           type="url"
                           value={flowData.movie || ''}
                           onChange={(e) => handleInfoChange('movie', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textInputBaseStyle}
                         />
                       ) : (
                         flowData.movie && (
@@ -151,7 +152,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                         <textarea
                           value={flowData.note || ''}
                           onChange={(e) => handleInfoChange('note', e.target.value)}
-                          className="w-full p-1 border rounded"
+                          className={textareaBaseStyle}
                           rows={4}
                         />
                       ) : (
