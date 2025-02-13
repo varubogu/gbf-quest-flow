@@ -1,6 +1,8 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
+import type { WeaponSkillTotal } from '@/types/models';
+import { textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface SkillTotalPanelProps {
   isEditing: boolean;
@@ -11,6 +13,28 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
   const { flowData, updateFlowData } = useFlowStore();
 
   if (!flowData) return null;
+
+  const handleSkillTotalChange = (field: keyof WeaponSkillTotal, value: string) => {
+    if (!flowData) return;
+
+    const newSkillTotal = {
+      ...flowData.organization.weapon.main.skillTotal,
+      [field]: value
+    };
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        weapon: {
+          ...flowData.organization.weapon,
+          main: {
+            ...flowData.organization.weapon.main,
+            skillTotal: newSkillTotal
+          }
+        }
+      }
+    });
+  };
 
   return (
     <div>
@@ -28,22 +52,9 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillTotal.taRate)}
                   value={flowData.organization.weapon.main.skillTotal.taRate}
-                  onChange={(e) => updateFlowData({
-                    organization: {
-                      ...flowData.organization,
-                      weapon: {
-                        ...flowData.organization.weapon,
-                        main: {
-                          ...flowData.organization.weapon.main,
-                          skillTotal: {
-                            ...flowData.organization.weapon.main.skillTotal,
-                            taRate: e.target.value
-                          }
-                        }
-                      }
-                    }
-                  })}
+                  onChange={(e) => handleSkillTotalChange('taRate', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
                 />
               ) : (
@@ -61,22 +72,9 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillTotal.hp)}
                   value={flowData.organization.weapon.main.skillTotal.hp}
-                  onChange={(e) => updateFlowData({
-                    organization: {
-                      ...flowData.organization,
-                      weapon: {
-                        ...flowData.organization.weapon,
-                        main: {
-                          ...flowData.organization.weapon.main,
-                          skillTotal: {
-                            ...flowData.organization.weapon.main.skillTotal,
-                            hp: e.target.value
-                          }
-                        }
-                      }
-                    }
-                  })}
+                  onChange={(e) => handleSkillTotalChange('hp', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
                 />
               ) : (
@@ -94,22 +92,9 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillTotal.defense)}
                   value={flowData.organization.weapon.main.skillTotal.defense}
-                  onChange={(e) => updateFlowData({
-                    organization: {
-                      ...flowData.organization,
-                      weapon: {
-                        ...flowData.organization.weapon,
-                        main: {
-                          ...flowData.organization.weapon.main,
-                          skillTotal: {
-                            ...flowData.organization.weapon.main.skillTotal,
-                            defense: e.target.value
-                          }
-                        }
-                      }
-                    }
-                  })}
+                  onChange={(e) => handleSkillTotalChange('defense', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
                 />
               ) : (
