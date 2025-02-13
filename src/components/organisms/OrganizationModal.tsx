@@ -97,20 +97,145 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                       {/* ジョブ情報 */}
                       <div className="mb-8">
                         <h3 className="text-lg font-bold mb-4">ジョブ</h3>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div>
-                            <h4 className="font-bold">ジョブ</h4>
-                            {isEditMode ? (
-                              <input
-                                type="text"
-                                value={flowData.organization.job}
-                                onChange={(e) => handleJobChange(e.target.value)}
-                                className="border p-2 w-full"
-                              />
-                            ) : (
-                              <p>{flowData.organization.job}</p>
-                            )}
-                          </div>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full border">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th className="border p-2 w-24">項目</th>
+                                <th className="border p-2 w-40">名前</th>
+                                <th className="border p-2">解説</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* ジョブ行 */}
+                              <tr>
+                                <td className="border p-2">ジョブ</td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={flowData.organization.job}
+                                      onChange={(e) => handleJobChange(e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    flowData.organization.job
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="ダメアビで予兆解除を狙う"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "ダメアビで予兆解除を狙う"
+                                  )}
+                                </td>
+                              </tr>
+                              {/* 特殊装備行 */}
+                              <tr>
+                                <td className="border p-2">特殊装備</td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="ウロボロス"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "ウロボロス"
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="ヒット数、アビダメなど"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "ヒット数、アビダメなど"
+                                  )}
+                                </td>
+                              </tr>
+                              {/* アビリティ行 */}
+                              <tr>
+                                <td className="border p-2" rowSpan={3}>アビリティ</td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="シークレットトライアド"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "シークレットトライアド"
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="追撃数、刻印による火力貢献"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "追撃数、刻印による火力貢献"
+                                  )}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="ワイルドマギカ"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "ワイルドマギカ"
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="アビダメ、行動回数追加"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "アビダメ、行動回数追加"
+                                  )}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="クリアオール"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "クリアオール"
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      defaultValue="緑林檎解除、暗闇や連撃しないデバフ対処"
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    "緑林檎解除、暗闇や連撃しないデバフ対処"
+                                  )}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
 
