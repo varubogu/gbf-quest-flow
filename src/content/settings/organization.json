@@ -1,0 +1,20 @@
+{
+  "job": {
+    "abilities": 3
+  },
+  "member": {
+    "front": 3,
+    "back": 2
+  },
+  "weapon": {
+    "main": 1,
+    "other": 9,
+    "additional": 3
+  },
+  "summon": {
+    "main": 1,
+    "friend": 1,
+    "other": 4,
+    "sub": 2
+  }
+}

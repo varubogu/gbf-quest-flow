@@ -1,5 +1,7 @@
 import type { Flow } from "@/types/models"
+import type { OrganizationSettings } from "@/types/settings"
 import { create } from "zustand"
+import organizationSettings from "@/content/settings/organization.json"
 
 interface HistoryState {
   past: Flow[];
@@ -26,6 +28,95 @@ interface FlowStore {
   // 編集キャンセル用の関数
   cancelEdit: () => void
 }
+
+// データの個数を設定に合わせて調整する関数（不足分のみ追加）
+const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () => T): T[] => {
+  if (array.length < targetLength) {
+    // 不足分を追加
+    return [...array, ...Array(targetLength - array.length).fill(null).map(createEmpty)];
+  }
+  // 既存のデータはそのまま保持
+  return array;
+};
+
+// 組織データを設定に合わせて調整する関数（既存データは保持）
+const adjustOrganizationData = (organization: Flow['organization']): Flow['organization'] => {
+  const emptyMember = () => ({
+    name: "",
+    note: "",
+    awaketype: "",
+    accessories: "",
+    limitBonus: ""
+  });
+
+  const emptyWeapon = () => ({
+    name: "",
+    note: ""
+  });
+
+  const emptySummon = () => ({
+    name: "",
+    note: ""
+  });
+
+  const emptyAbility = () => ({
+    name: "",
+    note: ""
+  });
+
+  // 設定値と実際のデータ数の大きい方を使用
+  const getTargetLength = (current: number, setting: number) => Math.max(current, setting);
+
+  return {
+    ...organization,
+    job: {
+      ...organization.job,
+      abilities: adjustArrayLength(
+        organization.job.abilities,
+        getTargetLength(organization.job.abilities.length, organizationSettings.job.abilities),
+        emptyAbility
+      )
+    },
+    member: {
+      front: adjustArrayLength(
+        organization.member.front,
+        getTargetLength(organization.member.front.length, organizationSettings.member.front),
+        emptyMember
+      ),
+      back: adjustArrayLength(
+        organization.member.back,
+        getTargetLength(organization.member.back.length, organizationSettings.member.back),
+        emptyMember
+      )
+    },
+    weapon: {
+      ...organization.weapon,
+      other: adjustArrayLength(
+        organization.weapon.other,
+        getTargetLength(organization.weapon.other.length, organizationSettings.weapon.other),
+        emptyWeapon
+      ),
+      additional: adjustArrayLength(
+        organization.weapon.additional,
+        getTargetLength(organization.weapon.additional.length, organizationSettings.weapon.additional),
+        emptyWeapon
+      )
+    },
+    summon: {
+      ...organization.summon,
+      other: adjustArrayLength(
+        organization.summon.other,
+        getTargetLength(organization.summon.other.length, organizationSettings.summon.other),
+        emptySummon
+      ),
+      sub: adjustArrayLength(
+        organization.summon.sub,
+        getTargetLength(organization.summon.sub.length, organizationSettings.summon.sub),
+        emptySummon
+      )
+    }
+  };
+};
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
@@ -65,33 +156,34 @@ const useFlowStore = create<FlowStore>((set, get) => ({
             name: "",
             note: ""
           },
-          abilities: [
-            { name: "", note: "" },
-            { name: "", note: "" },
-            { name: "", note: "" }
-          ]
+          abilities: Array(organizationSettings.job.abilities).fill(null).map(() => ({ name: "", note: "" }))
         },
         member: {
-          front: [
-            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
-            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
-            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" }
-          ],
-          back: [
-            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
-            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" }
-          ]
+          front: Array(organizationSettings.member.front).fill(null).map(() => ({
+            name: "",
+            note: "",
+            awaketype: "",
+            accessories: "",
+            limitBonus: ""
+          })),
+          back: Array(organizationSettings.member.back).fill(null).map(() => ({
+            name: "",
+            note: "",
+            awaketype: "",
+            accessories: "",
+            limitBonus: ""
+          }))
         },
         weapon: {
           main: { name: "", note: "" },
-          other: Array(9).fill(null).map(() => ({ name: "", note: "" })),
-          additional: Array(3).fill(null).map(() => ({ name: "", note: "" }))
+          other: Array(organizationSettings.weapon.other).fill(null).map(() => ({ name: "", note: "" })),
+          additional: Array(organizationSettings.weapon.additional).fill(null).map(() => ({ name: "", note: "" }))
         },
         summon: {
           main: { name: "", note: "" },
           friend: { name: "", note: "" },
-          other: Array(4).fill(null).map(() => ({ name: "", note: "" })),
-          sub: Array(2).fill(null).map(() => ({ name: "", note: "" }))
+          other: Array(organizationSettings.summon.other).fill(null).map(() => ({ name: "", note: "" })),
+          sub: Array(organizationSettings.summon.sub).fill(null).map(() => ({ name: "", note: "" }))
         }
       },
       always: "",
@@ -114,11 +206,20 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
   setFlowData: (newData: Flow | null) => {
     const { isEditMode } = get();
-    if (isEditMode && newData) {
-      // 編集モード中は履歴に追加
-      get().pushToHistory(newData);
+    if (newData) {
+      // データの個数を調整
+      const adjustedData = {
+        ...newData,
+        organization: adjustOrganizationData(newData.organization)
+      };
+      if (isEditMode) {
+        // 編集モード中は履歴に追加
+        get().pushToHistory(adjustedData);
+      }
+      set({ flowData: adjustedData, currentRow: 0 });
+    } else {
+      set({ flowData: null, currentRow: 0 });
     }
-    set({ flowData: newData, currentRow: 0 });
   },
 
   updateFlowData: (update: Partial<Flow>) =>
@@ -217,7 +318,12 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
-      set({ flowData: data, currentRow: 0 });
+      // データの個数を調整してから設定
+      const adjustedData = {
+        ...data,
+        organization: adjustOrganizationData(data.organization)
+      };
+      set({ flowData: adjustedData, currentRow: 0 });
     } catch (error) {
       console.error('ファイルの読み込みに失敗しました:', error);
       throw error;
