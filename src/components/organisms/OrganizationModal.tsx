@@ -50,51 +50,50 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
 
   return (
     <HeadlessDialog open={isOpen} onClose={onClose}>
-      <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50">
         {/* オーバーレイ - クリックで閉じる */}
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" onClick={onClose} />
 
         {/* モーダルコンテンツ */}
-        <div className="flex min-h-screen items-center justify-center p-4">
-          <HeadlessDialog.Panel className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl mx-auto">
-            {/* 固定サイズのコンテナ */}
-            <div className="h-[80vh] md:h-[90vh] flex flex-col">
-              <HeadlessTab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
-                {/* ヘッダー部分 */}
-                <div className="flex-none p-4 border-b">
-                  <HeadlessTab.List className="flex space-x-1">
-                    <HeadlessTab className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }>
-                      ジョブ、キャラ、アビリティ
-                    </HeadlessTab>
-                    <HeadlessTab className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }>
-                      武器
-                    </HeadlessTab>
-                    <HeadlessTab className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }>
-                      召喚石
-                    </HeadlessTab>
-                    <HeadlessTab className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }>
-                      動画
-                    </HeadlessTab>
-                    <HeadlessTab className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }>
-                      スキル総合値
-                    </HeadlessTab>
-                  </HeadlessTab.List>
-                </div>
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <HeadlessDialog.Panel className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
+            <HeadlessTab.Group selectedIndex={selectedTab} onChange={setSelectedTab} className="h-full flex flex-col">
+              {/* ヘッダー部分 - 固定 */}
+              <div className="flex-none p-4 border-b bg-white">
+                <HeadlessTab.List className="flex space-x-1">
+                  <HeadlessTab className={({ selected }) =>
+                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                  }>
+                    ジョブ、キャラ、アビリティ
+                  </HeadlessTab>
+                  <HeadlessTab className={({ selected }) =>
+                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                  }>
+                    武器
+                  </HeadlessTab>
+                  <HeadlessTab className={({ selected }) =>
+                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                  }>
+                    召喚石
+                  </HeadlessTab>
+                  <HeadlessTab className={({ selected }) =>
+                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                  }>
+                    動画
+                  </HeadlessTab>
+                  <HeadlessTab className={({ selected }) =>
+                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                  }>
+                    スキル総合値
+                  </HeadlessTab>
+                </HeadlessTab.List>
+              </div>
 
-                {/* スクロール可能なコンテンツ領域 */}
-                <div className="flex-1 overflow-y-auto p-4">
-                  <HeadlessTab.Panels>
-                    <HeadlessTab.Panel>
+              {/* スクロール可能なコンテンツ領域 */}
+              <div className="flex-1 min-h-0">
+                <HeadlessTab.Panels className="h-full">
+                  <HeadlessTab.Panel className="h-full overflow-auto">
+                    <div className="p-4">
                       {/* ジョブ情報 */}
                       <div className="mb-8">
                         <h3 className="text-lg font-bold mb-4">ジョブ</h3>
@@ -270,19 +269,25 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                           </tbody>
                         </table>
                       </div>
-                    </HeadlessTab.Panel>
+                    </div>
+                  </HeadlessTab.Panel>
 
-                    <HeadlessTab.Panel>
+                  <HeadlessTab.Panel className="h-full overflow-auto">
+                    <div className="p-4">
                       <WeaponPanel isEditing={isEditMode} />
-                    </HeadlessTab.Panel>
+                    </div>
+                  </HeadlessTab.Panel>
 
-                    <HeadlessTab.Panel>
+                  <HeadlessTab.Panel className="h-full overflow-auto">
+                    <div className="p-4">
                       <SummonPanel isEditing={isEditMode} />
-                    </HeadlessTab.Panel>
+                    </div>
+                  </HeadlessTab.Panel>
 
-                    <HeadlessTab.Panel>
+                  <HeadlessTab.Panel className="h-full overflow-auto">
+                    <div className="p-4">
                       {/* 動画情報 */}
-                      <div className="p-4">
+                      <div>
                         <h3 className="text-lg font-bold mb-4">動画</h3>
                         {isEditMode ? (
                           <input
@@ -304,11 +309,13 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                           )
                         )}
                       </div>
-                    </HeadlessTab.Panel>
+                    </div>
+                  </HeadlessTab.Panel>
 
-                    <HeadlessTab.Panel>
+                  <HeadlessTab.Panel className="h-full overflow-auto">
+                    <div className="p-4">
                       {/* スキル総合値情報 */}
-                      <div className="p-4">
+                      <div>
                         <h3 className="text-lg font-bold mb-4">スキル総合値</h3>
                         <table className="min-w-full border">
                           <thead>
@@ -351,18 +358,18 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                           </tbody>
                         </table>
                       </div>
-                    </HeadlessTab.Panel>
-                  </HeadlessTab.Panels>
-                </div>
-              </HeadlessTab.Group>
+                    </div>
+                  </HeadlessTab.Panel>
+                </HeadlessTab.Panels>
+              </div>
+            </HeadlessTab.Group>
 
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
           </HeadlessDialog.Panel>
         </div>
       </div>
