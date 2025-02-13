@@ -4,8 +4,10 @@ import { WeaponPanel } from './WeaponPanel';
 import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel';
+import { SkillTotalPanel } from './SkillTotalPanel';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface OrganizationModalProps {
   isOpen: boolean;
@@ -122,49 +124,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                   <HeadlessTab.Panel className="h-full overflow-auto">
                     <div className="p-4">
                       {/* スキル総合値情報 */}
-                      <div>
-                        <h3 className="text-lg font-bold mb-4">{t('skillTotals')}</h3>
-                        <table className="min-w-full border">
-                          <thead>
-                            <tr className="bg-gray-100">
-                              <th className="border p-2">{t('skill')}</th>
-                              <th className="border p-2">{t('effectAmount')}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td className="border p-2">{t('taRate')}</td>
-                              <td className="border p-2">
-                                {isEditMode ? (
-                                  <input type="text" defaultValue="55" className="border p-1 w-full" />
-                                ) : (
-                                  "55"
-                                )}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="border p-2">{t('hp')}</td>
-                              <td className="border p-2">
-                                {isEditMode ? (
-                                  <input type="text" defaultValue="400" className="border p-1 w-full" />
-                                ) : (
-                                  "400"
-                                )}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="border p-2">{t('defense')}</td>
-                              <td className="border p-2">
-                                {isEditMode ? (
-                                  <input type="text" defaultValue="90（HP100時）" className="border p-1 w-full" />
-                                ) : (
-                                  "90（HP100時）"
-                                )}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                      <SkillTotalPanel isEditing={isEditMode} />
                     </div>
                   </HeadlessTab.Panel>
                 </HeadlessTab.Panels>

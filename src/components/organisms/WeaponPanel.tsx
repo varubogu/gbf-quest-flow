@@ -1,6 +1,6 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Weapon } from '@/types/models';
+import type { Weapon, WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleWeaponChange = (type: 'main' | 'other' | 'additional', index: number | null, field: keyof Weapon, value: string) => {
+  const handleWeaponChange = (type: 'main' | 'other' | 'additional', index: number | null, field: keyof Weapon, value: string | WeaponSkillEffect) => {
     if (!flowData) return;
 
     const newWeapon = {
@@ -52,6 +52,26 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
         weapon: newWeaponData
       }
     });
+  };
+
+  const handleSkillEffectChange = (type: 'main' | 'other' | 'additional', index: number | null, field: keyof WeaponSkillEffect, value: string) => {
+    if (!flowData) return;
+
+    let targetWeapon: Weapon;
+    if (type === 'main') {
+      targetWeapon = flowData.organization.weapon.main;
+    } else if (type === 'other') {
+      targetWeapon = flowData.organization.weapon.other[index!];
+    } else {
+      targetWeapon = flowData.organization.weapon.additional[index!];
+    }
+
+    const newSkillEffects = {
+      ...targetWeapon.skillEffects,
+      [field]: value
+    };
+
+    handleWeaponChange(type, index, 'skillEffects', newSkillEffects);
   };
 
   return (
@@ -247,9 +267,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">{t('taRate')}</td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input type="text" defaultValue="55" className="border p-1 w-full" />
+                  <textarea
+                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.taRate)}
+                    value={flowData.organization.weapon.main.skillEffects.taRate}
+                    onChange={(e) => handleSkillEffectChange('main', null, 'taRate', e.target.value)}
+                    className={textareaBaseStyle}
+                  />
                 ) : (
-                  "55"
+                  flowData.organization.weapon.main.skillEffects.taRate.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < flowData.organization.weapon.main.skillEffects.taRate.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
                 )}
               </td>
             </tr>
@@ -257,19 +287,39 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">HP</td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input type="text" defaultValue="400" className="border p-1 w-full" />
+                  <textarea
+                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.hp)}
+                    value={flowData.organization.weapon.main.skillEffects.hp}
+                    onChange={(e) => handleSkillEffectChange('main', null, 'hp', e.target.value)}
+                    className={textareaBaseStyle}
+                  />
                 ) : (
-                  "400"
+                  flowData.organization.weapon.main.skillEffects.hp.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < flowData.organization.weapon.main.skillEffects.hp.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
                 )}
               </td>
             </tr>
             <tr>
-              <td className="border p-2">防御</td>
+              <td className="border p-2">{t('defense')}</td>
               <td className="border p-2">
                 {isEditing ? (
-                  <input type="text" defaultValue="90（HP100時）" className="border p-1 w-full" />
+                  <textarea
+                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.defense)}
+                    value={flowData.organization.weapon.main.skillEffects.defense}
+                    onChange={(e) => handleSkillEffectChange('main', null, 'defense', e.target.value)}
+                    className={textareaBaseStyle}
+                  />
                 ) : (
-                  "90（HP100時）"
+                  flowData.organization.weapon.main.skillEffects.defense.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < flowData.organization.weapon.main.skillEffects.defense.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
                 )}
               </td>
             </tr>

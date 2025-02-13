@@ -31,8 +31,24 @@ const memberSchema = itemBaseSchema.extend({
     limitBonus: z.string(),
 });
 
+// 武器のスキル効果量のスキーマ
+const weaponSkillEffectSchema = z.object({
+    taRate: z.string(),
+    hp: z.string(),
+    defense: z.string(),
+});
+
+// 武器のスキル総合値のスキーマ
+const weaponSkillTotalSchema = z.object({
+    taRate: z.string(),
+    hp: z.string(),
+    defense: z.string(),
+});
+
 const weaponSchema = itemBaseSchema.extend({
     additionalSkill: z.string(),
+    skillEffects: weaponSkillEffectSchema,
+    skillTotal: weaponSkillTotalSchema,
 });
 
 const summonSchema = itemBaseSchema.extend({
@@ -83,6 +99,8 @@ const flowSchema = z.object({
 });
 
 // 型定義のエクスポート
+export type WeaponSkillEffect = z.infer<typeof weaponSkillEffectSchema>;
+export type WeaponSkillTotal = z.infer<typeof weaponSkillTotalSchema>;
 export type ItemBase = z.infer<typeof itemBaseSchema>;
 export type Member = z.infer<typeof memberSchema>;
 export type Weapon = z.infer<typeof weaponSchema>;

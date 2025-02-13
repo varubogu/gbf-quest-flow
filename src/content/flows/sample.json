@@ -75,70 +75,227 @@
         "main": {
           "name": "フェニー杖",
           "note": "火傷稼ぎ、回復、アビダメ",
-          "additionalSkill": ""
+          "additionalSkill": "",
+          "skillEffects": {
+            "taRate": "55",
+            "hp": "400",
+            "defense": "90（HP100時）"
+          },
+          "skillTotal": {
+            "taRate": "55\n神石加護で110",
+            "hp": "400\n神石加護で800",
+            "defense": "90（HP100時）\n神石加護で180"
+          }
         },
         "other": [
           {
             "name": "ミカ斧",
             "note": "与ダメ",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            },
+            "skillTotal": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            }
           },
           {
             "name": "ミカ斧",
             "note": "与ダメ\n極まると2本めが抜ける場合がある",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            },
+            "skillTotal": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            }
           },
           {
             "name": "リミパー剣",
             "note": "防御、特殊上限\nムゲン剣と合わせて剣4にする",
-            "additionalSkill": ""
-          },
-          {
-            "name": "リミパー剣",
-            "note": "防御、特殊上限",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            },
+            "skillTotal": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            }
           },
           {
             "name": "リミゼタ槍",
             "note": "ヒット数\n最低1、あれば最大3",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           },
           {
             "name": "クビラ槍",
             "note": "アビダメが多いので1は編成したい",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           },
           {
             "name": "終末（神）220↑",
             "note": "",
-            "additionalSkill": "通常上限\n極破"
+            "additionalSkill": "通常上限\n極破",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           },
           {
             "name": "極星剣",
             "note": "パー剣スキルのため剣。\nもし発動できてるなら杖の方が良い",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           },
           {
             "name": "ムゲン剣",
             "note": "",
-            "additionalSkill": "防御or特殊覚醒"
+            "additionalSkill": "防御or特殊覚醒",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           }
         ],
         "additional": [
           {
             "name": "ドラポンオリジン",
             "note": "与ダメ",
-            "additionalSkill": "神石神威\n無属性与ダメ"
+            "additionalSkill": "神石神威\n無属性与ダメ",
+            "skillEffects": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            },
+            "skillTotal": {
+              "taRate": "",
+              "hp": "",
+              "defense": ""
+            }
           },
           {
             "name": "サン刀",
             "note": "再行動時の回復\nデビル拳5凸、風ワールド琴で代用可能",
-            "additionalSkill": ""
+            "additionalSkill": "",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           },
           {
             "name": "オメガ杖",
             "note": "主、フェニー連撃のため杖必須",
-            "additionalSkill": "連撃、アビ上限、回復"
+            "additionalSkill": "連撃、アビ上限、回復",
+            "skillEffects": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            },
+            "skillTotal": {
+              "taRate": 0,
+              "hp": 0,
+              "defense": {
+                "value": 0,
+                "condition": ""
+              }
+            }
           }
         ]
       },
