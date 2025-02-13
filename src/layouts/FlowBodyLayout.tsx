@@ -8,6 +8,7 @@ import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData, setTitle } from '@/lib/functions';
 import { Sword, Info } from 'lucide-react';
 import { IconButton } from '@/components/atoms/IconButton';
+import { IconTextButton } from '@/components/atoms/IconTextButton';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
 
@@ -96,9 +97,10 @@ function FlowBodyLayoutReact() {
           <h1 className="ml-4 flex-1 text-lg font-medium">{flowData.title}</h1>
         )}
         <div className="flex gap-2">
-          <IconButton
+          <IconTextButton
             icon={Sword}
             label="編成確認"
+            text="編成"
             onClick={() => setIsOrganizationModalOpen(true)}
           />
           <IconButton
