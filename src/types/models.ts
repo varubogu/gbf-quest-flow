@@ -6,6 +6,24 @@ const itemBaseSchema = z.object({
     note: z.string(),
 });
 
+// ジョブのスキーマ
+const jobAbilitySchema = z.object({
+    name: z.string(),
+    note: z.string(),
+});
+
+const jobEquipmentSchema = z.object({
+    name: z.string(),
+    note: z.string(),
+});
+
+const jobSchema = z.object({
+    name: z.string(),
+    note: z.string(),
+    equipment: jobEquipmentSchema,
+    abilities: z.array(jobAbilitySchema),
+});
+
 // 編成メンバーのスキーマ
 const memberSchema = itemBaseSchema.extend({
     awaketype: z.string(),
@@ -22,7 +40,7 @@ const summonSchema = itemBaseSchema.extend({
 
 // 編成情報のスキーマ
 const organizationSchema = z.object({
-    job: z.string(),
+    job: jobSchema,
     member: z.object({
         front: z.array(memberSchema),
         back: z.array(memberSchema),
@@ -71,6 +89,9 @@ export type Summon = z.infer<typeof summonSchema>;
 export type Organization = z.infer<typeof organizationSchema>;
 export type Action = z.infer<typeof actionSchema>;
 export type Flow = z.infer<typeof flowSchema>;
+export type JobAbility = z.infer<typeof jobAbilitySchema>;
+export type JobEquipment = z.infer<typeof jobEquipmentSchema>;
+export type Job = z.infer<typeof jobSchema>;
 
 // スキーマのエクスポート
 export {
@@ -81,58 +102,7 @@ export {
     organizationSchema,
     actionSchema,
     flowSchema,
+    jobAbilitySchema,
+    jobEquipmentSchema,
+    jobSchema,
 };
-
-export interface JobAbility {
-  name: string;
-  note: string;
-}
-
-export interface JobEquipment {
-  name: string;
-  note: string;
-}
-
-export interface Job {
-  name: string;
-  note: string;
-  equipment: JobEquipment;
-  abilities: JobAbility[];
-}
-
-export interface Member {
-  name: string;
-  note: string;
-  awaketype: string;
-  accessories: string;
-  limitBonus: string;
-}
-
-export interface Organization {
-  job: Job;
-  member: {
-    front: Member[];
-    back: Member[];
-  };
-  weapon: {
-    main: Weapon;
-    other: Weapon[];
-    additional: Weapon[];
-  };
-  summon: {
-    main: Summon;
-    friend: Summon;
-    other: Summon[];
-    sub: Summon[];
-  };
-}
-
-export interface Flow {
-  title: string;
-  author: string;
-  description: string;
-  updateDate: string;
-  movie?: string;
-  note?: string;
-  organization: Organization;
-}
