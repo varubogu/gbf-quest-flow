@@ -2,12 +2,14 @@ import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { useTranslation } from 'react-i18next';
 
 interface WeaponPanelProps {
   isEditing: boolean;
 }
 
 export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
+  const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
   if (!flowData) return null;
@@ -57,16 +59,16 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2 w-24">カテゴリ</th>
-            <th className="border p-2 w-40">武器名</th>
-            <th className="border p-2 min-w-[200px]">追加スキル</th>
-            <th className="border p-2 min-w-[300px]">解説</th>
+            <th className="border p-2 w-24">{t('weaponCategory')}</th>
+            <th className="border p-2 w-40">{t('weaponName')}</th>
+            <th className="border p-2 min-w-[200px]">{t('weaponAdditionalSkill')}</th>
+            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* メイン武器 */}
           <tr>
-            <td className="border p-2">メイン</td>
+            <td className="border p-2">{t('weaponMain')}</td>
             <td className="border p-2">
               {isEditing ? (
                 <input
@@ -120,7 +122,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <tr key={`other-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.weapon.other.length}>
-                  通常武器
+                  {t('weaponNormal')}
                 </td>
               )}
               <td className="border p-2">
@@ -177,7 +179,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <tr key={`additional-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.weapon.additional.length}>
-                  追加武器
+                  {t('weaponAdditional')}
                 </td>
               )}
               <td className="border p-2">
@@ -232,17 +234,17 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       </table>
 
       <div className="mt-8">
-        <h3 className="text-lg font-bold mb-4">スキル効果量</h3>
+        <h3 className="text-lg font-bold mb-4">{t('skillEffects')}</h3>
         <table className="min-w-full border">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border p-2">スキル</th>
-              <th className="border p-2">効果量</th>
+              <th className="border p-2">{t('skill')}</th>
+              <th className="border p-2">{t('effectAmount')}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="border p-2">TA確率</td>
+              <td className="border p-2">{t('taRate')}</td>
               <td className="border p-2">
                 {isEditing ? (
                   <input type="text" defaultValue="55" className="border p-1 w-full" />

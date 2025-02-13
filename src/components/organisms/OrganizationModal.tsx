@@ -5,6 +5,7 @@ import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel';
 import useFlowStore from '@/stores/flowStore';
+import { useTranslation } from 'react-i18next';
 
 interface OrganizationModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface OrganizationModalProps {
 }
 
 export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
   const { flowData, isEditMode, updateFlowData } = useFlowStore();
 
@@ -33,27 +35,27 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                   <HeadlessTab className={({ selected }) =>
                     `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
                   }>
-                    ジョブ、キャラ、アビリティ
+                    {t('jobAndCharacters')}
                   </HeadlessTab>
                   <HeadlessTab className={({ selected }) =>
                     `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
                   }>
-                    武器
+                    {t('weapons')}
                   </HeadlessTab>
                   <HeadlessTab className={({ selected }) =>
                     `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
                   }>
-                    召喚石
+                    {t('summons')}
                   </HeadlessTab>
                   <HeadlessTab className={({ selected }) =>
                     `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
                   }>
-                    動画
+                    {t('video')}
                   </HeadlessTab>
                   <HeadlessTab className={({ selected }) =>
                     `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
                   }>
-                    スキル総合値
+                    {t('skillTotals')}
                   </HeadlessTab>
                 </HeadlessTab.List>
               </div>
@@ -65,13 +67,13 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                     <div className="p-4">
                       {/* ジョブ情報 */}
                       <div className="mb-8">
-                        <h3 className="text-lg font-bold mb-4">ジョブ</h3>
+                        <h3 className="text-lg font-bold mb-4">{t('job')}</h3>
                         <JobPanel isEditing={isEditMode} />
                       </div>
 
                       {/* キャラクター表 */}
                       <div>
-                        <h3 className="text-lg font-bold mb-4">キャラクター</h3>
+                        <h3 className="text-lg font-bold mb-4">{t('characters')}</h3>
                         <CharacterPanel isEditing={isEditMode} />
                       </div>
                     </div>
@@ -93,7 +95,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                     <div className="p-4">
                       {/* 動画情報 */}
                       <div>
-                        <h3 className="text-lg font-bold mb-4">動画</h3>
+                        <h3 className="text-lg font-bold mb-4">{t('video')}</h3>
                         {isEditMode ? (
                           <input
                             type="text"
@@ -121,17 +123,17 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                     <div className="p-4">
                       {/* スキル総合値情報 */}
                       <div>
-                        <h3 className="text-lg font-bold mb-4">スキル総合値</h3>
+                        <h3 className="text-lg font-bold mb-4">{t('skillTotals')}</h3>
                         <table className="min-w-full border">
                           <thead>
                             <tr className="bg-gray-100">
-                              <th className="border p-2">スキル</th>
-                              <th className="border p-2">効果量</th>
+                              <th className="border p-2">{t('skill')}</th>
+                              <th className="border p-2">{t('effectAmount')}</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td className="border p-2">TA確率</td>
+                              <td className="border p-2">{t('taRate')}</td>
                               <td className="border p-2">
                                 {isEditMode ? (
                                   <input type="text" defaultValue="55" className="border p-1 w-full" />
@@ -141,7 +143,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                               </td>
                             </tr>
                             <tr>
-                              <td className="border p-2">HP</td>
+                              <td className="border p-2">{t('hp')}</td>
                               <td className="border p-2">
                                 {isEditMode ? (
                                   <input type="text" defaultValue="400" className="border p-1 w-full" />
@@ -151,7 +153,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                               </td>
                             </tr>
                             <tr>
-                              <td className="border p-2">防御</td>
+                              <td className="border p-2">{t('defense')}</td>
                               <td className="border p-2">
                                 {isEditMode ? (
                                   <input type="text" defaultValue="90（HP100時）" className="border p-1 w-full" />

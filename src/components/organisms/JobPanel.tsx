@@ -2,12 +2,14 @@ import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { useTranslation } from 'react-i18next';
 
 interface JobPanelProps {
   isEditing: boolean;
 }
 
 export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
+  const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
   if (!flowData) return null;
@@ -65,15 +67,15 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2 w-24">項目</th>
-            <th className="border p-2 w-40">名前</th>
-            <th className="border p-2 min-w-[300px]">解説</th>
+            <th className="border p-2 w-24">{t('jobItem')}</th>
+            <th className="border p-2 w-40">{t('jobValue')}</th>
+            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* ジョブ行 */}
           <tr>
-            <td className="border p-2">ジョブ</td>
+            <td className="border p-2">{t('jobClass')}</td>
             <td className="border p-2">
               {isEditing ? (
                 <input
@@ -106,7 +108,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           </tr>
           {/* 特殊装備行 */}
           <tr>
-            <td className="border p-2">特殊装備</td>
+            <td className="border p-2">{t('jobMainHand')}</td>
             <td className="border p-2">
               {isEditing ? (
                 <input
@@ -142,7 +144,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <tr key={`ability-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.job.abilities.length}>
-                  アビリティ
+                  {t('characterAbilities')}
                 </td>
               )}
               <td className="border p-2">

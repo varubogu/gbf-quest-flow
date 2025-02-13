@@ -2,12 +2,14 @@ import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { useTranslation } from 'react-i18next';
 
 interface SummonPanelProps {
   isEditing: boolean;
 }
 
 export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
+  const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
   if (!flowData) return null;
@@ -63,15 +65,15 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2 w-24">カテゴリ</th>
-            <th className="border p-2 w-40">召喚石名</th>
-            <th className="border p-2 min-w-[300px]">解説</th>
+            <th className="border p-2 w-24">{t('summonCategory')}</th>
+            <th className="border p-2 w-40">{t('summonName')}</th>
+            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* メイン召喚石 */}
           <tr>
-            <td className="border p-2">メイン</td>
+            <td className="border p-2">{t('summonMain')}</td>
             <td className="border p-2">
               {isEditing ? (
                 <input
@@ -105,7 +107,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
           {/* フレンド召喚石 */}
           <tr>
-            <td className="border p-2">フレンド</td>
+            <td className="border p-2">{t('summonFriend')}</td>
             <td className="border p-2">
               {isEditing ? (
                 <input
@@ -142,7 +144,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             <tr key={`other-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.summon.other.length}>
-                  通常石
+                  {t('summonNormal')}
                 </td>
               )}
               <td className="border p-2">
@@ -182,7 +184,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             <tr key={`sub-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.summon.sub.length}>
-                  サブ
+                  {t('summonSub')}
                 </td>
               )}
               <td className="border p-2">

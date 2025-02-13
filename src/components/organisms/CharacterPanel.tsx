@@ -2,12 +2,14 @@ import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { useTranslation } from 'react-i18next';
 
 interface CharacterPanelProps {
   isEditing: boolean;
 }
 
 export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => {
+  const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
   if (!flowData) return null;
@@ -39,12 +41,12 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2 w-24">ポジション</th>
-            <th className="border p-2 w-40">キャラ</th>
-            <th className="border p-2 min-w-[300px]">用途</th>
-            <th className="border p-2 w-20">覚醒</th>
-            <th className="border p-2 min-w-[200px]">指輪・耳飾り</th>
-            <th className="border p-2 min-w-[200px]">LB</th>
+            <th className="border p-2 w-24">{t('characterPosition')}</th>
+            <th className="border p-2 w-40">{t('characterName')}</th>
+            <th className="border p-2 min-w-[300px]">{t('characterUsage')}</th>
+            <th className="border p-2 w-20">{t('characterAwakening')}</th>
+            <th className="border p-2 min-w-[200px]">{t('characterAccessories')}</th>
+            <th className="border p-2 min-w-[200px]">{t('characterLimitBonus')}</th>
           </tr>
         </thead>
         <tbody>
@@ -53,7 +55,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
             <tr key={`front-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.member.front.length}>
-                  フロント
+                  {t('characterFront')}
                 </td>
               )}
               <td className="border p-2">
@@ -129,7 +131,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
             <tr key={`back-${index}`}>
               {index === 0 && (
                 <td className="border p-2" rowSpan={flowData.organization.member.back.length}>
-                  サブ
+                  {t('characterBack')}
                 </td>
               )}
               <td className="border p-2">

@@ -1,6 +1,7 @@
 ---
 // グローバルスタイルを最初に読み込む
 import "@/styles/globals.css";
+import i18next from "i18next";
 
 interface Props {
 	title?: string;
@@ -10,15 +11,15 @@ interface Props {
 }
 
 const {
-	title = 'グラブル行動表',
-	description = 'グラブルのクエストフローを管理・共有するためのツール',
+	title = i18next.t('title'),
+	description = i18next.t('description'),
 	image = '/favicon.svg',  // OGP画像としてもfaviconを使用
 	canonicalURL = import.meta.env.PUBLIC_SITE_URL || process.env.PUBLIC_SITE_URL || new URL(Astro.url.pathname, Astro.site),
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="ja">
+<html lang={i18next.language}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

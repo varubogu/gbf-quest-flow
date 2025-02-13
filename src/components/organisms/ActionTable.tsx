@@ -3,6 +3,7 @@ import { ActionCell } from "../molecules/ActionCell"
 import { ChevronUp, ChevronDown, Plus, Minus } from "lucide-react"
 import { IconButton } from "../atoms/IconButton"
 import type { Action } from "@/types/models"
+import { useTranslation } from "react-i18next"
 
 // 編集モードに応じてグリッドレイアウトを切り替え
 const getGridClasses = (isEditMode: boolean) =>
@@ -37,6 +38,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   onAddRow,
   onPasteRows,
 }) => {
+  const { t } = useTranslation();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const lastWheelTimeRef = React.useRef(0);  // ホイールイベントの制限用
 
@@ -150,13 +152,13 @@ export const ActionTable: React.FC<ActionTableProps> = ({
           <div className={`flex gap-2 ${buttonPosition === "right" ? "ml-auto" : ""}`}>
             <IconButton
               icon={ChevronUp}
-              label="上に移動"
+              label={t('moveUp')}
               onClick={() => handleMove('up')}
               disabled={currentRow <= 0}
             />
             <IconButton
               icon={ChevronDown}
-              label="下に移動"
+              label={t('moveDown')}
               onClick={() => handleMove('down')}
               disabled={currentRow >= data.length - 1}
             />
@@ -179,12 +181,12 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             </div>
           </>
         )}
-        <ActionCell content="HP" isHeader alignment="right" />
-        <ActionCell content="予兆" isHeader alignment="left" />
-        <ActionCell content="奥義" isHeader alignment="center" />
-        <ActionCell content="ガード" isHeader alignment="center" />
-        <ActionCell content="行動" isHeader alignment="left" />
-        <ActionCell content="備考" isHeader alignment="left" />
+        <ActionCell content={t('hpColumn')} isHeader alignment="right" />
+        <ActionCell content={t('triggerColumn')} isHeader alignment="left" />
+        <ActionCell content={t('ougiColumn')} isHeader alignment="center" />
+        <ActionCell content={t('guardColumn')} isHeader alignment="center" />
+        <ActionCell content={t('actionColumn')} isHeader alignment="left" />
+        <ActionCell content={t('notesColumn')} isHeader alignment="left" />
       </div>
 
       {/* データ部分 */}
@@ -250,21 +252,19 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 alignment="right"
               />
               <ActionCell
-                content={row.prediction}
+                content={row.trigger}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "prediction", value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
-                field="prediction"
+                onChange={(value) => handleCellChange(index, "trigger", value)}
+                field="trigger"
                 alignment="left"
               />
               <ActionCell
-                content={row.charge}
+                content={row.ougi}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "charge", value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
-                field="charge"
+                onChange={(value) => handleCellChange(index, "ougi", value)}
+                field="ougi"
                 alignment="center"
               />
               <ActionCell
@@ -272,7 +272,6 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
                 onChange={(value) => handleCellChange(index, "guard", value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
                 field="guard"
                 alignment="center"
               />
@@ -281,23 +280,21 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
                 onChange={(value) => handleCellChange(index, "action", value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
                 field="action"
                 alignment="left"
               />
               <ActionCell
-                content={row.note}
+                content={row.notes}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "note", value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
-                field="note"
+                onChange={(value) => handleCellChange(index, "notes", value)}
+                field="notes"
                 alignment="left"
               />
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};

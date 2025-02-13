@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useTranslation } from "react-i18next";
 
 // Sheet の状態管理用のコンテキストを作成
 interface SheetContextValue {
@@ -69,6 +70,7 @@ export const SheetContent = ({
   side?: "left" | "right";
   children: React.ReactNode;
 }) => {
+  const { t } = useTranslation();
   const context = useContext(SheetContext);
   if (!context) throw new Error("SheetContent must be used within a Sheet");
 
@@ -112,7 +114,7 @@ export const SheetContent = ({
       <div className={sheetClasses}>
         <div className="p-4">
           <button onClick={closeSheet} className="mb-4">
-            閉じる
+            {t('close')}
           </button>
           {children}
         </div>
