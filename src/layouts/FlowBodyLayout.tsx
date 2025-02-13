@@ -12,8 +12,11 @@ import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
+import I18nProvider from '@/components/I18nProvider';
+import { useTranslation } from 'react-i18next';
 
-function FlowBodyLayoutReact() {
+function FlowContent() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
@@ -68,7 +71,7 @@ function FlowBodyLayoutReact() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('loading')}</div>
       </div>
     );
   }
@@ -83,7 +86,7 @@ function FlowBodyLayoutReact() {
     }
     return (
       <div className="min-h-screen flex items-center justify-center flex-col">
-        <div className="text-lg mb-4">データが読み込まれていません</div>
+        <div className="text-lg mb-4">{t('noDataLoaded')}</div>
         <div className="flex gap-4">
           <CreateFlowButton />
           <LoadFlowButton />
@@ -119,19 +122,19 @@ function FlowBodyLayoutReact() {
         <div className="flex gap-2">
           <IconTextButton
             icon={isMemoCollapsed ? Maximize2 : Minimize2}
-            label="メモを開閉します"
-            text="メモ開閉"
+            label={t('toggleMemo')}
+            text={t('memo')}
             onClick={handleMemoToggle}
           />
           <IconTextButton
             icon={Sword}
-            label="編成確認"
-            text="編成"
+            label={t('organization')}
+            text={t('organization')}
             onClick={() => setIsOrganizationModalOpen(true)}
           />
           <IconButton
             icon={Info}
-            label="その他の情報"
+            label={t('otherInfo')}
             onClick={() => setIsInfoModalOpen(true)}
           />
         </div>
@@ -177,6 +180,14 @@ function FlowBodyLayoutReact() {
         onClose={() => setIsInfoModalOpen(false)}
       />
     </div>
+  );
+}
+
+function FlowBodyLayoutReact() {
+  return (
+    <I18nProvider>
+      <FlowContent />
+    </I18nProvider>
   );
 }
 

@@ -20,12 +20,14 @@ import {
 } from "lucide-react";
 import useFlowStore from "@/stores/flowStore";
 import useSettingsStore from "@/stores/settingsStore";
+import { useTranslation } from "react-i18next";
 
 interface HamburgerMenuItemsProps {
   onSave?: () => void;
 }
 
 export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const flowData = useFlowStore((state) => state.flowData);
@@ -40,22 +42,22 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
   const { settings, updateSettings } = useSettingsStore();
 
   const menuItems = [
-    { id: "new", label: "新しいデータを作る", icon: FileText },
-    { id: "load", label: "データ読み込み", icon: FolderOpen },
+    { id: "new", label: t('newData'), icon: FileText },
+    { id: "load", label: t('loadData'), icon: FolderOpen },
     ...(flowData ? [
-      { id: "download", label: isEditMode ? "編集前のデータをダウンロード" : "データダウンロード", icon: Download },
-      { id: "edit", label: isEditMode ? "保存してダウンロード" : "編集", icon: isEditMode ? Save : Edit2 },
-      ...(isEditMode ? [{ id: "cancel", label: "編集をキャンセル", icon: XCircle }] : []),
+      { id: "download", label: isEditMode ? t('downloadOriginalData') : t('downloadData'), icon: Download },
+      { id: "edit", label: isEditMode ? t('save') : t('edit'), icon: isEditMode ? Save : Edit2 },
+      ...(isEditMode ? [{ id: "cancel", label: t('cancelEdit'), icon: XCircle }] : []),
     ] : []),
-    { id: "options", label: "オプション", icon: Settings },
-    { id: "help", label: "説明書", icon: HelpCircle },
+    { id: "options", label: t('options'), icon: Settings },
+    { id: "help", label: t('help'), icon: HelpCircle },
   ];
 
   const handleMenuClick = async (id: string) => {
     switch (id) {
       case "new":
         if (isEditMode) {
-          if (!confirm("編集内容を破棄してよろしいですか？")) {
+          if (!confirm(t('confirmDiscardChanges'))) {
             break;
           }
           cancelEdit();
@@ -66,7 +68,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
       case "load":
         try {
           if (isEditMode) {
-            if (!confirm("編集内容を破棄してよろしいですか？")) {
+            if (!confirm(t('confirmDiscardChanges'))) {
               break;
             }
             cancelEdit();
@@ -75,21 +77,21 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
           setIsLoading(true);
           await loadFlowFromFile();
         } catch (error) {
-          console.error('ファイルの読み込みに失敗しました:', error);
+          console.error(t('failedToLoadFile'), error);
         } finally {
           setIsLoading(false);
-          setIsOpen(false); // メニューを閉じる
+          setIsOpen(false);
         }
         break;
       case "download":
         if (!flowData) {
-          alert("ダウンロードするデータがありません。");
+          alert(t('noDataToDownload'));
           break;
         }
 
         const dataToDownload = isEditMode ? originalData : flowData;
         if (!dataToDownload) {
-          alert("ダウンロードするデータがありません。");
+          alert(t('noDataToDownload'));
           break;
         }
 
@@ -115,7 +117,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
         setIsOpen(false);
         break;
       case "cancel":
-        if (confirm("編集内容を破棄してよろしいですか？")) {
+        if (confirm(t('confirmDiscardChanges'))) {
           cancelEdit();
           setIsOpen(false);
         }
@@ -124,7 +126,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
         setMenuView("options");
         break;
       case "help":
-        alert("説明書を表示します。");
+        alert(t('showHelp'));
         break;
       default:
         console.log(`未実装のID: ${id}`);
@@ -141,7 +143,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
       <SheetContent side="left">
         <SheetHeader>
           <SheetTitle>
-            {menuView === "menu" ? "メニュー" : "オプション"}
+            {menuView === "menu" ? t('menu') : t('options')}
           </SheetTitle>
         </SheetHeader>
         {menuView === "menu" ? (
@@ -155,7 +157,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                 disabled={isLoading && item.id === "load"}
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
-                {item.id === "load" && isLoading ? "読み込み中..." : item.label}
+                {item.id === "load" && isLoading ? t('loadingFile') : item.label}
               </Button>
             ))}
           </div>
@@ -167,10 +169,10 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
               onClick={() => setMenuView("menu")}
             >
               <Menu className="h-4 w-4" />
-              ← 戻る
+              ← {t('back')}
             </Button>
             <div className="mb-4">
-              <h3 className="font-semibold">言語</h3>
+              <h3 className="font-semibold">{t('language')}</h3>
               <div className="mt-2">
                 <label className="inline-flex items-center mr-4">
                   <input
@@ -181,7 +183,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
                     className="form-radio"
                   />
-                  <span className="ml-2">日本語</span>
+                  <span className="ml-2">{t('japanese')}</span>
                 </label>
                 <label className="inline-flex items-center">
                   <input
@@ -192,12 +194,12 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
                     className="form-radio"
                   />
-                  <span className="ml-2">English</span>
+                  <span className="ml-2">{t('english')}</span>
                 </label>
               </div>
             </div>
             <div>
-              <h3 className="font-semibold">上下ボタンの配置</h3>
+              <h3 className="font-semibold">{t('buttonAlignment')}</h3>
               <div className="mt-2">
                 <label className="inline-flex items-center mr-4">
                   <input
@@ -208,7 +210,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
                     className="form-radio"
                   />
-                  <span className="ml-2">左</span>
+                  <span className="ml-2">{t('left')}</span>
                 </label>
                 <label className="inline-flex items-center">
                   <input
@@ -219,7 +221,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
                     className="form-radio"
                   />
-                  <span className="ml-2">右</span>
+                  <span className="ml-2">{t('right')}</span>
                 </label>
               </div>
             </div>

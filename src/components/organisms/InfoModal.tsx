@@ -1,15 +1,35 @@
 import React from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
 import useFlowStore from '@/stores/flowStore';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { useTranslation } from 'react-i18next';
 
 interface InfoModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+// テキストエリアの自動リサイズ用カスタムフック
+const useAutoResizeTextArea = (value: string) => {
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  React.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
+
+  return textareaRef;
+};
+
 export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const { flowData, isEditMode, updateFlowData } = useFlowStore();
+
+  // テキストエリアのref
+  const descriptionRef = useAutoResizeTextArea(flowData?.description || '');
+  const noteRef = useAutoResizeTextArea(flowData?.note || '');
 
   if (!flowData) return null;
 
@@ -32,7 +52,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
             {/* ヘッダー部分 */}
             <div className="flex-none p-4 border-b bg-white flex items-center justify-between">
               <HeadlessDialog.Title className="text-lg font-medium">
-                その他の情報
+                {t('infoModalTitle')}
               </HeadlessDialog.Title>
               <button
                 onClick={onClose}
@@ -47,7 +67,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
               <table className="min-w-full border">
                 <tbody>
                   <tr>
-                    <td className="border p-2 bg-gray-50 w-1/3">タイトル</td>
+                    <td className="border p-2 bg-gray-50 w-1/3">{t('flowTitle')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <input
@@ -62,7 +82,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">クエスト</td>
+                    <td className="border p-2 bg-gray-50">{t('quest')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <input
@@ -77,7 +97,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">作成者</td>
+                    <td className="border p-2 bg-gray-50">{t('author')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <input
@@ -92,11 +112,11 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">概要</td>
+                    <td className="border p-2 bg-gray-50">{t('overview')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <textarea
-                          ref={useAutoResizeTextArea(flowData.description || '')}
+                          ref={descriptionRef}
                           value={flowData.description || ''}
                           onChange={(e) => handleInfoChange('description', e.target.value)}
                           className={textareaBaseStyle}
@@ -112,7 +132,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">更新日時</td>
+                    <td className="border p-2 bg-gray-50">{t('updateDate')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <input
@@ -127,7 +147,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">参考動画URL</td>
+                    <td className="border p-2 bg-gray-50">{t('referenceVideoUrl')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <input
@@ -151,11 +171,11 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     </td>
                   </tr>
                   <tr>
-                    <td className="border p-2 bg-gray-50">その他ノート</td>
+                    <td className="border p-2 bg-gray-50">{t('otherNotes')}</td>
                     <td className="border p-2">
                       {isEditMode ? (
                         <textarea
-                          ref={useAutoResizeTextArea(flowData.note || '')}
+                          ref={noteRef}
                           value={flowData.note || ''}
                           onChange={(e) => handleInfoChange('note', e.target.value)}
                           className={textareaBaseStyle}
