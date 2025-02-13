@@ -13,15 +13,15 @@ const getGridClasses = (isEditMode: boolean) =>
 interface ActionTableProps {
   data: Action[]
   currentRow: number
-  buttonPosition: "left" | "right"
-  onRowSelect: (index: number) => void
+  buttonPosition: "right" | "left"
+  onRowSelect: (row: number) => void
   onMoveUp: () => void
   onMoveDown: () => void
   isEditMode?: boolean
   onCellEdit?: (rowIndex: number, field: keyof Action, value: string) => void
   onDeleteRow?: (rowIndex: number) => void
   onAddRow?: (rowIndex: number) => void
-  onPasteRows: (rowIndex: number, rows: Partial<Action>[]) => void
+  onPasteRows?: (rowIndex: number, rows: Partial<Action>[]) => void
 }
 
 export const ActionTable: React.FC<ActionTableProps> = ({
@@ -138,9 +138,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   };
 
   const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
-    if (!onCellEdit || !onAddRow) return;
-
-    // 貼り付けられたデータを直接親コンポーネントに渡す
+    if (!onPasteRows) return;
     onPasteRows(rowIndex, rows);
   };
 

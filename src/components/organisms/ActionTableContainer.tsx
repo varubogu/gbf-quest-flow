@@ -2,21 +2,21 @@ import * as React from "react";
 import { ActionTable } from "./ActionTable";
 import type { Action } from "@/types/models";
 import useFlowStore from "@/stores/flowStore";
+import useSettingsStore from "@/stores/settingsStore";
 
 interface ActionTableContainerProps {
-  buttonPosition: "left" | "right";
   isEditMode?: boolean;
   data?: Action[];
 }
 
 export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
-  buttonPosition,
   isEditMode = false,
   data,
 }) => {
   const { currentRow, setCurrentRow } = useFlowStore();
   const { flowData, setFlowData } = useFlowStore();
   const { undo, redo } = useFlowStore();
+  const { settings } = useSettingsStore();
 
   // キーボードイベントのハンドラを追加
   React.useEffect(() => {
@@ -50,7 +50,6 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     setCurrentRow(index);
   };
 
-  // onMoveUp/onMoveDown はコンポーネント内部で利用する場合の参考実装です。
   const handleMoveUp = () => {
     if (currentRow > 0) setCurrentRow(currentRow - 1);
   };
@@ -62,20 +61,63 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
   const handleCellEdit = (rowIndex: number, field: keyof Action, value: string) => {
     if (!flowData) return;
 
-    // 新しいflowデータを作成
     const newFlow = [...flowData.flow];
     newFlow[rowIndex] = {
       ...newFlow[rowIndex],
       [field]: value,
     };
 
-    // 完全な新しいflowDataオブジェクトを作成して更新
-    const newFlowData = {
+    setFlowData({
       ...flowData,
       flow: newFlow,
+    });
+  };
+
+  const handleDeleteRow = (rowIndex: number) => {
+    if (!flowData) return;
+
+    const newFlow = [...flowData.flow];
+    newFlow.splice(rowIndex, 1);
+
+    setFlowData({
+      ...flowData,
+      flow: newFlow,
+    });
+
+    // 削除した行が現在の選択行より前なら、選択行を1つ上に移動
+    if (rowIndex < currentRow) {
+      setCurrentRow(currentRow - 1);
+    }
+    // 削除した行が現在の選択行なら、選択行をそのままにする（次の行が選択されることになる）
+    else if (rowIndex === currentRow && currentRow >= newFlow.length) {
+      setCurrentRow(Math.max(0, newFlow.length - 1));
+    }
+  };
+
+  const handleAddRow = (rowIndex: number) => {
+    if (!flowData) return;
+
+    const newFlow = [...flowData.flow];
+    const newRow: Action = {
+      hp: "",
+      prediction: "",
+      charge: "",
+      guard: "",
+      action: "",
+      note: "",
     };
 
-    setFlowData(newFlowData);
+    // インデックスが-1の場合は先頭に挿入
+    const insertIndex = rowIndex === -1 ? 0 : rowIndex + 1;
+    newFlow.splice(insertIndex, 0, newRow);
+
+    setFlowData({
+      ...flowData,
+      flow: newFlow,
+    });
+
+    // 追加した行を選択
+    setCurrentRow(insertIndex);
   };
 
   const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
@@ -126,67 +168,17 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       }
     });
 
-    // 新しいflowDataオブジェクトを作成して一度に更新
-    const newFlowData = {
-      ...flowData,
-      flow: newFlow,
-    };
-
-    setFlowData(newFlowData);
-  };
-
-  const handleDeleteRow = (rowIndex: number) => {
-    if (!flowData) return;
-
-    const newFlow = [...flowData.flow];
-    newFlow.splice(rowIndex, 1);
-
     setFlowData({
       ...flowData,
       flow: newFlow,
     });
-
-    // 削除した行が現在の選択行より前なら、選択行を1つ上に移動
-    if (rowIndex < currentRow) {
-      setCurrentRow(currentRow - 1);
-    }
-    // 削除した行が現在の選択行なら、選択行をそのままにする（次の行が選択されることになる）
-    else if (rowIndex === currentRow && currentRow >= newFlow.length) {
-      setCurrentRow(Math.max(0, newFlow.length - 1));
-    }
-  };
-
-  const handleAddRow = (rowIndex: number) => {
-    if (!flowData) return;
-
-    const newFlow = [...flowData.flow];
-    const newRow: Action = {
-      hp: "",
-      prediction: "",
-      charge: "",
-      guard: "",
-      action: "",
-      note: "",
-    };
-
-    // インデックスが-1の場合は先頭に挿入
-    const insertIndex = rowIndex === -1 ? 0 : rowIndex + 1;
-    newFlow.splice(insertIndex, 0, newRow);
-
-    setFlowData({
-      ...flowData,
-      flow: newFlow,
-    });
-
-    // 追加した行を選択
-    setCurrentRow(insertIndex);
   };
 
   return (
     <ActionTable
       data={data ?? flowData.flow}
       currentRow={currentRow}
-      buttonPosition={buttonPosition}
+      buttonPosition={settings.buttonAlignment === "右" ? "right" : "left"}
       onMoveUp={handleMoveUp}
       onMoveDown={handleMoveDown}
       onRowSelect={handleRowSelect}

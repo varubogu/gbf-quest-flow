@@ -19,6 +19,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import useFlowStore from "@/stores/flowStore";
+import useSettingsStore from "@/stores/settingsStore";
 
 interface HamburgerMenuItemsProps {
   onSave?: () => void;
@@ -36,8 +37,7 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
 
   const [menuView, setMenuView] = useState<"menu" | "options">("menu");
-  const [language, setLanguage] = useState("日本語");
-  const [buttonAlignment, setButtonAlignment] = useState("右");
+  const { settings, updateSettings } = useSettingsStore();
 
   const menuItems = [
     { id: "new", label: "新しいデータを作る", icon: FileText },
@@ -177,8 +177,8 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     type="radio"
                     name="language"
                     value="日本語"
-                    checked={language === "日本語"}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    checked={settings.language === "日本語"}
+                    onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
                     className="form-radio"
                   />
                   <span className="ml-2">日本語</span>
@@ -188,8 +188,8 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     type="radio"
                     name="language"
                     value="English"
-                    checked={language === "English"}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    checked={settings.language === "English"}
+                    onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
                     className="form-radio"
                   />
                   <span className="ml-2">English</span>
@@ -204,8 +204,8 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     type="radio"
                     name="buttonAlignment"
                     value="右"
-                    checked={buttonAlignment === "右"}
-                    onChange={(e) => setButtonAlignment(e.target.value)}
+                    checked={settings.buttonAlignment === "右"}
+                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
                     className="form-radio"
                   />
                   <span className="ml-2">右</span>
@@ -215,8 +215,8 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
                     type="radio"
                     name="buttonAlignment"
                     value="左"
-                    checked={buttonAlignment === "左"}
-                    onChange={(e) => setButtonAlignment(e.target.value)}
+                    checked={settings.buttonAlignment === "左"}
+                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
                     className="form-radio"
                   />
                   <span className="ml-2">左</span>
