@@ -145,6 +145,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     // 空のデータを作成
     const newData: Flow = {
       title: "新しいフロー",
+      quest: "",
       author: "",
       description: "",
       updateDate: new Date().toISOString(),

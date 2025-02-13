@@ -66,12 +66,12 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                       {isEditMode ? (
                         <input
                           type="text"
-                          value={flowData.title || ''}
-                          onChange={(e) => handleInfoChange('title', e.target.value)}
+                          value={flowData.quest || ''}
+                          onChange={(e) => handleInfoChange('quest', e.target.value)}
                           className="w-full p-1 border rounded"
                         />
                       ) : (
-                        flowData.title
+                        flowData.quest
                       )}
                     </td>
                   </tr>

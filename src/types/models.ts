@@ -71,6 +71,7 @@ const actionSchema = z.object({
 // メインのデータスキーマ
 const flowSchema = z.object({
     title: z.string(),
+    quest: z.string(),
     author: z.string(),
     description: z.string(),
     updateDate: z.string(),
