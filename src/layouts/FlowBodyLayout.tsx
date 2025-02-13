@@ -8,9 +8,11 @@ import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData, setTitle } from '@/lib/functions';
 import { Sword, Info } from 'lucide-react';
 import { IconButton } from '@/components/atoms/IconButton';
+import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 
 function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
@@ -95,7 +97,7 @@ function FlowBodyLayoutReact() {
           <IconButton
             icon={Sword}
             label="編成確認"
-            onClick={() => alert("編成確認を開きます。")}
+            onClick={() => setIsOrganizationModalOpen(true)}
           />
           <IconButton
             icon={Info}
@@ -131,6 +133,11 @@ function FlowBodyLayoutReact() {
           </PanelGroup>
         </div>
       </main>
+      <OrganizationModal
+        isOpen={isOrganizationModalOpen}
+        onClose={() => setIsOrganizationModalOpen(false)}
+        isEditing={isEditMode}
+      />
     </div>
   );
 }
