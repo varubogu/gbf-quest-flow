@@ -1,7 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -82,6 +82,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.additionalSkill)}
                   value={flowData.organization.weapon.main.additionalSkill}
                   onChange={(e) => handleWeaponChange('main', null, 'additionalSkill', e.target.value)}
                   className={textareaBaseStyle}
@@ -98,6 +99,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.note)}
                   value={flowData.organization.weapon.main.note}
                   onChange={(e) => handleWeaponChange('main', null, 'note', e.target.value)}
                   className={textareaBaseStyle}
@@ -136,6 +138,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(weapon.additionalSkill)}
                     value={weapon.additionalSkill}
                     onChange={(e) => handleWeaponChange('other', index, 'additionalSkill', e.target.value)}
                     className={textareaBaseStyle}
@@ -152,6 +155,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(weapon.note)}
                     value={weapon.note}
                     onChange={(e) => handleWeaponChange('other', index, 'note', e.target.value)}
                     className={textareaBaseStyle}
@@ -191,6 +195,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(weapon.additionalSkill)}
                     value={weapon.additionalSkill}
                     onChange={(e) => handleWeaponChange('additional', index, 'additionalSkill', e.target.value)}
                     className={textareaBaseStyle}
@@ -207,6 +212,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(weapon.note)}
                     value={weapon.note}
                     onChange={(e) => handleWeaponChange('additional', index, 'note', e.target.value)}
                     className={textareaBaseStyle}

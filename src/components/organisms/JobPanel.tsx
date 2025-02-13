@@ -1,7 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface JobPanelProps {
   isEditing: boolean;
@@ -89,12 +89,18 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.job.note)}
                   value={flowData.organization.job.note}
                   onChange={(e) => handleJobChange('note', e.target.value)}
                   className={textareaBaseStyle}
                 />
               ) : (
-                flowData.organization.job.note
+                flowData.organization.job.note.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < flowData.organization.job.note.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))
               )}
             </td>
           </tr>
@@ -116,12 +122,18 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.job.equipment.note)}
                   value={flowData.organization.job.equipment.note}
                   onChange={(e) => handleEquipmentChange('note', e.target.value)}
                   className={textareaBaseStyle}
                 />
               ) : (
-                flowData.organization.job.equipment.note
+                flowData.organization.job.equipment.note.split('\n').map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line}
+                    {i < flowData.organization.job.equipment.note.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+                ))
               )}
             </td>
           </tr>
@@ -148,12 +160,18 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(ability.note)}
                     value={ability.note}
                     onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
                     className={textareaBaseStyle}
                   />
                 ) : (
-                  ability.note
+                  ability.note.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i < ability.note.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
                 )}
               </td>
             </tr>

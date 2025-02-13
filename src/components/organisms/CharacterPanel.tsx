@@ -1,7 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface CharacterPanelProps {
   isEditing: boolean;
@@ -71,6 +71,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.note)}
                     value={char.note}
                     onChange={(e) => handleMemberChange('front', index, 'note', e.target.value)}
                     className={textareaBaseStyle}
@@ -100,6 +101,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.accessories)}
                     value={char.accessories}
                     onChange={(e) => handleMemberChange('front', index, 'accessories', e.target.value)}
                     className={textareaBaseStyle}
@@ -111,6 +113,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.limitBonus)}
                     value={char.limitBonus}
                     onChange={(e) => handleMemberChange('front', index, 'limitBonus', e.target.value)}
                     className={textareaBaseStyle}
@@ -144,6 +147,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.note)}
                     value={char.note}
                     onChange={(e) => handleMemberChange('back', index, 'note', e.target.value)}
                     className={textareaBaseStyle}
@@ -173,6 +177,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.accessories)}
                     value={char.accessories}
                     onChange={(e) => handleMemberChange('back', index, 'accessories', e.target.value)}
                     className={textareaBaseStyle}
@@ -184,6 +189,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(char.limitBonus)}
                     value={char.limitBonus}
                     onChange={(e) => handleMemberChange('back', index, 'limitBonus', e.target.value)}
                     className={textareaBaseStyle}

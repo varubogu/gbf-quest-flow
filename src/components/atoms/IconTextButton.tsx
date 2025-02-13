@@ -41,3 +41,16 @@ IconTextButton.displayName = "IconTextButton"
 
 export const textInputBaseStyle = "w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[1.5rem]";
 export const textareaBaseStyle = "w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]";
+
+export const useAutoResizeTextArea = (value: string) => {
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  React.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [value]);
+
+  return textareaRef;
+};

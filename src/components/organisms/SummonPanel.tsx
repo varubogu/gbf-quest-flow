@@ -1,7 +1,7 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -87,6 +87,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.summon.main.note)}
                   value={flowData.organization.summon.main.note}
                   onChange={(e) => handleSummonChange('main', null, 'note', e.target.value)}
                   className={textareaBaseStyle}
@@ -120,6 +121,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             <td className="border p-2">
               {isEditing ? (
                 <textarea
+                  ref={useAutoResizeTextArea(flowData.organization.summon.friend.note)}
                   value={flowData.organization.summon.friend.note}
                   onChange={(e) => handleSummonChange('friend', null, 'note', e.target.value)}
                   className={textareaBaseStyle}
@@ -158,6 +160,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(summon.note)}
                     value={summon.note}
                     onChange={(e) => handleSummonChange('other', index, 'note', e.target.value)}
                     className={textareaBaseStyle}
@@ -197,6 +200,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
               <td className="border p-2">
                 {isEditing ? (
                   <textarea
+                    ref={useAutoResizeTextArea(summon.note)}
                     value={summon.note}
                     onChange={(e) => handleSummonChange('sub', index, 'note', e.target.value)}
                     className={textareaBaseStyle}

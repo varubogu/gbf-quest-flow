@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
 import useFlowStore from '@/stores/flowStore';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -96,13 +96,18 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     <td className="border p-2">
                       {isEditMode ? (
                         <textarea
+                          ref={useAutoResizeTextArea(flowData.description || '')}
                           value={flowData.description || ''}
                           onChange={(e) => handleInfoChange('description', e.target.value)}
                           className={textareaBaseStyle}
-                          rows={3}
                         />
                       ) : (
-                        flowData.description
+                        flowData.description?.split('\n').map((line, i) => (
+                          <React.Fragment key={i}>
+                            {line}
+                            {i < flowData.description.split('\n').length - 1 && <br />}
+                          </React.Fragment>
+                        ))
                       )}
                     </td>
                   </tr>
@@ -150,10 +155,10 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                     <td className="border p-2">
                       {isEditMode ? (
                         <textarea
+                          ref={useAutoResizeTextArea(flowData.note || '')}
                           value={flowData.note || ''}
                           onChange={(e) => handleInfoChange('note', e.target.value)}
                           className={textareaBaseStyle}
-                          rows={4}
                         />
                       ) : (
                         flowData.note?.split('\n').map((line, i) => (
