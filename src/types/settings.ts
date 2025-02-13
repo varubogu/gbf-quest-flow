@@ -18,3 +18,8 @@ export interface OrganizationSettings {
     sub: number;
   };
 }
+
+export interface AppSettings {
+  language: "日本語" | "English";
+  buttonAlignment: "左" | "右";
+}
