@@ -138,17 +138,17 @@
           "note": "武器種なんでも。\n",
           "additionalSkill": "連撃\nアビダメ上限\n回復上限"
         }
-      ],
-      "weaponEffects": {
-        "taRate": "",
-        "hp": "",
-        "defense": ""
-      },
-      "totalEffects": {
-        "taRate": "",
-        "hp": "",
-        "defense": ""
-      }
+      ]
+    },
+    "weaponEffects": {
+      "taRate": "",
+      "hp": "",
+      "defense": ""
+    },
+    "totalEffects": {
+      "taRate": "",
+      "hp": "",
+      "defense": ""
     },
     "summon": {
       "main": {
