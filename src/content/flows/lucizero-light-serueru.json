@@ -477,5 +477,15 @@
         "action": "基本毎ターンフルチェ＋2ターンごとのフェイタルチェイン予兆解除",
         "note": ""
       }
-    ]
+    ],
+    "weaponEffects": {
+      "taRate": "",
+      "hp": "",
+      "defense": ""
+    },
+    "totalEffects": {
+      "taRate": "",
+      "hp": "",
+      "defense": ""
+    }
   }
