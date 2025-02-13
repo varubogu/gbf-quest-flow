@@ -137,7 +137,11 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {/* その他の召喚石 */}
           {flowData.organization.summon.other.map((summon, index) => (
             <tr key={`other-${index}`}>
-              <td className="border p-2">通常石</td>
+              {index === 0 && (
+                <td className="border p-2" rowSpan={flowData.organization.summon.other.length}>
+                  通常石
+                </td>
+              )}
               <td className="border p-2">
                 {isEditing ? (
                   <input
@@ -172,7 +176,11 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {/* サブ召喚石 */}
           {flowData.organization.summon.sub.map((summon, index) => (
             <tr key={`sub-${index}`}>
-              <td className="border p-2">サブ</td>
+              {index === 0 && (
+                <td className="border p-2" rowSpan={flowData.organization.summon.sub.length}>
+                  サブ
+                </td>
+              )}
               <td className="border p-2">
                 {isEditing ? (
                   <input

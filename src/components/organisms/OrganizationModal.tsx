@@ -128,9 +128,14 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             </tr>
                           </thead>
                           <tbody>
+                            {/* フロントメンバー */}
                             {flowData.organization.member.front.map((char, index) => (
                               <tr key={`front-${index}`}>
-                                <td className="border p-2">フロント</td>
+                                {index === 0 && (
+                                  <td className="border p-2" rowSpan={flowData.organization.member.front.length}>
+                                    フロント
+                                  </td>
+                                )}
                                 <td className="border p-2">
                                   {isEditMode ? (
                                     <input
@@ -197,9 +202,14 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                                 </td>
                               </tr>
                             ))}
+                            {/* サブメンバー */}
                             {flowData.organization.member.back.map((char, index) => (
                               <tr key={`back-${index}`}>
-                                <td className="border p-2">サブ</td>
+                                {index === 0 && (
+                                  <td className="border p-2" rowSpan={flowData.organization.member.back.length}>
+                                    サブ
+                                  </td>
+                                )}
                                 <td className="border p-2">
                                   {isEditMode ? (
                                     <input

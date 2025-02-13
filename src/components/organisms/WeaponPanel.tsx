@@ -115,7 +115,11 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {/* その他の武器 */}
           {flowData.organization.weapon.other.map((weapon, index) => (
             <tr key={`other-${index}`}>
-              <td className="border p-2">通常武器</td>
+              {index === 0 && (
+                <td className="border p-2" rowSpan={flowData.organization.weapon.other.length}>
+                  通常武器
+                </td>
+              )}
               <td className="border p-2">
                 {isEditing ? (
                   <input
@@ -166,7 +170,11 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {/* 追加武器 */}
           {flowData.organization.weapon.additional.map((weapon, index) => (
             <tr key={`additional-${index}`}>
-              <td className="border p-2">追加武器</td>
+              {index === 0 && (
+                <td className="border p-2" rowSpan={flowData.organization.weapon.additional.length}>
+                  追加武器
+                </td>
+              )}
               <td className="border p-2">
                 {isEditing ? (
                   <input
