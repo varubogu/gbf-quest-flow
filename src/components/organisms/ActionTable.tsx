@@ -171,7 +171,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
         {isEditMode && (
           <>
             <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium" />
-            <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex items-center justify-center">
+            <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
               <button
                 onClick={() => onAddRow?.(-1)}
                 className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
@@ -224,7 +224,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             >
               {isEditMode && (
                 <>
-                  <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
+                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
                     <button
                       onClick={() => onDeleteRow?.(index)}
                       className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
@@ -232,7 +232,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                       <Minus className="w-4 h-4 text-white" />
                     </button>
                   </div>
-                  <div className="w-full h-full border-r border-gray-400 flex items-center justify-center">
+                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
                     <button
                       onClick={() => onAddRow?.(index)}
                       className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
