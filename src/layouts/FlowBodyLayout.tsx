@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
 import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import type { ImperativePanelHandle } from 'react-resizable-panels';
 import useFlowStore from '@/stores/flowStore';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
 import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData, setTitle } from '@/lib/functions';
-import { Sword, Info } from 'lucide-react';
+import { Sword, Info, Minimize2, Maximize2 } from 'lucide-react';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
@@ -16,6 +17,9 @@ function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isMemoCollapsed, setIsMemoCollapsed] = useState(false);
+  const [lastMemoSize, setLastMemoSize] = useState(50);
+  const memoPanelRef = useRef<ImperativePanelHandle>(null);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
@@ -26,6 +30,22 @@ function FlowBodyLayoutReact() {
   React.useEffect(() => {
     setIsLoading(false);
   }, []);
+
+  // パネルのリサイズ時のコールバック
+  const handleMemoResize = useCallback((size: number) => {
+    if (size > 0) {
+      setLastMemoSize(size);
+    }
+    setIsMemoCollapsed(size === 0);
+  }, []);
+
+  // メモ開閉ボタンのクリックハンドラ
+  const handleMemoToggle = useCallback(() => {
+    if (!memoPanelRef.current) return;
+
+    const targetSize = isMemoCollapsed ? lastMemoSize : 0;
+    memoPanelRef.current.resize(targetSize);
+  }, [isMemoCollapsed, lastMemoSize]);
 
   const handleSave = () => {
     if (!flowData) return;
@@ -98,6 +118,12 @@ function FlowBodyLayoutReact() {
         )}
         <div className="flex gap-2">
           <IconTextButton
+            icon={isMemoCollapsed ? Maximize2 : Minimize2}
+            label="メモを開閉します"
+            text="メモ開閉"
+            onClick={handleMemoToggle}
+          />
+          <IconTextButton
             icon={Sword}
             label="編成確認"
             text="編成"
@@ -113,7 +139,12 @@ function FlowBodyLayoutReact() {
       <main className="flex-1 pt-14">
         <div className="h-[calc(100vh-3.5rem)]">
           <PanelGroup direction="vertical">
-            <Panel defaultSize={50} minSize={10}>
+            <Panel
+              ref={memoPanelRef}
+              defaultSize={50}
+              minSize={0}
+              onResize={handleMemoResize}
+            >
               <div className="h-full overflow-auto">
                 <div className="p-4 h-full">
                   {isEditMode ? (
