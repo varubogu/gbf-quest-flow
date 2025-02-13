@@ -2,6 +2,7 @@
 import { HamburgerMenuItems } from "@/components/molecules/HamburgerMenuItems";
 import type { Flow } from "@/types/models";
 import { ActionTableContainer } from "@/components/organisms/ActionTableContainer";
+import { ErrorDialog } from "@/components/organisms/ErrorDialog";
 interface Props {
   data: Flow;
 }
@@ -42,6 +43,7 @@ const { data } = Astro.props;
       </div>
     </div>
   </main>
+  <ErrorDialog client:load />
 </div>
 
 <!-- ドラッグ操作のためのスクリプト -->

@@ -1,7 +1,8 @@
-import type { Flow } from "@/types/models"
+import type { Flow, Action } from "@/types/models"
 import type { OrganizationSettings } from "@/types/settings"
 import { create } from "zustand"
 import organizationSettings from "@/content/settings/organization.json"
+import useErrorStore from './errorStore'
 
 interface HistoryState {
   past: Flow[];
@@ -27,6 +28,7 @@ interface FlowStore {
   clearHistory: () => void
   // 編集キャンセル用の関数
   cancelEdit: () => void
+  updateAction: (index: number, updates: Partial<Action>) => void
 }
 
 // データの個数を設定に合わせて調整する関数（不足分のみ追加）
@@ -236,8 +238,21 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  updateFlowData: (update: Partial<Flow>) =>
-    set({ flowData: { ...get().flowData, ...update } as Flow }),
+  updateFlowData: (updates: Partial<Flow>) => {
+    try {
+      const currentData = get().flowData;
+      if (!currentData) return;
+
+      set({
+        flowData: {
+          ...currentData,
+          ...updates,
+        },
+      });
+    } catch (error) {
+      useErrorStore.getState().showError(error instanceof Error ? error : new Error('データの更新中にエラーが発生しました'));
+    }
+  },
 
   pushToHistory: (data: Flow) => {
     const { history, flowData } = get();
@@ -306,9 +321,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       input.accept = '.json';
 
       const filePromise = new Promise<File | null>((resolve) => {
-        // ダイアログが閉じられたときのイベントを追加
         window.addEventListener('focus', () => {
-          // 少し遅延を入れてファイル選択の有無を確認
           setTimeout(() => {
             if (!input.files?.length) {
               resolve(null);
@@ -325,22 +338,42 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       input.click();
       const file = await filePromise;
 
-      // ファイルが選択されなかった場合は処理を中断
       if (!file) {
         return;
       }
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
-      // データの個数を調整してから設定
       const adjustedData = {
         ...data,
         organization: adjustOrganizationData(data.organization)
       };
       set({ flowData: adjustedData, currentRow: 0 });
     } catch (error) {
-      console.error('ファイルの読み込みに失敗しました:', error);
+      useErrorStore.getState().showError(error instanceof Error ? error : new Error('ファイルの読み込み中にエラーが発生しました'));
       throw error;
+    }
+  },
+
+  updateAction: (index: number, updates: Partial<Action>) => {
+    try {
+      const currentData = get().flowData;
+      if (!currentData) return;
+
+      const newFlow = [...currentData.flow];
+      newFlow[index] = {
+        ...newFlow[index],
+        ...updates,
+      };
+
+      set({
+        flowData: {
+          ...currentData,
+          flow: newFlow,
+        },
+      });
+    } catch (error) {
+      useErrorStore.getState().showError(error instanceof Error ? error : new Error('アクションの更新中にエラーが発生しました'));
     }
   }
 }))

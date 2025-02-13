@@ -32,6 +32,10 @@ i18n
           confirm: '確認',
           close: '閉じる',
           overview: '解説',
+          errorOccurred: 'エラーが発生しました',
+          errorMessage: 'エラーメッセージ',
+          unknownError: '不明なエラーが発生しました',
+          downloadBackup: '現在のデータをバックアップとしてダウンロード',
 
           // メニュー関連
           menu: 'メニュー',
@@ -166,6 +170,10 @@ i18n
           confirm: 'Confirm',
           close: 'Close',
           overview: 'Overview',
+          errorOccurred: 'An Error Occurred',
+          errorMessage: 'Error Message',
+          unknownError: 'An unknown error occurred',
+          downloadBackup: 'Download Current Data as Backup',
 
           // Menu related
           menu: 'Menu',

@@ -14,6 +14,7 @@ import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
 import I18nProvider from '@/components/I18nProvider';
 import { useTranslation } from 'react-i18next';
+import { ErrorDialog } from "@/components/organisms/ErrorDialog";
 
 function FlowContent() {
   const { t } = useTranslation();
@@ -179,6 +180,7 @@ function FlowContent() {
         isOpen={isInfoModalOpen}
         onClose={() => setIsInfoModalOpen(false)}
       />
+      <ErrorDialog />
     </div>
   );
 }
