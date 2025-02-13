@@ -19,8 +19,8 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-2">{t('skill')}</th>
-            <th className="border p-2">{title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}</th>
+            <th className="border p-2 w-1/4">{t('skill')}</th>
+            <th className="border p-2 w-3/4">{title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}</th>
           </tr>
         </thead>
         <tbody>
