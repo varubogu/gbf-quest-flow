@@ -3,6 +3,7 @@ import useFlowStore from '@/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { SkillTable } from '@/components/molecules/SkillTable';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -253,79 +254,12 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
         </tbody>
       </table>
 
-      <div className="mt-8">
-        <h3 className="text-lg font-bold mb-4">{t('skillEffects')}</h3>
-        <table className="min-w-full border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">{t('skill')}</th>
-              <th className="border p-2">{t('effectAmount')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border p-2">{t('taRate')}</td>
-              <td className="border p-2">
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.taRate)}
-                    value={flowData.organization.weapon.main.skillEffects.taRate}
-                    onChange={(e) => handleSkillEffectChange('main', null, 'taRate', e.target.value)}
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  flowData.organization.weapon.main.skillEffects.taRate.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < flowData.organization.weapon.main.skillEffects.taRate.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td className="border p-2">HP</td>
-              <td className="border p-2">
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.hp)}
-                    value={flowData.organization.weapon.main.skillEffects.hp}
-                    onChange={(e) => handleSkillEffectChange('main', null, 'hp', e.target.value)}
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  flowData.organization.weapon.main.skillEffects.hp.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < flowData.organization.weapon.main.skillEffects.hp.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td className="border p-2">{t('defense')}</td>
-              <td className="border p-2">
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(flowData.organization.weapon.main.skillEffects.defense)}
-                    value={flowData.organization.weapon.main.skillEffects.defense}
-                    onChange={(e) => handleSkillEffectChange('main', null, 'defense', e.target.value)}
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  flowData.organization.weapon.main.skillEffects.defense.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < flowData.organization.weapon.main.skillEffects.defense.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <SkillTable
+        isEditing={isEditing}
+        title={t('skillEffects')}
+        values={flowData.organization.weapon.main.skillEffects}
+        onChange={(field, value) => handleSkillEffectChange('main', null, field as keyof WeaponSkillEffect, value)}
+      />
     </div>
   );
 };
