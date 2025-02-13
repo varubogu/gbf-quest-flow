@@ -252,19 +252,19 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 alignment="right"
               />
               <ActionCell
-                content={row.trigger}
+                content={row.prediction}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "trigger", value)}
-                field="trigger"
+                onChange={(value) => handleCellChange(index, "prediction", value)}
+                field="prediction"
                 alignment="left"
               />
               <ActionCell
-                content={row.ougi}
+                content={row.charge}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "ougi", value)}
-                field="ougi"
+                onChange={(value) => handleCellChange(index, "charge", value)}
+                field="charge"
                 alignment="center"
               />
               <ActionCell
@@ -284,11 +284,11 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 alignment="left"
               />
               <ActionCell
-                content={row.notes}
+                content={row.note}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, "notes", value)}
-                field="notes"
+                onChange={(value) => handleCellChange(index, "note", value)}
+                field="note"
                 alignment="left"
               />
             </div>
