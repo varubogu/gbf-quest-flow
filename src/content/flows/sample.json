@@ -7,7 +7,28 @@
     "movie": "https://youtube.com/xxxxxxxx",
     "note": "自由に記述するエリアです",
     "organization": {
-      "job": "マナダイバー",
+      "job": {
+        "name": "マナダイバー",
+        "note": "ダメアビで予兆解除を狙う",
+        "equipment": {
+          "name": "ウロボロス",
+          "note": "ヒット数、アビダメなど"
+        },
+        "abilities": [
+          {
+            "name": "シークレットトライアド",
+            "note": "追撃数、刻印による火力貢献"
+          },
+          {
+            "name": "ワイルドマギカ",
+            "note": "アビダメ、行動回数追加"
+          },
+          {
+            "name": "クリアオール",
+            "note": "緑林檎解除、暗闇や連撃しないデバフ対処"
+          }
+        ]
+      },
       "member": {
         "front": [
           {

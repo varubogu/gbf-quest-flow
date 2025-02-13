@@ -82,3 +82,57 @@ export {
     actionSchema,
     flowSchema,
 };
+
+export interface JobAbility {
+  name: string;
+  note: string;
+}
+
+export interface JobEquipment {
+  name: string;
+  note: string;
+}
+
+export interface Job {
+  name: string;
+  note: string;
+  equipment: JobEquipment;
+  abilities: JobAbility[];
+}
+
+export interface Member {
+  name: string;
+  note: string;
+  awaketype: string;
+  accessories: string;
+  limitBonus: string;
+}
+
+export interface Organization {
+  job: Job;
+  member: {
+    front: Member[];
+    back: Member[];
+  };
+  weapon: {
+    main: Weapon;
+    other: Weapon[];
+    additional: Weapon[];
+  };
+  summon: {
+    main: Summon;
+    friend: Summon;
+    other: Summon[];
+    sub: Summon[];
+  };
+}
+
+export interface Flow {
+  title: string;
+  author: string;
+  description: string;
+  updateDate: string;
+  movie?: string;
+  note?: string;
+  organization: Organization;
+}
