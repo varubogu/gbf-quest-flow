@@ -141,14 +141,14 @@
       ]
     },
     "weaponEffects": {
-      "taRate": "",
-      "hp": "",
-      "defense": ""
+      "taRate": "65.6%",
+      "hp": "400%",
+      "defense": "105%"
     },
     "totalEffects": {
-      "taRate": "",
-      "hp": "",
-      "defense": ""
+      "taRate": "武器65.6% + フェディ3で30% + 神滅戦大事な物で5%で100%を超える",
+      "hp": "400%",
+      "defense": "105%"
     },
     "summon": {
       "main": {

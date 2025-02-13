@@ -141,14 +141,14 @@
         ]
       },
       "weaponEffects": {
-        "taRate": "",
-        "hp": "",
-        "defense": ""
+        "taRate": "TA予兆は無視",
+        "hp": "400",
+        "defense": "75"
       },
       "totalEffects": {
-        "taRate": "",
-        "hp": "",
-        "defense": ""
+        "taRate": "TA予兆は無視",
+        "hp": "400",
+        "defense": "75"
       },
       "summon": {
         "main": {
