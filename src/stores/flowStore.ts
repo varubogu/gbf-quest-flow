@@ -51,7 +51,8 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
 
   const emptyWeapon = () => ({
     name: "",
-    note: ""
+    note: "",
+    additionalSkill: ""
   });
 
   const emptySummon = () => ({
@@ -175,9 +176,21 @@ const useFlowStore = create<FlowStore>((set, get) => ({
           }))
         },
         weapon: {
-          main: { name: "", note: "" },
-          other: Array(organizationSettings.weapon.other).fill(null).map(() => ({ name: "", note: "" })),
-          additional: Array(organizationSettings.weapon.additional).fill(null).map(() => ({ name: "", note: "" }))
+          main: {
+            name: "",
+            note: "",
+            additionalSkill: ""
+          },
+          other: Array(organizationSettings.weapon.other).fill(null).map(() => ({
+            name: "",
+            note: "",
+            additionalSkill: ""
+          })),
+          additional: Array(organizationSettings.weapon.additional).fill(null).map(() => ({
+            name: "",
+            note: "",
+            additionalSkill: ""
+          }))
         },
         summon: {
           main: { name: "", note: "" },
