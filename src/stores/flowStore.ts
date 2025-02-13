@@ -58,22 +58,41 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       updateDate: new Date().toISOString(),
       note: "",
       organization: {
-        job: "",
+        job: {
+          name: "",
+          note: "",
+          equipment: {
+            name: "",
+            note: ""
+          },
+          abilities: [
+            { name: "", note: "" },
+            { name: "", note: "" },
+            { name: "", note: "" }
+          ]
+        },
         member: {
-          front: [] as { note: string; name: string; awaketype: string; }[],
-          back: [] as { note: string; name: string; awaketype: string; }[],
+          front: [
+            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
+            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
+            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" }
+          ],
+          back: [
+            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" },
+            { name: "", note: "", awaketype: "", accessories: "", limitBonus: "" }
+          ]
         },
         weapon: {
-          main: { note: "", name: "" },
-          other: [] as { note: string; name: string; }[],
-          additional: [] as { note: string; name: string; }[],
+          main: { name: "", note: "" },
+          other: Array(9).fill(null).map(() => ({ name: "", note: "" })),
+          additional: Array(3).fill(null).map(() => ({ name: "", note: "" }))
         },
         summon: {
-          main: { note: "", name: "" },
-          friend: { note: "", name: "" },
-          other: [] as { note: string; name: string; }[],
-          sub: [] as { note: string; name: string; }[],
-        },
+          main: { name: "", note: "" },
+          friend: { name: "", note: "" },
+          other: Array(4).fill(null).map(() => ({ name: "", note: "" })),
+          sub: Array(2).fill(null).map(() => ({ name: "", note: "" }))
+        }
       },
       always: "",
       flow: [{
