@@ -47,8 +47,6 @@ const weaponSkillTotalSchema = z.object({
 
 const weaponSchema = itemBaseSchema.extend({
     additionalSkill: z.string(),
-    skillEffects: weaponSkillEffectSchema,
-    skillTotal: weaponSkillTotalSchema,
 });
 
 const summonSchema = itemBaseSchema.extend({
@@ -66,6 +64,8 @@ const organizationSchema = z.object({
         other: z.array(weaponSchema),
         additional: z.array(weaponSchema),
     }),
+    weaponEffects: weaponSkillEffectSchema,
+    totalEffects: weaponSkillTotalSchema,
     summon: z.object({
         main: summonSchema,
         friend: summonSchema,

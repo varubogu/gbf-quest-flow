@@ -75,229 +75,72 @@
         "main": {
           "name": "フェニー杖",
           "note": "火傷稼ぎ、回復、アビダメ",
-          "additionalSkill": "",
-          "skillEffects": {
-            "taRate": "55",
-            "hp": "400",
-            "defense": "90（HP100時）"
-          },
-          "skillTotal": {
-            "taRate": "55\n神石加護で110",
-            "hp": "400\n神石加護で800",
-            "defense": "90（HP100時）\n神石加護で180"
-          }
+          "additionalSkill": ""
         },
         "other": [
           {
             "name": "ミカ斧",
             "note": "与ダメ",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            },
-            "skillTotal": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            }
+            "additionalSkill": ""
           },
           {
             "name": "ミカ斧",
             "note": "与ダメ\n極まると2本めが抜ける場合がある",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            },
-            "skillTotal": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            }
+            "additionalSkill": ""
           },
           {
             "name": "リミパー剣",
             "note": "防御、特殊上限\nムゲン剣と合わせて剣4にする",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            },
-            "skillTotal": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            }
+            "additionalSkill": ""
           },
           {
             "name": "リミゼタ槍",
             "note": "ヒット数\n最低1、あれば最大3",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": ""
           },
           {
             "name": "クビラ槍",
             "note": "アビダメが多いので1は編成したい",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": ""
           },
           {
             "name": "終末（神）220↑",
             "note": "",
-            "additionalSkill": "通常上限\n極破",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": "通常上限\n極破"
           },
           {
             "name": "極星剣",
             "note": "パー剣スキルのため剣。\nもし発動できてるなら杖の方が良い",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": ""
           },
           {
             "name": "ムゲン剣",
             "note": "",
-            "additionalSkill": "防御or特殊覚醒",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": "防御or特殊覚醒"
           }
         ],
         "additional": [
           {
             "name": "ドラポンオリジン",
             "note": "与ダメ",
-            "additionalSkill": "神石神威\n無属性与ダメ",
-            "skillEffects": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            },
-            "skillTotal": {
-              "taRate": "",
-              "hp": "",
-              "defense": ""
-            }
+            "additionalSkill": "神石神威\n無属性与ダメ"
           },
           {
             "name": "サン刀",
             "note": "再行動時の回復\nデビル拳5凸、風ワールド琴で代用可能",
-            "additionalSkill": "",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": ""
           },
           {
             "name": "オメガ杖",
             "note": "主、フェニー連撃のため杖必須",
-            "additionalSkill": "連撃、アビ上限、回復",
-            "skillEffects": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            },
-            "skillTotal": {
-              "taRate": 0,
-              "hp": 0,
-              "defense": {
-                "value": 0,
-                "condition": ""
-              }
-            }
+            "additionalSkill": "連撃、アビ上限、回復"
           }
         ]
+      },
+      "weaponEffects": {
+        "taRate": "70",
+        "hp": "400",
+        "defense": "12"
       },
       "summon": {
         "main": {
@@ -336,6 +179,11 @@
             "note": ""
           }
         ]
+      },
+      "totalEffects": {
+        "taRate": "100",
+        "hp": "400",
+        "defense": "1"
       }
     },
     "always": "フェニーが黄色林檎アンデッドの場合、フェニー2で即消すこと\n（フェニー全回復はターン開始時判定のため、アンデッドが残り1ターンでも大丈夫）\nただでさえ回復力が凄まじいのでアンデッドは即消去する\nフェニー以外奥義しにくいのでFCゲージはFC予兆以外温存\nフェニーは奥義しまくる奥義追撃を撒く、FCゲージを貯める（ターン数をとにかく回したい）\n主人公はフェニー杖の都合上HP50%を維持すること（火傷＋6回アビダメが発動しない）\nフェニー復活後は1アビはリキャストの度に撃つ\nゼタ1は60区間の奥義5回に合わせてバフ切れ狙い、それ以外は常にゼタ1バフついた状態で良い\n",

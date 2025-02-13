@@ -15,34 +15,29 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
   if (!flowData) return null;
 
   const handleSkillTotalChange = (field: keyof WeaponSkillTotal, value: string) => {
-    if (!flowData) return;
+    if (!flowData || !updateFlowData) return;
 
     const newSkillTotal = {
-      ...flowData.organization.weapon.main.skillTotal,
-      [field]: value
+      ...flowData.organization.totalEffects,
+      [field]: value,
     };
 
     updateFlowData({
+      ...flowData,
       organization: {
         ...flowData.organization,
-        weapon: {
-          ...flowData.organization.weapon,
-          main: {
-            ...flowData.organization.weapon.main,
-            skillTotal: newSkillTotal
-          }
-        }
-      }
+        totalEffects: newSkillTotal,
+      },
     });
   };
 
   return (
     <div>
       <SkillTable
-        isEditing={isEditing}
         title={t('skillTotals')}
-        values={flowData.organization.weapon.main.skillTotal}
+        values={flowData.organization.totalEffects}
         onChange={handleSkillTotalChange}
+        isEditing={isEditing}
       />
     </div>
   );

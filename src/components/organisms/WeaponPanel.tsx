@@ -55,24 +55,21 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
     });
   };
 
-  const handleSkillEffectChange = (type: 'main' | 'other' | 'additional', index: number | null, field: keyof WeaponSkillEffect, value: string) => {
-    if (!flowData) return;
-
-    let targetWeapon: Weapon;
-    if (type === 'main') {
-      targetWeapon = flowData.organization.weapon.main;
-    } else if (type === 'other') {
-      targetWeapon = flowData.organization.weapon.other[index!];
-    } else {
-      targetWeapon = flowData.organization.weapon.additional[index!];
-    }
+  const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string) => {
+    if (!flowData || !updateFlowData) return;
 
     const newSkillEffects = {
-      ...targetWeapon.skillEffects,
-      [field]: value
+      ...flowData.organization.weaponEffects,
+      [field]: value,
     };
 
-    handleWeaponChange(type, index, 'skillEffects', newSkillEffects);
+    updateFlowData({
+      ...flowData,
+      organization: {
+        ...flowData.organization,
+        weaponEffects: newSkillEffects,
+      },
+    });
   };
 
   return (
@@ -255,10 +252,10 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       </table>
 
       <SkillTable
-        isEditing={isEditing}
         title={t('skillEffects')}
-        values={flowData.organization.weapon.main.skillEffects}
-        onChange={(field, value) => handleSkillEffectChange('main', null, field as keyof WeaponSkillEffect, value)}
+        values={flowData.organization.weaponEffects}
+        onChange={handleSkillEffectChange}
+        isEditing={isEditing}
       />
     </div>
   );
