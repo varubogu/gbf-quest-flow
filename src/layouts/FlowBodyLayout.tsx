@@ -9,10 +9,12 @@ import { loadSlugData, setTitle } from '@/lib/functions';
 import { Sword, Info } from 'lucide-react';
 import { IconButton } from '@/components/atoms/IconButton';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
+import { InfoModal } from '@/components/organisms/InfoModal';
 
 function FlowBodyLayoutReact() {
   const [isLoading, setIsLoading] = useState(true);
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
@@ -102,7 +104,7 @@ function FlowBodyLayoutReact() {
           <IconButton
             icon={Info}
             label="その他の情報"
-            onClick={() => alert("その他の情報を表示します。")}
+            onClick={() => setIsInfoModalOpen(true)}
           />
         </div>
       </header>
@@ -136,7 +138,10 @@ function FlowBodyLayoutReact() {
       <OrganizationModal
         isOpen={isOrganizationModalOpen}
         onClose={() => setIsOrganizationModalOpen(false)}
-        isEditing={isEditMode}
+      />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
       />
     </div>
   );
