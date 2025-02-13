@@ -134,19 +134,20 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   alignment = "left",
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(content);
+  const [value, setValue] = useState(content || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setValue(content);
+    setValue(content || '');
   }, [content]);
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
-      // カーソルを末尾に移動
-      textareaRef.current.setSelectionRange(value.length, value.length);
-      // テキストエリアの高さを自動調整
+      const currentValue = textareaRef.current.value;
+      if (currentValue) {
+        textareaRef.current.setSelectionRange(currentValue.length, currentValue.length);
+      }
       adjustTextareaHeight();
     }
   }, [isEditing]);
