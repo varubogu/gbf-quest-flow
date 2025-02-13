@@ -9,9 +9,12 @@ const itemBaseSchema = z.object({
 // 編成メンバーのスキーマ
 const memberSchema = itemBaseSchema.extend({
     awaketype: z.string(),
+    accessories: z.string(),
+    limitBonus: z.string(),
 });
 
 const weaponSchema = itemBaseSchema.extend({
+    additionalSkill: z.string(),
 });
 
 const summonSchema = itemBaseSchema.extend({

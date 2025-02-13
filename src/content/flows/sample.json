@@ -4,133 +4,156 @@
     "author": "鈴木太郎",
     "description": "ルシゼロの火マナ編成",
     "updateDate": "2024-12-31T23:59:59",
-    "movie": "https://youtube.com/",
+    "movie": "https://youtube.com/xxxxxxxx",
     "note": "自由に記述するエリアです",
     "organization": {
       "job": "マナダイバー",
       "member": {
         "front": [
           {
-            "name": "リミテッドパーシヴァル",
+            "name": "リミパーシヴァル",
             "awaketype": "防御",
-            "note": ""
+            "note": "TA、弱体数、ヒット数など。区間によっては2アビの緊急回避も使える",
+            "accessories": "なし",
+            "limitBonus": ""
           },
           {
-            "name": "リミテッドゼタ",
+            "name": "リミゼタ",
             "awaketype": "防御",
-            "note": ""
+            "note": "TA、ディスペル、弱体数、アビダメ、ヒット数などほぼすべての予兆で活躍する",
+            "accessories": "なし",
+            "limitBonus": ""
           },
           {
             "name": "フェニー",
-            "awaketype": "防御",
-            "note": "防御LB控えめ、敵対心を少し上げる"
+            "awaketype": "連撃",
+            "note": "アビダメ、耐久など\n他キャラは奥義を打てないことが多いのでFC稼ぎキャラでもある\n自動復活すると耐久力があがるので早めに発動させたい",
+            "accessories": "なし",
+            "limitBonus": "耐久系は控えめ、敵対心UP"
           }
         ],
         "back": [
           {
             "name": "アラナン",
-            "awaketype": "問わない",
-            "note": ""
+            "awaketype": "任意",
+            "note": "基本出ない想定。出た場合はさっさとバースト",
+            "accessories": "なし",
+            "limitBonus": ""
           },
           {
             "name": "ミカエル",
-            "awaketype": "問わない",
-            "note": ""
+            "awaketype": "任意",
+            "note": "加護ブースト目的\n基本表には出ない",
+            "accessories": "なし",
+            "limitBonus": ""
           }
         ]
       },
       "weapon": {
         "main": {
           "name": "フェニー杖",
-          "note": ""
+          "note": "火傷稼ぎ、回復、アビダメ",
+          "additionalSkill": ""
         },
         "other": [
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "ミカ斧",
+            "note": "与ダメ",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "ミカ斧",
+            "note": "与ダメ\n極まると2本めが抜ける場合がある",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "リミパー剣",
+            "note": "防御、特殊上限\nムゲン剣と合わせて剣4にする",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "リミパー剣",
+            "note": "防御、特殊上限",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "リミゼタ槍",
+            "note": "ヒット数\n最低1、あれば最大3",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "クビラ槍",
+            "note": "アビダメが多いので1は編成したい",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "終末（神）220↑",
+            "note": "",
+            "additionalSkill": "通常上限\n極破"
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "極星剣",
+            "note": "パー剣スキルのため剣。\nもし発動できてるなら杖の方が良い",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "ムゲン剣",
+            "note": "",
+            "additionalSkill": "防御or特殊覚醒"
           }
         ],
         "additional": [
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "ドラポンオリジン",
+            "note": "与ダメ",
+            "additionalSkill": "神石神威\n無属性与ダメ"
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "サン刀",
+            "note": "再行動時の回復\nデビル拳5凸、風ワールド琴で代用可能",
+            "additionalSkill": ""
           },
           {
-            "name": "フェニー杖",
-            "note": ""
+            "name": "オメガ杖",
+            "note": "主、フェニー連撃のため杖必須",
+            "additionalSkill": "連撃、アビ上限、回復"
           }
         ]
       },
       "summon": {
         "main": {
-          "name": "アグニス",
-          "note": "220以上"
+          "name": "超越アグニス220↑",
+          "note": "極破加護目的、弱体数や奥義加速も"
         },
         "friend": {
-          "name": "アグニス",
-          "note": "220以上"
+          "name": "超越アグニス220↑",
+          "note": "同上\n片面極破や連撃率確保済みならルシでも良い"
         },
         "other": [
           {
-            "name": "サン",
-            "note": ""
+            "name": "黒麒麟3凸",
+            "note": "事故リカバリ"
           },
           {
-            "name": "ルシフェル",
-            "note": "230以上"
+            "name": "トリゼロ4凸",
+            "note": "奥義5回用、裏で事故リカバリ"
           },
           {
-            "name": "トリプルゼロ",
-            "note": "表で奥義5回、裏で奥義6回を解除"
+            "name": "サン5凸",
+            "note": "6回行動、ゼタの自動アビ"
           },
           {
-            "name": "黒麒麟",
-            "note": "20試練用"
+            "name": "超越ルシ230↑",
+            "note": "回復"
           }
         ],
         "sub": [
           {
             "name": "ミカエル",
-            "note": ""
+            "note": "ダメ上限強化"
           },
           {
-            "name": "ウィルナス",
+            "name": "ウィルナス4凸",
             "note": ""
           }
         ]

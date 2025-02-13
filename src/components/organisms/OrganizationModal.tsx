@@ -2,67 +2,51 @@ import React, { useState } from 'react';
 import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
 import { WeaponPanel } from './WeaponPanel';
 import { SummonPanel } from './SummonPanel';
+import useFlowStore from '@/stores/flowStore';
+import type { Member } from '@/types/models';
 
 interface OrganizationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  isEditing?: boolean;
 }
 
-interface CharacterData {
-  position: string;
-  name: string;
-  purpose: string;
-  awakening: string;
-  accessories: string;
-  limitBonus: string;
-}
-
-const characters: CharacterData[] = [
-  {
-    position: 'フロント',
-    name: 'リミパーシヴァル',
-    purpose: 'TA、弱体数、ヒット数など。区間によっては2アビの緊急回避も使える',
-    awakening: '防御',
-    accessories: 'なし',
-    limitBonus: ''
-  },
-  {
-    position: 'フロント',
-    name: 'リミゼタ',
-    purpose: 'TA、ディスペル、弱体数、アビダメ、ヒット数などほぼすべての予兆で活躍する',
-    awakening: '防御',
-    accessories: 'なし',
-    limitBonus: ''
-  },
-  {
-    position: 'フロント',
-    name: 'フェニー',
-    purpose: 'アビダメ、耐久など\n他キャラは奥義を打てないことが多いのでFC稼ぎキャラでもある\n自動復活すると耐久力があがるので早めに発動させたい',
-    awakening: '連撃',
-    accessories: 'なし',
-    limitBonus: '耐久系は控えめ、敵対心UP'
-  },
-  {
-    position: 'サブ',
-    name: 'アラナン',
-    purpose: '基本出ない想定。出た場合はさっさとバースト',
-    awakening: '任意',
-    accessories: 'なし',
-    limitBonus: ''
-  },
-  {
-    position: 'サブ',
-    name: 'ミカエル',
-    purpose: '加護ブースト目的\n基本表には出ない',
-    awakening: '任意',
-    accessories: 'なし',
-    limitBonus: ''
-  }
-];
-
-export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose, isEditing = false }) => {
+export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose }) => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const { flowData, isEditMode, updateFlowData } = useFlowStore();
+
+  const handleJobChange = (value: string) => {
+    if (!flowData) return;
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        job: value
+      }
+    });
+  };
+
+  const handleMemberChange = (position: 'front' | 'back', index: number, field: keyof Member, value: string) => {
+    if (!flowData) return;
+    const newMembers = position === 'front'
+      ? [...flowData.organization.member.front]
+      : [...flowData.organization.member.back];
+
+    newMembers[index] = {
+      ...newMembers[index],
+      [field]: value
+    };
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        member: {
+          ...flowData.organization.member,
+          [position]: newMembers
+        }
+      }
+    });
+  };
+
+  if (!flowData) return null;
 
   return (
     <HeadlessDialog open={isOpen} onClose={onClose}>
@@ -117,18 +101,15 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                         <div className="grid grid-cols-3 gap-4">
                           <div>
                             <h4 className="font-bold">ジョブ</h4>
-                            {isEditing ? (
-                              <input type="text" defaultValue="マナダイバー" className="border p-2 w-full" />
+                            {isEditMode ? (
+                              <input
+                                type="text"
+                                value={flowData.organization.job}
+                                onChange={(e) => handleJobChange(e.target.value)}
+                                className="border p-2 w-full"
+                              />
                             ) : (
-                              <p>マナダイバー</p>
-                            )}
-                          </div>
-                          <div className="col-span-2">
-                            <h4 className="font-bold">用途</h4>
-                            {isEditing ? (
-                              <input type="text" defaultValue="ダメアビで予兆解除を狙う" className="border p-2 w-full" />
-                            ) : (
-                              <p>ダメアビで予兆解除を狙う</p>
+                              <p>{flowData.organization.job}</p>
                             )}
                           </div>
                         </div>
@@ -148,51 +129,138 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             </tr>
                           </thead>
                           <tbody>
-                            {characters.map((char, index) => (
-                              <tr key={index}>
+                            {flowData.organization.member.front.map((char, index) => (
+                              <tr key={`front-${index}`}>
+                                <td className="border p-2">フロント</td>
                                 <td className="border p-2">
-                                  {isEditing ? (
-                                    <input type="text" defaultValue={char.position} className="border p-1 w-full" />
-                                  ) : (
-                                    char.position
-                                  )}
-                                </td>
-                                <td className="border p-2">
-                                  {isEditing ? (
-                                    <input type="text" defaultValue={char.name} className="border p-1 w-full" />
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.name}
+                                      onChange={(e) => handleMemberChange('front', index, 'name', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
                                   ) : (
                                     char.name
                                   )}
                                 </td>
                                 <td className="border p-2">
-                                  {isEditing ? (
-                                    <textarea defaultValue={char.purpose} className="border p-1 w-full" />
+                                  {isEditMode ? (
+                                    <textarea
+                                      value={char.note}
+                                      onChange={(e) => handleMemberChange('front', index, 'note', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
                                   ) : (
-                                    char.purpose.split('\n').map((line, i) => (
+                                    char.note.split('\n').map((line, i) => (
                                       <React.Fragment key={i}>
                                         {line}
-                                        {i < char.purpose.split('\n').length - 1 && <br />}
+                                        {i < char.note.split('\n').length - 1 && <br />}
                                       </React.Fragment>
                                     ))
                                   )}
                                 </td>
                                 <td className="border p-2">
-                                  {isEditing ? (
-                                    <input type="text" defaultValue={char.awakening} className="border p-1 w-full" />
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.awaketype}
+                                      onChange={(e) => handleMemberChange('front', index, 'awaketype', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
                                   ) : (
-                                    char.awakening
+                                    char.awaketype
                                   )}
                                 </td>
                                 <td className="border p-2">
-                                  {isEditing ? (
-                                    <input type="text" defaultValue={char.accessories} className="border p-1 w-full" />
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.accessories}
+                                      onChange={(e) => handleMemberChange('front', index, 'accessories', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
                                   ) : (
                                     char.accessories
                                   )}
                                 </td>
                                 <td className="border p-2">
-                                  {isEditing ? (
-                                    <input type="text" defaultValue={char.limitBonus} className="border p-1 w-full" />
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.limitBonus}
+                                      onChange={(e) => handleMemberChange('front', index, 'limitBonus', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    char.limitBonus
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                            {flowData.organization.member.back.map((char, index) => (
+                              <tr key={`back-${index}`}>
+                                <td className="border p-2">サブ</td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.name}
+                                      onChange={(e) => handleMemberChange('back', index, 'name', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    char.name
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <textarea
+                                      value={char.note}
+                                      onChange={(e) => handleMemberChange('back', index, 'note', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    char.note.split('\n').map((line, i) => (
+                                      <React.Fragment key={i}>
+                                        {line}
+                                        {i < char.note.split('\n').length - 1 && <br />}
+                                      </React.Fragment>
+                                    ))
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.awaketype}
+                                      onChange={(e) => handleMemberChange('back', index, 'awaketype', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    char.awaketype
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.accessories}
+                                      onChange={(e) => handleMemberChange('back', index, 'accessories', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
+                                  ) : (
+                                    char.accessories
+                                  )}
+                                </td>
+                                <td className="border p-2">
+                                  {isEditMode ? (
+                                    <input
+                                      type="text"
+                                      value={char.limitBonus}
+                                      onChange={(e) => handleMemberChange('back', index, 'limitBonus', e.target.value)}
+                                      className="border p-1 w-full"
+                                    />
                                   ) : (
                                     char.limitBonus
                                   )}
@@ -205,32 +273,35 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                     </HeadlessTab.Panel>
 
                     <HeadlessTab.Panel>
-                      <WeaponPanel isEditing={isEditing} />
+                      <WeaponPanel isEditing={isEditMode} />
                     </HeadlessTab.Panel>
 
                     <HeadlessTab.Panel>
-                      <SummonPanel isEditing={isEditing} />
+                      <SummonPanel isEditing={isEditMode} />
                     </HeadlessTab.Panel>
 
                     <HeadlessTab.Panel>
                       {/* 動画情報 */}
                       <div className="p-4">
                         <h3 className="text-lg font-bold mb-4">動画</h3>
-                        {isEditing ? (
+                        {isEditMode ? (
                           <input
                             type="text"
-                            defaultValue="https://youtube.com/xxxxxxxx"
+                            value={flowData.movie || ''}
+                            onChange={(e) => updateFlowData({ movie: e.target.value })}
                             className="border p-2 w-full"
                           />
                         ) : (
-                          <a
-                            href="https://youtube.com/xxxxxxxx"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                          >
-                            https://youtube.com/xxxxxxxx
-                          </a>
+                          flowData.movie && (
+                            <a
+                              href={flowData.movie}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline"
+                            >
+                              {flowData.movie}
+                            </a>
+                          )
                         )}
                       </div>
                     </HeadlessTab.Panel>
@@ -250,7 +321,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             <tr>
                               <td className="border p-2">TA確率</td>
                               <td className="border p-2">
-                                {isEditing ? (
+                                {isEditMode ? (
                                   <input type="text" defaultValue="55" className="border p-1 w-full" />
                                 ) : (
                                   "55"
@@ -260,7 +331,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             <tr>
                               <td className="border p-2">HP</td>
                               <td className="border p-2">
-                                {isEditing ? (
+                                {isEditMode ? (
                                   <input type="text" defaultValue="400" className="border p-1 w-full" />
                                 ) : (
                                   "400"
@@ -270,7 +341,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             <tr>
                               <td className="border p-2">防御</td>
                               <td className="border p-2">
-                                {isEditing ? (
+                                {isEditMode ? (
                                   <input type="text" defaultValue="90（HP100時）" className="border p-1 w-full" />
                                 ) : (
                                   "90（HP100時）"
