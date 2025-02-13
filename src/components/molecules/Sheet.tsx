@@ -20,11 +20,14 @@ export const Sheet: React.FC<SheetProps> = ({ children, open: controlledOpen, on
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : uncontrolledOpen;
-  const setOpen = (value: boolean) => {
+
+  // React.Dispatch<React.SetStateAction<boolean>> に準拠するように、関数型更新もサポート
+  const setOpen: React.Dispatch<React.SetStateAction<boolean>> = (value) => {
+    const newValue = typeof value === "function" ? (value as (prev: boolean) => boolean)(open) : value;
     if (!isControlled) {
-      setUncontrolledOpen(value);
+      setUncontrolledOpen(newValue);
     }
-    onOpenChange?.(value);
+    onOpenChange?.(newValue);
   };
 
   return (

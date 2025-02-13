@@ -129,7 +129,7 @@ function FlowBodyLayoutReact() {
             <PanelResizeHandle className="h-2 bg-gray-300 hover:bg-gray-400 transition-colors cursor-row-resize" />
             <Panel defaultSize={50} minSize={10}>
               <div className="h-full overflow-auto">
-                <ActionTableContainer data={flowData.flow} buttonPosition="right" isEditMode={isEditMode} />
+                <ActionTableContainer data={flowData.flow} isEditMode={isEditMode} />
               </div>
             </Panel>
           </PanelGroup>
