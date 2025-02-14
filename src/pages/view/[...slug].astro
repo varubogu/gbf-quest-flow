@@ -5,7 +5,6 @@ import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
 import FlowBodyLayout from "@/layouts/FlowBodyLayout";
 import useFlowStore from "@/stores/flowStore";
 
-
 export async function getStaticPaths() {
     const entries = await getCollection("flows");
 
@@ -24,24 +23,10 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-
-
-// クライアントサイドでストアに初期データをセット
-useFlowStore.getState().setFlowData(entry.data);
+const initialData = entry.data;
 ---
 
 <FlowBaseLayout>
-    <FlowBodyLayout client:load />
+    <FlowBodyLayout client:load initialData={initialData} />
 </FlowBaseLayout>
-
-<script is:inline type="module">
-    import useFlowStore from "@/stores/flowStore";
-    async function initData() {
-        const res = await fetch("/content/flows/sample.json");
-        const data = await res.json();
-
-        useFlowStore.getState().setFlowData(data);
-    }
-    initData();
-</script>
 

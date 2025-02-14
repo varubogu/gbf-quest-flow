@@ -12,7 +12,7 @@ interface HistoryState {
 interface FlowStore {
   flowData: Flow | null
   originalData: Flow | null // 編集前のデータを保持
-  setFlowData: (newData: Flow | null) => void
+  setFlowData: (data: Flow | null) => void
   updateFlowData: (update: Partial<Flow>) => void
   loadFlowFromFile: () => Promise<void>
   createNewFlow: () => void // 新しいデータを作成する関数を追加
@@ -243,22 +243,17 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  setFlowData: (newData: Flow | null) => {
-    const { isEditMode } = get();
-    if (newData) {
-      // データの個数を調整
-      const adjustedData = {
-        ...newData,
-        organization: adjustOrganizationData(newData.organization)
-      };
-      if (isEditMode) {
-        // 編集モード中は履歴に追加
-        get().pushToHistory(adjustedData);
-      }
-      set({ flowData: adjustedData, currentRow: 0 });
-    } else {
+  setFlowData: (data: Flow | null) => {
+    if (data === null) {
       set({ flowData: null, currentRow: 0 });
+      return;
     }
+
+    const adjustedData = {
+      ...data,
+      organization: adjustOrganizationData(data.organization)
+    };
+    set({ flowData: adjustedData, currentRow: 0 });
   },
 
   updateFlowData: (updates: Partial<Flow>) => {
@@ -411,11 +406,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
-      const adjustedData = {
-        ...data,
-        organization: adjustOrganizationData(data.organization)
-      };
-      set({ flowData: adjustedData, currentRow: 0 });
+      useFlowStore.getState().setFlowData(data);  // 分離した関数を使用
     } catch (error) {
       useErrorStore.getState().showError(error instanceof Error ? error : new Error('ファイルの読み込み中にエラーが発生しました'));
       throw error;

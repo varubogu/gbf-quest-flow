@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
 import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
@@ -15,8 +15,13 @@ import { InfoModal } from '@/components/organisms/InfoModal';
 import I18nProvider from '@/components/I18nProvider';
 import { useTranslation } from 'react-i18next';
 import { ErrorDialog } from "@/components/organisms/ErrorDialog";
+import type { Flow } from '@/types/models';
 
-function FlowContent() {
+interface Props {
+  initialData?: Flow;
+}
+
+function FlowContent({ initialData }: Props) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
@@ -29,6 +34,12 @@ function FlowContent() {
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const setFlowData = useFlowStore((state) => state.setFlowData);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
+
+  useEffect(() => {
+    if (initialData) {
+      setFlowData(initialData);
+    }
+  }, [initialData, setFlowData]);
 
   // 初期ロード完了時にローディングを解除
   React.useEffect(() => {
@@ -185,10 +196,16 @@ function FlowContent() {
   );
 }
 
-function FlowBodyLayoutReact() {
+function FlowBodyLayoutReact({ initialData }: Props) {
+  useEffect(() => {
+    if (initialData) {
+      useFlowStore.getState().setFlowData(initialData);
+    }
+  }, [initialData]);
+
   return (
     <I18nProvider>
-      <FlowContent />
+      <FlowContent initialData={initialData} />
     </I18nProvider>
   );
 }
