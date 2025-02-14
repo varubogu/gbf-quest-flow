@@ -10,6 +10,18 @@ export default defineConfig({
     react(),
   ],
   vite: {
-    plugins: [tailwindcss()]
-  }
+    plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        external: [
+          /\.test\.(ts|tsx)$/,
+          /\.spec\.(ts|tsx)$/,
+          /__tests__/,
+          /src\/mocks\//, // モックファイルも除外
+          /jest\.(config|setup)\.(ts|js)$/, // Jestの設定ファイルも除外
+          /playwright\.config\.(ts|js)$/, // Playwrightの設定ファイルも除外
+        ],
+      },
+    },
+  },
 });
