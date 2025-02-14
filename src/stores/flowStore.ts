@@ -195,11 +195,21 @@ const useFlowStore = create<FlowStore>((set, get) => ({
             additionalSkill: ""
           }))
         },
+        weaponEffects: {
+          taRate: "",
+          hp: "",
+          defense: ""
+        },
         summon: {
           main: { name: "", note: "" },
           friend: { name: "", note: "" },
           other: Array(organizationSettings.summon.other).fill(null).map(() => ({ name: "", note: "" })),
           sub: Array(organizationSettings.summon.sub).fill(null).map(() => ({ name: "", note: "" }))
+        },
+        totalEffects: {
+          taRate: "",
+          hp: "",
+          defense: ""
         }
       },
       always: "",
