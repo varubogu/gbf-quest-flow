@@ -4,13 +4,33 @@ import { beforeAll, afterEach, afterAll, vi, expect } from 'vitest';
 import { server } from '../mocks/server';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { act } from '@testing-library/react';
+import { cleanup } from '@testing-library/react';
 
 expect.extend(matchers);
 
+// コンソールエラーの抑制設定
+const originalConsoleError = console.error;
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: ReactDOM.render is no longer supported')
+    ) {
+      return;
+    }
+    originalConsoleError(...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+});
+
 // MSWのセットアップ
-beforeAll(() => server.listen());
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => {
   server.resetHandlers();
+  cleanup(); // React Testing Libraryのクリーンアップ
   // Zustandのストアの更新を同期的に処理
   vi.runAllTimers();
 });
@@ -38,4 +58,30 @@ beforeAll(() => {
 
 afterAll(() => {
   vi.useRealTimers();
+});
+
+// IntersectionObserverのモック
+class MockIntersectionObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+}
+
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: MockIntersectionObserver,
+});
+
+// ResizeObserverのモック
+class MockResizeObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+}
+
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: true,
+  configurable: true,
+  value: MockResizeObserver,
 });
