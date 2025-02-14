@@ -4,7 +4,6 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 import useFlowStore from '@/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import '@testing-library/jest-dom/vitest';
 
 // モックデータ
 const mockFlowData = {
@@ -49,9 +48,9 @@ describe('WeaponPanel', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByText('テスト武器')).toBeInTheDocument();
-    expect(screen.getByText('テストスキル')).toBeInTheDocument();
-    expect(screen.getByText('テストノート')).toBeInTheDocument();
+    expect(screen.getByText('テスト武器'));
+    expect(screen.getByText('テストスキル'));
+    expect(screen.getByText('テストノート'));
   });
 
   it('編集モードで入力フィールドが表示される', () => {
@@ -61,8 +60,8 @@ describe('WeaponPanel', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByDisplayValue('テスト武器')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('テストスキル')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('テストノート')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('テスト武器'));
+    expect(screen.getByDisplayValue('テストスキル'));
+    expect(screen.getByDisplayValue('テストノート'));
   });
 });

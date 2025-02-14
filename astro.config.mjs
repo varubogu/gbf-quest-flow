@@ -18,7 +18,7 @@ export default defineConfig({
           /\.spec\.(ts|tsx)$/,
           /__tests__/,
           /src\/mocks\//, // モックファイルも除外
-          /jest\.(config|setup)\.(ts|js)$/, // Jestの設定ファイルも除外
+          /vitest\.(config|setup)\.(ts|js)$/, // Vitestの設定ファイルも除外
           /playwright\.config\.(ts|js)$/, // Playwrightの設定ファイルも除外
         ],
       },
