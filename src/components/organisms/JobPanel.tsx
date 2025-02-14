@@ -3,6 +3,7 @@ import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
 
 interface JobPanelProps {
   isEditing: boolean;
@@ -64,19 +65,19 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border">
+      <table className={tableBaseStyle}>
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 w-24">{t('jobItem')}</th>
-            <th className="border p-2 w-40">{t('jobValue')}</th>
-            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
+          <tr className={tableHeaderRowStyle}>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('jobItem')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('jobValue')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* ジョブ行 */}
           <tr>
-            <td className="border p-2">{t('jobClass')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('jobClass')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
                   type="text"
@@ -88,7 +89,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                 flowData.organization.job.name
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.job.note)}
@@ -108,8 +109,8 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           </tr>
           {/* 特殊装備行 */}
           <tr>
-            <td className="border p-2">{t('jobMainHand')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('jobMainHand')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
                   type="text"
@@ -121,7 +122,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                 flowData.organization.job.equipment.name
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.job.equipment.note)}
@@ -143,11 +144,11 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           {flowData.organization.job.abilities.map((ability, index) => (
             <tr key={`ability-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.job.abilities.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.job.abilities.length}>
                   {t('characterAbilities')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -159,7 +160,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
                   ability.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(ability.note)}

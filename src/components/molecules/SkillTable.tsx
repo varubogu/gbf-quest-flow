@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
 import { useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
 
 interface SkillTableProps {
   isEditing: boolean;
@@ -16,17 +17,17 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
   return (
     <div className="mt-8">
       <h3 className="text-lg font-bold mb-4">{title}</h3>
-      <table className="min-w-full border">
+      <table className={tableBaseStyle}>
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 w-1/4">{t('skill')}</th>
-            <th className="border p-2 w-3/4">{title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}</th>
+          <tr className={tableHeaderRowStyle}>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles["1/4"]}`}>{t('skill')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles["3/4"]}`}>{title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="border p-2">{t('taRate')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('taRate')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(values.taRate)}
@@ -45,8 +46,8 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
             </td>
           </tr>
           <tr>
-            <td className="border p-2">HP</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>HP</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(values.hp)}
@@ -65,8 +66,8 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
             </td>
           </tr>
           <tr>
-            <td className="border p-2">{t('defense')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('defense')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(values.defense)}

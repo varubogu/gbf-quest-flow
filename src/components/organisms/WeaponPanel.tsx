@@ -4,6 +4,7 @@ import type { Weapon, WeaponSkillEffect, WeaponSkillTotal } from '@/types/models
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
+import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -74,20 +75,20 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border">
+      <table className={tableBaseStyle}>
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 w-24">{t('weaponCategory')}</th>
-            <th className="border p-2 w-40">{t('weaponName')}</th>
-            <th className="border p-2 min-w-[200px]">{t('weaponAdditionalSkill')}</th>
-            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
+          <tr className={tableHeaderRowStyle}>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('weaponCategory')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('weaponName')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('weaponAdditionalSkill')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* メイン武器 */}
           <tr>
-            <td className="border p-2">{t('weaponMain')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('weaponMain')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
                   type="text"
@@ -99,7 +100,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 flowData.organization.weapon.main.name
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.weapon.main.additionalSkill)}
@@ -116,7 +117,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 ))
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.weapon.main.note)}
@@ -139,11 +140,11 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {flowData.organization.weapon.other.map((weapon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.weapon.other.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.weapon.other.length}>
                   {t('weaponNormal')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -155,7 +156,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   weapon.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(weapon.additionalSkill)}
@@ -172,7 +173,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   ))
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(weapon.note)}
@@ -196,11 +197,11 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {flowData.organization.weapon.additional.map((weapon, index) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.weapon.additional.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.weapon.additional.length}>
                   {t('weaponAdditional')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -212,7 +213,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   weapon.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(weapon.additionalSkill)}
@@ -229,7 +230,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   ))
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(weapon.note)}

@@ -3,6 +3,7 @@ import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
 
 interface CharacterPanelProps {
   isEditing: boolean;
@@ -38,15 +39,15 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border">
+      <table className={tableBaseStyle}>
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 w-24">{t('characterPosition')}</th>
-            <th className="border p-2 w-40">{t('characterName')}</th>
-            <th className="border p-2 min-w-[300px]">{t('characterUsage')}</th>
-            <th className="border p-2 w-20">{t('characterAwakening')}</th>
-            <th className="border p-2 min-w-[200px]">{t('characterAccessories')}</th>
-            <th className="border p-2 min-w-[200px]">{t('characterLimitBonus')}</th>
+          <tr className={tableHeaderRowStyle}>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('characterPosition')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('characterName')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('characterUsage')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}>{t('characterAwakening')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('characterAccessories')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('characterLimitBonus')}</th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +55,11 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
           {flowData.organization.member.front.map((char, index) => (
             <tr key={`front-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.member.front.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.member.front.length}>
                   {t('characterFront')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -70,7 +71,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.note)}
@@ -87,7 +88,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   ))
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -100,7 +101,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.awaketype
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.accessories)}
@@ -112,7 +113,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.accessories
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.limitBonus)}
@@ -130,11 +131,11 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
           {flowData.organization.member.back.map((char, index) => (
             <tr key={`back-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.member.back.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.member.back.length}>
                   {t('characterBack')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -146,7 +147,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.note)}
@@ -163,7 +164,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   ))
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -176,7 +177,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.awaketype
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.accessories)}
@@ -188,7 +189,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   char.accessories
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(char.limitBonus)}

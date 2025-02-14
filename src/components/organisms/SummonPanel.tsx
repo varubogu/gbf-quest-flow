@@ -3,6 +3,7 @@ import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -62,19 +63,19 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border">
+      <table className={tableBaseStyle}>
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 w-24">{t('summonCategory')}</th>
-            <th className="border p-2 w-40">{t('summonName')}</th>
-            <th className="border p-2 min-w-[300px]">{t('overview')}</th>
+          <tr className={tableHeaderRowStyle}>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('summonCategory')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('summonName')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
           </tr>
         </thead>
         <tbody>
           {/* メイン召喚石 */}
           <tr>
-            <td className="border p-2">{t('summonMain')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('summonMain')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
                   type="text"
@@ -86,7 +87,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 flowData.organization.summon.main.name
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.summon.main.note)}
@@ -107,8 +108,8 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
           {/* フレンド召喚石 */}
           <tr>
-            <td className="border p-2">{t('summonFriend')}</td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>{t('summonFriend')}</td>
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
                   type="text"
@@ -120,7 +121,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 flowData.organization.summon.friend.name
               )}
             </td>
-            <td className="border p-2">
+            <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.summon.friend.note)}
@@ -143,11 +144,11 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {flowData.organization.summon.other.map((summon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.summon.other.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.summon.other.length}>
                   {t('summonNormal')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -159,7 +160,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   summon.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(summon.note)}
@@ -183,11 +184,11 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {flowData.organization.summon.sub.map((summon, index) => (
             <tr key={`sub-${index}`}>
               {index === 0 && (
-                <td className="border p-2" rowSpan={flowData.organization.summon.sub.length}>
+                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.summon.sub.length}>
                   {t('summonSub')}
                 </td>
               )}
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <input
                     type="text"
@@ -199,7 +200,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                   summon.name
                 )}
               </td>
-              <td className="border p-2">
+              <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
                     ref={useAutoResizeTextArea(summon.note)}

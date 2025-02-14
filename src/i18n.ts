@@ -136,6 +136,7 @@ i18n
           weaponNormal: '通常武器',
           weaponAdditional: '追加武器',
           skillEffects: 'スキル効果量',
+          totalAmount: 'スキル総量',
 
           // 召喚石関連
           summonCategory: 'カテゴリ',
@@ -274,7 +275,7 @@ i18n
           weaponNormal: 'Normal',
           weaponAdditional: 'Additional',
           skillEffects: 'Skill Effects',
-
+          totalAmount: 'Total Amount',
           // Summon related
           summonCategory: 'Category',
           summonName: 'Summon',

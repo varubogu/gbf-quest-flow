@@ -167,11 +167,11 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       )}
 
       {/* ヘッダー部分：編集モード時はより上部に配置 */}
-      <div className={`${getGridClasses(isEditMode)} bg-green-300 sticky ${isEditMode ? 'top-0' : 'top-12'} z-10 shadow-sm border-b border-gray-400 border-l border-r`}>
+      <div className={`${getGridClasses(isEditMode)} bg-green-300 sticky ${isEditMode ? 'top-0' : 'top-12'} z-10 shadow-sm border-b border-gray-800 border-l border-r`}>
         {isEditMode && (
           <>
-            <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium" />
-            <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
+            <div className="w-full h-full border-b border-r border-gray-800 bg-muted font-medium" />
+            <div className="w-full h-full border-b border-r border-gray-800 bg-muted font-medium flex justify-center pt-2">
               <button
                 onClick={() => onAddRow?.(-1)}
                 className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
@@ -214,7 +214,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
               key={index}
               id={`action-row-${index}`}
               onDoubleClick={() => !isEditMode && onRowSelect(index)}
-              className={`${getGridClasses(isEditMode)} border-b border-gray-400 border-l border-r ${
+              className={`${getGridClasses(isEditMode)} border-b border-gray-800 border-l border-r ${
                 !isEditMode && index === currentRow
                   ? "border-2 border-yellow-500 bg-yellow-200"
                   : !isEditMode && index < currentRow
@@ -224,7 +224,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             >
               {isEditMode && (
                 <>
-                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
+                  <div className="w-full h-full border-b border-r border-gray-800 bg-muted font-medium flex justify-center pt-2">
                     <button
                       onClick={() => onDeleteRow?.(index)}
                       className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
@@ -232,7 +232,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                       <Minus className="w-4 h-4 text-white" />
                     </button>
                   </div>
-                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
+                  <div className="w-full h-full border-b border-r border-gray-800 bg-muted font-medium flex justify-center pt-2">
                     <button
                       onClick={() => onAddRow?.(index)}
                       className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
