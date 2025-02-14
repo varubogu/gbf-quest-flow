@@ -17,9 +17,10 @@ export default defineConfig({
           /\.test\.(ts|tsx)$/,
           /\.spec\.(ts|tsx)$/,
           /__tests__/,
-          /src\/mocks\//, // モックファイルも除外
-          /vitest\.(config|setup)\.(ts|js)$/, // Vitestの設定ファイルも除外
-          /playwright\.config\.(ts|js)$/, // Playwrightの設定ファイルも除外
+          /__mocks__/,
+          /src\/mocks\//,
+          /vitest\.(config|setup)\.(ts|js)$/,
+          /playwright\.config\.(ts|js)$/,
         ],
       },
     },

@@ -28,3 +28,11 @@ pnpm-debug.log*
 
 # test results
 test-results/
+coverage/
+
+# test files from build
+dist/**/*.test.*
+dist/**/*.spec.*
+dist/**/__tests__/
+dist/**/__mocks__/
+dist/**/mocks/
