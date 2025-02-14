@@ -23,7 +23,8 @@
 
 # 採用技術について
 
-- ランタイムはBun、Astro.js(SSG)とReactベースで作成する
+- 開発環境はCursor、Dev Container（WSL2+DockerまたはOrbStack）を使用する
+- ランタイムはBun、Astro.js(SSG)とReact(CSR)ベースで作成する
 - レイアウトはTailwind CSS、shadcn/uiを使用する
 - 将来的にはCloudflare Pagesとして動作させることを想定
 
