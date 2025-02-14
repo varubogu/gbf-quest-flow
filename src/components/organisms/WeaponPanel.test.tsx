@@ -48,9 +48,9 @@ describe('WeaponPanel', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByText('テスト武器'));
-    expect(screen.getByText('テストスキル'));
-    expect(screen.getByText('テストノート'));
+    expect(screen.getByText('テスト武器')).toBeDefined();
+    expect(screen.getByText('テストスキル')).toBeDefined();
+    expect(screen.getByText('テストノート')).toBeDefined();
   });
 
   it('編集モードで入力フィールドが表示される', () => {
@@ -60,8 +60,8 @@ describe('WeaponPanel', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByDisplayValue('テスト武器'));
-    expect(screen.getByDisplayValue('テストスキル'));
-    expect(screen.getByDisplayValue('テストノート'));
+    expect(screen.getByDisplayValue('テスト武器')).toBeDefined();
+    expect(screen.getByDisplayValue('テストスキル')).toBeDefined();
+    expect(screen.getByDisplayValue('テストノート')).toBeDefined();
   });
 });
