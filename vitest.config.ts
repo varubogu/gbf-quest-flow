@@ -14,6 +14,10 @@ export default defineConfig({
       '.bun/**',
       'dist/**'
     ],
+    // テスト間の分離を強化
+    isolate: true,
+    // テストの並列実行を完全に無効化
+    maxConcurrency: 1
   },
   resolve: {
     alias: {
