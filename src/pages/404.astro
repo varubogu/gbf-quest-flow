@@ -1,19 +1,10 @@
 ---
 import FlowBaseLayout from '@/layouts/FlowBaseLayout.astro';
+import FlowBodyLayout from '@/layouts/FlowBodyLayout';
 import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
 ---
 
 <FlowBaseLayout>
-  <div class="min-h-screen flex items-center justify-center flex-col">
-    <div class="text-2xl font-bold mb-4">404 - ページが見つかりません</div>
-    <div class="text-lg mb-8">お探しのデータは見つかりませんでした。</div>
-    <div class="flex gap-4 mb-4">
-      <CreateFlowButton client:load />
-      <LoadFlowButton client:load />
-    </div>
-    <div class="text-sm text-gray-600">
-      ※ トップページからデータを検索することもできます。
-    </div>
-  </div>
+  <FlowBodyLayout client:load />
 </FlowBaseLayout>
