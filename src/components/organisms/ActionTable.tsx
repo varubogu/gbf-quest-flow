@@ -55,13 +55,13 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       // タッチパッドの判定
       const isTouchpad = e.deltaMode === 0;  // ピクセル単位のスクロール
 
-      if (isTouchpad) {
-        const currentTime = Date.now();
-        if (currentTime - lastWheelTimeRef.current < 500) {  // タッチパッドの場合のみ500ミリ秒のクールダウン
-          return;
-        }
-        lastWheelTimeRef.current = currentTime;
-      }
+      // if (isTouchpad) {
+      //   const currentTime = Date.now();
+      //   if (currentTime - lastWheelTimeRef.current < 500) {  // タッチパッドの場合のみ500ミリ秒のクールダウン
+      //     return;
+      //   }
+      //   lastWheelTimeRef.current = currentTime;
+      // }
 
       if (e.deltaY < 0 && currentRow > 0) {
         onRowSelect(currentRow - 1);
