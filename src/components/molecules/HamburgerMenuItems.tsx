@@ -129,7 +129,6 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
         alert(t('showHelp'));
         break;
       default:
-        console.log(`未実装のID: ${id}`);
     }
   };
 
