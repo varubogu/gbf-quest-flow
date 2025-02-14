@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Bun files
 .bun
+
+# test results
+test-results/
