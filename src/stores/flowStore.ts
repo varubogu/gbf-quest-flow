@@ -222,12 +222,25 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         note: "",
       }],
     };
+
+    // 現在の状態を取得
+    const currentState = get();
+
+    // 状態を更新（現在の状態を保持しつつ、必要な部分を更新）
     set({
+      ...currentState,
       flowData: newData,
+      originalData: null,
       currentRow: 0,
-      isEditMode: true, // 編集モードで開始
-      history: { past: [], future: [] },
+      isEditMode: true,
+      history: { past: [], future: [] }
     });
+
+    // 更新後の状態を確認
+    const updatedState = get();
+    if (!updatedState.flowData || !updatedState.isEditMode) {
+      console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
+    }
   },
 
   setFlowData: (newData: Flow | null) => {
@@ -251,56 +264,134 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   updateFlowData: (updates: Partial<Flow>) => {
     try {
       const currentData = get().flowData;
+      const { isEditMode } = get();
       if (!currentData) return;
 
+      // 新しいデータを作成
+      const newData = {
+        ...currentData,
+        ...updates,
+      };
+
+      // 現在のデータと新しいデータが異なる場合のみ処理を続行
+      if (JSON.stringify(currentData) === JSON.stringify(newData)) {
+        return;
+      }
+
+      // 変更後のデータを設定
       set({
-        flowData: {
-          ...currentData,
-          ...updates,
-        },
+        flowData: newData,
       });
+
+      // 編集モード中のみ履歴に追加（変更後のデータを保存）
+      if (isEditMode) {
+        get().pushToHistory(structuredClone(newData));
+      }
+
     } catch (error) {
       useErrorStore.getState().showError(error instanceof Error ? error : new Error('データの更新中にエラーが発生しました'));
     }
   },
 
   pushToHistory: (data: Flow) => {
-    const { history, flowData } = get();
-    if (flowData) {
-      set({
-        history: {
-          past: [...history.past, flowData],
-          future: [], // 新しい変更時に未来履歴をクリア
-        },
-      });
+    const { history } = get();
+
+    // 最後の履歴と同じデータは追加しない
+    if (history.past.length > 0 &&
+        JSON.stringify(history.past[history.past.length - 1]) === JSON.stringify(data)) {
+      console.log('同じデータなので履歴に追加しません:', data.title);
+      return;
     }
+
+    console.log('履歴に追加:', {
+      現在の過去履歴数: history.past.length,
+      追加データ: data.title,
+      現在の未来履歴数: history.future.length
+    });
+
+    set({
+      history: {
+        past: [...history.past, structuredClone(data)],
+        future: [], // 新しい変更時に未来履歴をクリア
+      },
+    });
   },
 
   undo: () => {
-    const { history, flowData } = get();
-    if (history.past.length === 0 || !flowData) return;
+    const { history, flowData, originalData } = get();
+    console.log('Undo実行:', {
+      過去履歴数: history.past.length,
+      未来履歴数: history.future.length,
+      現在のデータ: flowData?.title,
+      初期データ: originalData?.title
+    });
 
-    const previous = history.past[history.past.length - 1];
+    if (!flowData) {
+      console.log('Undoできません：データなし');
+      return;
+    }
+
+    // 履歴が空の場合は初期データに戻る
+    if (history.past.length === 0) {
+      if (originalData && JSON.stringify(flowData) !== JSON.stringify(originalData)) {
+        console.log('初期データに戻ります');
+        set({
+          flowData: structuredClone(originalData),
+          history: { past: [], future: [flowData, ...history.future] }
+        });
+      } else {
+        console.log('これ以上戻れません');
+      }
+      return;
+    }
+
+    // 最後の履歴を取得してpop
+    const currentState = history.past[history.past.length - 1];
     const newPast = history.past.slice(0, -1);
 
+    // 戻る先の状態を取得（pop後の最後の履歴、もしくは初期データ）
+    const targetState = newPast.length > 0
+      ? newPast[newPast.length - 1]
+      : originalData;
+
+    console.log('Undo後の状態:', {
+      現在の状態: currentState.title,
+      戻り先の状態: targetState?.title || '初期状態',
+      新しい過去履歴数: newPast.length
+    });
+
     set({
-      flowData: previous,
+      flowData: structuredClone(targetState || currentState),
       history: {
         past: newPast,
-        future: [flowData, ...history.future],
+        future: [currentState, ...history.future],
       },
     });
   },
 
   redo: () => {
     const { history, flowData } = get();
-    if (history.future.length === 0 || !flowData) return;
+    console.log('Redo実行:', {
+      過去履歴数: history.past.length,
+      未来履歴数: history.future.length,
+      現在のデータ: flowData?.title
+    });
+
+    if (history.future.length === 0 || !flowData) {
+      console.log('Redoできません：未来履歴なしまたはデータなし');
+      return;
+    }
 
     const next = history.future[0];
     const newFuture = history.future.slice(1);
 
+    console.log('Redo後の状態:', {
+      進むデータ: next.title,
+      新しい未来履歴数: newFuture.length
+    });
+
     set({
-      flowData: next,
+      flowData: structuredClone(next),
       history: {
         past: [...history.past, flowData],
         future: newFuture,
