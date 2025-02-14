@@ -30,9 +30,9 @@ describe('SkillTable', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByText('50%')).toBeInTheDocument();
-    expect(screen.getByText('3000')).toBeInTheDocument();
-    expect(screen.getByText('10%')).toBeInTheDocument();
+    expect(screen.getByText('50%'));
+    expect(screen.getByText('3000'));
+    expect(screen.getByText('10%'));
   });
 
   it('編集モードで入力が正しく動作する', () => {
