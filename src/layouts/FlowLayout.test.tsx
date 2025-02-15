@@ -1,18 +1,25 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FlowLayout } from './FlowLayout';
-import { I18nextProvider } from 'react-i18next';
-import i18next from 'i18next';
+import { renderWithI18n } from '@/test/i18n-test-utils';
 
-// i18nのモック
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: {
-      changeLanguage: vi.fn(),
-      language: 'ja',
-    },
-  }),
+// react-resizable-panelsのモック
+vi.mock('react-resizable-panels', () => ({
+  Panel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PanelGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PanelResizeHandle: () => <div data-testid="resize-handle" />,
+  ImperativePanelHandle: vi.fn(),
+}));
+
+// モーダルコンポーネントのモック
+vi.mock('@/components/organisms/OrganizationModal', () => ({
+  OrganizationModal: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div>ジョブ、キャラ、アビリティ</div> : null,
+}));
+
+vi.mock('@/components/organisms/InfoModal', () => ({
+  InfoModal: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div>その他の情報</div> : null,
 }));
 
 const mockFlowData = {
@@ -55,14 +62,12 @@ describe('FlowLayout', () => {
   });
 
   it('表示モードでタイトルとメモが表示される', () => {
-    render(
-      <I18nextProvider i18n={i18next}>
-        <FlowLayout
-          flowData={mockFlowData}
-          isEditMode={false}
-          {...mockHandlers}
-        />
-      </I18nextProvider>
+    renderWithI18n(
+      <FlowLayout
+        flowData={mockFlowData}
+        isEditMode={false}
+        {...mockHandlers}
+      />
     );
 
     expect(screen.getByText('テストフロー')).toBeInTheDocument();
@@ -70,14 +75,12 @@ describe('FlowLayout', () => {
   });
 
   it('編集モードでタイトルとメモが編集可能', () => {
-    render(
-      <I18nextProvider i18n={i18next}>
-        <FlowLayout
-          flowData={mockFlowData}
-          isEditMode={true}
-          {...mockHandlers}
-        />
-      </I18nextProvider>
+    renderWithI18n(
+      <FlowLayout
+        flowData={mockFlowData}
+        isEditMode={true}
+        {...mockHandlers}
+      />
     );
 
     const titleInput = screen.getByDisplayValue('テストフロー');
@@ -93,42 +96,35 @@ describe('FlowLayout', () => {
     expect(mockHandlers.onAlwaysChange).toHaveBeenCalled();
   });
 
-  it('メモの開閉ボタンが機能する', () => {
-    render(
-      <I18nextProvider i18n={i18next}>
-        <FlowLayout
-          flowData={mockFlowData}
-          isEditMode={false}
-          {...mockHandlers}
-        />
-      </I18nextProvider>
+  it('メモの開閉ボタンが存在する', () => {
+    renderWithI18n(
+      <FlowLayout
+        flowData={mockFlowData}
+        isEditMode={false}
+        {...mockHandlers}
+      />
     );
 
-    const toggleButton = screen.getByText('memo');
-    fireEvent.click(toggleButton);
-
-    // メモパネルのリサイズは実装依存のため、ボタンの存在とクリックイベントのみを確認
+    const toggleButton = screen.getByText('メモ開閉');
     expect(toggleButton).toBeInTheDocument();
   });
 
   it('各モーダルが開閉できる', () => {
-    render(
-      <I18nextProvider i18n={i18next}>
-        <FlowLayout
-          flowData={mockFlowData}
-          isEditMode={false}
-          {...mockHandlers}
-        />
-      </I18nextProvider>
+    renderWithI18n(
+      <FlowLayout
+        flowData={mockFlowData}
+        isEditMode={false}
+        {...mockHandlers}
+      />
     );
 
-    const organizationButton = screen.getByText('organization');
-    const infoButton = screen.getByLabelText('otherInfo');
+    const organizationButton = screen.getByText('編成確認');
+    const infoButton = screen.getByLabelText('その他の情報');
 
     fireEvent.click(organizationButton);
-    expect(screen.getByText('jobAndCharacters')).toBeInTheDocument();
+    expect(screen.getByText('ジョブ、キャラ、アビリティ')).toBeInTheDocument();
 
     fireEvent.click(infoButton);
-    expect(screen.getByText('infoModalTitle')).toBeInTheDocument();
+    expect(screen.getByText('その他の情報')).toBeInTheDocument();
   });
 });

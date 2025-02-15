@@ -1,27 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import { LoadingLayout } from './LoadingLayout';
-import { I18nextProvider } from 'react-i18next';
-import i18next from 'i18next';
-
-// i18nのモック
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: {
-      changeLanguage: vi.fn(),
-      language: 'ja',
-    },
-  }),
-}));
+import { renderWithI18n } from '@/test/i18n-test-utils';
 
 describe('LoadingLayout', () => {
   it('ローディングメッセージが表示される', () => {
-    render(
-      <I18nextProvider i18n={i18next}>
-        <LoadingLayout />
-      </I18nextProvider>
-    );
+    renderWithI18n(<LoadingLayout />);
     expect(screen.getByText('loading')).toBeInTheDocument();
   });
 });
