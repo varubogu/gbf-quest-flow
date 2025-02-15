@@ -1,5 +1,9 @@
 import { z } from "astro:content";
 
+// 画面のモード
+export type ViewMode = 'unloaded' | 'view' | 'edit' | 'new';
+
+
 // キャラクター/武器/召喚石の共通項目のスキーマ
 const itemBaseSchema = z.object({
     name: z.string(),
