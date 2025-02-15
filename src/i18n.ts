@@ -15,10 +15,10 @@ i18n
       ja: {
         translation: {
           // 共通
-          title: 'グラブル周回補助ツール',
-          description: 'グラブルのクエストフローを管理・共有するためのツール',
-          createFlow: 'フローを作成',
-          loadFlow: 'フローを読み込む',
+          title: 'グラブル行動表補助ツール',
+          description: 'グラブルの行動表を管理・共有するためのツール',
+          createFlow: '行動表を作成',
+          loadFlow: '行動表を読み込む',
           loading: '読み込み中...',
           noDataLoaded: 'データが読み込まれていません',
           toggleMemo: 'メモを開閉します',
