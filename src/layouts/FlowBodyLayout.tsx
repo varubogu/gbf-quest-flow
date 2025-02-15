@@ -27,8 +27,10 @@ function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
     if (initialMode === 'new') {
       createNewFlow();
       setIsEditMode(true);
+    } else if (initialMode === 'edit') {
+      setIsEditMode(true);
     }
-  }, [initialData, initialMode, setFlowData, createNewFlow]);
+  }, [initialData, initialMode, setFlowData, createNewFlow, setIsEditMode]);
 
   // popstateイベントのハンドリング
   useEffect(() => {

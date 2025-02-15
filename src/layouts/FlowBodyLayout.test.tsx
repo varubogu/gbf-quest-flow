@@ -1,4 +1,4 @@
-import { screen, act } from '@testing-library/react';
+import { screen, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import FlowBodyLayout from './FlowBodyLayout';
 import type { Flow } from '@/types/models';
@@ -60,62 +60,40 @@ describe('FlowBodyLayout', () => {
     store.isEditMode = false;
   });
 
-  it('初期ロード時にLoadingLayoutが表示される', async () => {
+  it('初期ロード時にEmptyLayoutが表示される', () => {
     renderWithI18n(<FlowBodyLayout />);
-    // 初期レンダリング時はEmptyLayoutが表示される
     expect(screen.getByText('データが読み込まれていません')).toBeInTheDocument();
   });
 
-  it('データがない場合、EmptyLayoutが表示される', async () => {
+  it('データがない場合、EmptyLayoutが表示される', () => {
     renderWithI18n(<FlowBodyLayout />);
-
-    await act(async () => {
-      // 非同期処理の完了を待つ
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
-
     expect(screen.getByText('データが読み込まれていません')).toBeInTheDocument();
     expect(screen.getByText('新しいデータを作る')).toBeInTheDocument();
     expect(screen.getByText('データ読み込み')).toBeInTheDocument();
   });
 
-  it('初期データが渡された場合、ストアに設定される', async () => {
+  it('初期データが渡された場合、ストアに設定される', () => {
     renderWithI18n(<FlowBodyLayout initialData={mockInitialData} />);
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
-
     const store = useFlowStore.getState();
     expect(store.setFlowData).toHaveBeenCalledWith(mockInitialData);
   });
 
-  it('新規作成モードで起動した場合、createNewFlowが呼ばれる', async () => {
+  it('新規作成モードで起動した場合、createNewFlowが呼ばれる', () => {
     renderWithI18n(<FlowBodyLayout initialMode="new" />);
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
-
     const store = useFlowStore.getState();
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
 
-  it('編集モードで起動した場合、isEditModeがtrueに設定される', async () => {
+  it('編集モードで起動した場合、isEditModeがtrueに設定される', () => {
     const store = useFlowStore.getState();
     store.flowData = mockInitialData;
 
     renderWithI18n(<FlowBodyLayout initialMode="edit" />);
-
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
-
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
 
-  it('popstateイベントで新規作成ページに遷移した場合、createNewFlowが呼ばれる', async () => {
+  it('popstateイベントで新規作成ページに遷移した場合、createNewFlowが呼ばれる', () => {
     renderWithI18n(<FlowBodyLayout />);
 
     // URLを/newに変更
@@ -124,11 +102,7 @@ describe('FlowBodyLayout', () => {
       writable: true
     });
 
-    await act(async () => {
-      window.dispatchEvent(new PopStateEvent('popstate'));
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
-
+    window.dispatchEvent(new PopStateEvent('popstate'));
     const store = useFlowStore.getState();
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
