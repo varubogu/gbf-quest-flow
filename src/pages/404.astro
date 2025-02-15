@@ -1,10 +1,13 @@
 ---
 import FlowBaseLayout from '@/layouts/FlowBaseLayout.astro';
 import FlowBodyLayout from '@/layouts/FlowBodyLayout';
-import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
-import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
+import { NotificationBar } from '@/components/molecules/NotificationBar';
+import I18nProvider from '@/components/I18nProvider';
 ---
 
 <FlowBaseLayout>
-  <FlowBodyLayout client:load />
+  <I18nProvider client:load>
+    <NotificationBar client:load message="dataNotFound" />
+    <FlowBodyLayout client:load />
+  </I18nProvider>
 </FlowBaseLayout>

@@ -36,6 +36,7 @@ i18n
           errorMessage: 'エラーメッセージ',
           unknownError: '不明なエラーが発生しました',
           downloadBackup: '現在のデータをバックアップとしてダウンロード',
+          dataNotFound: 'データが見つかりません',
 
           // メニュー関連
           menu: 'メニュー',
@@ -175,6 +176,7 @@ i18n
           errorMessage: 'Error Message',
           unknownError: 'An unknown error occurred',
           downloadBackup: 'Download Current Data as Backup',
+          dataNotFound: 'Data not found',
 
           // Menu related
           menu: 'Menu',
