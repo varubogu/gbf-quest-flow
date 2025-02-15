@@ -230,7 +230,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     set({
       ...currentState,
       flowData: newData,
-      originalData: null,
+      originalData: currentState.flowData || null,  // 現在のデータをoriginalDataとして保持
       currentRow: 0,
       isEditMode: true,
       history: { past: [], future: [] }
@@ -368,10 +368,10 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     const { originalData } = get();
     if (originalData) {
       set({
-        flowData: structuredClone(originalData),
         isEditMode: false,
-        history: { past: [], future: [] },
+        flowData: structuredClone(originalData),
         originalData: null,
+        history: { past: [], future: [] }
       });
       // 履歴を戻る（popstateイベントが発火してデータが復元される）
       history.back();
