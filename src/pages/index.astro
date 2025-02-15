@@ -4,11 +4,21 @@
 // 下記のようにURLパラメータでdを指定するとデータを選択して表示可能
 // https://ドメイン/?d=sample
 
-import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
-import FlowBodyLayout from "@/layouts/FlowBodyLayout";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BodyLayout from "@/layouts/BodyLayout";
+
+const mode = Astro.url.searchParams.get('mode');
+
+// モードに応じて初期モードを設定
+let initialMode: 'view' | 'edit' | 'new' = 'view';
+if (mode === 'new') {
+  initialMode = 'new';
+} else if (mode === 'edit') {
+  initialMode = 'edit';
+}
 
 ---
 
-<FlowBaseLayout>
-  <FlowBodyLayout client:load />
-</FlowBaseLayout>
+<BaseLayout>
+  <BodyLayout client:load initialMode={initialMode} />
+</BaseLayout>

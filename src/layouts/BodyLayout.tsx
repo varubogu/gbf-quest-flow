@@ -12,7 +12,7 @@ interface Props {
   sourceId?: string;
 }
 
-function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
+function BodyContent({ initialData, initialMode = 'view', sourceId }: Props) {
   const [isLoading, setIsLoading] = React.useState(true);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
@@ -35,20 +35,51 @@ function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
   // popstateイベントのハンドリング
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      const path = window.location.pathname;
-      if (path === '/new') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const mode = searchParams.get('mode');
+      const state = event.state;
+
+      if (mode === 'new') {
         createNewFlow();
         setIsEditMode(true);
-      } else if (path.startsWith('/edit/')) {
+      } else if (mode === 'edit') {
         setIsEditMode(true);
       } else {
         setIsEditMode(false);
+        // stateにデータが保存されている場合はそれを復元
+        if (state?.flowData) {
+          setFlowData(state.flowData);
+        } else if (initialData) {
+          setFlowData(initialData);
+        }
       }
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [createNewFlow]);
+  }, [createNewFlow, setIsEditMode, setFlowData, initialData]);
+
+  // URLの更新を一元管理
+  useEffect(() => {
+    // 新規作成モードの判定
+    const isNewMode = initialMode === 'new' || (isEditMode && flowData?.title === '新しいフロー');
+
+    // 現在のデータをstateとして保存
+    const state = flowData ? { flowData } : null;
+
+    // URLの更新
+    if (isNewMode) {
+      history.pushState(state, '', '/?mode=new');
+    } else if (isEditMode && sourceId) {
+      history.pushState(state, '', `/${sourceId}?mode=edit`);
+    } else if (isEditMode) {
+      history.pushState(state, '', '/?mode=edit');
+    } else if (sourceId) {
+      history.pushState(state, '', `/${sourceId}`);
+    } else {
+      history.pushState(state, '', '/');
+    }
+  }, [isEditMode, sourceId, initialMode, flowData]);
 
   // 初期ロード完了時にローディングを解除
   React.useEffect(() => {
@@ -56,6 +87,11 @@ function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
   }, []);
 
   if (isLoading) {
+    return <LoadingLayout />;
+  }
+
+  if (initialMode === 'new' && !flowData) {
+    createNewFlow();
     return <LoadingLayout />;
   }
 
@@ -80,10 +116,16 @@ function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    // 編集モードを終了して適切なページに遷移
+    // 編集モードを終了して履歴を戻る
     setIsEditMode(false);
-    const newPath = sourceId ? `/view/${sourceId}` : '/view';
-    history.pushState(null, '', newPath);
+    history.back();
+  };
+
+  const handleNew = () => {
+    // 現在のデータを履歴のstateとして保存
+    history.pushState({ flowData }, '', '/?mode=new');
+    createNewFlow();
+    setIsEditMode(true);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,20 +141,21 @@ function FlowContent({ initialData, initialMode = 'view', sourceId }: Props) {
       flowData={flowData}
       isEditMode={isEditMode}
       onSave={handleSave}
+      onNew={handleNew}
       onTitleChange={handleTitleChange}
       onAlwaysChange={handleAlwaysChange}
     />
   );
 }
 
-function FlowBodyLayoutReact({ initialData, initialMode = 'view', sourceId }: Props) {
+function BodyLayout({ initialData, initialMode = 'view', sourceId }: Props) {
   useEffect(() => {
     if (initialData) {
       useFlowStore.getState().setFlowData(initialData);
     }
   }, [initialData]);
 
-  return <FlowContent initialData={initialData} initialMode={initialMode} sourceId={sourceId} />;
+  return <BodyContent initialData={initialData} initialMode={initialMode} sourceId={sourceId} />;
 }
 
-export default FlowBodyLayoutReact;
+export default BodyLayout;

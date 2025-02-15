@@ -1,13 +1,13 @@
 ---
-import FlowBaseLayout from '@/layouts/FlowBaseLayout.astro';
-import FlowBodyLayout from '@/layouts/FlowBodyLayout';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BodyLayout from '@/layouts/BodyLayout';
 import { NotificationBar } from '@/components/molecules/NotificationBar';
 import I18nProvider from '@/components/I18nProvider';
 ---
 
-<FlowBaseLayout>
+<BaseLayout>
   <I18nProvider client:load>
     <NotificationBar client:load message="dataNotFound" />
-    <FlowBodyLayout client:load />
+    <BodyLayout client:load />
   </I18nProvider>
-</FlowBaseLayout>
+</BaseLayout>

@@ -1,6 +1,6 @@
 import { screen, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import FlowBodyLayout from './FlowBodyLayout';
+import BodyLayout from './BodyLayout';
 import type { Flow } from '@/types/models';
 import useFlowStore from '@/stores/flowStore';
 import { renderWithI18n } from '@/test/i18n-test-utils';
@@ -52,7 +52,7 @@ const mockInitialData = {
   flow: []
 };
 
-describe('FlowBodyLayout', () => {
+describe('BodyLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     const store = useFlowStore.getState();
@@ -61,25 +61,25 @@ describe('FlowBodyLayout', () => {
   });
 
   it('初期ロード時にEmptyLayoutが表示される', () => {
-    renderWithI18n(<FlowBodyLayout />);
+    renderWithI18n(<BodyLayout />);
     expect(screen.getByText('データが読み込まれていません')).toBeInTheDocument();
   });
 
   it('データがない場合、EmptyLayoutが表示される', () => {
-    renderWithI18n(<FlowBodyLayout />);
+    renderWithI18n(<BodyLayout />);
     expect(screen.getByText('データが読み込まれていません')).toBeInTheDocument();
     expect(screen.getByText('新しいデータを作る')).toBeInTheDocument();
     expect(screen.getByText('データ読み込み')).toBeInTheDocument();
   });
 
   it('初期データが渡された場合、ストアに設定される', () => {
-    renderWithI18n(<FlowBodyLayout initialData={mockInitialData} />);
+    renderWithI18n(<BodyLayout initialData={mockInitialData} />);
     const store = useFlowStore.getState();
     expect(store.setFlowData).toHaveBeenCalledWith(mockInitialData);
   });
 
   it('新規作成モードで起動した場合、createNewFlowが呼ばれる', () => {
-    renderWithI18n(<FlowBodyLayout initialMode="new" />);
+    renderWithI18n(<BodyLayout initialMode="new" />);
     const store = useFlowStore.getState();
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
@@ -89,16 +89,19 @@ describe('FlowBodyLayout', () => {
     const store = useFlowStore.getState();
     store.flowData = mockInitialData;
 
-    renderWithI18n(<FlowBodyLayout initialMode="edit" />);
+    renderWithI18n(<BodyLayout initialMode="edit" />);
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
 
   it('popstateイベントで新規作成ページに遷移した場合、createNewFlowが呼ばれる', () => {
-    renderWithI18n(<FlowBodyLayout />);
+    renderWithI18n(<BodyLayout />);
 
-    // URLを/newに変更
+    // URLを/?mode=newに変更
     Object.defineProperty(window, 'location', {
-      value: { pathname: '/new' },
+      value: {
+        pathname: '/',
+        search: '?mode=new'
+      },
       writable: true
     });
 

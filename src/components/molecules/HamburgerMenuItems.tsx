@@ -22,11 +22,12 @@ import useFlowStore from "@/stores/flowStore";
 import useSettingsStore from "@/stores/settingsStore";
 import { useTranslation } from "react-i18next";
 
-interface HamburgerMenuItemsProps {
-  onSave?: () => void;
+interface Props {
+  onSave: () => void;
+  onNew: () => void;
 }
 
-export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }) => {
+export function HamburgerMenuItems({ onSave, onNew }: Props) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -229,4 +230,4 @@ export const HamburgerMenuItems: React.FC<HamburgerMenuItemsProps> = ({ onSave }
       </SheetContent>
     </Sheet>
   );
-};
+}

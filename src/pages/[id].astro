@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BodyLayout from '@/layouts/BodyLayout';
+import { getCollection } from 'astro:content';
+
+// 有効なパスを生成
+export async function getStaticPaths() {
+  const flows = await getCollection('flows');
+  return flows.map(flow => ({
+    params: { id: flow.id },
+    props: { flowData: flow.data }
+  }));
+}
+
+const { id } = Astro.params;
+const { flowData } = Astro.props;
+const mode = Astro.url.searchParams.get('mode');
+
+// データが見つからない場合は404へ
+if (!flowData) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout>
+  <BodyLayout
+    client:load
+    initialData={flowData}
+    initialMode={mode === 'edit' ? 'edit' : 'view'}
+    sourceId={id}
+  />
+</BaseLayout>

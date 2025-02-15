@@ -15,6 +15,7 @@ interface Props {
   flowData: Flow;
   isEditMode: boolean;
   onSave: () => void;
+  onNew: () => void;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAlwaysChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
@@ -23,6 +24,7 @@ export function FlowLayout({
   flowData,
   isEditMode,
   onSave,
+  onNew,
   onTitleChange,
   onAlwaysChange
 }: Props) {
@@ -49,7 +51,7 @@ export function FlowLayout({
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="h-14 border-b flex items-center px-4 fixed w-full bg-background z-50">
-        <HamburgerMenuItems onSave={onSave} />
+        <HamburgerMenuItems onSave={onSave} onNew={onNew} />
         {isEditMode ? (
           <input
             type="text"

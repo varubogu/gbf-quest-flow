@@ -373,6 +373,8 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         history: { past: [], future: [] },
         originalData: null,
       });
+      // 履歴を戻る（popstateイベントが発火してデータが復元される）
+      history.back();
     }
   },
 

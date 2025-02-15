@@ -1,8 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 // Reactコンポーネントとして描画
-import FlowBaseLayout from "@/layouts/FlowBaseLayout.astro";
-import FlowBodyLayout from "@/layouts/FlowBodyLayout";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BodyLayout from "@/layouts/BodyLayout";
 import useFlowStore from "@/stores/flowStore";
 
 export async function getStaticPaths() {
@@ -26,7 +26,7 @@ const { entry } = Astro.props;
 const initialData = entry.data;
 ---
 
-<FlowBaseLayout>
-    <FlowBodyLayout client:load initialData={initialData} />
-</FlowBaseLayout>
+<BaseLayout>
+    <BodyLayout client:load initialData={initialData} />
+</BaseLayout>
 
