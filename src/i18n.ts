@@ -15,7 +15,7 @@ i18n
       ja: {
         translation: {
           // 共通
-          title: 'グラブル行動表補助ツール',
+          title: 'グラブル行動表',
           description: 'グラブルの行動表を管理・共有するためのツール',
           createFlow: '行動表を作成',
           loadFlow: '行動表を読み込む',
@@ -155,7 +155,7 @@ i18n
       en: {
         translation: {
           // Common
-          title: 'GBF Quest Flow Helper',
+          title: 'GBF Quest Flow',
           description: 'A tool to manage and share quest flows for Granblue Fantasy',
           createFlow: 'Create Flow',
           loadFlow: 'Load Flow',
