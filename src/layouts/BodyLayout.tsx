@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { setTitle } from '@/lib/functions';
 import useFlowStore from '@/stores/flowStore';
 import { LoadingLayout } from './LoadingLayout';
@@ -14,24 +14,27 @@ function useUrlManagement(
   flowData: Flow | null,
 ) {
   useEffect(() => {
-    // 保存直後は履歴の更新をスキップ
-    if (history.state?.isSaving) {
-      return;
-    }
+    try {
+      if (history.state?.isSaving) {
+        return;
+      }
 
-    const isNewMode = initialMode === 'new' || (isEditMode && flowData?.title === '新しいフロー');
-    const state = flowData ? { flowData } : null;
+      const isNewMode = initialMode === 'new' || (isEditMode && flowData?.title === '新しいフロー');
+      const state = flowData ? { flowData } : null;
 
-    if (isNewMode) {
-      history.pushState(state, '', '/?mode=new');
-    } else if (isEditMode && sourceId) {
-      history.pushState(state, '', `/${sourceId}?mode=edit`);
-    } else if (isEditMode) {
-      history.pushState(state, '', '/?mode=edit');
-    } else if (sourceId) {
-      history.pushState(state, '', `/${sourceId}`);
-    } else {
-      history.pushState(state, '', '/');
+      if (isNewMode) {
+        history.pushState(state, '', '/?mode=new');
+      } else if (isEditMode && sourceId) {
+        history.pushState(state, '', `/${sourceId}?mode=edit`);
+      } else if (isEditMode) {
+        history.pushState(state, '', '/?mode=edit');
+      } else if (sourceId) {
+        history.pushState(state, '', `/${sourceId}`);
+      } else {
+        history.pushState(state, '', '/');
+      }
+    } catch (error) {
+      console.error('URL更新中にエラーが発生しました:', error);
     }
   }, [isEditMode, sourceId, initialMode, flowData]);
 }
@@ -43,8 +46,8 @@ function useHistoryManagement(
   setFlowData: (data: Flow) => void,
   initialData: Flow | null,
 ) {
-  useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
+  const handlePopState = useCallback((event: PopStateEvent) => {
+    try {
       const searchParams = new URLSearchParams(window.location.search);
       const mode = searchParams.get('mode');
       const state = event.state;
@@ -55,7 +58,6 @@ function useHistoryManagement(
       } else if (mode === 'edit') {
         setIsEditMode(true);
       } else {
-        // 保存時のpopstateイベントは無視
         if (!state?.isSaving) {
           setIsEditMode(false);
           if (state?.flowData) {
@@ -65,11 +67,15 @@ function useHistoryManagement(
           }
         }
       }
-    };
+    } catch (error) {
+      console.error('履歴の処理中にエラーが発生しました:', error);
+    }
+  }, [createNewFlow, setIsEditMode, setFlowData, initialData]);
 
+  useEffect(() => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [createNewFlow, setIsEditMode, setFlowData, initialData]);
+  }, [handlePopState]);
 }
 
 interface Props {
@@ -86,24 +92,102 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   const setFlowData = useFlowStore((state) => state.setFlowData);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
 
-  // カスタムフックの使用
+  // タイトルの設定
+  useEffect(() => {
+    if (flowData) {
+      setTitle(flowData.title);
+    }
+  }, [flowData]);
+
+  const handleSave = useCallback(async () => {
+    if (!flowData) return;
+
+    try {
+      const dataStr = JSON.stringify(flowData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${flowData.title || 'flow'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setIsEditMode(false);
+      const currentPath = sourceId ? `/${sourceId}` : '/';
+      history.replaceState({ flowData, isSaving: true }, '', currentPath);
+    } catch (error) {
+      console.error('保存中にエラーが発生しました:', error);
+    }
+  }, [flowData, sourceId, setIsEditMode]);
+
+  const handleNew = useCallback(() => {
+    try {
+      history.pushState({ flowData }, '', '/?mode=new');
+      createNewFlow();
+      setIsEditMode(true);
+    } catch (error) {
+      console.error('新規作成中にエラーが発生しました:', error);
+    }
+  }, [flowData, createNewFlow, setIsEditMode]);
+
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!flowData) return;
+    try {
+      setFlowData({
+        ...flowData,
+        title: e.target.value,
+      });
+    } catch (error) {
+      console.error('タイトル更新中にエラーが発生しました:', error);
+    }
+  }, [flowData, setFlowData]);
+
+  const handleAlwaysChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!flowData) return;
+    try {
+      setFlowData({
+        ...flowData,
+        always: e.target.value,
+      });
+    } catch (error) {
+      console.error('常時実行項目更新中にエラーが発生しました:', error);
+    }
+  }, [flowData, setFlowData]);
+
+  const flowLayoutProps = useMemo(() => {
+    if (!flowData) return null;
+    return {
+      flowData,
+      isEditMode,
+      onSave: handleSave,
+      onNew: handleNew,
+      onTitleChange: handleTitleChange,
+      onAlwaysChange: handleAlwaysChange,
+    };
+  }, [flowData, isEditMode, handleSave, handleNew, handleTitleChange, handleAlwaysChange]);
+
   useUrlManagement(isEditMode, sourceId, initialMode, flowData);
   useHistoryManagement(createNewFlow, setIsEditMode, setFlowData, initialData);
 
   useEffect(() => {
-    if (initialData) {
-      setFlowData(initialData);
-    }
-    if (initialMode === 'new') {
-      createNewFlow();
-      setIsEditMode(true);
-    } else if (initialMode === 'edit') {
-      setIsEditMode(true);
+    try {
+      if (initialData) {
+        setFlowData(initialData);
+      }
+      if (initialMode === 'new') {
+        createNewFlow();
+        setIsEditMode(true);
+      } else if (initialMode === 'edit') {
+        setIsEditMode(true);
+      }
+    } catch (error) {
+      console.error('初期化中にエラーが発生しました:', error);
     }
   }, [initialData, initialMode, setFlowData, createNewFlow, setIsEditMode]);
 
-  // 初期ロード完了時にローディングを解除
-  React.useEffect(() => {
+  useEffect(() => {
     setIsLoading(false);
   }, []);
 
@@ -116,66 +200,21 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
     return <LoadingLayout />;
   }
 
-  if (!flowData) {
+  if (!flowData || !flowLayoutProps) {
     return <EmptyLayout />;
   }
 
-  setTitle(flowData.title);
-
-  const handleSave = () => {
-    if (!flowData) return;
-
-    const dataStr = JSON.stringify(flowData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${flowData.title || 'flow'}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    // 編集モードを終了
-    setIsEditMode(false);
-
-    // 現在のパスを取得
-    const currentPath = sourceId ? `/${sourceId}` : '/';
-
-    // 保存フラグ付きで履歴を更新
-    history.replaceState({ flowData, isSaving: true }, '', currentPath);
-  };
-
-  const handleNew = () => {
-    history.pushState({ flowData }, '', '/?mode=new');
-    createNewFlow();
-    setIsEditMode(true);
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFlowData({ ...flowData, title: e.target.value });
-  };
-
-  const handleAlwaysChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFlowData({ ...flowData, always: e.target.value });
-  };
-
-  return (
-    <FlowLayout
-      flowData={flowData}
-      isEditMode={isEditMode}
-      onSave={handleSave}
-      onNew={handleNew}
-      onTitleChange={handleTitleChange}
-      onAlwaysChange={handleAlwaysChange}
-    />
-  );
+  return <FlowLayout {...flowLayoutProps} />;
 }
 
 function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Props) {
   useEffect(() => {
-    if (initialData) {
-      useFlowStore.getState().setFlowData(initialData);
+    try {
+      if (initialData) {
+        useFlowStore.getState().setFlowData(initialData);
+      }
+    } catch (error) {
+      console.error('初期データの設定中にエラーが発生しました:', error);
     }
   }, [initialData]);
 
