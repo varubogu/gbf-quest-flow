@@ -38,6 +38,11 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
         : [...flowData.organization.member.back];
 
     newMembers[index] = {
+      name: '',
+      note: '',
+      awaketype: '',
+      accessories: '',
+      limitBonus: '',
       ...newMembers[index],
       [field]: value,
     };

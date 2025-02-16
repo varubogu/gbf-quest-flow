@@ -7,9 +7,9 @@ import { FlowLayout } from './FlowLayout';
 import type { Flow } from '@/types/models';
 
 interface Props {
-  initialData?: Flow;
+  initialData?: Flow | null;
   initialMode?: 'view' | 'edit' | 'new';
-  sourceId?: string;
+  sourceId?: string | null;
 }
 
 function BodyContent({ initialData, initialMode = 'view', sourceId }: Props) {

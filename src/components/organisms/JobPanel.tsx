@@ -58,6 +58,8 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
     if (!flowData) return;
     const newAbilities = [...flowData.organization.job.abilities];
     newAbilities[index] = {
+      name: '',
+      note: '',
       ...newAbilities[index],
       [field]: value,
     };

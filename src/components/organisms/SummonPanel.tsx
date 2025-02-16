@@ -34,6 +34,8 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
     if (!flowData) return;
 
     const newSummon = {
+      name: '',
+      note: '',
       ...(type === 'main'
         ? flowData.organization.summon.main
         : type === 'friend'

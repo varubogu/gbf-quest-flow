@@ -35,6 +35,9 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
     if (!flowData) return;
 
     const newWeapon = {
+      name: '',
+      note: '',
+      additionalSkill: '',
       ...(type === 'main'
         ? flowData.organization.weapon.main
         : type === 'other'

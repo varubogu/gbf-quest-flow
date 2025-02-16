@@ -115,7 +115,9 @@ const convertToActions = (rows: string[][], startField: keyof Action): Partial<A
       const fieldIndex = adjustedStartIndex + index;
       if (fieldIndex < fieldOrder.length) {
         const field = fieldOrder[fieldIndex];
-        action[field] = value.trim();
+        if (field) {
+          action[field] = value.trim();
+        }
       }
     });
 

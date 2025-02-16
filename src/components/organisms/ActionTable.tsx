@@ -199,11 +199,11 @@ export const ActionTable: React.FC<ActionTableProps> = ({
           let currentIndex = index;
           let hpRowCount = 0; // HPが入っている行数をカウント
           for (let i = 0; i <= index; i++) {
-            if (data[i].hp.trim()) {
+            if (data[i]?.hp?.trim()) {
               hpRowCount++;
             }
           }
-          while (currentIndex > 0 && !data[currentIndex].hp.trim()) {
+          while (currentIndex > 0 && !data[currentIndex]?.hp?.trim()) {
             currentIndex--;
           }
           // HPが存在する行の番号を使用

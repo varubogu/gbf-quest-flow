@@ -63,6 +63,12 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
 
     const newFlow = [...flowData.flow];
     newFlow[rowIndex] = {
+      hp: '',
+      prediction: '',
+      charge: '',
+      guard: '',
+      action: '',
+      note: '',
       ...newFlow[rowIndex],
       [field]: value,
     };
@@ -146,6 +152,12 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       if (i === 0) {
         // 1行目は指定位置に上書き
         newFlow[targetIndex] = {
+          hp: '',
+          prediction: '',
+          charge: '',
+          guard: '',
+          action: '',
+          note: '',
           ...newFlow[targetIndex],
           ...Object.fromEntries(Object.entries(row).filter(([_, value]) => value !== undefined)),
         };
