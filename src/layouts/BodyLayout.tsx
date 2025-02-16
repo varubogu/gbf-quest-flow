@@ -6,6 +6,23 @@ import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
 import type { Flow, ViewMode } from '@/types/models';
 
+// アクセシビリティ通知のユーティリティ
+function announceToScreenReader(message: string, type: 'status' | 'alert' = 'status') {
+  const element = document.createElement('div');
+  element.setAttribute('role', type);
+  element.setAttribute('aria-live', type === 'alert' ? 'assertive' : 'polite');
+  element.className = 'sr-only';
+  element.textContent = message;
+  document.body.appendChild(element);
+  setTimeout(() => document.body.removeChild(element), 1000);
+}
+
+// エラー通知のユーティリティ
+function handleError(error: unknown, context: string) {
+  console.error(`${context}:`, error);
+  announceToScreenReader(`${context}にエラーが発生しました`, 'alert');
+}
+
 // URLの管理を担当するカスタムフック
 function useUrlManagement(
   isEditMode: boolean,
@@ -34,7 +51,7 @@ function useUrlManagement(
         history.pushState(state, '', '/');
       }
     } catch (error) {
-      console.error('URL更新中にエラーが発生しました:', error);
+      handleError(error, 'URL更新中');
     }
   }, [isEditMode, sourceId, initialMode, flowData]);
 }
@@ -96,15 +113,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   useEffect(() => {
     if (flowData) {
       setTitle(flowData.title);
-      // スクリーンリーダー用の通知
-      const announcement = isEditMode ? 'フローの編集モードです' : 'フローの表示モードです';
-      const ariaLive = document.createElement('div');
-      ariaLive.setAttribute('role', 'status');
-      ariaLive.setAttribute('aria-live', 'polite');
-      ariaLive.className = 'sr-only';
-      ariaLive.textContent = announcement;
-      document.body.appendChild(ariaLive);
-      setTimeout(() => document.body.removeChild(ariaLive), 1000);
+      announceToScreenReader(
+        isEditMode ? 'フローの編集モードです' : 'フローの表示モードです'
+      );
     }
   }, [flowData, isEditMode]);
 
@@ -127,15 +138,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       setIsEditMode(false);
       const currentPath = sourceId ? `/${sourceId}` : '/';
       history.replaceState({ flowData, isSaving: true }, '', currentPath);
+      announceToScreenReader('フローを保存しました');
     } catch (error) {
-      console.error('保存中にエラーが発生しました:', error);
-      // エラー通知
-      const errorAnnouncement = document.createElement('div');
-      errorAnnouncement.setAttribute('role', 'alert');
-      errorAnnouncement.className = 'sr-only';
-      errorAnnouncement.textContent = '保存中にエラーが発生しました';
-      document.body.appendChild(errorAnnouncement);
-      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
+      handleError(error, '保存中');
     }
   }, [flowData, sourceId, setIsEditMode]);
 
@@ -144,14 +149,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       history.pushState({ flowData }, '', '/?mode=new');
       createNewFlow();
       setIsEditMode(true);
+      announceToScreenReader('新しいフローを作成しました');
     } catch (error) {
-      console.error('新規作成中にエラーが発生しました:', error);
-      const errorAnnouncement = document.createElement('div');
-      errorAnnouncement.setAttribute('role', 'alert');
-      errorAnnouncement.className = 'sr-only';
-      errorAnnouncement.textContent = '新規作成中にエラーが発生しました';
-      document.body.appendChild(errorAnnouncement);
-      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
+      handleError(error, '新規作成中');
     }
   }, [flowData, createNewFlow, setIsEditMode]);
 
@@ -163,13 +163,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
         title: e.target.value,
       });
     } catch (error) {
-      console.error('タイトル更新中にエラーが発生しました:', error);
-      const errorAnnouncement = document.createElement('div');
-      errorAnnouncement.setAttribute('role', 'alert');
-      errorAnnouncement.className = 'sr-only';
-      errorAnnouncement.textContent = 'タイトル更新中にエラーが発生しました';
-      document.body.appendChild(errorAnnouncement);
-      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
+      handleError(error, 'タイトル更新中');
     }
   }, [flowData, setFlowData]);
 
@@ -181,13 +175,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
         always: e.target.value,
       });
     } catch (error) {
-      console.error('常時実行項目更新中にエラーが発生しました:', error);
-      const errorAnnouncement = document.createElement('div');
-      errorAnnouncement.setAttribute('role', 'alert');
-      errorAnnouncement.className = 'sr-only';
-      errorAnnouncement.textContent = '常時実行項目更新中にエラーが発生しました';
-      document.body.appendChild(errorAnnouncement);
-      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
+      handleError(error, '常時実行項目更新中');
     }
   }, [flowData, setFlowData]);
 
