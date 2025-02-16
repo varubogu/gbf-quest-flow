@@ -188,11 +188,6 @@ describe.sequential('FlowStore', () => {
 
       // 最初の状態を確認
       const stateBeforeUpdate = useFlowStore.getState();
-      console.log('Initial state:', {
-        flowData: stateBeforeUpdate.flowData,
-        isEditMode: stateBeforeUpdate.isEditMode,
-        history: stateBeforeUpdate.history,
-      });
 
       store.updateFlowData({ title: initialTitle });
 
@@ -200,10 +195,7 @@ describe.sequential('FlowStore', () => {
       await vi.waitFor(
         () => {
           const state = useFlowStore.getState();
-          console.log('Waiting for first update:', {
-            currentTitle: state.flowData?.title,
-            history: state.history,
-          });
+
           return state.flowData?.title === initialTitle;
         },
         { timeout: 10000 }
@@ -211,10 +203,6 @@ describe.sequential('FlowStore', () => {
 
       // 最初の更新後の状態を確認
       const stateAfterFirstUpdate = useFlowStore.getState();
-      console.log('After first update:', {
-        flowData: stateAfterFirstUpdate.flowData,
-        history: stateAfterFirstUpdate.history,
-      });
 
       // 変更を加える
       store.updateFlowData({ title: updatedTitle });
@@ -223,10 +211,7 @@ describe.sequential('FlowStore', () => {
       await vi.waitFor(
         () => {
           const state = useFlowStore.getState();
-          console.log('Waiting for second update:', {
-            currentTitle: state.flowData?.title,
-            history: state.history,
-          });
+
           return state.flowData?.title === updatedTitle && state.history.past.length === 1;
         },
         { timeout: 10000 }
@@ -234,10 +219,6 @@ describe.sequential('FlowStore', () => {
 
       // 2回目の更新後の状態を確認
       const stateAfterSecondUpdate = useFlowStore.getState();
-      console.log('After second update:', {
-        flowData: stateAfterSecondUpdate.flowData,
-        history: stateAfterSecondUpdate.history,
-      });
 
       // アンドゥ
       store.undo();
@@ -246,11 +227,7 @@ describe.sequential('FlowStore', () => {
       await vi.waitFor(
         () => {
           const state = useFlowStore.getState();
-          console.log('Waiting for undo:', {
-            currentTitle: state.flowData?.title,
-            expectedTitle: initialTitle,
-            history: state.history,
-          });
+
           return state.flowData?.title === initialTitle && state.history.future.length === 1;
         },
         { timeout: 10000 }
@@ -258,10 +235,6 @@ describe.sequential('FlowStore', () => {
 
       // アンドゥ後の状態を取得して確認
       const stateAfterUndo = useFlowStore.getState();
-      console.log('After undo:', {
-        flowData: stateAfterUndo.flowData,
-        history: stateAfterUndo.history,
-      });
 
       expect(stateAfterUndo.flowData?.title).toBe(initialTitle);
       expect(stateAfterUndo.history.past).toHaveLength(1);
@@ -281,10 +254,6 @@ describe.sequential('FlowStore', () => {
 
       // リドゥ後の状態を取得して確認
       const stateAfterRedo = useFlowStore.getState();
-      console.log('After redo:', {
-        flowData: stateAfterRedo.flowData,
-        history: stateAfterRedo.history,
-      });
 
       expect(stateAfterRedo.flowData?.title).toBe(updatedTitle);
       expect(stateAfterRedo.history.past).toHaveLength(2);
@@ -328,10 +297,7 @@ describe.sequential('FlowStore', () => {
 
       // 最終状態の確認
       const stateAfterUpdates = useFlowStore.getState();
-      console.log('After all updates:', {
-        currentTitle: stateAfterUpdates.flowData?.title,
-        history: stateAfterUpdates.history,
-      });
+
       expect(stateAfterUpdates.flowData?.title).toBe(titles[2]);
       expect(stateAfterUpdates.history.past).toHaveLength(3);
       expect(stateAfterUpdates.history.future).toHaveLength(0);
@@ -347,10 +313,7 @@ describe.sequential('FlowStore', () => {
       );
 
       const stateAfterFirstUndo = useFlowStore.getState();
-      console.log('After first undo:', {
-        currentTitle: stateAfterFirstUndo.flowData?.title,
-        history: stateAfterFirstUndo.history,
-      });
+
       expect(stateAfterFirstUndo.flowData?.title).toBe(titles[1]);
       expect(stateAfterFirstUndo.history.past).toHaveLength(2);
       expect(stateAfterFirstUndo.history.future).toHaveLength(1);
@@ -366,10 +329,7 @@ describe.sequential('FlowStore', () => {
       );
 
       const stateAfterSecondUndo = useFlowStore.getState();
-      console.log('After second undo:', {
-        currentTitle: stateAfterSecondUndo.flowData?.title,
-        history: stateAfterSecondUndo.history,
-      });
+
       expect(stateAfterSecondUndo.flowData?.title).toBe(titles[0]);
       expect(stateAfterSecondUndo.history.past).toHaveLength(1);
       expect(stateAfterSecondUndo.history.future).toHaveLength(2);
@@ -385,10 +345,7 @@ describe.sequential('FlowStore', () => {
       );
 
       const stateAfterFirstRedo = useFlowStore.getState();
-      console.log('After first redo:', {
-        currentTitle: stateAfterFirstRedo.flowData?.title,
-        history: stateAfterFirstRedo.history,
-      });
+
       expect(stateAfterFirstRedo.flowData?.title).toBe(titles[1]);
       expect(stateAfterFirstRedo.history.past).toHaveLength(2);
       expect(stateAfterFirstRedo.history.future).toHaveLength(1);
@@ -404,10 +361,7 @@ describe.sequential('FlowStore', () => {
       );
 
       const stateAfterSecondRedo = useFlowStore.getState();
-      console.log('After second redo:', {
-        currentTitle: stateAfterSecondRedo.flowData?.title,
-        history: stateAfterSecondRedo.history,
-      });
+
       expect(stateAfterSecondRedo.flowData?.title).toBe(titles[2]);
       expect(stateAfterSecondRedo.history.past).toHaveLength(3);
       expect(stateAfterSecondRedo.history.future).toHaveLength(0);
