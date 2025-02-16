@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import { useTranslation } from "react-i18next";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 // Sheet の状態管理用のコンテキストを作成
 interface SheetContextValue {
@@ -24,18 +24,15 @@ export const Sheet: React.FC<SheetProps> = ({ children, open: controlledOpen, on
 
   // React.Dispatch<React.SetStateAction<boolean>> に準拠するように、関数型更新もサポート
   const setOpen: React.Dispatch<React.SetStateAction<boolean>> = (value) => {
-    const newValue = typeof value === "function" ? (value as (prev: boolean) => boolean)(open) : value;
+    const newValue =
+      typeof value === 'function' ? (value as (prev: boolean) => boolean)(open) : value;
     if (!isControlled) {
       setUncontrolledOpen(newValue);
     }
     onOpenChange?.(newValue);
   };
 
-  return (
-    <SheetContext.Provider value={{ open, setOpen }}>
-      {children}
-    </SheetContext.Provider>
-  );
+  return <SheetContext.Provider value={{ open, setOpen }}>{children}</SheetContext.Provider>;
 };
 
 // SheetTrigger は、子要素のクリックで Sheet の表示をトグルします
@@ -47,7 +44,7 @@ export const SheetTrigger = ({
   children: React.ReactElement;
 }) => {
   const context = useContext(SheetContext);
-  if (!context) throw new Error("SheetTrigger must be used within a Sheet");
+  if (!context) throw new Error('SheetTrigger must be used within a Sheet');
 
   const handleClick = () => {
     context.setOpen(true);
@@ -64,15 +61,15 @@ export const SheetTrigger = ({
 
 // SheetContent は、Sheetが開いているときに表示されるコンテンツです（オーバーレイとアニメーション付き）
 export const SheetContent = ({
-  side = "left",
+  side = 'left',
   children,
 }: {
-  side?: "left" | "right";
+  side?: 'left' | 'right';
   children: React.ReactNode;
 }) => {
   const { t } = useTranslation();
   const context = useContext(SheetContext);
-  if (!context) throw new Error("SheetContent must be used within a Sheet");
+  if (!context) throw new Error('SheetContent must be used within a Sheet');
 
   const closeSheet = () => context.setOpen(false);
 
@@ -96,16 +93,12 @@ export const SheetContent = ({
 
   // オーバーレイのクラス（背景を暗くするアニメーション付き）
   const overlayClasses = `fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out ${
-    context.open ? "opacity-50" : "opacity-0"
+    context.open ? 'opacity-50' : 'opacity-0'
   }`;
 
   // サイドからのスライドインアニメーション
   const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
-    animateIn
-      ? "translate-x-0"
-      : side === "left"
-      ? "-translate-x-full"
-      : "translate-x-full"
+    animateIn ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
   }`;
 
   return ReactDOM.createPortal(

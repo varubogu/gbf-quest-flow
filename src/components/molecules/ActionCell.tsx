@@ -1,19 +1,19 @@
-import * as React from "react"
-import { cn } from "@/utils/cn"
-import { Text } from "../atoms/Text"
-import { useState, useRef, useEffect } from "react"
-import type { Action } from "@/types/models"
+import * as React from 'react';
+import { cn } from '@/utils/cn';
+import { Text } from '../atoms/Text';
+import { useState, useRef, useEffect } from 'react';
+import type { Action } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface ActionCellProps {
-  content: string
-  isCurrentRow?: boolean
-  isHeader?: boolean
-  isEditable?: boolean
-  onChange?: (value: string) => void
-  onPasteRows?: (rows: Partial<Action>[]) => void
-  field?: keyof Action
-  alignment?: "left" | "center" | "right"
+  content: string;
+  isCurrentRow?: boolean;
+  isHeader?: boolean;
+  isEditable?: boolean;
+  onChange?: (value: string) => void;
+  onPasteRows?: (rows: Partial<Action>[]) => void;
+  field?: keyof Action;
+  alignment?: 'left' | 'center' | 'right';
 }
 
 // タブ区切りテキストを解析する関数
@@ -63,10 +63,10 @@ const parseTabSeparatedText = (text: string): string[][] => {
 
   // 空の行を除外し、各行のセル数を揃える
   const result = rows
-    .filter(row => row.some(cell => cell.length > 0))
-    .map(row => {
+    .filter((row) => row.some((cell) => cell.length > 0))
+    .map((row) => {
       // 引用符を適切に処理
-      return row.map(cell => {
+      return row.map((cell) => {
         cell = cell.trim();
         // 引用符で囲まれているセルの処理
         if (cell.startsWith('"') && cell.endsWith('"')) {
@@ -89,7 +89,7 @@ const convertToActions = (rows: string[][], startField: keyof Action): Partial<A
   const startIndex = fieldOrder.indexOf(startField);
 
   // 各行のデータ列数を取得（空の列も含める）
-  const dataColumnCount = Math.max(...rows.map(row => row.length));
+  const dataColumnCount = Math.max(...rows.map((row) => row.length));
 
   // 残りの列数を計算
   const remainingColumns = fieldOrder.length - startIndex;
@@ -107,7 +107,7 @@ const convertToActions = (rows: string[][], startField: keyof Action): Partial<A
     }
   }
 
-  return rows.map(row => {
+  return rows.map((row) => {
     const action: Partial<Action> = {};
 
     // 貼り付け開始位置から順にデータを割り当て
@@ -131,7 +131,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   onChange,
   onPasteRows,
   field,
-  alignment = "left",
+  alignment = 'left',
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(content || '');
@@ -211,18 +211,18 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   };
 
   const alignmentClasses = {
-    left: "text-left",
-    center: "text-center",
-    right: "text-right",
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
   };
 
   return (
     <div
       className={cn(
-        "px-3 py-2 border-b border-r border-gray-400",
-        isHeader ? "bg-muted font-medium" : "bg-background",
-        isCurrentRow && "bg-accent",
-        !isHeader && "cursor-text",
+        'px-3 py-2 border-b border-r border-gray-400',
+        isHeader ? 'bg-muted font-medium' : 'bg-background',
+        isCurrentRow && 'bg-accent',
+        !isHeader && 'cursor-text',
         alignmentClasses[alignment]
       )}
       onClick={handleClick}
@@ -236,18 +236,25 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           className={cn(
-            "w-full bg-white border rounded px-1 resize-none overflow-hidden",
-            "text-sm leading-normal font-normal",
+            'w-full bg-white border rounded px-1 resize-none overflow-hidden',
+            'text-sm leading-normal font-normal',
             alignmentClasses[alignment],
             isHeader ? textInputBaseStyle : textareaBaseStyle
           )}
           rows={1}
         />
       ) : (
-        <Text variant={isHeader ? "default" : isCurrentRow ? "default" : "dimmed"}>
-          <pre className={cn("whitespace-pre-wrap font-sans text-sm leading-normal", alignmentClasses[alignment])}>{content}</pre>
+        <Text variant={isHeader ? 'default' : isCurrentRow ? 'default' : 'dimmed'}>
+          <pre
+            className={cn(
+              'whitespace-pre-wrap font-sans text-sm leading-normal',
+              alignmentClasses[alignment]
+            )}
+          >
+            {content}
+          </pre>
         </Text>
       )}
     </div>
-  )
-}
+  );
+};

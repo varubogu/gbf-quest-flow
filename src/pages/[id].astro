@@ -6,9 +6,9 @@ import { getCollection } from 'astro:content';
 // 有効なパスを生成
 export async function getStaticPaths() {
   const flows = await getCollection('flows');
-  return flows.map(flow => ({
+  return flows.map((flow) => ({
     params: { id: flow.id },
-    props: { flowData: flow.data }
+    props: { flowData: flow.data },
   }));
 }
 

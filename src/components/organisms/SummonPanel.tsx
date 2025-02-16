@@ -1,9 +1,19 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import {
+  textInputBaseStyle,
+  textareaBaseStyle,
+  useAutoResizeTextArea,
+} from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
-import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
+import {
+  tableBaseStyle,
+  tableHeaderRowStyle,
+  tableHeaderCellBaseStyle,
+  tableCellBaseStyle,
+  tableWidthStyles,
+} from '@/components/atoms/TableStyles';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -15,49 +25,57 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleSummonChange = (type: 'main' | 'friend' | 'other' | 'sub', index: number | null, field: keyof Summon, value: string) => {
+  const handleSummonChange = (
+    type: 'main' | 'friend' | 'other' | 'sub',
+    index: number | null,
+    field: keyof Summon,
+    value: string
+  ) => {
     if (!flowData) return;
 
     const newSummon = {
-      ...((type === 'main' ? flowData.organization.summon.main :
-          type === 'friend' ? flowData.organization.summon.friend :
-          type === 'other' ? flowData.organization.summon.other[index!] :
-          flowData.organization.summon.sub[index!])),
-      [field]: value
+      ...(type === 'main'
+        ? flowData.organization.summon.main
+        : type === 'friend'
+          ? flowData.organization.summon.friend
+          : type === 'other'
+            ? flowData.organization.summon.other[index!]
+            : flowData.organization.summon.sub[index!]),
+      [field]: value,
     };
 
     let newSummonData;
     if (type === 'main') {
       newSummonData = {
         ...flowData.organization.summon,
-        main: newSummon
+        main: newSummon,
       };
     } else if (type === 'friend') {
       newSummonData = {
         ...flowData.organization.summon,
-        friend: newSummon
+        friend: newSummon,
       };
     } else if (type === 'other') {
       const newOther = [...flowData.organization.summon.other];
       newOther[index!] = newSummon;
       newSummonData = {
         ...flowData.organization.summon,
-        other: newOther
+        other: newOther,
       };
     } else {
       const newSub = [...flowData.organization.summon.sub];
       newSub[index!] = newSummon;
       newSummonData = {
         ...flowData.organization.summon,
-        sub: newSub
+        sub: newSub,
       };
     }
 
     updateFlowData({
       organization: {
         ...flowData.organization,
-        summon: newSummonData
-      }
+        summon: newSummonData,
+      },
     });
   };
 
@@ -66,9 +84,15 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('summonCategory')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('summonName')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>
+              {t('summonCategory')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>
+              {t('summonName')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>
+              {t('overview')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -144,7 +168,10 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {flowData.organization.summon.other.map((summon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.summon.other.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.summon.other.length}
+                >
                   {t('summonNormal')}
                 </td>
               )}
@@ -184,7 +211,10 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           {flowData.organization.summon.sub.map((summon, index) => (
             <tr key={`sub-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.summon.sub.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.summon.sub.length}
+                >
                   {t('summonSub')}
                 </td>
               )}

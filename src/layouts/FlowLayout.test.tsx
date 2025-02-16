@@ -18,8 +18,7 @@ vi.mock('@/components/organisms/OrganizationModal', () => ({
 }));
 
 vi.mock('@/components/organisms/InfoModal', () => ({
-  InfoModal: ({ isOpen }: { isOpen: boolean }) =>
-    isOpen ? <div>その他の情報</div> : null,
+  InfoModal: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <div>その他の情報</div> : null),
 }));
 
 const mockFlowData = {
@@ -35,19 +34,19 @@ const mockFlowData = {
     weapon: {
       main: { name: '', note: '', additionalSkill: '' },
       other: [],
-      additional: []
+      additional: [],
     },
     weaponEffects: { taRate: '', hp: '', defense: '' },
     summon: {
       main: { name: '', note: '' },
       friend: { name: '', note: '' },
       other: [],
-      sub: []
+      sub: [],
     },
-    totalEffects: { taRate: '', hp: '', defense: '' }
+    totalEffects: { taRate: '', hp: '', defense: '' },
   },
   always: 'テストメモ',
-  flow: []
+  flow: [],
 };
 
 describe('FlowLayout', () => {
@@ -62,26 +61,14 @@ describe('FlowLayout', () => {
   });
 
   it('表示モードでタイトルとメモが表示される', () => {
-    renderWithI18n(
-      <FlowLayout
-        flowData={mockFlowData}
-        isEditMode={false}
-        {...mockHandlers}
-      />
-    );
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={false} {...mockHandlers} />);
 
     expect(screen.getByText('テストフロー')).toBeInTheDocument();
     expect(screen.getByText('テストメモ')).toBeInTheDocument();
   });
 
   it('編集モードでタイトルとメモが編集可能', () => {
-    renderWithI18n(
-      <FlowLayout
-        flowData={mockFlowData}
-        isEditMode={true}
-        {...mockHandlers}
-      />
-    );
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={true} {...mockHandlers} />);
 
     const titleInput = screen.getByDisplayValue('テストフロー');
     const memoTextarea = screen.getByDisplayValue('テストメモ');
@@ -97,26 +84,14 @@ describe('FlowLayout', () => {
   });
 
   it('メモの開閉ボタンが存在する', () => {
-    renderWithI18n(
-      <FlowLayout
-        flowData={mockFlowData}
-        isEditMode={false}
-        {...mockHandlers}
-      />
-    );
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={false} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('メモ開閉');
     expect(toggleButton).toBeInTheDocument();
   });
 
   it('各モーダルが開閉できる', () => {
-    renderWithI18n(
-      <FlowLayout
-        flowData={mockFlowData}
-        isEditMode={false}
-        {...mockHandlers}
-      />
-    );
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={false} {...mockHandlers} />);
 
     const organizationButton = screen.getByText('編成確認');
     const infoButton = screen.getByLabelText('その他の情報');

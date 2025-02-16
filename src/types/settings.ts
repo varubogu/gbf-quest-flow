@@ -20,6 +20,6 @@ export interface OrganizationSettings {
 }
 
 export interface AppSettings {
-  language: "日本語" | "English";
-  buttonAlignment: "左" | "右";
+  language: '日本語' | 'English';
+  buttonAlignment: '左' | '右';
 }

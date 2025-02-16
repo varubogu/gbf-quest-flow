@@ -1,8 +1,8 @@
-import type { Flow, Action } from "@/types/models"
-import type { OrganizationSettings } from "@/types/settings"
-import { create } from "zustand"
-import organizationSettings from "@/content/settings/organization.json"
-import useErrorStore from './errorStore'
+import type { Flow, Action } from '@/types/models';
+import type { OrganizationSettings } from '@/types/settings';
+import { create } from 'zustand';
+import organizationSettings from '@/content/settings/organization.json';
+import useErrorStore from './errorStore';
 
 interface HistoryState {
   past: Flow[];
@@ -10,32 +10,37 @@ interface HistoryState {
 }
 
 interface FlowStore {
-  flowData: Flow | null
-  originalData: Flow | null // 編集前のデータを保持
-  setFlowData: (data: Flow | null) => void
-  updateFlowData: (update: Partial<Flow>) => void
-  loadFlowFromFile: () => Promise<void>
-  createNewFlow: () => void // 新しいデータを作成する関数を追加
-  currentRow: number
-  setCurrentRow: (row: number) => void
-  isEditMode: boolean
-  setIsEditMode: (isEdit: boolean) => void
+  flowData: Flow | null;
+  originalData: Flow | null; // 編集前のデータを保持
+  setFlowData: (data: Flow | null) => void;
+  updateFlowData: (update: Partial<Flow>) => void;
+  loadFlowFromFile: () => Promise<void>;
+  createNewFlow: () => void; // 新しいデータを作成する関数を追加
+  currentRow: number;
+  setCurrentRow: (row: number) => void;
+  isEditMode: boolean;
+  setIsEditMode: (isEdit: boolean) => void;
   // 履歴管理用の状態と関数
-  history: HistoryState
-  pushToHistory: (data: Flow) => void
-  undo: () => void
-  redo: () => void
-  clearHistory: () => void
+  history: HistoryState;
+  pushToHistory: (data: Flow) => void;
+  undo: () => void;
+  redo: () => void;
+  clearHistory: () => void;
   // 編集キャンセル用の関数
-  cancelEdit: () => void
-  updateAction: (index: number, updates: Partial<Action>) => void
+  cancelEdit: () => void;
+  updateAction: (index: number, updates: Partial<Action>) => void;
 }
 
 // データの個数を設定に合わせて調整する関数（不足分のみ追加）
 const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () => T): T[] => {
   if (array.length < targetLength) {
     // 不足分を追加
-    return [...array, ...Array(targetLength - array.length).fill(null).map(createEmpty)];
+    return [
+      ...array,
+      ...Array(targetLength - array.length)
+        .fill(null)
+        .map(createEmpty),
+    ];
   }
   // 既存のデータはそのまま保持
   return array;
@@ -44,27 +49,27 @@ const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () 
 // 組織データを設定に合わせて調整する関数（既存データは保持）
 const adjustOrganizationData = (organization: Flow['organization']): Flow['organization'] => {
   const emptyMember = () => ({
-    name: "",
-    note: "",
-    awaketype: "",
-    accessories: "",
-    limitBonus: ""
+    name: '',
+    note: '',
+    awaketype: '',
+    accessories: '',
+    limitBonus: '',
   });
 
   const emptyWeapon = () => ({
-    name: "",
-    note: "",
-    additionalSkill: ""
+    name: '',
+    note: '',
+    additionalSkill: '',
   });
 
   const emptySummon = () => ({
-    name: "",
-    note: ""
+    name: '',
+    note: '',
   });
 
   const emptyAbility = () => ({
-    name: "",
-    note: ""
+    name: '',
+    note: '',
   });
 
   // 設定値と実際のデータ数の大きい方を使用
@@ -78,7 +83,7 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
         organization.job.abilities,
         getTargetLength(organization.job.abilities.length, organizationSettings.job.abilities),
         emptyAbility
-      )
+      ),
     },
     member: {
       front: adjustArrayLength(
@@ -90,7 +95,7 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
         organization.member.back,
         getTargetLength(organization.member.back.length, organizationSettings.member.back),
         emptyMember
-      )
+      ),
     },
     weapon: {
       ...organization.weapon,
@@ -101,9 +106,12 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
       ),
       additional: adjustArrayLength(
         organization.weapon.additional,
-        getTargetLength(organization.weapon.additional.length, organizationSettings.weapon.additional),
+        getTargetLength(
+          organization.weapon.additional.length,
+          organizationSettings.weapon.additional
+        ),
         emptyWeapon
-      )
+      ),
     },
     summon: {
       ...organization.summon,
@@ -116,8 +124,8 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
         organization.summon.sub,
         getTargetLength(organization.summon.sub.length, organizationSettings.summon.sub),
         emptySummon
-      )
-    }
+      ),
+    },
   };
 };
 
@@ -146,81 +154,97 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   createNewFlow: () => {
     // 空のデータを作成
     const newData: Flow = {
-      title: "新しいフロー",
-      quest: "",
-      author: "",
-      description: "",
+      title: '新しいフロー',
+      quest: '',
+      author: '',
+      description: '',
       updateDate: new Date().toISOString(),
-      note: "",
+      note: '',
       organization: {
         job: {
-          name: "",
-          note: "",
+          name: '',
+          note: '',
           equipment: {
-            name: "",
-            note: ""
+            name: '',
+            note: '',
           },
-          abilities: Array(organizationSettings.job.abilities).fill(null).map(() => ({ name: "", note: "" }))
+          abilities: Array(organizationSettings.job.abilities)
+            .fill(null)
+            .map(() => ({ name: '', note: '' })),
         },
         member: {
-          front: Array(organizationSettings.member.front).fill(null).map(() => ({
-            name: "",
-            note: "",
-            awaketype: "",
-            accessories: "",
-            limitBonus: ""
-          })),
-          back: Array(organizationSettings.member.back).fill(null).map(() => ({
-            name: "",
-            note: "",
-            awaketype: "",
-            accessories: "",
-            limitBonus: ""
-          }))
+          front: Array(organizationSettings.member.front)
+            .fill(null)
+            .map(() => ({
+              name: '',
+              note: '',
+              awaketype: '',
+              accessories: '',
+              limitBonus: '',
+            })),
+          back: Array(organizationSettings.member.back)
+            .fill(null)
+            .map(() => ({
+              name: '',
+              note: '',
+              awaketype: '',
+              accessories: '',
+              limitBonus: '',
+            })),
         },
         weapon: {
           main: {
-            name: "",
-            note: "",
-            additionalSkill: ""
+            name: '',
+            note: '',
+            additionalSkill: '',
           },
-          other: Array(organizationSettings.weapon.other).fill(null).map(() => ({
-            name: "",
-            note: "",
-            additionalSkill: ""
-          })),
-          additional: Array(organizationSettings.weapon.additional).fill(null).map(() => ({
-            name: "",
-            note: "",
-            additionalSkill: ""
-          }))
+          other: Array(organizationSettings.weapon.other)
+            .fill(null)
+            .map(() => ({
+              name: '',
+              note: '',
+              additionalSkill: '',
+            })),
+          additional: Array(organizationSettings.weapon.additional)
+            .fill(null)
+            .map(() => ({
+              name: '',
+              note: '',
+              additionalSkill: '',
+            })),
         },
         weaponEffects: {
-          taRate: "",
-          hp: "",
-          defense: ""
+          taRate: '',
+          hp: '',
+          defense: '',
         },
         summon: {
-          main: { name: "", note: "" },
-          friend: { name: "", note: "" },
-          other: Array(organizationSettings.summon.other).fill(null).map(() => ({ name: "", note: "" })),
-          sub: Array(organizationSettings.summon.sub).fill(null).map(() => ({ name: "", note: "" }))
+          main: { name: '', note: '' },
+          friend: { name: '', note: '' },
+          other: Array(organizationSettings.summon.other)
+            .fill(null)
+            .map(() => ({ name: '', note: '' })),
+          sub: Array(organizationSettings.summon.sub)
+            .fill(null)
+            .map(() => ({ name: '', note: '' })),
         },
         totalEffects: {
-          taRate: "",
-          hp: "",
-          defense: ""
-        }
+          taRate: '',
+          hp: '',
+          defense: '',
+        },
       },
-      always: "",
-      flow: [{
-        hp: "",
-        prediction: "",
-        charge: "",
-        guard: "",
-        action: "",
-        note: "",
-      }],
+      always: '',
+      flow: [
+        {
+          hp: '',
+          prediction: '',
+          charge: '',
+          guard: '',
+          action: '',
+          note: '',
+        },
+      ],
     };
 
     // 現在の状態を取得
@@ -230,10 +254,10 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     set({
       ...currentState,
       flowData: newData,
-      originalData: currentState.flowData || null,  // 現在のデータをoriginalDataとして保持
+      originalData: currentState.flowData || null, // 現在のデータをoriginalDataとして保持
       currentRow: 0,
       isEditMode: true,
-      history: { past: [], future: [] }
+      history: { past: [], future: [] },
     });
 
     // 更新後の状態を確認
@@ -251,7 +275,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
     const adjustedData = {
       ...data,
-      organization: adjustOrganizationData(data.organization)
+      organization: adjustOrganizationData(data.organization),
     };
     set({ flowData: adjustedData, currentRow: 0 });
   },
@@ -282,9 +306,12 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       if (isEditMode) {
         get().pushToHistory(structuredClone(newData));
       }
-
     } catch (error) {
-      useErrorStore.getState().showError(error instanceof Error ? error : new Error('データの更新中にエラーが発生しました'));
+      useErrorStore
+        .getState()
+        .showError(
+          error instanceof Error ? error : new Error('データの更新中にエラーが発生しました')
+        );
     }
   },
 
@@ -292,8 +319,10 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     const { history } = get();
 
     // 最後の履歴と同じデータは追加しない
-    if (history.past.length > 0 &&
-        JSON.stringify(history.past[history.past.length - 1]) === JSON.stringify(data)) {
+    if (
+      history.past.length > 0 &&
+      JSON.stringify(history.past[history.past.length - 1]) === JSON.stringify(data)
+    ) {
       return;
     }
 
@@ -317,7 +346,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       if (originalData && JSON.stringify(flowData) !== JSON.stringify(originalData)) {
         set({
           flowData: structuredClone(originalData),
-          history: { past: [], future: [flowData, ...history.future] }
+          history: { past: [], future: [flowData, ...history.future] },
         });
       }
       return;
@@ -328,9 +357,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     const newPast = history.past.slice(0, -1);
 
     // 戻る先の状態を取得（pop後の最後の履歴、もしくは初期データ）
-    const targetState = newPast.length > 0
-      ? newPast[newPast.length - 1]
-      : originalData;
+    const targetState = newPast.length > 0 ? newPast[newPast.length - 1] : originalData;
 
     set({
       flowData: structuredClone(targetState || currentState),
@@ -371,7 +398,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         isEditMode: false,
         flowData: structuredClone(originalData),
         originalData: null,
-        history: { past: [], future: [] }
+        history: { past: [], future: [] },
       });
       // 履歴を戻る（popstateイベントが発火してデータが復元される）
       history.back();
@@ -385,13 +412,17 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       input.accept = '.json';
 
       const filePromise = new Promise<File | null>((resolve) => {
-        window.addEventListener('focus', () => {
-          setTimeout(() => {
-            if (!input.files?.length) {
-              resolve(null);
-            }
-          }, 300);
-        }, { once: true });
+        window.addEventListener(
+          'focus',
+          () => {
+            setTimeout(() => {
+              if (!input.files?.length) {
+                resolve(null);
+              }
+            }, 300);
+          },
+          { once: true }
+        );
 
         input.onchange = (e) => {
           const file = (e.target as HTMLInputElement).files?.[0];
@@ -408,9 +439,13 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       const text = await file.text();
       const data = JSON.parse(text) as Flow;
-      useFlowStore.getState().setFlowData(data);  // 分離した関数を使用
+      useFlowStore.getState().setFlowData(data); // 分離した関数を使用
     } catch (error) {
-      useErrorStore.getState().showError(error instanceof Error ? error : new Error('ファイルの読み込み中にエラーが発生しました'));
+      useErrorStore
+        .getState()
+        .showError(
+          error instanceof Error ? error : new Error('ファイルの読み込み中にエラーが発生しました')
+        );
       throw error;
     }
   },
@@ -433,9 +468,13 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         },
       });
     } catch (error) {
-      useErrorStore.getState().showError(error instanceof Error ? error : new Error('アクションの更新中にエラーが発生しました'));
+      useErrorStore
+        .getState()
+        .showError(
+          error instanceof Error ? error : new Error('アクションの更新中にエラーが発生しました')
+        );
     }
-  }
-}))
+  },
+}));
 
-export default useFlowStore
+export default useFlowStore;

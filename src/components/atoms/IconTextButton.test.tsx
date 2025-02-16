@@ -5,13 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 describe('IconTextButton', () => {
   it('デフォルトのスタイルで正しくレンダリングされる', () => {
-    render(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-      />
-    );
+    render(<IconTextButton icon={Menu} label="メニュー" text="メニューを開く" />);
 
     const button = screen.getByLabelText('メニュー');
     expect(button).toBeDefined();
@@ -21,12 +15,7 @@ describe('IconTextButton', () => {
 
   it('アイコンの位置が正しく切り替わる', () => {
     const { rerender } = render(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-        iconPosition="left"
-      />
+      <IconTextButton icon={Menu} label="メニュー" text="メニューを開く" iconPosition="left" />
     );
 
     let button = screen.getByLabelText('メニュー');
@@ -35,12 +24,7 @@ describe('IconTextButton', () => {
     expect(children[1]).toHaveTextContent('メニューを開く'); // テキスト
 
     rerender(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-        iconPosition="right"
-      />
+      <IconTextButton icon={Menu} label="メニュー" text="メニューを開く" iconPosition="right" />
     );
 
     button = screen.getByLabelText('メニュー');
@@ -53,12 +37,7 @@ describe('IconTextButton', () => {
     const handleClick = vi.fn();
 
     render(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-        onClick={handleClick}
-      />
+      <IconTextButton icon={Menu} label="メニュー" text="メニューを開く" onClick={handleClick} />
     );
 
     const button = screen.getByLabelText('メニュー');
@@ -69,25 +48,13 @@ describe('IconTextButton', () => {
 
   it('異なるvariantで正しくレンダリングされる', () => {
     const { rerender } = render(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-        variant="default"
-      />
+      <IconTextButton icon={Menu} label="メニュー" text="メニューを開く" variant="default" />
     );
 
     const defaultButton = screen.getByLabelText('メニュー');
     expect(defaultButton).toHaveClass('bg-primary');
 
-    rerender(
-      <IconTextButton
-        icon={Menu}
-        label="メニュー"
-        text="メニューを開く"
-        variant="ghost"
-      />
-    );
+    rerender(<IconTextButton icon={Menu} label="メニュー" text="メニューを開く" variant="ghost" />);
 
     const ghostButton = screen.getByLabelText('メニュー');
     expect(ghostButton).toHaveClass('hover:bg-accent');

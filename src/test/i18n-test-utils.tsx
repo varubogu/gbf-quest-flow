@@ -50,9 +50,5 @@ vi.mock('i18next', () => ({
 
 // テストヘルパー関数
 export const renderWithI18n = (ui: React.ReactElement): RenderResult => {
-  return render(
-    <I18nextProvider i18n={i18next}>
-      {ui}
-    </I18nextProvider>
-  );
+  return render(<I18nextProvider i18n={i18next}>{ui}</I18nextProvider>);
 };

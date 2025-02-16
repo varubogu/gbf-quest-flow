@@ -1,11 +1,10 @@
 ---
-
 // 通常の画面
 // 下記のようにURLパラメータでdを指定するとデータを選択して表示可能
 // https://ドメイン/?d=sample
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import BodyLayout from "@/layouts/BodyLayout";
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BodyLayout from '@/layouts/BodyLayout';
 
 const mode = Astro.url.searchParams.get('mode');
 
@@ -16,7 +15,6 @@ if (mode === 'new') {
 } else if (mode === 'edit') {
   initialMode = 'edit';
 }
-
 ---
 
 <BaseLayout>

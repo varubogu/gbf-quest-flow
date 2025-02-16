@@ -1,18 +1,11 @@
-import * as React from "react"
-import { Menu } from "lucide-react"
-import { IconButton } from "../atoms/IconButton"
+import * as React from 'react';
+import { Menu } from 'lucide-react';
+import { IconButton } from '../atoms/IconButton';
 
 interface HamburgerMenuProps {
-  onClick: () => void
+  onClick: () => void;
 }
 
 export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ onClick }) => {
-  return (
-    <IconButton
-      icon={Menu}
-      label="メニューを開く"
-      variant="ghost"
-      onClick={onClick}
-    />
-  )
-}
+  return <IconButton icon={Menu} label="メニューを開く" variant="ghost" onClick={onClick} />;
+};

@@ -26,7 +26,7 @@ export function FlowLayout({
   onSave,
   onNew,
   onTitleChange,
-  onAlwaysChange
+  onAlwaysChange,
 }: Props) {
   const { t } = useTranslation();
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = React.useState(false);
@@ -75,22 +75,13 @@ export function FlowLayout({
             text={t('organization')}
             onClick={() => setIsOrganizationModalOpen(true)}
           />
-          <IconButton
-            icon={Info}
-            label={t('otherInfo')}
-            onClick={() => setIsInfoModalOpen(true)}
-          />
+          <IconButton icon={Info} label={t('otherInfo')} onClick={() => setIsInfoModalOpen(true)} />
         </div>
       </header>
       <main className="flex-1 pt-14">
         <div className="h-[calc(100vh-3.5rem)]">
           <PanelGroup direction="vertical">
-            <Panel
-              ref={memoPanelRef}
-              defaultSize={50}
-              minSize={0}
-              onResize={handleMemoResize}
-            >
+            <Panel ref={memoPanelRef} defaultSize={50} minSize={0} onResize={handleMemoResize}>
               <div className="h-full overflow-auto">
                 <div className="p-4 h-full">
                   {isEditMode ? (
@@ -118,10 +109,7 @@ export function FlowLayout({
         isOpen={isOrganizationModalOpen}
         onClose={() => setIsOrganizationModalOpen(false)}
       />
-      <InfoModal
-        isOpen={isInfoModalOpen}
-        onClose={() => setIsInfoModalOpen(false)}
-      />
+      <InfoModal isOpen={isInfoModalOpen} onClose={() => setIsInfoModalOpen(false)} />
     </div>
   );
 }

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Button } from "@/components/atoms/Button";
+import React, { useState } from 'react';
+import { Button } from '@/components/atoms/Button';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/molecules/Sheet";
+} from '@/components/molecules/Sheet';
 import {
   Menu,
   FileText,
@@ -17,10 +17,10 @@ import {
   XCircle,
   Settings,
   HelpCircle,
-} from "lucide-react";
-import useFlowStore from "@/stores/flowStore";
-import useSettingsStore from "@/stores/settingsStore";
-import { useTranslation } from "react-i18next";
+} from 'lucide-react';
+import useFlowStore from '@/stores/flowStore';
+import useSettingsStore from '@/stores/settingsStore';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onSave: () => void;
@@ -39,24 +39,34 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
   const cancelEdit = useFlowStore((state) => state.cancelEdit);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
 
-  const [menuView, setMenuView] = useState<"menu" | "options">("menu");
+  const [menuView, setMenuView] = useState<'menu' | 'options'>('menu');
   const { settings, updateSettings } = useSettingsStore();
 
   const menuItems = [
-    { id: "new", label: t('newData'), icon: FileText },
-    { id: "load", label: t('loadData'), icon: FolderOpen },
-    ...(flowData ? [
-      { id: "download", label: isEditMode ? t('downloadOriginalData') : t('downloadData'), icon: Download },
-      { id: "edit", label: isEditMode ? t('save') : t('edit'), icon: isEditMode ? Save : Edit2 },
-      ...(isEditMode ? [{ id: "cancel", label: t('cancelEdit'), icon: XCircle }] : []),
-    ] : []),
-    { id: "options", label: t('options'), icon: Settings },
-    { id: "help", label: t('help'), icon: HelpCircle },
+    { id: 'new', label: t('newData'), icon: FileText },
+    { id: 'load', label: t('loadData'), icon: FolderOpen },
+    ...(flowData
+      ? [
+          {
+            id: 'download',
+            label: isEditMode ? t('downloadOriginalData') : t('downloadData'),
+            icon: Download,
+          },
+          {
+            id: 'edit',
+            label: isEditMode ? t('save') : t('edit'),
+            icon: isEditMode ? Save : Edit2,
+          },
+          ...(isEditMode ? [{ id: 'cancel', label: t('cancelEdit'), icon: XCircle }] : []),
+        ]
+      : []),
+    { id: 'options', label: t('options'), icon: Settings },
+    { id: 'help', label: t('help'), icon: HelpCircle },
   ];
 
   const handleMenuClick = async (id: string) => {
     switch (id) {
-      case "new":
+      case 'new':
         if (isEditMode) {
           if (!confirm(t('confirmDiscardChanges'))) {
             break;
@@ -66,7 +76,7 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
         createNewFlow();
         setIsOpen(false);
         break;
-      case "load":
+      case 'load':
         try {
           if (isEditMode) {
             if (!confirm(t('confirmDiscardChanges'))) {
@@ -84,7 +94,7 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
           setIsOpen(false);
         }
         break;
-      case "download":
+      case 'download':
         if (!flowData) {
           alert(t('noDataToDownload'));
           break;
@@ -97,17 +107,17 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
         }
 
         const json = JSON.stringify(dataToDownload, null, 2);
-        const blob = new Blob([json], { type: "application/json" });
+        const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const filename = `${dataToDownload.title}.json`;
 
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
         break;
-      case "edit":
+      case 'edit':
         if (isEditMode) {
           if (onSave) {
             onSave();
@@ -117,16 +127,16 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
         }
         setIsOpen(false);
         break;
-      case "cancel":
+      case 'cancel':
         if (confirm(t('confirmDiscardChanges'))) {
           cancelEdit();
           setIsOpen(false);
         }
         break;
-      case "options":
-        setMenuView("options");
+      case 'options':
+        setMenuView('options');
         break;
-      case "help":
+      case 'help':
         alert(t('showHelp'));
         break;
       default:
@@ -142,11 +152,9 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>
-            {menuView === "menu" ? t('menu') : t('options')}
-          </SheetTitle>
+          <SheetTitle>{menuView === 'menu' ? t('menu') : t('options')}</SheetTitle>
         </SheetHeader>
-        {menuView === "menu" ? (
+        {menuView === 'menu' ? (
           <div className="mt-4 flex flex-col gap-2">
             {menuItems.map((item) => (
               <Button
@@ -154,22 +162,17 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                 variant="ghost"
                 className="w-full justify-start gap-2"
                 onClick={() => handleMenuClick(item.id)}
-                disabled={isLoading && item.id === "load"}
+                disabled={isLoading && item.id === 'load'}
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
-                {item.id === "load" && isLoading ? t('loadingFile') : item.label}
+                {item.id === 'load' && isLoading ? t('loadingFile') : item.label}
               </Button>
             ))}
           </div>
         ) : (
           <div className="mt-4">
-            <Button
-              variant="ghost"
-              className="mb-4 gap-2"
-              onClick={() => setMenuView("menu")}
-            >
-              <Menu className="h-4 w-4" />
-              ← {t('back')}
+            <Button variant="ghost" className="mb-4 gap-2" onClick={() => setMenuView('menu')}>
+              <Menu className="h-4 w-4" />← {t('back')}
             </Button>
             <div className="mb-4">
               <h3 className="font-semibold">{t('language')}</h3>
@@ -179,8 +182,10 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                     type="radio"
                     name="language"
                     value="日本語"
-                    checked={settings.language === "日本語"}
-                    onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
+                    checked={settings.language === '日本語'}
+                    onChange={(e) =>
+                      updateSettings({ language: e.target.value as '日本語' | 'English' })
+                    }
                     className="form-radio"
                   />
                   <span className="ml-2">{t('japanese')}</span>
@@ -190,8 +195,10 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                     type="radio"
                     name="language"
                     value="English"
-                    checked={settings.language === "English"}
-                    onChange={(e) => updateSettings({ language: e.target.value as "日本語" | "English" })}
+                    checked={settings.language === 'English'}
+                    onChange={(e) =>
+                      updateSettings({ language: e.target.value as '日本語' | 'English' })
+                    }
                     className="form-radio"
                   />
                   <span className="ml-2">{t('english')}</span>
@@ -206,8 +213,10 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                     type="radio"
                     name="buttonAlignment"
                     value="左"
-                    checked={settings.buttonAlignment === "左"}
-                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
+                    checked={settings.buttonAlignment === '左'}
+                    onChange={(e) =>
+                      updateSettings({ buttonAlignment: e.target.value as '右' | '左' })
+                    }
                     className="form-radio"
                   />
                   <span className="ml-2">{t('left')}</span>
@@ -217,8 +226,10 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                     type="radio"
                     name="buttonAlignment"
                     value="右"
-                    checked={settings.buttonAlignment === "右"}
-                    onChange={(e) => updateSettings({ buttonAlignment: e.target.value as "右" | "左" })}
+                    checked={settings.buttonAlignment === '右'}
+                    onChange={(e) =>
+                      updateSettings({ buttonAlignment: e.target.value as '右' | '左' })
+                    }
                     className="form-radio"
                   />
                   <span className="ml-2">{t('right')}</span>

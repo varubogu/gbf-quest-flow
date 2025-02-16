@@ -1,4 +1,4 @@
-import { defineCollection, } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { flowSchema } from '@/types/models';
 import { z } from 'astro:content';
 import type { OrganizationSettings } from '@/types/settings';
@@ -15,6 +15,6 @@ const flowCollection = defineCollection({
 });
 
 export const collections = {
-  'flows': flowCollection,
-  'settings': settingsCollection,
+  flows: flowCollection,
+  settings: settingsCollection,
 };

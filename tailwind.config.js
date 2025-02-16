@@ -47,7 +47,7 @@ export default {
         },
       },
       borderColor: {
-        DEFAULT: 'hsl(var(--border))'
+        DEFAULT: 'hsl(var(--border))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -63,4 +63,4 @@ export default {
     },
   },
   plugins: [require('tailwindcss-animate')],
-}
+};

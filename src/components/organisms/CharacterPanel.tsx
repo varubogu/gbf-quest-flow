@@ -1,9 +1,19 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import {
+  textInputBaseStyle,
+  textareaBaseStyle,
+  useAutoResizeTextArea,
+} from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
-import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
+import {
+  tableBaseStyle,
+  tableHeaderRowStyle,
+  tableHeaderCellBaseStyle,
+  tableCellBaseStyle,
+  tableWidthStyles,
+} from '@/components/atoms/TableStyles';
 
 interface CharacterPanelProps {
   isEditing: boolean;
@@ -15,15 +25,21 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
 
   if (!flowData) return null;
 
-  const handleMemberChange = (position: 'front' | 'back', index: number, field: keyof Member, value: string) => {
+  const handleMemberChange = (
+    position: 'front' | 'back',
+    index: number,
+    field: keyof Member,
+    value: string
+  ) => {
     if (!flowData) return;
-    const newMembers = position === 'front'
-      ? [...flowData.organization.member.front]
-      : [...flowData.organization.member.back];
+    const newMembers =
+      position === 'front'
+        ? [...flowData.organization.member.front]
+        : [...flowData.organization.member.back];
 
     newMembers[index] = {
       ...newMembers[index],
-      [field]: value
+      [field]: value,
     };
 
     updateFlowData({
@@ -31,9 +47,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
         ...flowData.organization,
         member: {
           ...flowData.organization.member,
-          [position]: newMembers
-        }
-      }
+          [position]: newMembers,
+        },
+      },
     });
   };
 
@@ -42,12 +58,24 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('characterPosition')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('characterName')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('characterUsage')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}>{t('characterAwakening')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('characterAccessories')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('characterLimitBonus')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>
+              {t('characterPosition')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>
+              {t('characterName')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>
+              {t('characterUsage')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}>
+              {t('characterAwakening')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>
+              {t('characterAccessories')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>
+              {t('characterLimitBonus')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +83,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
           {flowData.organization.member.front.map((char, index) => (
             <tr key={`front-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.member.front.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.member.front.length}
+                >
                   {t('characterFront')}
                 </td>
               )}
@@ -93,7 +124,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <input
                     type="text"
                     value={char.awaketype}
-                    onChange={(e) => handleMemberChange('front', index, 'awaketype', e.target.value)}
+                    onChange={(e) =>
+                      handleMemberChange('front', index, 'awaketype', e.target.value)
+                    }
                     className={textInputBaseStyle}
                     maxLength={4}
                   />
@@ -106,7 +139,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     ref={useAutoResizeTextArea(char.accessories)}
                     value={char.accessories}
-                    onChange={(e) => handleMemberChange('front', index, 'accessories', e.target.value)}
+                    onChange={(e) =>
+                      handleMemberChange('front', index, 'accessories', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (
@@ -118,7 +153,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     ref={useAutoResizeTextArea(char.limitBonus)}
                     value={char.limitBonus}
-                    onChange={(e) => handleMemberChange('front', index, 'limitBonus', e.target.value)}
+                    onChange={(e) =>
+                      handleMemberChange('front', index, 'limitBonus', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (
@@ -131,7 +168,10 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
           {flowData.organization.member.back.map((char, index) => (
             <tr key={`back-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.member.back.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.member.back.length}
+                >
                   {t('characterBack')}
                 </td>
               )}
@@ -182,7 +222,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     ref={useAutoResizeTextArea(char.accessories)}
                     value={char.accessories}
-                    onChange={(e) => handleMemberChange('back', index, 'accessories', e.target.value)}
+                    onChange={(e) =>
+                      handleMemberChange('back', index, 'accessories', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (
@@ -194,7 +236,9 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
                   <textarea
                     ref={useAutoResizeTextArea(char.limitBonus)}
                     value={char.limitBonus}
-                    onChange={(e) => handleMemberChange('back', index, 'limitBonus', e.target.value)}
+                    onChange={(e) =>
+                      handleMemberChange('back', index, 'limitBonus', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (

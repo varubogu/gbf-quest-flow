@@ -5,13 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 describe('IconButton', () => {
   it('正しくレンダリングされる', () => {
-    render(
-      <IconButton
-        icon={Menu}
-        label="メニュー"
-        aria-label="メニュー"
-      />
-    );
+    render(<IconButton icon={Menu} label="メニュー" aria-label="メニュー" />);
 
     const button = screen.getByLabelText('メニュー');
     expect(button).toBeDefined();
@@ -20,13 +14,7 @@ describe('IconButton', () => {
   it('クリックイベントが正しく動作する', () => {
     const handleClick = vi.fn();
 
-    render(
-      <IconButton
-        icon={Menu}
-        label="メニュー"
-        onClick={handleClick}
-      />
-    );
+    render(<IconButton icon={Menu} label="メニュー" onClick={handleClick} />);
 
     const button = screen.getByLabelText('メニュー');
     fireEvent.click(button);
@@ -35,37 +23,19 @@ describe('IconButton', () => {
   });
 
   it('異なるvariantで正しくレンダリングされる', () => {
-    const { rerender } = render(
-      <IconButton
-        icon={Menu}
-        label="メニュー"
-        variant="default"
-      />
-    );
+    const { rerender } = render(<IconButton icon={Menu} label="メニュー" variant="default" />);
 
     const defaultButton = screen.getByLabelText('メニュー');
     expect(defaultButton).toHaveClass('bg-primary');
 
-    rerender(
-      <IconButton
-        icon={Menu}
-        label="メニュー"
-        variant="ghost"
-      />
-    );
+    rerender(<IconButton icon={Menu} label="メニュー" variant="ghost" />);
 
     const ghostButton = screen.getByLabelText('メニュー');
     expect(ghostButton).toHaveClass('hover:bg-accent');
   });
 
   it('無効状態で正しく表示される', () => {
-    render(
-      <IconButton
-        icon={Menu}
-        label="メニュー"
-        disabled
-      />
-    );
+    render(<IconButton icon={Menu} label="メニュー" disabled />);
 
     const button = screen.getByLabelText('メニュー');
     expect(button).toBeDisabled();

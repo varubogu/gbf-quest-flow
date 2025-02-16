@@ -54,7 +54,7 @@ describe.sequential('FlowStore', () => {
           quest: '',
           author: '',
           description: '',
-          note: ''
+          note: '',
         });
 
         expect(flowData.organization.member.front).toHaveLength(organizationSettings.member.front);
@@ -86,7 +86,7 @@ describe.sequential('FlowStore', () => {
         quest: '',
         author: '',
         description: '',
-        note: ''
+        note: '',
       });
     });
   });
@@ -143,7 +143,7 @@ describe.sequential('FlowStore', () => {
 
       store.updateFlowData({
         title: 'Updated Title',
-        description: 'Test Description'
+        description: 'Test Description',
       });
 
       // データの更新を待つ
@@ -167,85 +167,100 @@ describe.sequential('FlowStore', () => {
       store.createNewFlow();
 
       // createNewFlowの完了を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData !== null;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData !== null;
+        },
+        { timeout: 10000 }
+      );
 
       store.setIsEditMode(true);
 
       // 編集モードの変更を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.isEditMode === true;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.isEditMode === true;
+        },
+        { timeout: 10000 }
+      );
 
       // 最初の状態を確認
       const stateBeforeUpdate = useFlowStore.getState();
       console.log('Initial state:', {
         flowData: stateBeforeUpdate.flowData,
         isEditMode: stateBeforeUpdate.isEditMode,
-        history: stateBeforeUpdate.history
+        history: stateBeforeUpdate.history,
       });
 
       store.updateFlowData({ title: initialTitle });
 
       // 最初の更新を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        console.log('Waiting for first update:', {
-          currentTitle: state.flowData?.title,
-          history: state.history
-        });
-        return state.flowData?.title === initialTitle;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          console.log('Waiting for first update:', {
+            currentTitle: state.flowData?.title,
+            history: state.history,
+          });
+          return state.flowData?.title === initialTitle;
+        },
+        { timeout: 10000 }
+      );
 
       // 最初の更新後の状態を確認
       const stateAfterFirstUpdate = useFlowStore.getState();
       console.log('After first update:', {
         flowData: stateAfterFirstUpdate.flowData,
-        history: stateAfterFirstUpdate.history
+        history: stateAfterFirstUpdate.history,
       });
 
       // 変更を加える
       store.updateFlowData({ title: updatedTitle });
 
       // 2回目の更新を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        console.log('Waiting for second update:', {
-          currentTitle: state.flowData?.title,
-          history: state.history
-        });
-        return state.flowData?.title === updatedTitle && state.history.past.length === 1;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          console.log('Waiting for second update:', {
+            currentTitle: state.flowData?.title,
+            history: state.history,
+          });
+          return state.flowData?.title === updatedTitle && state.history.past.length === 1;
+        },
+        { timeout: 10000 }
+      );
 
       // 2回目の更新後の状態を確認
       const stateAfterSecondUpdate = useFlowStore.getState();
       console.log('After second update:', {
         flowData: stateAfterSecondUpdate.flowData,
-        history: stateAfterSecondUpdate.history
+        history: stateAfterSecondUpdate.history,
       });
 
       // アンドゥ
       store.undo();
 
       // アンドゥの完了を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        console.log('Waiting for undo:', {
-          currentTitle: state.flowData?.title,
-          expectedTitle: initialTitle,
-          history: state.history
-        });
-        return state.flowData?.title === initialTitle && state.history.future.length === 1;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          console.log('Waiting for undo:', {
+            currentTitle: state.flowData?.title,
+            expectedTitle: initialTitle,
+            history: state.history,
+          });
+          return state.flowData?.title === initialTitle && state.history.future.length === 1;
+        },
+        { timeout: 10000 }
+      );
 
       // アンドゥ後の状態を取得して確認
       const stateAfterUndo = useFlowStore.getState();
       console.log('After undo:', {
         flowData: stateAfterUndo.flowData,
-        history: stateAfterUndo.history
+        history: stateAfterUndo.history,
       });
 
       expect(stateAfterUndo.flowData?.title).toBe(initialTitle);
@@ -256,16 +271,19 @@ describe.sequential('FlowStore', () => {
       store.redo();
 
       // リドゥの完了を待つ
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData?.title === updatedTitle;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData?.title === updatedTitle;
+        },
+        { timeout: 10000 }
+      );
 
       // リドゥ後の状態を取得して確認
       const stateAfterRedo = useFlowStore.getState();
       console.log('After redo:', {
         flowData: stateAfterRedo.flowData,
-        history: stateAfterRedo.history
+        history: stateAfterRedo.history,
       });
 
       expect(stateAfterRedo.flowData?.title).toBe(updatedTitle);
@@ -279,31 +297,40 @@ describe.sequential('FlowStore', () => {
 
       // フローを作成して編集モードに
       store.createNewFlow();
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData !== null;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData !== null;
+        },
+        { timeout: 10000 }
+      );
 
       store.setIsEditMode(true);
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.isEditMode === true;
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.isEditMode === true;
+        },
+        { timeout: 10000 }
+      );
 
       // 3段階の変更を加える
       for (const title of titles) {
         store.updateFlowData({ title });
-        await vi.waitFor(() => {
-          const state = useFlowStore.getState();
-          return state.flowData?.title === title;
-        }, { timeout: 10000 });
+        await vi.waitFor(
+          () => {
+            const state = useFlowStore.getState();
+            return state.flowData?.title === title;
+          },
+          { timeout: 10000 }
+        );
       }
 
       // 最終状態の確認
       const stateAfterUpdates = useFlowStore.getState();
       console.log('After all updates:', {
         currentTitle: stateAfterUpdates.flowData?.title,
-        history: stateAfterUpdates.history
+        history: stateAfterUpdates.history,
       });
       expect(stateAfterUpdates.flowData?.title).toBe(titles[2]);
       expect(stateAfterUpdates.history.past).toHaveLength(3);
@@ -311,15 +338,18 @@ describe.sequential('FlowStore', () => {
 
       // 1段階目のアンドゥ
       store.undo();
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData?.title === titles[1];
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData?.title === titles[1];
+        },
+        { timeout: 10000 }
+      );
 
       const stateAfterFirstUndo = useFlowStore.getState();
       console.log('After first undo:', {
         currentTitle: stateAfterFirstUndo.flowData?.title,
-        history: stateAfterFirstUndo.history
+        history: stateAfterFirstUndo.history,
       });
       expect(stateAfterFirstUndo.flowData?.title).toBe(titles[1]);
       expect(stateAfterFirstUndo.history.past).toHaveLength(2);
@@ -327,15 +357,18 @@ describe.sequential('FlowStore', () => {
 
       // 2段階目のアンドゥ
       store.undo();
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData?.title === titles[0];
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData?.title === titles[0];
+        },
+        { timeout: 10000 }
+      );
 
       const stateAfterSecondUndo = useFlowStore.getState();
       console.log('After second undo:', {
         currentTitle: stateAfterSecondUndo.flowData?.title,
-        history: stateAfterSecondUndo.history
+        history: stateAfterSecondUndo.history,
       });
       expect(stateAfterSecondUndo.flowData?.title).toBe(titles[0]);
       expect(stateAfterSecondUndo.history.past).toHaveLength(1);
@@ -343,15 +376,18 @@ describe.sequential('FlowStore', () => {
 
       // 1段階目のリドゥ
       store.redo();
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData?.title === titles[1];
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData?.title === titles[1];
+        },
+        { timeout: 10000 }
+      );
 
       const stateAfterFirstRedo = useFlowStore.getState();
       console.log('After first redo:', {
         currentTitle: stateAfterFirstRedo.flowData?.title,
-        history: stateAfterFirstRedo.history
+        history: stateAfterFirstRedo.history,
       });
       expect(stateAfterFirstRedo.flowData?.title).toBe(titles[1]);
       expect(stateAfterFirstRedo.history.past).toHaveLength(2);
@@ -359,15 +395,18 @@ describe.sequential('FlowStore', () => {
 
       // 2段階目のリドゥ
       store.redo();
-      await vi.waitFor(() => {
-        const state = useFlowStore.getState();
-        return state.flowData?.title === titles[2];
-      }, { timeout: 10000 });
+      await vi.waitFor(
+        () => {
+          const state = useFlowStore.getState();
+          return state.flowData?.title === titles[2];
+        },
+        { timeout: 10000 }
+      );
 
       const stateAfterSecondRedo = useFlowStore.getState();
       console.log('After second redo:', {
         currentTitle: stateAfterSecondRedo.flowData?.title,
-        history: stateAfterSecondRedo.history
+        history: stateAfterSecondRedo.history,
       });
       expect(stateAfterSecondRedo.flowData?.title).toBe(titles[2]);
       expect(stateAfterSecondRedo.history.past).toHaveLength(3);

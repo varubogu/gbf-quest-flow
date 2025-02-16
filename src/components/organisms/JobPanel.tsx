@@ -1,9 +1,19 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import {
+  textInputBaseStyle,
+  textareaBaseStyle,
+  useAutoResizeTextArea,
+} from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
-import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
+import {
+  tableBaseStyle,
+  tableHeaderRowStyle,
+  tableHeaderCellBaseStyle,
+  tableCellBaseStyle,
+  tableWidthStyles,
+} from '@/components/atoms/TableStyles';
 
 interface JobPanelProps {
   isEditing: boolean;
@@ -22,9 +32,9 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
         ...flowData.organization,
         job: {
           ...flowData.organization.job,
-          [field]: value
-        }
-      }
+          [field]: value,
+        },
+      },
     });
   };
 
@@ -37,10 +47,10 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           ...flowData.organization.job,
           equipment: {
             ...flowData.organization.job.equipment,
-            [field]: value
-          }
-        }
-      }
+            [field]: value,
+          },
+        },
+      },
     });
   };
 
@@ -49,7 +59,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
     const newAbilities = [...flowData.organization.job.abilities];
     newAbilities[index] = {
       ...newAbilities[index],
-      [field]: value
+      [field]: value,
     };
 
     updateFlowData({
@@ -57,9 +67,9 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
         ...flowData.organization,
         job: {
           ...flowData.organization.job,
-          abilities: newAbilities
-        }
-      }
+          abilities: newAbilities,
+        },
+      },
     });
   };
 
@@ -69,8 +79,12 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
         <thead>
           <tr className={tableHeaderRowStyle}>
             <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('jobItem')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('jobValue')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>
+              {t('jobValue')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>
+              {t('overview')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -144,7 +158,10 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           {flowData.organization.job.abilities.map((ability, index) => (
             <tr key={`ability-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.job.abilities.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.job.abilities.length}
+                >
                   {t('characterAbilities')}
                 </td>
               )}

@@ -25,7 +25,7 @@ describe('EmptyLayout', () => {
     const mockSearchParams = new URLSearchParams('?d=test-slug');
     Object.defineProperty(window, 'location', {
       value: { search: mockSearchParams.toString() },
-      writable: true
+      writable: true,
     });
 
     renderWithI18n(<EmptyLayout />);

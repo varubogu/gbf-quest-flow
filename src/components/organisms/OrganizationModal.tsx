@@ -7,7 +7,11 @@ import { CharacterPanel } from './CharacterPanel';
 import { SkillTotalPanel } from './SkillTotalPanel';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import {
+  textInputBaseStyle,
+  textareaBaseStyle,
+  useAutoResizeTextArea,
+} from '@/components/atoms/IconTextButton';
 
 interface OrganizationModalProps {
   isOpen: boolean;
@@ -30,33 +34,47 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
         {/* モーダルコンテンツ */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <HeadlessDialog.Panel className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
-            <HeadlessTab.Group selectedIndex={selectedTab} onChange={setSelectedTab} className="h-full flex flex-col">
+            <HeadlessTab.Group
+              selectedIndex={selectedTab}
+              onChange={setSelectedTab}
+              className="h-full flex flex-col"
+            >
               {/* ヘッダー部分 - 固定 */}
               <div className="flex-none p-4 border-b bg-white">
                 <HeadlessTab.List className="flex space-x-1">
-                  <HeadlessTab className={({ selected }) =>
-                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                  }>
+                  <HeadlessTab
+                    className={({ selected }) =>
+                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                    }
+                  >
                     {t('jobAndCharacters')}
                   </HeadlessTab>
-                  <HeadlessTab className={({ selected }) =>
-                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                  }>
+                  <HeadlessTab
+                    className={({ selected }) =>
+                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                    }
+                  >
                     {t('weapons')}
                   </HeadlessTab>
-                  <HeadlessTab className={({ selected }) =>
-                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                  }>
+                  <HeadlessTab
+                    className={({ selected }) =>
+                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                    }
+                  >
                     {t('summons')}
                   </HeadlessTab>
-                  <HeadlessTab className={({ selected }) =>
-                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                  }>
+                  <HeadlessTab
+                    className={({ selected }) =>
+                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                    }
+                  >
                     {t('video')}
                   </HeadlessTab>
-                  <HeadlessTab className={({ selected }) =>
-                    `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                  }>
+                  <HeadlessTab
+                    className={({ selected }) =>
+                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
+                    }
+                  >
                     {t('skillTotals')}
                   </HeadlessTab>
                 </HeadlessTab.List>

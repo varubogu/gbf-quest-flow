@@ -13,11 +13,11 @@ export const ErrorDialog: React.FC = () => {
     if (!flowData) return;
 
     const json = JSON.stringify(flowData, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
+    const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const filename = `${flowData.title}_backup_${new Date().toISOString()}.json`;
 
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     a.click();

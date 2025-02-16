@@ -1,8 +1,8 @@
-import * as React from "react";
-import { ActionTable } from "./ActionTable";
-import type { Action } from "@/types/models";
-import useFlowStore from "@/stores/flowStore";
-import useSettingsStore from "@/stores/settingsStore";
+import * as React from 'react';
+import { ActionTable } from './ActionTable';
+import type { Action } from '@/types/models';
+import useFlowStore from '@/stores/flowStore';
+import useSettingsStore from '@/stores/settingsStore';
 
 interface ActionTableContainerProps {
   isEditMode?: boolean;
@@ -99,12 +99,12 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
 
     const newFlow = [...flowData.flow];
     const newRow: Action = {
-      hp: "",
-      prediction: "",
-      charge: "",
-      guard: "",
-      action: "",
-      note: "",
+      hp: '',
+      prediction: '',
+      charge: '',
+      guard: '',
+      action: '',
+      note: '',
     };
 
     // インデックスが-1の場合は先頭に挿入
@@ -133,12 +133,12 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
       // 必要な数の空の行を追加
       while (targetIndex >= newFlow.length) {
         newFlow.push({
-          hp: "",
-          prediction: "",
-          charge: "",
-          guard: "",
-          action: "",
-          note: "",
+          hp: '',
+          prediction: '',
+          charge: '',
+          guard: '',
+          action: '',
+          note: '',
         });
       }
 
@@ -147,22 +147,18 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
         // 1行目は指定位置に上書き
         newFlow[targetIndex] = {
           ...newFlow[targetIndex],
-          ...Object.fromEntries(
-            Object.entries(row).filter(([_, value]) => value !== undefined)
-          ),
+          ...Object.fromEntries(Object.entries(row).filter(([_, value]) => value !== undefined)),
         };
       } else {
         // 2行目以降は新しい行を挿入
         const newRow = {
-          hp: "",
-          prediction: "",
-          charge: "",
-          guard: "",
-          action: "",
-          note: "",
-          ...Object.fromEntries(
-            Object.entries(row).filter(([_, value]) => value !== undefined)
-          ),
+          hp: '',
+          prediction: '',
+          charge: '',
+          guard: '',
+          action: '',
+          note: '',
+          ...Object.fromEntries(Object.entries(row).filter(([_, value]) => value !== undefined)),
         };
         newFlow.splice(targetIndex, 0, newRow);
       }
@@ -178,7 +174,7 @@ export const ActionTableContainer: React.FC<ActionTableContainerProps> = ({
     <ActionTable
       data={data ?? flowData.flow}
       currentRow={currentRow}
-      buttonPosition={settings.buttonAlignment === "左" ? "left" : "right"}
+      buttonPosition={settings.buttonAlignment === '左' ? 'left' : 'right'}
       onMoveUp={handleMoveUp}
       onMoveDown={handleMoveDown}
       onRowSelect={handleRowSelect}

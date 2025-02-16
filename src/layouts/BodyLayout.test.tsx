@@ -20,7 +20,7 @@ vi.mock('@/stores/flowStore', () => {
   const useStore = Object.assign(mockFunction, { getState: () => store });
 
   return {
-    default: useStore
+    default: useStore,
   };
 });
 
@@ -37,19 +37,19 @@ const mockInitialData = {
     weapon: {
       main: { name: '', note: '', additionalSkill: '' },
       other: [],
-      additional: []
+      additional: [],
     },
     weaponEffects: { taRate: '', hp: '', defense: '' },
     summon: {
       main: { name: '', note: '' },
       friend: { name: '', note: '' },
       other: [],
-      sub: []
+      sub: [],
     },
-    totalEffects: { taRate: '', hp: '', defense: '' }
+    totalEffects: { taRate: '', hp: '', defense: '' },
   },
   always: '',
-  flow: []
+  flow: [],
 };
 
 describe('BodyLayout', () => {
@@ -100,9 +100,9 @@ describe('BodyLayout', () => {
     Object.defineProperty(window, 'location', {
       value: {
         pathname: '/',
-        search: '?mode=new'
+        search: '?mode=new',
       },
-      writable: true
+      writable: true,
     });
 
     window.dispatchEvent(new PopStateEvent('popstate'));

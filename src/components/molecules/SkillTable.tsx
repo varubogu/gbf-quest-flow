@@ -2,7 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
 import { useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
-import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
+import {
+  tableBaseStyle,
+  tableHeaderRowStyle,
+  tableHeaderCellBaseStyle,
+  tableCellBaseStyle,
+  tableWidthStyles,
+} from '@/components/atoms/TableStyles';
 
 interface SkillTableProps {
   isEditing: boolean;
@@ -20,8 +26,12 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles["1/4"]}`}>{t('skill')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles["3/4"]}`}>{title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles['1/4']}`}>
+              {t('skill')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles['3/4']}`}>
+              {title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}
+            </th>
           </tr>
         </thead>
         <tbody>

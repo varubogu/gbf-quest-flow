@@ -30,7 +30,7 @@ vi.mock('@/stores/flowStore', () => ({
   default: vi.fn(() => ({
     flowData: mockFlowData,
     updateFlowData: vi.fn(),
-  }))
+  })),
 }));
 
 describe('WeaponPanel', () => {

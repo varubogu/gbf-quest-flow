@@ -1,10 +1,20 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import {
+  textInputBaseStyle,
+  textareaBaseStyle,
+  useAutoResizeTextArea,
+} from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
-import { tableBaseStyle, tableHeaderRowStyle, tableHeaderCellBaseStyle, tableCellBaseStyle, tableWidthStyles } from '@/components/atoms/TableStyles';
+import {
+  tableBaseStyle,
+  tableHeaderRowStyle,
+  tableHeaderCellBaseStyle,
+  tableCellBaseStyle,
+  tableWidthStyles,
+} from '@/components/atoms/TableStyles';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -16,43 +26,50 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleWeaponChange = (type: 'main' | 'other' | 'additional', index: number | null, field: keyof Weapon, value: string | WeaponSkillEffect) => {
+  const handleWeaponChange = (
+    type: 'main' | 'other' | 'additional',
+    index: number | null,
+    field: keyof Weapon,
+    value: string | WeaponSkillEffect
+  ) => {
     if (!flowData) return;
 
     const newWeapon = {
-      ...((type === 'main' ? flowData.organization.weapon.main :
-          type === 'other' ? flowData.organization.weapon.other[index!] :
-          flowData.organization.weapon.additional[index!])),
-      [field]: value
+      ...(type === 'main'
+        ? flowData.organization.weapon.main
+        : type === 'other'
+          ? flowData.organization.weapon.other[index!]
+          : flowData.organization.weapon.additional[index!]),
+      [field]: value,
     };
 
     let newWeaponData;
     if (type === 'main') {
       newWeaponData = {
         ...flowData.organization.weapon,
-        main: newWeapon
+        main: newWeapon,
       };
     } else if (type === 'other') {
       const newOther = [...flowData.organization.weapon.other];
       newOther[index!] = newWeapon;
       newWeaponData = {
         ...flowData.organization.weapon,
-        other: newOther
+        other: newOther,
       };
     } else {
       const newAdditional = [...flowData.organization.weapon.additional];
       newAdditional[index!] = newWeapon;
       newWeaponData = {
         ...flowData.organization.weapon,
-        additional: newAdditional
+        additional: newAdditional,
       };
     }
 
     updateFlowData({
       organization: {
         ...flowData.organization,
-        weapon: newWeaponData
-      }
+        weapon: newWeaponData,
+      },
     });
   };
 
@@ -78,10 +95,18 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('weaponCategory')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('weaponName')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>{t('weaponAdditionalSkill')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>
+              {t('weaponCategory')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>
+              {t('weaponName')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>
+              {t('weaponAdditionalSkill')}
+            </th>
+            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>
+              {t('overview')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -105,14 +130,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 <textarea
                   ref={useAutoResizeTextArea(flowData.organization.weapon.main.additionalSkill)}
                   value={flowData.organization.weapon.main.additionalSkill}
-                  onChange={(e) => handleWeaponChange('main', null, 'additionalSkill', e.target.value)}
+                  onChange={(e) =>
+                    handleWeaponChange('main', null, 'additionalSkill', e.target.value)
+                  }
                   className={textareaBaseStyle}
                 />
               ) : (
                 flowData.organization.weapon.main.additionalSkill.split('\n').map((line, i) => (
                   <React.Fragment key={i}>
                     {line}
-                    {i < flowData.organization.weapon.main.additionalSkill.split('\n').length - 1 && <br />}
+                    {i <
+                      flowData.organization.weapon.main.additionalSkill.split('\n').length - 1 && (
+                      <br />
+                    )}
                   </React.Fragment>
                 ))
               )}
@@ -140,7 +170,10 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {flowData.organization.weapon.other.map((weapon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.weapon.other.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.weapon.other.length}
+                >
                   {t('weaponNormal')}
                 </td>
               )}
@@ -161,7 +194,9 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     ref={useAutoResizeTextArea(weapon.additionalSkill)}
                     value={weapon.additionalSkill}
-                    onChange={(e) => handleWeaponChange('other', index, 'additionalSkill', e.target.value)}
+                    onChange={(e) =>
+                      handleWeaponChange('other', index, 'additionalSkill', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (
@@ -197,7 +232,10 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {flowData.organization.weapon.additional.map((weapon, index) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
-                <td className={`${tableCellBaseStyle}`} rowSpan={flowData.organization.weapon.additional.length}>
+                <td
+                  className={`${tableCellBaseStyle}`}
+                  rowSpan={flowData.organization.weapon.additional.length}
+                >
                   {t('weaponAdditional')}
                 </td>
               )}
@@ -206,7 +244,9 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <input
                     type="text"
                     value={weapon.name}
-                    onChange={(e) => handleWeaponChange('additional', index, 'name', e.target.value)}
+                    onChange={(e) =>
+                      handleWeaponChange('additional', index, 'name', e.target.value)
+                    }
                     className={textInputBaseStyle}
                   />
                 ) : (
@@ -218,7 +258,9 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     ref={useAutoResizeTextArea(weapon.additionalSkill)}
                     value={weapon.additionalSkill}
-                    onChange={(e) => handleWeaponChange('additional', index, 'additionalSkill', e.target.value)}
+                    onChange={(e) =>
+                      handleWeaponChange('additional', index, 'additionalSkill', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (
@@ -235,7 +277,9 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                   <textarea
                     ref={useAutoResizeTextArea(weapon.note)}
                     value={weapon.note}
-                    onChange={(e) => handleWeaponChange('additional', index, 'note', e.target.value)}
+                    onChange={(e) =>
+                      handleWeaponChange('additional', index, 'note', e.target.value)
+                    }
                     className={textareaBaseStyle}
                   />
                 ) : (

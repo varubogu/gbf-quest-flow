@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { AppSettings } from "@/types/settings";
-import i18n from "@/i18n";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { AppSettings } from '@/types/settings';
+import i18n from '@/i18n';
 
 interface SettingsStore {
   settings: AppSettings;
@@ -12,13 +12,13 @@ const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       settings: {
-        language: "日本語",
-        buttonAlignment: "右",
+        language: '日本語',
+        buttonAlignment: '右',
       },
       updateSettings: (newSettings) => {
         // 言語設定が変更された場合、i18nextの言語も変更
         if (newSettings.language) {
-          const newLang = newSettings.language === "日本語" ? "ja" : "en";
+          const newLang = newSettings.language === '日本語' ? 'ja' : 'en';
           if (i18n.language !== newLang) {
             i18n.changeLanguage(newLang);
           }
@@ -30,14 +30,14 @@ const useSettingsStore = create<SettingsStore>()(
       },
     }),
     {
-      name: "app-settings",
+      name: 'app-settings',
     }
   )
 );
 
 // 初期言語設定を適用（初回のみ）
 const initialSettings = useSettingsStore.getState().settings;
-const initialLang = initialSettings.language === "日本語" ? "ja" : "en";
+const initialLang = initialSettings.language === '日本語' ? 'ja' : 'en';
 if (i18n.language !== initialLang) {
   i18n.changeLanguage(initialLang);
 }
