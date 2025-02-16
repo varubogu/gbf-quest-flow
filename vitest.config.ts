@@ -11,6 +11,32 @@ export default defineConfig({
     exclude: ['e2e/**', '**/node_modules/**', '.bun/**', 'dist/**'],
     isolate: true,
     maxConcurrency: 1,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'dist/**',
+        'e2e/**',
+        '**/*.test.{ts,tsx}',
+        '**/*.config.{ts,js}',
+        'coverage/**',
+        '.astro/**',
+        '.bun/**',
+        '.output/**',
+        '.vscode/**',
+        '.git/**',
+        '.idea/**',
+        '.cache/**',
+        '.history/**',
+      ],
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
+    },
   },
   resolve: {
     alias: {
