@@ -4,15 +4,15 @@ import useFlowStore from '@/stores/flowStore';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
-import type { Flow } from '@/types/models';
+import type { Flow, ViewMode } from '@/types/models';
 
 interface Props {
   initialData?: Flow | null;
-  initialMode?: 'view' | 'edit' | 'new';
+  initialMode?: ViewMode;
   sourceId?: string | null;
 }
 
-function BodyContent({ initialData, initialMode = 'view', sourceId }: Props) {
+function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Props) {
   const [isLoading, setIsLoading] = React.useState(true);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
@@ -148,14 +148,14 @@ function BodyContent({ initialData, initialMode = 'view', sourceId }: Props) {
   );
 }
 
-function BodyLayout({ initialData, initialMode = 'view', sourceId }: Props) {
+function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Props) {
   useEffect(() => {
     if (initialData) {
       useFlowStore.getState().setFlowData(initialData);
     }
   }, [initialData]);
 
-  return <BodyContent initialData={initialData} initialMode={initialMode} sourceId={sourceId} />;
+  return <BodyContent initialData={initialData} initialMode={initialMode} sourceId={sourceId ?? null} />;
 }
 
 export default BodyLayout;
