@@ -96,8 +96,17 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   useEffect(() => {
     if (flowData) {
       setTitle(flowData.title);
+      // スクリーンリーダー用の通知
+      const announcement = isEditMode ? 'フローの編集モードです' : 'フローの表示モードです';
+      const ariaLive = document.createElement('div');
+      ariaLive.setAttribute('role', 'status');
+      ariaLive.setAttribute('aria-live', 'polite');
+      ariaLive.className = 'sr-only';
+      ariaLive.textContent = announcement;
+      document.body.appendChild(ariaLive);
+      setTimeout(() => document.body.removeChild(ariaLive), 1000);
     }
-  }, [flowData]);
+  }, [flowData, isEditMode]);
 
   const handleSave = useCallback(async () => {
     if (!flowData) return;
@@ -109,6 +118,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       const a = document.createElement('a');
       a.href = url;
       a.download = `${flowData.title || 'flow'}.json`;
+      a.setAttribute('aria-label', `${flowData.title}をダウンロード`);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -119,6 +129,13 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       history.replaceState({ flowData, isSaving: true }, '', currentPath);
     } catch (error) {
       console.error('保存中にエラーが発生しました:', error);
+      // エラー通知
+      const errorAnnouncement = document.createElement('div');
+      errorAnnouncement.setAttribute('role', 'alert');
+      errorAnnouncement.className = 'sr-only';
+      errorAnnouncement.textContent = '保存中にエラーが発生しました';
+      document.body.appendChild(errorAnnouncement);
+      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
     }
   }, [flowData, sourceId, setIsEditMode]);
 
@@ -129,6 +146,12 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       setIsEditMode(true);
     } catch (error) {
       console.error('新規作成中にエラーが発生しました:', error);
+      const errorAnnouncement = document.createElement('div');
+      errorAnnouncement.setAttribute('role', 'alert');
+      errorAnnouncement.className = 'sr-only';
+      errorAnnouncement.textContent = '新規作成中にエラーが発生しました';
+      document.body.appendChild(errorAnnouncement);
+      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
     }
   }, [flowData, createNewFlow, setIsEditMode]);
 
@@ -141,6 +164,12 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       });
     } catch (error) {
       console.error('タイトル更新中にエラーが発生しました:', error);
+      const errorAnnouncement = document.createElement('div');
+      errorAnnouncement.setAttribute('role', 'alert');
+      errorAnnouncement.className = 'sr-only';
+      errorAnnouncement.textContent = 'タイトル更新中にエラーが発生しました';
+      document.body.appendChild(errorAnnouncement);
+      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
     }
   }, [flowData, setFlowData]);
 
@@ -153,8 +182,38 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       });
     } catch (error) {
       console.error('常時実行項目更新中にエラーが発生しました:', error);
+      const errorAnnouncement = document.createElement('div');
+      errorAnnouncement.setAttribute('role', 'alert');
+      errorAnnouncement.className = 'sr-only';
+      errorAnnouncement.textContent = '常時実行項目更新中にエラーが発生しました';
+      document.body.appendChild(errorAnnouncement);
+      setTimeout(() => document.body.removeChild(errorAnnouncement), 1000);
     }
   }, [flowData, setFlowData]);
+
+  // キーボードショートカットの処理
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl + S で保存
+      if (e.ctrlKey && e.key === 's' && isEditMode) {
+        e.preventDefault();
+        handleSave();
+      }
+      // Ctrl + N で新規作成
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        handleNew();
+      }
+      // Escで編集モード終了
+      if (e.key === 'Escape' && isEditMode) {
+        e.preventDefault();
+        setIsEditMode(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleSave, handleNew, isEditMode, setIsEditMode]);
 
   const flowLayoutProps = useMemo(() => {
     if (!flowData) return null;
