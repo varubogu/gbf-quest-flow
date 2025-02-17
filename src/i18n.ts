@@ -56,6 +56,7 @@ i18n
           buttonAlignment: '上下ボタンの配置',
           left: '左',
           right: '右',
+          tablePadding: '行動表の余白',
 
           // 確認メッセージ
           confirmDiscardChanges: '編集内容を破棄してよろしいですか？',
@@ -196,6 +197,7 @@ i18n
           buttonAlignment: 'Button Alignment',
           left: 'Left',
           right: 'Right',
+          tablePadding: 'Table Padding',
 
           // Confirmation messages
           confirmDiscardChanges: 'Are you sure you want to discard your changes?',

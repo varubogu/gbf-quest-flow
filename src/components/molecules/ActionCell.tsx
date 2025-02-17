@@ -4,6 +4,7 @@ import { Text } from '../atoms/Text';
 import { useState, useRef, useEffect } from 'react';
 import type { Action } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import useSettingsStore from '@/stores/settingsStore';
 
 interface ActionCellProps {
   content: string;
@@ -14,6 +15,7 @@ interface ActionCellProps {
   onPasteRows?: (rows: Partial<Action>[]) => void;
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
+  className?: string;
 }
 
 // タブ区切りテキストを解析する関数
@@ -134,10 +136,12 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   onPasteRows,
   field,
   alignment = 'left',
+  className = '',
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(content || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { settings } = useSettingsStore();
 
   useEffect(() => {
     setValue(content || '');
@@ -221,12 +225,14 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   return (
     <div
       className={cn(
-        'px-3 py-2 border-b border-r border-gray-400',
+        'border-b border-r border-gray-400',
         isHeader ? 'bg-muted font-medium' : 'bg-background',
         isCurrentRow && 'bg-accent',
         !isHeader && 'cursor-text',
-        alignmentClasses[alignment]
+        alignmentClasses[alignment],
+        className
       )}
+      style={{ padding: `${settings.tablePadding}px` }}
       onClick={handleClick}
     >
       {isEditing ? (
@@ -238,7 +244,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           className={cn(
-            'w-full bg-white border rounded px-1 resize-none overflow-hidden',
+            'w-full bg-white border border-gray-400 rounded px-1 resize-none overflow-hidden',
             'text-sm leading-normal font-normal',
             alignmentClasses[alignment],
             isHeader ? textInputBaseStyle : textareaBaseStyle

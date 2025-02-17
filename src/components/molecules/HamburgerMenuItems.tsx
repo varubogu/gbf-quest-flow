@@ -240,6 +240,23 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                 </label>
               </div>
             </div>
+            <div className="mt-4">
+              <h3 className="font-semibold">{t('tablePadding')}</h3>
+              <div className="mt-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="16"
+                    step="2"
+                    value={settings.tablePadding}
+                    onChange={(e) => updateSettings({ tablePadding: Number(e.target.value) })}
+                    className="w-full"
+                  />
+                  <span className="text-sm">{settings.tablePadding}px</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </SheetContent>
