@@ -239,15 +239,25 @@ describe('アクセシビリティ機能', () => {
   });
 
   it('エラー発生時にアラート通知が表示される', async () => {
-    // 1. 初期セットアップ
+    // 1. 初期セットアップ - モックの設定を先に行う
+    let errorThrown = false;
+    const mockSetFlowData = vi.fn().mockImplementation(() => {
+      errorThrown = true;
+      throw new Error('テストエラー');
+    });
+
     const store = useFlowStore.getState();
+    store.setFlowData = mockSetFlowData;  // モックを先に設定
     store.flowData = { ...mockInitialData };  // 新しいオブジェクトとしてコピー
     store.isEditMode = true;  // 最初から編集モードに設定
 
     // コンソールエラーをスパイ
     const consoleErrorSpy = vi.spyOn(console, 'error');
 
-    const { container } = renderWithI18n(<BodyLayout initialData={mockInitialData} initialMode="edit" />);
+    // 2. コンポーネントのレンダリング
+    const { container, rerender } = renderWithI18n(
+      <BodyLayout initialData={mockInitialData} initialMode="edit" />
+    );
 
     // 初期レンダリングの完了を待つ
     await act(async () => {
@@ -255,52 +265,27 @@ describe('アクセシビリティ機能', () => {
       await vi.advanceTimersByTime(100);
     });
 
-    // エラーを設定
-    let errorThrown = false;
-    const mockSetFlowData = vi.fn().mockImplementation(() => {
-      console.log('setFlowData が呼び出されました');
-      errorThrown = true;
-      throw new Error('テストエラー');
-    });
-    store.setFlowData = mockSetFlowData;
-
     // FlowLayoutが正しくレンダリングされているか確認
     console.log('現在のDOM構造:', container.innerHTML);
 
     // 3. エラーを発生させる
     await act(async () => {
-      // タイトル入力フィールドを探す（より具体的なセレクタを使用）
+      // タイトル入力フィールドを探す
       const titleInput = screen.getByDisplayValue('テストフロー') as HTMLInputElement;
-      if (!titleInput) {
-        console.error('利用可能な要素:', Array.from(container.querySelectorAll('*')).map(el => ({
-          tagName: el.tagName,
-          type: el.getAttribute('type'),
-          value: el.getAttribute('value'),
-          className: el.className,
-          id: el.id,
-          textContent: el.textContent
-        })));
-        throw new Error('タイトル入力フィールドが見つかりません');
-      }
+      expect(titleInput).toBeInTheDocument();  // 要素が存在することを確認
 
       console.log('タイトル入力フィールドの現在の状態:', {
         value: titleInput.value,
         className: titleInput.className,
-        handlers: titleInput.onchange,
         attributes: Array.from(titleInput.attributes).map(attr => `${attr.name}=${attr.value}`)
       });
 
-      // React Testing LibraryのfireEventを使用
+      // イベントを発火して状態を変更
       fireEvent.change(titleInput, { target: { value: 'テスト' } });
 
-      // handleTitleChangeが呼ばれるのを待つ
+      // 状態の変更とエラー発生を待つ
       await Promise.resolve();
       await vi.advanceTimersByTime(10);
-
-      // setFlowDataの呼び出しを確認
-      console.log('setFlowDataの呼び出し回数:', mockSetFlowData.mock.calls.length);
-      console.log('現在のerrorThrownの値:', errorThrown);
-      console.log('flowDataの現在の状態:', store.flowData);
 
       // エラーが発生したことを確認
       expect(mockSetFlowData).toHaveBeenCalled();
@@ -328,14 +313,6 @@ describe('アクセシビリティ機能', () => {
       text: a.textContent,
       class: a.className,
       ariaLive: a.getAttribute('aria-live')
-    })));
-
-    // body内の全要素を確認
-    console.log('body内の全要素:', Array.from(document.body.children).map(el => ({
-      role: el.getAttribute('role'),
-      text: el.textContent,
-      class: el.className,
-      ariaLive: el.getAttribute('aria-live')
     })));
 
     expect(alerts.some(a => a.textContent?.includes('タイトル更新中にエラーが発生しました'))).toBe(true);
