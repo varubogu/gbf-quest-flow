@@ -329,32 +329,123 @@ describe('アクセシビリティ機能', () => {
 });
 
 describe('キーボードショートカット', () => {
+  let originalCreateObjectURL: typeof URL.createObjectURL;
+  let originalRevokeObjectURL: typeof URL.revokeObjectURL;
+
   beforeEach(() => {
+    // オリジナルの関数を保存
+    originalCreateObjectURL = URL.createObjectURL;
+    originalRevokeObjectURL = URL.revokeObjectURL;
+
     const store = useFlowStore.getState();
     store.flowData = mockInitialData;
     store.isEditMode = true;
+
+    // clickイベントのデフォルト動作を防ぐ
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // オリジナルの関数を復元
+    URL.createObjectURL = originalCreateObjectURL;
+    URL.revokeObjectURL = originalRevokeObjectURL;
   });
 
   it('Ctrl+Sで保存が実行される', async () => {
-    renderWithI18n(<BodyLayout initialData={mockInitialData} />);
+    // 1. 初期セットアップ
+    const store = useFlowStore.getState();
+    store.flowData = { ...mockInitialData };
+    store.isEditMode = true;
 
-    // 保存ショートカットを発火
+    // Blobのモック
+    const mockBlob = new Blob(['{}'], { type: 'application/json' });
+    vi.spyOn(window, 'Blob').mockImplementation(() => mockBlob);
+
+    // URL.createObjectURLの呼び出しを監視
+    const mockCreateObjectURL = vi.fn(() => 'blob:mock-url');
+    const mockRevokeObjectURL = vi.fn();
+    URL.createObjectURL = mockCreateObjectURL;
+    URL.revokeObjectURL = mockRevokeObjectURL;
+
+    // クリックイベントの自動実行を防ぐ
+    let savedLink: HTMLAnchorElement | null = null;
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function(this: HTMLAnchorElement) {
+      savedLink = this;
+    });
+
+    // DOMの変更を監視するMutationObserverの設定
+    let linkAdded = false;
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          const addedLinks = Array.from(mutation.addedNodes)
+            .filter((node): node is HTMLAnchorElement =>
+              node instanceof HTMLAnchorElement && node.hasAttribute('download'));
+          if (addedLinks.length > 0) {
+            linkAdded = true;
+            savedLink = addedLinks[0];
+          }
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    renderWithI18n(<BodyLayout initialData={mockInitialData} initialMode="edit" />);
+
+    // 初期レンダリングの完了を待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
+    });
+
+    // 2. 保存ショートカットを発火
     await act(async () => {
       const event = new KeyboardEvent('keydown', {
         key: 's',
         ctrlKey: true,
-        bubbles: true
+        bubbles: true,
+        cancelable: true
       });
       window.dispatchEvent(event);
-      vi.advanceTimersByTime(100);
+      await Promise.resolve();
     });
 
-    // ダウンロードリンクの生成を待つ
-    await waitFor(() => {
-      const downloadLink = document.querySelector(`a[aria-label="${mockInitialData.title}をダウンロード"]`);
-      expect(downloadLink).toBeInTheDocument();
-      return true;
-    }, { timeout: 1000 });
+    // URL.createObjectURLが呼ばれるのを待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(10);
+    });
+    expect(mockCreateObjectURL).toHaveBeenCalled();
+
+    // リンクが追加されるのを待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(10);
+    });
+
+    // 保存されたリンクの確認
+    expect(savedLink).not.toBeNull();
+    expect(linkAdded).toBe(true);
+    expect(clickSpy).toHaveBeenCalled();
+
+    if (!savedLink) {
+      throw new Error('ダウンロードリンクが生成されませんでした');
+    }
+
+    // リンクの属性を確認
+    expect(savedLink.getAttribute('aria-label')).toBe(`${mockInitialData.title}をダウンロード`);
+    expect(savedLink.getAttribute('download')).toBe(`${mockInitialData.title}.json`);
+    expect(savedLink.href).toContain('blob:mock-url');
+
+    // リンクが削除されるのを待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
+    });
+
+    // 後処理
+    observer.disconnect();
+    clickSpy.mockRestore();
   });
 
   it('Ctrl+Nで新規作成が実行される', async () => {
@@ -369,14 +460,12 @@ describe('キーボードショートカット', () => {
         bubbles: true
       });
       window.dispatchEvent(event);
-      vi.advanceTimersByTime(100);
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
     });
 
-    // createNewFlowの呼び出しを待つ
-    await waitFor(() => {
-      expect(store.createNewFlow).toHaveBeenCalled();
-      return true;
-    }, { timeout: 1000 });
+    // createNewFlowの呼び出しを確認
+    expect(store.createNewFlow).toHaveBeenCalled();
   });
 
   it('Escapeで編集モードが終了する', async () => {
@@ -390,13 +479,11 @@ describe('キーボードショートカット', () => {
         bubbles: true
       });
       window.dispatchEvent(event);
-      vi.advanceTimersByTime(100);
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
     });
 
-    // 編集モードの変更を待つ
-    await waitFor(() => {
-      expect(store.setIsEditMode).toHaveBeenCalledWith(false);
-      return true;
-    }, { timeout: 1000 });
+    // 編集モードの変更を確認
+    expect(store.setIsEditMode).toHaveBeenCalledWith(false);
   });
 });
