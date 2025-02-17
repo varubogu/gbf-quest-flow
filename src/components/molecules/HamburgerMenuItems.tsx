@@ -38,6 +38,7 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const cancelEdit = useFlowStore((state) => state.cancelEdit);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
+  const { history } = useFlowStore();
 
   const [menuView, setMenuView] = useState<'menu' | 'options'>('menu');
   const { settings, updateSettings } = useSettingsStore();
@@ -128,10 +129,13 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
         setIsOpen(false);
         break;
       case 'cancel':
-        if (confirm(t('confirmDiscardChanges'))) {
-          cancelEdit();
-          setIsOpen(false);
+        if (history.past.length > 0) {
+          if (!confirm(t('confirmDiscardChanges'))) {
+            break;
+          }
         }
+        cancelEdit();
+        setIsOpen(false);
         break;
       case 'options':
         setMenuView('options');

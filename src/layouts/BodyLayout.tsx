@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { setTitle } from '@/lib/functions';
 import useFlowStore from '@/stores/flowStore';
 import { LoadingLayout } from './LoadingLayout';
@@ -95,6 +95,26 @@ function useHistoryManagement(
   }, [handlePopState]);
 }
 
+// 変更履歴を管理するカスタムフック
+function useEditHistory(flowData: Flow | null) {
+  const [editHistory, setEditHistory] = useState<Flow[]>([]);
+
+  // 変更を記録
+  const recordChange = useCallback((newData: Flow) => {
+    setEditHistory(prev => [...prev, newData]);
+  }, []);
+
+  // 履歴をクリア
+  const clearHistory = useCallback(() => {
+    setEditHistory([]);
+  }, []);
+
+  // 変更があるかどうかを確認
+  const hasChanges = editHistory.length > 0;
+
+  return { editHistory, recordChange, clearHistory, hasChanges };
+}
+
 interface Props {
   initialData?: Flow | null;
   initialMode?: ViewMode;
@@ -108,17 +128,56 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const setFlowData = useFlowStore((state) => state.setFlowData);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
+  const { editHistory, recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
-  // タイトルの設定
-  useEffect(() => {
-    if (flowData) {
-      setTitle(flowData.title);
-      announceToScreenReader(
-        isEditMode ? 'フローの編集モードです' : 'フローの表示モードです'
-      );
+  // 編集モードの終了処理
+  const handleExitEditMode = useCallback(async () => {
+    try {
+      if (hasChanges) {
+        const shouldDiscard = window.confirm('変更内容が保存されていません。変更を破棄してもよろしいですか？');
+        if (!shouldDiscard) {
+          return;
+        }
+      }
+      setIsEditMode(false);
+      clearHistory();
+      announceToScreenReader('編集モードを終了しました');
+    } catch (error) {
+      handleError(error, '編集モード終了中');
     }
-  }, [flowData, isEditMode]);
+  }, [hasChanges, setIsEditMode, clearHistory]);
 
+  // タイトルの変更処理
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!flowData) return;
+    try {
+      const newData = {
+        ...flowData,
+        title: e.target.value,
+      };
+      setFlowData(newData);
+      recordChange(newData);
+    } catch (error) {
+      handleError(error, 'タイトル更新中');
+    }
+  }, [flowData, setFlowData, recordChange]);
+
+  // 常時実行項目の変更処理
+  const handleAlwaysChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!flowData) return;
+    try {
+      const newData = {
+        ...flowData,
+        always: e.target.value,
+      };
+      setFlowData(newData);
+      recordChange(newData);
+    } catch (error) {
+      handleError(error, '常時実行項目更新中');
+    }
+  }, [flowData, setFlowData, recordChange]);
+
+  // 保存処理
   const handleSave = useCallback(async () => {
     if (!flowData) return;
 
@@ -136,13 +195,14 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       URL.revokeObjectURL(url);
 
       setIsEditMode(false);
+      clearHistory();
       const currentPath = sourceId ? `/${sourceId}` : '/';
       history.replaceState({ flowData, isSaving: true }, '', currentPath);
       announceToScreenReader('フローを保存しました');
     } catch (error) {
       handleError(error, '保存中');
     }
-  }, [flowData, sourceId, setIsEditMode]);
+  }, [flowData, sourceId, setIsEditMode, clearHistory]);
 
   const handleNew = useCallback(() => {
     try {
@@ -154,30 +214,6 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       handleError(error, '新規作成中');
     }
   }, [flowData, createNewFlow, setIsEditMode]);
-
-  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!flowData) return;
-    try {
-      setFlowData({
-        ...flowData,
-        title: e.target.value,
-      });
-    } catch (error) {
-      handleError(error, 'タイトル更新中');
-    }
-  }, [flowData, setFlowData]);
-
-  const handleAlwaysChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!flowData) return;
-    try {
-      setFlowData({
-        ...flowData,
-        always: e.target.value,
-      });
-    } catch (error) {
-      handleError(error, '常時実行項目更新中');
-    }
-  }, [flowData, setFlowData]);
 
   // キーボードショートカットの処理
   useEffect(() => {
@@ -195,13 +231,13 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       // Escで編集モード終了
       if (e.key === 'Escape' && isEditMode) {
         e.preventDefault();
-        setIsEditMode(false);
+        handleExitEditMode();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleSave, handleNew, isEditMode, setIsEditMode]);
+  }, [handleSave, handleNew, isEditMode, handleExitEditMode]);
 
   const flowLayoutProps = useMemo(() => {
     if (!flowData) return null;
@@ -212,8 +248,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       onNew: handleNew,
       onTitleChange: handleTitleChange,
       onAlwaysChange: handleAlwaysChange,
+      onExitEditMode: handleExitEditMode,
     };
-  }, [flowData, isEditMode, handleSave, handleNew, handleTitleChange, handleAlwaysChange]);
+  }, [flowData, isEditMode, handleSave, handleNew, handleTitleChange, handleAlwaysChange, handleExitEditMode]);
 
   useUrlManagement(isEditMode, sourceId, initialMode, flowData);
   useHistoryManagement(createNewFlow, setIsEditMode, setFlowData, initialData);

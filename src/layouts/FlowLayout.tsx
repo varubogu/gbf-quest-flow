@@ -2,13 +2,14 @@ import React, { useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
-import { Sword, Info, Minimize2, Maximize2 } from 'lucide-react';
+import { Sword, Info, Minimize2, Maximize2, Save, X, Edit } from 'lucide-react';
 import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
 import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
+import { Button } from '@/components/atoms/Button';
 import type { Flow } from '@/types/models';
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
   onNew: () => void;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAlwaysChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onExitEditMode: () => void;
 }
 
 export function FlowLayout({
@@ -27,6 +29,7 @@ export function FlowLayout({
   onNew,
   onTitleChange,
   onAlwaysChange,
+  onExitEditMode
 }: Props) {
   const { t } = useTranslation();
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = React.useState(false);
@@ -63,6 +66,18 @@ export function FlowLayout({
           <h1 className="ml-4 flex-1 text-lg font-medium">{flowData.title}</h1>
         )}
         <div className="flex gap-2">
+          {isEditMode ? (
+            <>
+              <Button onClick={onSave} aria-label="保存して編集を終了">
+                <Save className="h-5 w-5" />
+                <span>保存</span>
+              </Button>
+              <Button onClick={onExitEditMode} aria-label="編集をキャンセル" variant="secondary">
+                <X className="h-5 w-5" />
+                <span>キャンセル</span>
+              </Button>
+            </>
+          ) : null}
           <IconTextButton
             icon={isMemoCollapsed ? Maximize2 : Minimize2}
             label={t('toggleMemo')}
