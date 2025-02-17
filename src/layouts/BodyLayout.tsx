@@ -271,6 +271,13 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
     }
   }, [initialData, initialMode, setFlowData, createNewFlow, setIsEditMode]);
 
+  // モード切り替え時の通知
+  useEffect(() => {
+    if (flowData) {
+      announceToScreenReader(`フローの${isEditMode ? '編集' : '表示'}モードです`);
+    }
+  }, [isEditMode, flowData]);
+
   useEffect(() => {
     setIsLoading(false);
   }, []);
