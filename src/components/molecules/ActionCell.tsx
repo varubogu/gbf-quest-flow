@@ -232,7 +232,12 @@ export const ActionCell: React.FC<ActionCellProps> = ({
         alignmentClasses[alignment],
         className
       )}
-      style={{ padding: `${settings.tablePadding}px` }}
+      style={{
+        paddingTop: `${settings.tablePadding}px`,
+        paddingBottom: `${settings.tablePadding}px`,
+        paddingLeft: `${Math.max(2, settings.tablePadding)}px`,
+        paddingRight: `${Math.max(2, settings.tablePadding)}px`
+      }}
       onClick={handleClick}
     >
       {isEditing ? (
