@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useSettingsStore from './settingsStore';
+import i18n from '@/i18n';
 
 // i18nのモック
 vi.mock('@/i18n', () => ({
@@ -18,6 +19,7 @@ describe('settingsStore', () => {
     useSettingsStore.getState().updateSettings({
       language: '日本語',
       buttonAlignment: '右',
+      tablePadding: 8,
     });
     // i18nのモックをリセット
     vi.mocked(i18n.changeLanguage).mockClear();
@@ -29,6 +31,7 @@ describe('settingsStore', () => {
     expect(state.settings).toEqual({
       language: '日本語',
       buttonAlignment: '右',
+      tablePadding: 8,
     });
   });
 
@@ -56,6 +59,53 @@ describe('settingsStore', () => {
       vi.mocked(i18n).language = 'ja';
       useSettingsStore.getState().updateSettings({ language: '日本語' });
       expect(vi.mocked(i18n.changeLanguage)).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('行動表の余白設定', () => {
+    it('初期値が8pxであること', () => {
+      const { settings } = useSettingsStore.getState();
+      expect(settings.tablePadding).toBe(8);
+    });
+
+    it('0から16の範囲で設定を変更できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+
+      // 最小値（0px）
+      updateSettings({ tablePadding: 0 });
+      expect(useSettingsStore.getState().settings.tablePadding).toBe(0);
+
+      // 中間値（8px）
+      updateSettings({ tablePadding: 8 });
+      expect(useSettingsStore.getState().settings.tablePadding).toBe(8);
+
+      // 最大値（16px）
+      updateSettings({ tablePadding: 16 });
+      expect(useSettingsStore.getState().settings.tablePadding).toBe(16);
+    });
+
+    it('2px単位で設定を変更できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+
+      const validValues = [0, 2, 4, 6, 8, 10, 12, 14, 16];
+      validValues.forEach(value => {
+        updateSettings({ tablePadding: value });
+        expect(useSettingsStore.getState().settings.tablePadding).toBe(value);
+      });
+    });
+  });
+
+  describe('その他の設定との共存', () => {
+    it('余白設定を変更しても他の設定が維持されること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      const initialSettings = useSettingsStore.getState().settings;
+
+      updateSettings({ tablePadding: 12 });
+      const newSettings = useSettingsStore.getState().settings;
+
+      expect(newSettings.language).toBe(initialSettings.language);
+      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment);
+      expect(newSettings.tablePadding).toBe(12);
     });
   });
 });
