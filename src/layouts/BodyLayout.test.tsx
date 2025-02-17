@@ -265,20 +265,11 @@ describe('アクセシビリティ機能', () => {
       await vi.advanceTimersByTime(100);
     });
 
-    // FlowLayoutが正しくレンダリングされているか確認
-    console.log('現在のDOM構造:', container.innerHTML);
-
     // 3. エラーを発生させる
     await act(async () => {
       // タイトル入力フィールドを探す
       const titleInput = screen.getByDisplayValue('テストフロー') as HTMLInputElement;
       expect(titleInput).toBeInTheDocument();  // 要素が存在することを確認
-
-      console.log('タイトル入力フィールドの現在の状態:', {
-        value: titleInput.value,
-        className: titleInput.className,
-        attributes: Array.from(titleInput.attributes).map(attr => `${attr.name}=${attr.value}`)
-      });
 
       // イベントを発火して状態を変更
       fireEvent.change(titleInput, { target: { value: 'テスト' } });
@@ -304,16 +295,9 @@ describe('アクセシビリティ機能', () => {
 
     // エラーハンドリングの確認
     expect(consoleErrorSpy).toHaveBeenCalled();
-    console.log('console.error の呼び出し:', consoleErrorSpy.mock.calls);
 
     // エラー通知を確認
     const alerts = Array.from(document.querySelectorAll('[role="alert"]'));
-    console.log('検出されたアラート:', alerts.map(a => ({
-      role: a.getAttribute('role'),
-      text: a.textContent,
-      class: a.className,
-      ariaLive: a.getAttribute('aria-live')
-    })));
 
     expect(alerts.some(a => a.textContent?.includes('タイトル更新中にエラーが発生しました'))).toBe(true);
 
