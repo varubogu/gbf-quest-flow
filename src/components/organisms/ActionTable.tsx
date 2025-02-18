@@ -12,6 +12,9 @@ const getGridClasses = (isEditMode: boolean) =>
     ? 'min-w-full grid grid-cols-[56px_56px_5fr_15fr_4fr_4fr_30fr_20fr]'
     : 'min-w-full grid grid-cols-[5fr_15fr_4fr_4fr_30fr_20fr]';
 
+// スクロールの設定値
+const TOUCHPAD_SCROLL_THRESHOLD = 35;
+
 // セルの余白スタイルを取得
 const getCellPaddingStyle = (padding: number) => ({
   padding: `${padding}px`,
@@ -46,7 +49,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const lastWheelTimeRef = React.useRef(0); // ホイールイベントの制限用
+  const accumulatedDeltaRef = React.useRef(0);
 
   React.useEffect(() => {
     const container = containerRef.current;
@@ -59,20 +62,27 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       e.preventDefault();
 
       // タッチパッドの判定
-      const isTouchpad = e.deltaMode === 0; // ピクセル単位のスクロール
+      const isTouchpad = e.deltaMode === 0;
 
-      // if (isTouchpad) {
-      //   const currentTime = Date.now();
-      //   if (currentTime - lastWheelTimeRef.current < 500) {  // タッチパッドの場合のみ500ミリ秒のクールダウン
-      //     return;
-      //   }
-      //   lastWheelTimeRef.current = currentTime;
-      // }
-
-      if (e.deltaY < 0 && currentRow > 0) {
-        onRowSelect(currentRow - 1);
-      } else if (e.deltaY > 0 && currentRow < data.length - 1) {
-        onRowSelect(currentRow + 1);
+      if (isTouchpad) {
+        // タッチパッドの場合は相対位置での処理
+        accumulatedDeltaRef.current += e.deltaY;
+        
+        // 累積値が一定のしきい値を超えたら行を移動
+        if (accumulatedDeltaRef.current < -TOUCHPAD_SCROLL_THRESHOLD && currentRow > 0) {
+          onRowSelect(currentRow - 1);
+          accumulatedDeltaRef.current = 0;
+        } else if (accumulatedDeltaRef.current > TOUCHPAD_SCROLL_THRESHOLD && currentRow < data.length - 1) {
+          onRowSelect(currentRow + 1);
+          accumulatedDeltaRef.current = 0;
+        }
+      } else {
+        // マウスホイールの場合は従来通りの処理
+        if (e.deltaY < 0 && currentRow > 0) {
+          onRowSelect(currentRow - 1);
+        } else if (e.deltaY > 0 && currentRow < data.length - 1) {
+          onRowSelect(currentRow + 1);
+        }
       }
     };
 
