@@ -23,4 +23,5 @@ export interface AppSettings {
   language: '日本語' | 'English';
   buttonAlignment: '左' | '右';
   tablePadding: number; // 行動表の余白（px単位、デフォルト8px）
+  actionTableClickType: 'single' | 'double'; // 行動表の選択方法
 }

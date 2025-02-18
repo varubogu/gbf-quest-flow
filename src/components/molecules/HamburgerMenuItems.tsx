@@ -257,6 +257,37 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
                 </div>
               </div>
             </div>
+            <div className="mt-4">
+              <h3 className="font-semibold">{t('actionTableClickType')}</h3>
+              <div className="mt-2">
+                <label className="inline-flex items-center mr-4">
+                  <input
+                    type="radio"
+                    name="actionTableClickType"
+                    value="single"
+                    checked={settings.actionTableClickType === 'single'}
+                    onChange={(e) =>
+                      updateSettings({ actionTableClickType: e.target.value as 'single' | 'double' })
+                    }
+                    className="form-radio"
+                  />
+                  <span className="ml-2">{t('singleClick')}</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="actionTableClickType"
+                    value="double"
+                    checked={settings.actionTableClickType === 'double'}
+                    onChange={(e) =>
+                      updateSettings({ actionTableClickType: e.target.value as 'single' | 'double' })
+                    }
+                    className="form-radio"
+                  />
+                  <span className="ml-2">{t('doubleClick')}</span>
+                </label>
+              </div>
+            </div>
           </div>
         )}
       </SheetContent>

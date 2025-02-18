@@ -4,6 +4,7 @@ import { ChevronUp, ChevronDown, Plus, Minus } from 'lucide-react';
 import { IconButton } from '../atoms/IconButton';
 import type { Action } from '@/types/models';
 import { useTranslation } from 'react-i18next';
+import useSettingsStore from '@/stores/settingsStore';
 
 // 編集モードに応じてグリッドレイアウトを切り替え
 const getGridClasses = (isEditMode: boolean) =>
@@ -42,8 +43,10 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   onPasteRows,
 }) => {
   const { t } = useTranslation();
+  const { settings } = useSettingsStore();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const accumulatedDeltaRef = React.useRef(0);
+  const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     const container = containerRef.current;
@@ -158,6 +161,28 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     onPasteRows(rowIndex, rows);
   };
 
+  const handleRowClick = (index: number) => {
+    if (isEditMode) return;
+    if (settings.actionTableClickType === 'single') {
+      onRowSelect(index);
+    }
+  };
+
+  const handleRowDoubleClick = (index: number) => {
+    if (isEditMode) return;
+    if (settings.actionTableClickType === 'double') {
+      onRowSelect(index);
+    }
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div ref={containerRef} className="flex flex-col h-full overflow-y-auto">
       {/* 上下移動ボタンは編集モード時は非表示 */}
@@ -229,7 +254,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             <div
               key={index}
               id={`action-row-${index}`}
-              onDoubleClick={() => !isEditMode && onRowSelect(index)}
+              onClick={() => handleRowClick(index)}
+              onDoubleClick={() => handleRowDoubleClick(index)}
               className={`${getGridClasses(isEditMode)} border-b border-gray-400 border-l border-r ${
                 !isEditMode && index === currentRow
                   ? 'border border-yellow-500 bg-yellow-200'

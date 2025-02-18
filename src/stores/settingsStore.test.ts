@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useSettingsStore from './settingsStore';
+import { act } from '@testing-library/react';
 
 // i18nのモック
 vi.mock('@/i18n', () => ({
@@ -15,10 +16,14 @@ const i18n = vi.mocked(await import('@/i18n')).default;
 describe('settingsStore', () => {
   beforeEach(() => {
     // テストごとにストアをリセット
-    useSettingsStore.getState().updateSettings({
-      language: '日本語',
-      buttonAlignment: '右',
-      tablePadding: 8,
+    const store = useSettingsStore.getState();
+    act(() => {
+      store.updateSettings({
+        language: '日本語',
+        buttonAlignment: '右',
+        tablePadding: 8,
+        actionTableClickType: 'double',
+      });
     });
     // i18nのモックをリセット
     vi.mocked(i18n.changeLanguage).mockClear();
@@ -31,11 +36,15 @@ describe('settingsStore', () => {
       language: '日本語',
       buttonAlignment: '右',
       tablePadding: 8,
+      actionTableClickType: 'double',
     });
   });
 
   it('設定を更新できること', () => {
-    useSettingsStore.getState().updateSettings({ buttonAlignment: '左' });
+    const store = useSettingsStore.getState();
+    act(() => {
+      store.updateSettings({ buttonAlignment: '左' });
+    });
     const updatedState = useSettingsStore.getState();
     expect(updatedState.settings.buttonAlignment).toBe('左');
     expect(updatedState.settings.language).toBe('日本語'); // 他の設定は変更されないこと
@@ -44,19 +53,28 @@ describe('settingsStore', () => {
   describe('言語設定の更新', () => {
     it('日本語に変更したとき、i18nの言語がjaに設定されること', () => {
       vi.mocked(i18n).language = 'en';
-      useSettingsStore.getState().updateSettings({ language: '日本語' });
+      const store = useSettingsStore.getState();
+      act(() => {
+        store.updateSettings({ language: '日本語' });
+      });
       expect(vi.mocked(i18n.changeLanguage)).toHaveBeenCalledWith('ja');
     });
 
     it('英語に変更したとき、i18nの言語がenに設定されること', () => {
       vi.mocked(i18n).language = 'ja';
-      useSettingsStore.getState().updateSettings({ language: 'English' });
+      const store = useSettingsStore.getState();
+      act(() => {
+        store.updateSettings({ language: 'English' });
+      });
       expect(vi.mocked(i18n.changeLanguage)).toHaveBeenCalledWith('en');
     });
 
     it('言語が同じ場合はi18nの言語を変更しないこと', () => {
       vi.mocked(i18n).language = 'ja';
-      useSettingsStore.getState().updateSettings({ language: '日本語' });
+      const store = useSettingsStore.getState();
+      act(() => {
+        store.updateSettings({ language: '日本語' });
+      });
       expect(vi.mocked(i18n.changeLanguage)).not.toHaveBeenCalled();
     });
   });
@@ -117,6 +135,84 @@ describe('settingsStore', () => {
       expect(newSettings.language).toBe(initialSettings.language);
       expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment);
       expect(newSettings.tablePadding).toBe(12);
+    });
+  });
+
+  describe('行動表選択方法の設定', () => {
+    it('初期値がダブルクリックであること', () => {
+      const { settings } = useSettingsStore.getState();
+      expect(settings.actionTableClickType).toBe('double');
+    });
+
+    it('シングルクリックに変更できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      act(() => {
+        updateSettings({ actionTableClickType: 'single' });
+      });
+      expect(useSettingsStore.getState().settings.actionTableClickType).toBe('single');
+    });
+
+    it('ダブルクリックに変更できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      act(() => {
+        updateSettings({ actionTableClickType: 'double' });
+      });
+      expect(useSettingsStore.getState().settings.actionTableClickType).toBe('double');
+    });
+
+    it('他の設定を変更しても行動表選択方法が維持されること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      const initialSettings = useSettingsStore.getState().settings;
+
+      act(() => {
+        updateSettings({ tablePadding: 12 });
+      });
+      const newSettings = useSettingsStore.getState().settings;
+
+      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType);
+    });
+  });
+
+  describe('複数設定の同時更新', () => {
+    it('全ての設定を同時に更新できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      const initialSettings = useSettingsStore.getState().settings;
+
+      act(() => {
+        updateSettings({
+          language: 'English',
+          buttonAlignment: '左',
+          tablePadding: 16,
+          actionTableClickType: 'single',
+        });
+      });
+
+      const newSettings = useSettingsStore.getState().settings;
+      expect(newSettings).toEqual({
+        language: 'English',
+        buttonAlignment: '左',
+        tablePadding: 16,
+        actionTableClickType: 'single',
+      });
+      expect(newSettings).not.toEqual(initialSettings); // 設定が実際に変更されたことを確認
+    });
+
+    it('一部の設定のみを更新できること', () => {
+      const { updateSettings } = useSettingsStore.getState();
+      const initialSettings = useSettingsStore.getState().settings;
+
+      act(() => {
+        updateSettings({
+          language: 'English',
+          tablePadding: 16,
+        });
+      });
+
+      const newSettings = useSettingsStore.getState().settings;
+      expect(newSettings.language).toBe('English');
+      expect(newSettings.tablePadding).toBe(16);
+      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment);
+      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType);
     });
   });
 });

@@ -15,6 +15,7 @@ const useSettingsStore = create<SettingsStore>()(
         language: '日本語',
         buttonAlignment: '右',
         tablePadding: 8,
+        actionTableClickType: 'double',
       },
       updateSettings: (newSettings) => {
         // 言語設定が変更された場合、i18nextの言語も変更
