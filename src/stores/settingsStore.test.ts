@@ -87,7 +87,7 @@ describe('settingsStore', () => {
       const { updateSettings } = useSettingsStore.getState();
 
       const validValues = [0, 2, 4, 6, 8, 10, 12, 14, 16];
-      validValues.forEach(value => {
+      validValues.forEach((value) => {
         updateSettings({ tablePadding: value });
         expect(useSettingsStore.getState().settings.tablePadding).toBe(value);
       });

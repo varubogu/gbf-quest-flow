@@ -1,5 +1,3 @@
-
-
 export type {
   ViewMode,
   WeaponSkillEffect,
@@ -13,5 +11,5 @@ export type {
   Flow,
   JobAbility,
   JobEquipment,
-  Job
+  Job,
 } from './models';

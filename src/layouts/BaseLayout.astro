@@ -15,8 +15,7 @@ const {
   title = i18next.t('title'),
   description = i18next.t('description'),
   image = '/favicon.svg', // OGP画像としてもfaviconを使用
-  canonicalURL = ENV.PUBLIC_SITE_URL ||
-    new URL(Astro.url.pathname, Astro.site),
+  canonicalURL = ENV.PUBLIC_SITE_URL || new URL(Astro.url.pathname, Astro.site),
 } = Astro.props;
 ---
 

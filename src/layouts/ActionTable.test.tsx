@@ -84,7 +84,9 @@ describe('ActionTable', () => {
       />
     );
 
-    const firstTableContainer = firstContainer.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    const firstTableContainer = firstContainer.querySelector(
+      '.flex.flex-col.h-full.overflow-y-auto'
+    );
     if (!firstTableContainer) throw new Error('Table container not found');
 
     // 最初の行より上にスクロールしようとする

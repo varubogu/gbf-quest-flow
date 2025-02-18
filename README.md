@@ -11,5 +11,3 @@
 - TypeScript
 - React
 - Bun
-
-

@@ -236,7 +236,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
         paddingTop: `${settings.tablePadding}px`,
         paddingBottom: `${settings.tablePadding}px`,
         paddingLeft: `${Math.max(2, settings.tablePadding)}px`,
-        paddingRight: `${Math.max(2, settings.tablePadding)}px`
+        paddingRight: `${Math.max(2, settings.tablePadding)}px`,
       }}
       onClick={handleClick}
     >

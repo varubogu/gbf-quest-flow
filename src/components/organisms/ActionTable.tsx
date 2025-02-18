@@ -67,12 +67,15 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       if (isTouchpad) {
         // タッチパッドの場合は相対位置での処理
         accumulatedDeltaRef.current += e.deltaY;
-        
+
         // 累積値が一定のしきい値を超えたら行を移動
         if (accumulatedDeltaRef.current < -TOUCHPAD_SCROLL_THRESHOLD && currentRow > 0) {
           onRowSelect(currentRow - 1);
           accumulatedDeltaRef.current = 0;
-        } else if (accumulatedDeltaRef.current > TOUCHPAD_SCROLL_THRESHOLD && currentRow < data.length - 1) {
+        } else if (
+          accumulatedDeltaRef.current > TOUCHPAD_SCROLL_THRESHOLD &&
+          currentRow < data.length - 1
+        ) {
           onRowSelect(currentRow + 1);
           accumulatedDeltaRef.current = 0;
         }
