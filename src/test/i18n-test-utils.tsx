@@ -8,8 +8,8 @@ import type { ReactNode } from 'react';
 // i18nのモック
 vi.mock('react-i18next', () => ({
   // Trans and Translation components
-  Trans: ({ children }: { children: any }) => children,
-  Translation: ({ children }: { children: any }) => children,
+  Trans: ({ children }: { children: unknown }) => children,
+  Translation: ({ children }: { children: unknown }) => children,
   // hooks
   useTranslation: () => ({
     t: (key: string) => key,
@@ -24,7 +24,7 @@ vi.mock('react-i18next', () => ({
     init: vi.fn(),
   },
   // HOCs
-  withTranslation: () => (Component: any) => Component,
+  withTranslation: () => (Component: unknown) => Component,
   // Provider
   I18nextProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));

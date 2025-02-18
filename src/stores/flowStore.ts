@@ -1,5 +1,4 @@
 import type { Flow, Action } from '@/types/models';
-import type { OrganizationSettings } from '@/types/settings';
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
