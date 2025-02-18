@@ -8,19 +8,25 @@ import astroPlugin from 'eslint-plugin-astro';
 export default [
   eslint.configs.recommended,
   {
-    files: ['**/*.{js,jsx,ts,tsx,astro}'],
     ignores: [
-      '.bun/**',
-      '.astro/**',
-      '.devcontainer/**',
-      '.github/**',
-      '.vscode/**',
-      'coverage/**',
-      'dist/**',
-      'node_modules/**',
-      'test-results/**',
-      'playwright-report/**',
-    ],
+      '**/node_modules/**',
+      '**/.bun/**/*.js',
+      '**/.bun/**/*.ts',
+      '**/.bun/**/*.jsx',
+      '**/.bun/**/*.tsx',
+      '**/zod@*/**',
+      '**/.astro/**',
+      '**/.devcontainer/**',
+      '**/.github/**',
+      '**/.vscode/**',
+      '**/coverage/**',
+      '**/dist/**',
+      '**/test-results/**',
+      '**/playwright-report/**',
+    ]
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx,astro}'],
     languageOptions: {
       parser: tseslintParser,
       parserOptions: {
