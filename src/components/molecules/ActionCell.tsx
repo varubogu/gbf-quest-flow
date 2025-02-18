@@ -5,21 +5,18 @@ import { useState, useRef, useEffect } from 'react';
 import type { Action } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import useSettingsStore from '@/stores/settingsStore';
-import { parseTabSeparatedText, convertToActions } from '@/utils/tableDataParser';
 import { useAlignmentStyle } from '@/hooks/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/hooks/useTableCellStateStyle';
-
-type OnChangeCallback = (_: string) => void;
-type OnPasteRowsCallback = (_: Partial<Action>[]) => void;
+import { useActionCellEvents } from '@/hooks/useActionCellEvents';
 
 interface ActionCellProps {
   content: string;
   isCurrentRow?: boolean;
   isHeader?: boolean;
   isEditable?: boolean;
-  onChange?: OnChangeCallback;
-  onPasteRows?: OnPasteRowsCallback;
+  onChange?: (_: string) => void;
+  onPasteRows?: (_: Partial<Action>[]) => void;
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;
@@ -66,61 +63,24 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     }
   };
 
-  const handleClick = () => {
-    if (isEditable) {
-      setIsEditing(true);
-      return;
-    }
-
-    if (settings.actionTableClickType === 'single') {
-      if (onChange) onChange(content);
-    }
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
-    if (onChange && value !== content) {
-      onChange(value);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && e.ctrlKey) {
-      setIsEditing(false);
-      if (onChange && value !== content) {
-        onChange(value);
-      }
-    } else if (e.key === 'Escape') {
-      setIsEditing(false);
-      setValue(content);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
-    adjustTextareaHeight();
-  };
-
-  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    if (!onPasteRows || !field) return;
-
-    const clipboardText = e.clipboardData.getData('text');
-
-    if (clipboardText.includes('\t')) {
-      e.preventDefault();
-      try {
-        const rows = parseTabSeparatedText(clipboardText);
-        const actions = convertToActions(rows, field);
-        onPasteRows(actions);
-      } catch (error) {
-        if (error instanceof Error) {
-          alert(error.message);
-        } else {
-          alert('貼り付け処理中にエラーが発生しました');
-        }
-      }
-    }
-  };
+  const {
+    handleClick,
+    handleBlur,
+    handleKeyDown,
+    handleChange,
+    handlePaste,
+  } = useActionCellEvents({
+    content,
+    value,
+    isEditable,
+    field,
+    onChange,
+    onPasteRows,
+    setIsEditing,
+    setValue,
+    adjustTextareaHeight,
+    settings,
+  });
 
   return (
     <div
