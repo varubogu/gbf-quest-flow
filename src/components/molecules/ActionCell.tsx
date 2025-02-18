@@ -6,14 +6,20 @@ import type { Action } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import useSettingsStore from '@/stores/settingsStore';
 import { parseTabSeparatedText, convertToActions } from '@/utils/tableDataParser';
+import { useAlignmentStyle } from '@/hooks/useAlignmentStyle';
+import { useTableCellBaseStyle } from '@/hooks/useTableCellBaseStyle';
+import { useTableCellStateStyle } from '@/hooks/useTableCellStateStyle';
+
+type OnChangeCallback = (_: string) => void;
+type OnPasteRowsCallback = (_: Partial<Action>[]) => void;
 
 interface ActionCellProps {
   content: string;
   isCurrentRow?: boolean;
   isHeader?: boolean;
   isEditable?: boolean;
-  onChange?: (value: string) => void;
-  onPasteRows?: (rows: Partial<Action>[]) => void;
+  onChange?: OnChangeCallback;
+  onPasteRows?: OnPasteRowsCallback;
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;
@@ -34,6 +40,9 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   const [value, setValue] = useState(content || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { settings } = useSettingsStore();
+  const { getAlignmentClass } = useAlignmentStyle();
+  const { getBaseClassName, getBasePadding } = useTableCellBaseStyle();
+  const { getStateClassName, getTextVariant } = useTableCellStateStyle();
 
   useEffect(() => {
     setValue(content || '');
@@ -113,28 +122,14 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     }
   };
 
-  const alignmentClasses = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right',
-  };
-
   return (
     <div
       className={cn(
-        'border-b border-r border-gray-400',
-        isHeader ? 'bg-muted font-medium' : 'bg-background',
-        isCurrentRow && 'bg-accent',
-        !isHeader && 'cursor-text',
-        alignmentClasses[alignment],
-        className
+        getBaseClassName({ isHeader, className }),
+        getStateClassName({ isCurrentRow }),
+        getAlignmentClass(alignment)
       )}
-      style={{
-        paddingTop: `${settings.tablePadding}px`,
-        paddingBottom: `${settings.tablePadding}px`,
-        paddingLeft: `${Math.max(2, settings.tablePadding)}px`,
-        paddingRight: `${Math.max(2, settings.tablePadding)}px`,
-      }}
+      style={getBasePadding()}
       onClick={handleClick}
     >
       {isEditing ? (
@@ -148,17 +143,17 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           className={cn(
             'w-full bg-white border border-gray-400 rounded px-1 resize-none overflow-hidden',
             'text-sm leading-normal font-normal',
-            alignmentClasses[alignment],
+            getAlignmentClass(alignment),
             isHeader ? textInputBaseStyle : textareaBaseStyle
           )}
           rows={1}
         />
       ) : (
-        <Text variant={isHeader ? 'default' : isCurrentRow ? 'default' : 'dimmed'}>
+        <Text variant={getTextVariant({ isCurrentRow, isHeader })}>
           <pre
             className={cn(
               'whitespace-pre-wrap font-sans text-sm leading-normal',
-              alignmentClasses[alignment]
+              getAlignmentClass(alignment)
             )}
           >
             {content}
