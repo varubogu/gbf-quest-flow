@@ -141,7 +141,6 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(content || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { settings } = useSettingsStore();
 
   useEffect(() => {
@@ -174,27 +173,8 @@ export const ActionCell: React.FC<ActionCellProps> = ({
 
     if (settings.actionTableClickType === 'single') {
       if (onChange) onChange(content);
-    } else {
-      // ダブルクリックの場合
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-        clickTimeoutRef.current = null;
-        if (onChange) onChange(content);
-      } else {
-        clickTimeoutRef.current = setTimeout(() => {
-          clickTimeoutRef.current = null;
-        }, 300);
-      }
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleBlur = () => {
     setIsEditing(false);
