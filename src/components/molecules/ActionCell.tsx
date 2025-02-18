@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '../atoms/Text';
-import { useState, useRef, useEffect } from 'react';
 import type { Action } from '@/types/models';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import useSettingsStore from '@/stores/settingsStore';
@@ -9,6 +8,7 @@ import { useAlignmentStyle } from '@/hooks/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/hooks/useTableCellStateStyle';
 import { useActionCellEvents } from '@/hooks/useActionCellEvents';
+import { useActionCellState } from '@/hooks/useActionCellState';
 
 interface ActionCellProps {
   content: string;
@@ -33,35 +33,19 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   alignment = 'left',
   className = '',
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(content || '');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { settings } = useSettingsStore();
   const { getAlignmentClass } = useAlignmentStyle();
   const { getBaseClassName, getBasePadding } = useTableCellBaseStyle();
   const { getStateClassName, getTextVariant } = useTableCellStateStyle();
 
-  useEffect(() => {
-    setValue(content || '');
-  }, [content]);
-
-  useEffect(() => {
-    if (isEditing && textareaRef.current) {
-      textareaRef.current.focus();
-      const currentValue = textareaRef.current.value;
-      if (currentValue) {
-        textareaRef.current.setSelectionRange(currentValue.length, currentValue.length);
-      }
-      adjustTextareaHeight();
-    }
-  }, [isEditing]);
-
-  const adjustTextareaHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  };
+  const {
+    isEditing,
+    setIsEditing,
+    value,
+    setValue,
+    textareaRef,
+    adjustTextareaHeight,
+  } = useActionCellState({ content });
 
   const {
     handleClick,
