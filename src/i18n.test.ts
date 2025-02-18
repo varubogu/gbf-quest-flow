@@ -32,7 +32,7 @@ describe('i18n', () => {
   });
 
   it('日本語リソースが存在すること', () => {
-    const jaResource = i18n.getResourceBundle('ja', 'translation');
+    const jaResource: { title: string; description: string } = i18n.getResourceBundle('ja', 'translation');
     expect(jaResource).toBeDefined();
     expect(jaResource.title).toBe('グラブル行動表');
     expect(jaResource.description).toBe('グラブルの行動表を管理・共有するためのツール');

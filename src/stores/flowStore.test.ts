@@ -186,9 +186,6 @@ describe.sequential('FlowStore', () => {
         { timeout: 10000 }
       );
 
-      // 最初の状態を確認
-      const stateBeforeUpdate = useFlowStore.getState();
-
       store.updateFlowData({ title: initialTitle });
 
       // 最初の更新を待つ
@@ -200,9 +197,6 @@ describe.sequential('FlowStore', () => {
         },
         { timeout: 10000 }
       );
-
-      // 最初の更新後の状態を確認
-      const stateAfterFirstUpdate = useFlowStore.getState();
 
       // 変更を加える
       store.updateFlowData({ title: updatedTitle });
@@ -216,9 +210,6 @@ describe.sequential('FlowStore', () => {
         },
         { timeout: 10000 }
       );
-
-      // 2回目の更新後の状態を確認
-      const stateAfterSecondUpdate = useFlowStore.getState();
 
       // アンドゥ
       store.undo();

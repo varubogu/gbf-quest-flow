@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react';
-import { setTitle } from '@/lib/functions';
 import useFlowStore from '@/stores/flowStore';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
@@ -59,8 +58,8 @@ function useUrlManagement(
 // ブラウザ履歴の管理を担当するカスタムフック
 function useHistoryManagement(
   createNewFlow: () => void,
-  setIsEditMode: (isEdit: boolean) => void,
-  setFlowData: (data: Flow) => void,
+  setIsEditMode: (_isEdit: boolean) => void,
+  setFlowData: (_data: Flow) => void,
   initialData: Flow | null
 ) {
   const handlePopState = useCallback(
@@ -68,7 +67,7 @@ function useHistoryManagement(
       try {
         const searchParams = new URLSearchParams(window.location.search);
         const mode = searchParams.get('mode');
-        const state = event.state;
+        const state: { isSaving: boolean; flowData: Flow } | null = event.state;
 
         if (mode === 'new') {
           createNewFlow();
@@ -131,7 +130,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
   const setFlowData = useFlowStore((state) => state.setFlowData);
   const createNewFlow = useFlowStore((state) => state.createNewFlow);
-  const { editHistory, recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
+  const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
   // 編集モードの終了処理
   const handleExitEditMode = useCallback(async () => {

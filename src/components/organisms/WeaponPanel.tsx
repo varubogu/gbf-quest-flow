@@ -1,6 +1,6 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Weapon, WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
+import type { Weapon, WeaponSkillEffect } from '@/types/models';
 import {
   textInputBaseStyle,
   textareaBaseStyle,

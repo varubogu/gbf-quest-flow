@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
-import { Sword, Info, Minimize2, Maximize2, Save, X, Edit } from 'lucide-react';
+import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
 import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
@@ -17,8 +17,8 @@ interface Props {
   isEditMode: boolean;
   onSave: () => void;
   onNew: () => void;
-  onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAlwaysChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onTitleChange: (_e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAlwaysChange: (_e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onExitEditMode: () => void;
 }
 

@@ -5,7 +5,7 @@ import i18n from '@/i18n';
 
 interface SettingsStore {
   settings: AppSettings;
-  updateSettings: (newSettings: Partial<AppSettings>) => void;
+  updateSettings: (_newSettings: Partial<AppSettings>) => void;
 }
 
 const useSettingsStore = create<SettingsStore>()(

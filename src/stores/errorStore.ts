@@ -3,9 +3,9 @@ import { create } from 'zustand';
 interface ErrorState {
   error: Error | null;
   isErrorDialogOpen: boolean;
-  setError: (error: Error | null) => void;
-  setIsErrorDialogOpen: (isOpen: boolean) => void;
-  showError: (error: Error) => void;
+  setError: (_error: Error | null) => void;
+  setIsErrorDialogOpen: (_isOpen: boolean) => void;
+  showError: (_error: Error) => void;
   clearError: () => void;
 }
 
