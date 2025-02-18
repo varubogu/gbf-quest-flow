@@ -1,7 +1,8 @@
-/** @type {import('tailwindcss').Config} */
+import defaultConfig from 'tailwindcss/defaultConfig.js';
+
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-  presets: [require('tailwindcss/defaultConfig')],
+  presets: [defaultConfig],
   theme: {
     container: {
       center: true,
