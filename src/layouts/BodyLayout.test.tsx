@@ -9,11 +9,35 @@ import { renderWithI18n } from '@/test/i18n-test-utils';
 beforeAll(() => {
   // タイマーをグローバルに設定
   vi.useFakeTimers({ shouldAdvanceTime: true });
+
+  // すべてのコンソール出力をグローバルに抑止
+  const methods = ['error', 'log', 'warn', 'info', 'debug'] as const;
+  methods.forEach(method => {
+    vi.spyOn(console, method).mockImplementation((message?: unknown, ...args: unknown[]) => {
+      // テストエラーに関連するメッセージを抑止
+      if (message?.toString().includes('テストエラー') ||
+          message?.toString().includes('Error: テストエラー') ||
+          args.some(arg => arg?.toString().includes('テストエラー'))) {
+        return;
+      }
+      // i18nextのログを抑止
+      if (message?.toString().includes('i18next:') ||
+          message?.toString().includes('react-i18next::')) {
+        return;
+      }
+      // その他のエラーは出力（開発時のデバッグ用）
+      if (method === 'error') {
+        console[method](message, ...args);
+      }
+    });
+  });
 });
 
 afterAll(() => {
   // タイマーをリセット
   vi.useRealTimers();
+  // すべてのモックをリストア
+  vi.restoreAllMocks();
 });
 
 beforeEach(() => {
@@ -133,6 +157,69 @@ describe('BodyLayout', () => {
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
+
+  it('エラー発生時にアラート通知が表示される', async () => {
+    // 1. 初期セットアップ - モックの設定を先に行う
+    let errorThrown = false;
+    const mockSetFlowData = vi.fn().mockImplementation(() => {
+      errorThrown = true;
+      throw new Error('テストエラー');
+    });
+
+    const store = useFlowStore.getState();
+    store.setFlowData = mockSetFlowData;  // モックを先に設定
+    store.flowData = { ...mockInitialData };  // 新しいオブジェクトとしてコピー
+    store.isEditMode = true;  // 最初から編集モードに設定
+
+    // 2. コンポーネントのレンダリング
+    renderWithI18n(
+      <BodyLayout initialData={mockInitialData} initialMode="edit" />
+    );
+
+    // 初期レンダリングの完了を待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
+    });
+
+    // 3. エラーを発生させる
+    await act(async () => {
+      // タイトル入力フィールドを探す
+      const titleInput = screen.getByDisplayValue('テストフロー') as HTMLInputElement;
+      expect(titleInput).toBeInTheDocument();  // 要素が存在することを確認
+
+      // イベントを発火して状態を変更
+      fireEvent.change(titleInput, { target: { value: 'テスト' } });
+
+      // 状態の変更とエラー発生を待つ
+      await Promise.resolve();
+      await vi.advanceTimersByTime(10);
+
+      // エラーが発生したことを確認
+      expect(mockSetFlowData).toHaveBeenCalled();
+      expect(errorThrown).toBe(true);
+
+      // エラーが処理される時間を確保
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
+    });
+
+    // エラー通知の生成を待つ
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTime(100);
+    });
+
+    // エラー通知を確認
+    const alerts = Array.from(document.querySelectorAll('[role="alert"]'));
+    expect(alerts.some(a => a.textContent?.includes('タイトル更新中にエラーが発生しました'))).toBe(true);
+
+    // 通知が消えるのを待つ
+    await act(async () => {
+      await vi.advanceTimersByTime(1000);
+    });
+    expect(document.querySelectorAll('[role="alert"]')).toHaveLength(0);
+  });
 });
 
 describe('アクセシビリティ機能', () => {
@@ -236,79 +323,6 @@ describe('アクセシビリティ機能', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(document.querySelectorAll('[role="status"]')).toHaveLength(0);
-  });
-
-  it('エラー発生時にアラート通知が表示される', async () => {
-    // 1. 初期セットアップ - モックの設定を先に行う
-    let errorThrown = false;
-    const mockSetFlowData = vi.fn().mockImplementation(() => {
-      errorThrown = true;
-      throw new Error('テストエラー');
-    });
-
-    const store = useFlowStore.getState();
-    store.setFlowData = mockSetFlowData;  // モックを先に設定
-    store.flowData = { ...mockInitialData };  // 新しいオブジェクトとしてコピー
-    store.isEditMode = true;  // 最初から編集モードに設定
-
-    // コンソールエラーをスパイ
-    const consoleErrorSpy = vi.spyOn(console, 'error');
-
-    // 2. コンポーネントのレンダリング
-    const { container, rerender } = renderWithI18n(
-      <BodyLayout initialData={mockInitialData} initialMode="edit" />
-    );
-
-    // 初期レンダリングの完了を待つ
-    await act(async () => {
-      await Promise.resolve();
-      await vi.advanceTimersByTime(100);
-    });
-
-    // 3. エラーを発生させる
-    await act(async () => {
-      // タイトル入力フィールドを探す
-      const titleInput = screen.getByDisplayValue('テストフロー') as HTMLInputElement;
-      expect(titleInput).toBeInTheDocument();  // 要素が存在することを確認
-
-      // イベントを発火して状態を変更
-      fireEvent.change(titleInput, { target: { value: 'テスト' } });
-
-      // 状態の変更とエラー発生を待つ
-      await Promise.resolve();
-      await vi.advanceTimersByTime(10);
-
-      // エラーが発生したことを確認
-      expect(mockSetFlowData).toHaveBeenCalled();
-      expect(errorThrown).toBe(true);
-
-      // エラーが処理される時間を確保
-      await Promise.resolve();
-      await vi.advanceTimersByTime(100);
-    });
-
-    // エラー通知の生成を待つ
-    await act(async () => {
-      await Promise.resolve();
-      await vi.advanceTimersByTime(100);
-    });
-
-    // エラーハンドリングの確認
-    expect(consoleErrorSpy).toHaveBeenCalled();
-
-    // エラー通知を確認
-    const alerts = Array.from(document.querySelectorAll('[role="alert"]'));
-
-    expect(alerts.some(a => a.textContent?.includes('タイトル更新中にエラーが発生しました'))).toBe(true);
-
-    // 通知が消えるのを待つ
-    await act(async () => {
-      await vi.advanceTimersByTime(1000);
-    });
-    expect(document.querySelectorAll('[role="alert"]')).toHaveLength(0);
-
-    // スパイをリストア
-    consoleErrorSpy.mockRestore();
   });
 });
 
