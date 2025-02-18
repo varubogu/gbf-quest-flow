@@ -69,7 +69,7 @@ export default [
         ignoreRestSiblings: true,
         destructuredArrayIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
-        args: 'none'
+        args: 'all'
       }],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unsafe-assignment': 'warn',
