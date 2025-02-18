@@ -9,6 +9,18 @@ export default [
   eslint.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx,astro}'],
+    ignores: [
+      '.bun/**',
+      '.astro/**',
+      '.devcontainer/**',
+      '.github/**',
+      '.vscode/**',
+      'coverage/**',
+      'dist/**',
+      'node_modules/**',
+      'test-results/**',
+      'playwright-report/**',
+    ],
     languageOptions: {
       parser: tseslintParser,
       parserOptions: {
