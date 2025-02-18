@@ -68,6 +68,8 @@ export default [
         varsIgnorePattern: '^_',
         ignoreRestSiblings: true,
         destructuredArrayIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        args: 'none'
       }],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unsafe-assignment': 'warn',
