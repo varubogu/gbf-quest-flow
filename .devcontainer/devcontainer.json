@@ -16,7 +16,8 @@
         "bradlc.vscode-tailwindcss",
         "ms-playwright.playwright",
         "vitest.explorer",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "oven.bun-vscode"
       ]
     }
   }
