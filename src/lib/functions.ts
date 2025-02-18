@@ -1,4 +1,5 @@
 import useFlowStore from '@/stores/flowStore';
+import type { Flow } from '@/types/models';
 
 export function setTitle(title: string) {
   const titleBase = 'グラブル行動表';
@@ -12,8 +13,8 @@ export function setTitle(title: string) {
 }
 
 export async function loadSlugData(slug: string) {
-  const res = await fetch(`/content/flows/${slug}.json`);
-  const data = await res.json();
+  const res: Response = await fetch(`/content/flows/${slug}.json`);
+  const data = await res.json() as Flow;
 
   useFlowStore.getState().setFlowData(data);
 }
