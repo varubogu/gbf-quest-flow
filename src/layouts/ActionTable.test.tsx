@@ -1,7 +1,8 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { ActionTable } from '../components/organisms/ActionTable';
 import type { Action } from '@/types/models';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import '@testing-library/jest-dom';
 
 // モックデータ
 const mockData: Action[] = [
@@ -17,10 +18,12 @@ describe('ActionTable', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // scrollToのモック化
+    Element.prototype.scrollTo = vi.fn();
   });
 
   it('マウスホイールで上下に移動できる', () => {
-    render(
+    const { container } = render(
       <ActionTable
         data={mockData}
         currentRow={1}
@@ -31,19 +34,20 @@ describe('ActionTable', () => {
       />
     );
 
-    const table = screen.getByRole('table');
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
 
     // 上にスクロール
-    fireEvent.wheel(table, { deltaY: -100, deltaMode: 1 });
+    fireEvent.wheel(tableContainer, { deltaY: -100, deltaMode: 1 });
     expect(mockOnRowSelect).toHaveBeenCalledWith(0);
 
     // 下にスクロール
-    fireEvent.wheel(table, { deltaY: 100, deltaMode: 1 });
+    fireEvent.wheel(tableContainer, { deltaY: 100, deltaMode: 1 });
     expect(mockOnRowSelect).toHaveBeenCalledWith(2);
   });
 
   it('タッチパッドのスクロールは累積値に基づいて移動する', () => {
-    render(
+    const { container } = render(
       <ActionTable
         data={mockData}
         currentRow={1}
@@ -54,20 +58,22 @@ describe('ActionTable', () => {
       />
     );
 
-    const table = screen.getByRole('table');
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
 
     // 閾値未満のスクロール
-    fireEvent.wheel(table, { deltaY: 10, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 10, deltaMode: 0 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
 
     // 閾値を超えるスクロール（複数回の累積）
-    fireEvent.wheel(table, { deltaY: 20, deltaMode: 0 });
-    fireEvent.wheel(table, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
     expect(mockOnRowSelect).toHaveBeenCalledWith(2);
   });
 
   it('最初の行より上、最後の行より下にはスクロールできない', () => {
-    render(
+    // 最初の行でのテスト
+    const { container: firstContainer } = render(
       <ActionTable
         data={mockData}
         currentRow={0}
@@ -78,14 +84,15 @@ describe('ActionTable', () => {
       />
     );
 
-    const table = screen.getByRole('table');
+    const firstTableContainer = firstContainer.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!firstTableContainer) throw new Error('Table container not found');
 
     // 最初の行より上にスクロールしようとする
-    fireEvent.wheel(table, { deltaY: -100, deltaMode: 1 });
+    fireEvent.wheel(firstTableContainer, { deltaY: -100, deltaMode: 1 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
 
-    // 最後の行まで移動
-    render(
+    // 最後の行でのテスト
+    const { container: lastContainer } = render(
       <ActionTable
         data={mockData}
         currentRow={2}
@@ -96,13 +103,16 @@ describe('ActionTable', () => {
       />
     );
 
+    const lastTableContainer = lastContainer.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!lastTableContainer) throw new Error('Table container not found');
+
     // 最後の行より下にスクロールしようとする
-    fireEvent.wheel(table, { deltaY: 100, deltaMode: 1 });
+    fireEvent.wheel(lastTableContainer, { deltaY: 100, deltaMode: 1 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
 
   it('編集モード中はスクロールが無効になる', () => {
-    render(
+    const { container } = render(
       <ActionTable
         data={mockData}
         currentRow={1}
@@ -114,16 +124,17 @@ describe('ActionTable', () => {
       />
     );
 
-    const table = screen.getByRole('table');
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
 
     // マウスホイールでのスクロール
-    fireEvent.wheel(table, { deltaY: -100, deltaMode: 1 });
-    fireEvent.wheel(table, { deltaY: 100, deltaMode: 1 });
+    fireEvent.wheel(tableContainer, { deltaY: -100, deltaMode: 1 });
+    fireEvent.wheel(tableContainer, { deltaY: 100, deltaMode: 1 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
 
     // タッチパッドでのスクロール
-    fireEvent.wheel(table, { deltaY: 20, deltaMode: 0 });
-    fireEvent.wheel(table, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
-}); 
+});
