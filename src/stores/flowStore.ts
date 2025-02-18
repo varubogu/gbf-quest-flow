@@ -11,23 +11,23 @@ interface HistoryState {
 interface FlowStore {
   flowData: Flow | null;
   originalData: Flow | null; // 編集前のデータを保持
-  setFlowData: (data: Flow | null) => void;
-  updateFlowData: (update: Partial<Flow>) => void;
+  setFlowData: (_data: Flow | null) => void;
+  updateFlowData: (_update: Partial<Flow>) => void;
   loadFlowFromFile: () => Promise<void>;
   createNewFlow: () => void; // 新しいデータを作成する関数を追加
   currentRow: number;
-  setCurrentRow: (row: number) => void;
+  setCurrentRow: (_row: number) => void;
   isEditMode: boolean;
-  setIsEditMode: (isEdit: boolean) => void;
+  setIsEditMode: (_isEdit: boolean) => void;
   // 履歴管理用の状態と関数
   history: HistoryState;
-  pushToHistory: (data: Flow) => void;
+  pushToHistory: (_data: Flow) => void;
   undo: () => void;
   redo: () => void;
   clearHistory: () => void;
   // 編集キャンセル用の関数
   cancelEdit: () => void;
-  updateAction: (index: number, updates: Partial<Action>) => void;
+  updateAction: (_index: number, _updates: Partial<Action>) => void;
 }
 
 // データの個数を設定に合わせて調整する関数（不足分のみ追加）

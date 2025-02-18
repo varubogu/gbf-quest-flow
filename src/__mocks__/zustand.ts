@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import type * as ZustandExportedTypes from 'zustand';
-import { vi, afterEach } from 'vitest';
+import { afterEach } from 'vitest';
 import * as zustand from 'zustand';
 export * from 'zustand';
 

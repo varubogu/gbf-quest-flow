@@ -11,8 +11,8 @@ interface ActionCellProps {
   isCurrentRow?: boolean;
   isHeader?: boolean;
   isEditable?: boolean;
-  onChange?: (value: string) => void;
-  onPasteRows?: (rows: Partial<Action>[]) => void;
+  onChange?: (_value: string) => void;
+  onPasteRows?: (_rows: Partial<Action>[]) => void;
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;

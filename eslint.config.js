@@ -10,10 +10,7 @@ export default [
   {
     ignores: [
       '**/node_modules/**',
-      '**/.bun/**/*.js',
-      '**/.bun/**/*.ts',
-      '**/.bun/**/*.jsx',
-      '**/.bun/**/*.tsx',
+      '**/.bun/**/*.**',
       '**/zod@*/**',
       '**/.astro/**',
       '**/.devcontainer/**',

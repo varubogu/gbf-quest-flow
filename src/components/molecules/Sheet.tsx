@@ -14,7 +14,7 @@ const SheetContext = createContext<SheetContextValue | undefined>(undefined);
 interface SheetProps {
   children: React.ReactNode;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
 }
 
 export const Sheet: React.FC<SheetProps> = ({ children, open: controlledOpen, onOpenChange }) => {
@@ -25,7 +25,7 @@ export const Sheet: React.FC<SheetProps> = ({ children, open: controlledOpen, on
   // React.Dispatch<React.SetStateAction<boolean>> に準拠するように、関数型更新もサポート
   const setOpen: React.Dispatch<React.SetStateAction<boolean>> = (value) => {
     const newValue =
-      typeof value === 'function' ? (value as (prev: boolean) => boolean)(open) : value;
+      typeof value === 'function' ? (value as (_prev: boolean) => boolean)(open) : value;
     if (!isControlled) {
       setUncontrolledOpen(newValue);
     }
@@ -41,7 +41,7 @@ export const SheetTrigger = ({
   children,
 }: {
   asChild?: boolean;
-  children: React.ReactElement<any, any>;
+  children: React.ReactElement<Element, string>;
 }) => {
   const context = useContext(SheetContext);
   if (!context) throw new Error('SheetTrigger must be used within a Sheet');

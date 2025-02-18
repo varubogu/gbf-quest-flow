@@ -14,7 +14,7 @@ interface SkillTableProps {
   isEditing: boolean;
   title: string;
   values: WeaponSkillEffect | WeaponSkillTotal;
-  onChange: (field: keyof (WeaponSkillEffect | WeaponSkillTotal), value: string) => void;
+  onChange: (_field: keyof (WeaponSkillEffect | WeaponSkillTotal), _value: string) => void;
 }
 
 export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values, onChange }) => {

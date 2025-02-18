@@ -4,7 +4,6 @@ import { ChevronUp, ChevronDown, Plus, Minus } from 'lucide-react';
 import { IconButton } from '../atoms/IconButton';
 import type { Action } from '@/types/models';
 import { useTranslation } from 'react-i18next';
-import useSettingsStore from '@/stores/settingsStore';
 
 // 編集モードに応じてグリッドレイアウトを切り替え
 const getGridClasses = (isEditMode: boolean) =>
@@ -15,23 +14,18 @@ const getGridClasses = (isEditMode: boolean) =>
 // スクロールの設定値
 const TOUCHPAD_SCROLL_THRESHOLD = 35;
 
-// セルの余白スタイルを取得
-const getCellPaddingStyle = (padding: number) => ({
-  padding: `${padding}px`,
-});
-
 interface ActionTableProps {
   data: Action[];
   currentRow: number;
   buttonPosition: 'right' | 'left';
-  onRowSelect: (row: number) => void;
+  onRowSelect: (_row: number) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
   isEditMode?: boolean;
-  onCellEdit?: (rowIndex: number, field: keyof Action, value: string) => void;
-  onDeleteRow?: (rowIndex: number) => void;
-  onAddRow?: (rowIndex: number) => void;
-  onPasteRows?: (rowIndex: number, rows: Partial<Action>[]) => void;
+  onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
+  onDeleteRow?: (_rowIndex: number) => void;
+  onAddRow?: (_rowIndex: number) => void;
+  onPasteRows?: (_rowIndex: number, _rows: Partial<Action>[]) => void;
 }
 
 export const ActionTable: React.FC<ActionTableProps> = ({

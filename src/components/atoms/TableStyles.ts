@@ -1,5 +1,4 @@
 const borderColor = 'border-gray-400';
-const borderWidth = 'border-2';
 const cellPadding = 'p-2';
 
 // テーブル全体のスタイル
