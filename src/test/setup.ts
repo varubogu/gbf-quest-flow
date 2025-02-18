@@ -3,7 +3,6 @@
 import { beforeAll, afterEach, afterAll, vi, expect } from 'vitest';
 import { server } from '../mocks/server';
 import * as matchers from '@testing-library/jest-dom/matchers';
-import { act } from '@testing-library/react';
 import { cleanup } from '@testing-library/react';
 
 expect.extend(matchers);
@@ -11,10 +10,11 @@ expect.extend(matchers);
 // コンソールエラーの抑制設定
 const originalConsoleError = console.error;
 beforeAll(() => {
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
+    const firstArg = args[0];
     if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
+      typeof firstArg === 'string' &&
+      firstArg.includes('Warning: ReactDOM.render is no longer supported')
     ) {
       return;
     }
