@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
-import { HamburgerMenuItems } from '@/components/molecules/HamburgerMenuItems';
+import { SideMenu } from '@/components/molecules/SideMenu';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
 import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
@@ -54,7 +54,7 @@ export function FlowLayout({
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="h-14 border-b flex items-center px-4 fixed w-full bg-background z-50">
-        <HamburgerMenuItems onSave={onSave} onNew={onNew} onExitEditMode={onExitEditMode} />
+        <SideMenu onSave={onSave} onNew={onNew} onExitEditMode={onExitEditMode} />
         {isEditMode ? (
           <input
             type="text"
