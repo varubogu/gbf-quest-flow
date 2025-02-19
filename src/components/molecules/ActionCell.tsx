@@ -59,7 +59,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
     content,
     value,
     isEditable,
-    field,
+    field: field as keyof Action,
     onChange,
     onPasteRows,
     setIsEditing,

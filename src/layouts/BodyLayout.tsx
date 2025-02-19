@@ -143,13 +143,17 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
           return;
         }
       }
+      const originalData = useFlowStore.getState().originalData;
+      if (originalData) {
+        setFlowData(structuredClone(originalData));
+      }
       setIsEditMode(false);
       clearHistory();
       announceToScreenReader('編集モードを終了しました');
     } catch (error) {
       handleError(error, '編集モード終了中');
     }
-  }, [hasChanges, setIsEditMode, clearHistory]);
+  }, [hasChanges, setIsEditMode, clearHistory, setFlowData]);
 
   // タイトルの変更処理
   const handleTitleChange = useCallback(

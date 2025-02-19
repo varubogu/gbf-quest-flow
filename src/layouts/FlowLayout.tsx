@@ -54,7 +54,7 @@ export function FlowLayout({
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="h-14 border-b flex items-center px-4 fixed w-full bg-background z-50">
-        <HamburgerMenuItems onSave={onSave} onNew={onNew} />
+        <HamburgerMenuItems onSave={onSave} onNew={onNew} onExitEditMode={onExitEditMode} />
         {isEditMode ? (
           <input
             type="text"

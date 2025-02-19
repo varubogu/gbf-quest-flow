@@ -25,9 +25,10 @@ import { useTranslation } from 'react-i18next';
 interface Props {
   onSave: () => void;
   onNew: () => void;
+  onExitEditMode: () => void;
 }
 
-export function HamburgerMenuItems({ onSave, onNew }: Props) {
+export function HamburgerMenuItems({ onSave, onNew, onExitEditMode }: Props) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -129,12 +130,7 @@ export function HamburgerMenuItems({ onSave, onNew }: Props) {
         setIsOpen(false);
         break;
       case 'cancel':
-        if (history.past.length > 0) {
-          if (!confirm(t('confirmDiscardChanges'))) {
-            break;
-          }
-        }
-        cancelEdit();
+        onExitEditMode();
         setIsOpen(false);
         break;
       case 'options':

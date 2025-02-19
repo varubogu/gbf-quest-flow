@@ -145,7 +145,8 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
     if (!isEdit) {
       // 編集モード終了時に履歴をクリア
-      set({ history: { past: [], future: [] }, originalData: null });
+      set({ history: { past: [], future: [] } });
+      // originalDataはhandleExitEditModeで使用した後にクリアするため、ここではクリアしない
     }
     set({ isEditMode: isEdit });
   },
