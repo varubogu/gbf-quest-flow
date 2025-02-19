@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { SideMenu } from './SideMenu';
 import { vi } from 'vitest';
 import type { Flow } from '@/types/models';
@@ -23,20 +23,51 @@ vi.mock('react-i18next', () => ({
   },
 }));
 
-const mockSetIsEditMode = vi.fn();
-const mockLoadFlowFromFile = vi.fn();
-const mockCancelEdit = vi.fn();
-const mockUseFlowStore = vi.fn(() => ({
-  flowData: null as Flow | null,
-  originalData: null as Flow | null,
-  isEditMode: false,
-  setIsEditMode: mockSetIsEditMode,
-  loadFlowFromFile: mockLoadFlowFromFile,
-  cancelEdit: mockCancelEdit,
+// FileOperationsのモック
+vi.mock('@/utils/FileOperations', () => ({
+  shouldConfirmDiscard: () => true,
+  showNoDataAlert: vi.fn(),
+  downloadFlow: vi.fn(),
+  getDownloadFilename: vi.fn(),
 }));
 
+// Zustandストアのモック
+const createMockStore = () => {
+  const mockSetIsEditMode = vi.fn();
+  const mockLoadFlowFromFile = vi.fn();
+  const mockCancelEdit = vi.fn();
+
+  const store = {
+    flowData: null as Flow | null,
+    originalData: null as Flow | null,
+    isEditMode: false,
+    setIsEditMode: mockSetIsEditMode,
+    loadFlowFromFile: mockLoadFlowFromFile,
+    cancelEdit: mockCancelEdit,
+    currentRow: 0,
+    history: { past: [], future: [] },
+    setCurrentRow: vi.fn(),
+    updateFlowData: vi.fn(),
+    pushToHistory: vi.fn(),
+    undo: vi.fn(),
+    redo: vi.fn(),
+    clearHistory: vi.fn(),
+    createNewFlow: vi.fn(),
+    updateAction: vi.fn(),
+  };
+
+  return {
+    store,
+    mockSetIsEditMode,
+    mockLoadFlowFromFile,
+    mockCancelEdit,
+  };
+};
+
+const mockStore = createMockStore();
+
 vi.mock('@/stores/flowStore', () => ({
-  default: () => mockUseFlowStore(),
+  default: vi.fn((selector) => selector(mockStore.store)),
 }));
 
 describe('SideMenu', () => {
@@ -46,14 +77,10 @@ describe('SideMenu', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseFlowStore.mockImplementation(() => ({
-      flowData: null,
-      originalData: null,
-      isEditMode: false,
-      setIsEditMode: mockSetIsEditMode,
-      loadFlowFromFile: mockLoadFlowFromFile,
-      cancelEdit: mockCancelEdit,
-    }));
+    // ストアの状態をリセット
+    mockStore.store.flowData = null;
+    mockStore.store.originalData = null;
+    mockStore.store.isEditMode = false;
   });
 
   it('renders hamburger menu button', () => {
@@ -81,86 +108,105 @@ describe('SideMenu', () => {
   });
 
   it('calls onNew when new button is clicked', async () => {
-    mockUseFlowStore.mockImplementation(() => ({
-      flowData: null,
-      originalData: null,
-      isEditMode: false,
-      setIsEditMode: mockSetIsEditMode,
-      loadFlowFromFile: mockLoadFlowFromFile,
-      cancelEdit: mockCancelEdit,
-    }));
+    // 明示的にモックの状態を設定
+    mockStore.store.flowData = null;
+    mockStore.store.originalData = null;
+    mockStore.store.isEditMode = false;
+
+    mockOnNew.mockImplementation(() => {
+      mockStore.store.isEditMode = true;
+      console.log("mockOnNew", mockStore.store.isEditMode);
+    });
+    console.log("mock set ok");
 
     render(
       <SideMenu onSave={mockOnSave} onNew={mockOnNew} onExitEditMode={mockOnExitEditMode} />
     );
-    fireEvent.click(screen.getByLabelText('メニューを開く'));
-    const newButton = screen.getByText('newData', { exact: false });
-    newButton.click();
-    await vi.waitFor(() => {
-      mockUseFlowStore().isEditMode = true;
+
+    // メニューを開く
+    await act(async () => {
+      console.log("mock click now");
+      const menuButton = screen.getByLabelText('メニューを開く');
+      fireEvent.click(menuButton);
+      console.log("mock click 1 ok");
     });
+
+    // メニューが表示されるのを待つ
+    await vi.waitFor(() => {
+      expect(screen.getByText('menu')).toBeInTheDocument();
+    });
+
+    // 新規作成ボタンをクリック
+    await act(async () => {
+      const newButton = screen.getByRole('button', { name: /newData/i });
+      fireEvent.click(newButton);
+      console.log("mock click 2 ok");
+    });
+
+    // 状態の変更を待つ
+    await vi.waitFor(() => {
+      console.log("mock wait now: ", mockStore.store.isEditMode);
+      return mockStore.store.isEditMode === true;
+    }, { timeout: 2000 });
+    console.log("mock wait ok");
+
     expect(mockOnNew).toHaveBeenCalledTimes(1);
   });
 
   // 編集モード時のテスト
   it('shows save button when in edit mode', () => {
-    mockUseFlowStore.mockImplementation(() => ({
-      flowData: {
-        title: 'Test Flow',
-        quest: '',
-        author: '',
-        description: '',
-        updateDate: '',
-        note: '',
-        organization: {
-          job: {
+    mockStore.store.flowData = {
+      title: 'Test Flow',
+      quest: '',
+      author: '',
+      description: '',
+      updateDate: '',
+      note: '',
+      organization: {
+        job: {
+          name: '',
+          note: '',
+          equipment: {
             name: '',
             note: '',
-            equipment: {
-              name: '',
-              note: '',
-            },
-            abilities: [],
           },
-          member: {
-            front: [],
-            back: [],
-          },
-          weapon: {
-            main: {
-              name: '',
-              note: '',
-              additionalSkill: '',
-            },
-            other: [],
-            additional: [],
-          },
-          weaponEffects: {
-            taRate: '',
-            hp: '',
-            defense: '',
-          },
-          summon: {
-            main: { name: '', note: '' },
-            friend: { name: '', note: '' },
-            other: [],
-            sub: [],
-          },
-          totalEffects: {
-            taRate: '',
-            hp: '',
-            defense: '',
-          },
+          abilities: [],
         },
-        always: '',
-        flow: [],
-      } as Flow,
-      originalData: null,
-      isEditMode: true,
-      setIsEditMode: mockSetIsEditMode,
-      loadFlowFromFile: mockLoadFlowFromFile,
-      cancelEdit: mockCancelEdit,
-    }));
+        member: {
+          front: [],
+          back: [],
+        },
+        weapon: {
+          main: {
+            name: '',
+            note: '',
+            additionalSkill: '',
+          },
+          other: [],
+          additional: [],
+        },
+        weaponEffects: {
+          taRate: '',
+          hp: '',
+          defense: '',
+        },
+        summon: {
+          main: { name: '', note: '' },
+          friend: { name: '', note: '' },
+          other: [],
+          sub: [],
+        },
+        totalEffects: {
+          taRate: '',
+          hp: '',
+          defense: '',
+        },
+      },
+      always: '',
+      flow: [],
+    } as Flow;
+    mockStore.store.originalData = null;
+    mockStore.store.isEditMode = true;
 
     render(
       <SideMenu onSave={mockOnSave} onNew={mockOnNew} onExitEditMode={mockOnExitEditMode} />
