@@ -70,6 +70,14 @@ describe('useActionCellEvents', () => {
       expect(defaultProps.setIsEditing).toHaveBeenCalledWith(false);
     });
 
+    it('Shift+Enterの場合、編集を継続すること', () => {
+      const { result } = renderHook(() => useActionCellEvents(defaultProps));
+      const event = new KeyboardEvent('keydown', { key: 'Enter', shiftKey: true } as KeyboardEventInit);
+      result.current.handleKeyDown(event as unknown as React.KeyboardEvent<HTMLTextAreaElement>);
+      expect(defaultProps.setIsEditing).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    });
+
     it('Escapeキーで編集をキャンセルすること', () => {
       const { result } = renderHook(() => useActionCellEvents(defaultProps));
       const event = new KeyboardEvent('keydown', { key: 'Escape' } as KeyboardEventInit);
@@ -112,6 +120,50 @@ describe('useActionCellEvents', () => {
       } as unknown as React.ClipboardEvent<HTMLTextAreaElement>;
       result.current.handlePaste(event);
       expect(mockHandleValidationError).toHaveBeenCalledWith('noValidRows');
+    });
+
+    it('複数行のテキストを適切に処理すること', () => {
+      const { result } = renderHook(() => useActionCellEvents(defaultProps));
+      const event = {
+        preventDefault: vi.fn(),
+        clipboardData: {
+          getData: () => 'line1\nline2\nline3',
+        },
+      } as unknown as React.ClipboardEvent<HTMLTextAreaElement>;
+      result.current.handlePaste(event);
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(defaultProps.onPasteRows).toHaveBeenCalledWith([
+        { action: 'line1' },
+        { action: 'line2' },
+        { action: 'line3' },
+      ]);
+    });
+
+    it('単一行のテキストは通常の貼り付け処理を行うこと', () => {
+      const { result } = renderHook(() => useActionCellEvents(defaultProps));
+      const event = {
+        preventDefault: vi.fn(),
+        clipboardData: {
+          getData: () => 'single line',
+        },
+      } as unknown as React.ClipboardEvent<HTMLTextAreaElement>;
+      result.current.handlePaste(event);
+      expect(event.preventDefault).not.toHaveBeenCalled();
+      expect(defaultProps.onPasteRows).not.toHaveBeenCalled();
+    });
+
+    it('エラー発生時に適切にハンドリングすること', () => {
+      const { result } = renderHook(() => useActionCellEvents(defaultProps));
+      const event = {
+        preventDefault: vi.fn(),
+        clipboardData: {
+          getData: () => {
+            throw new Error('test error');
+          },
+        },
+      } as unknown as React.ClipboardEvent<HTMLTextAreaElement>;
+      result.current.handlePaste(event);
+      expect(mockHandlePasteError).toHaveBeenCalledWith(new Error('test error'));
     });
   });
 });
