@@ -25,3 +25,8 @@ export interface AppSettings {
   tablePadding: number; // 行動表の余白（px単位、デフォルト8px）
   actionTableClickType: 'single' | 'double'; // 行動表の選択方法
 }
+
+export interface Settings {
+  actionTableClickType: 'single' | 'double';
+  // 他の設定項目がある場合はここに追加
+}

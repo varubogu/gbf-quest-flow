@@ -91,7 +91,8 @@ export const convertToActions = (rows: string[][], startField: keyof Action): Pa
 
     // 先頭列よりも左にはみ出す場合はエラー
     if (adjustedStartIndex < 0) {
-      throw new Error('貼り付ける列数が多すぎます');
+      // エラーメッセージのキーを例外で送出
+      throw new Error('tooManyColumns');
     }
   }
 

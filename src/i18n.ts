@@ -154,6 +154,15 @@ i18n
           summonFriend: 'フレンド',
           summonNormal: '通常石',
           summonSub: 'サブ',
+
+          // エラーメッセージ
+          pasteError: {
+            specific: '貼り付け処理中にエラーが発生しました: {{message}}',
+            generic: '貼り付け処理中に予期せぬエラーが発生しました'
+          },
+          validationError: '入力エラー: {{message}}',
+          noValidRows: '有効な行が見つかりません',
+          tooManyColumns: '貼り付ける列数が多すぎます',
         },
       },
       en: {
@@ -297,6 +306,15 @@ i18n
           summonFriend: 'Friend',
           summonNormal: 'Normal',
           summonSub: 'Sub',
+
+          // Error messages
+          pasteError: {
+            specific: 'Error occurred while pasting: {{message}}',
+            generic: 'An unexpected error occurred while pasting'
+          },
+          validationError: 'Input Error: {{message}}',
+          noValidRows: 'No valid rows found in clipboard',
+          tooManyColumns: 'Too many columns to paste',
         },
       },
     },

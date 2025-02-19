@@ -96,7 +96,7 @@ describe('convertToActions', () => {
 
   it('列数が多すぎる場合にエラーを投げること', () => {
     const input = [['a', 'b', 'c', 'd', 'e', 'f', 'g']];
-    expect(() => convertToActions(input, 'note')).toThrow('貼り付ける列数が多すぎます');
+    expect(() => convertToActions(input, 'note')).toThrow('tooManyColumns');
   });
 
   it('空のセルを含むデータを正しく処理できること', () => {

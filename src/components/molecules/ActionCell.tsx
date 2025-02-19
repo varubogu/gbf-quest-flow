@@ -9,6 +9,7 @@ import { useTableCellBaseStyle } from '@/hooks/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/hooks/useTableCellStateStyle';
 import { useActionCellEvents } from '@/hooks/useActionCellEvents';
 import { useActionCellState } from '@/hooks/useActionCellState';
+import { useTextareaStyle } from '@/hooks/useTextareaStyle';
 
 interface ActionCellProps {
   content: string;
@@ -37,6 +38,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   const { getAlignmentClass } = useAlignmentStyle();
   const { getBaseClassName, getBasePadding } = useTableCellBaseStyle();
   const { getStateClassName, getTextVariant } = useTableCellStateStyle();
+  const { getTextareaClassName } = useTextareaStyle();
 
   const {
     isEditing,
@@ -84,12 +86,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
-          className={cn(
-            'w-full bg-white border border-gray-400 rounded px-1 resize-none overflow-hidden',
-            'text-sm leading-normal font-normal',
-            getAlignmentClass(alignment),
-            isHeader ? textInputBaseStyle : textareaBaseStyle
-          )}
+          className={getTextareaClassName({ isHeader, alignment })}
           rows={1}
         />
       ) : (
