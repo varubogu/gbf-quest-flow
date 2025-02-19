@@ -143,7 +143,8 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
           return;
         }
       }
-      const originalData = useFlowStore.getState().originalData;
+      const store = useFlowStore.getState();
+      const originalData = store.originalData;
       if (originalData) {
         setFlowData(structuredClone(originalData));
       }

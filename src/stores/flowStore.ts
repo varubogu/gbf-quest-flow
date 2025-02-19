@@ -144,9 +144,8 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       set({ originalData: structuredClone(flowData) });
     }
     if (!isEdit) {
-      // 編集モード終了時に履歴をクリア
-      set({ history: { past: [], future: [] } });
-      // originalDataはhandleExitEditModeで使用した後にクリアするため、ここではクリアしない
+      // 編集モード終了時に履歴とoriginalDataをクリア
+      set({ history: { past: [], future: [] }, originalData: null });
     }
     set({ isEditMode: isEdit });
   },
