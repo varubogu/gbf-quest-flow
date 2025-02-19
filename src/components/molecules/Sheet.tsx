@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React, { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSheetAnimation } from '@/hooks/useSheetAnimation';
 
 // Sheet の状態管理用のコンテキストを作成
 interface SheetContextValue {
@@ -41,7 +41,7 @@ export const SheetTrigger = ({
   children,
 }: {
   asChild?: boolean;
-  children: React.ReactElement<Element, string>;
+  children: React.ReactElement<React.HTMLAttributes<HTMLElement>>;
 }) => {
   const context = useContext(SheetContext);
   if (!context) throw new Error('SheetTrigger must be used within a Sheet');
@@ -53,13 +53,14 @@ export const SheetTrigger = ({
   if (asChild) {
     return React.cloneElement(children, {
       onClick: handleClick,
+      'aria-expanded': context.open,
     });
   }
 
   return <button onClick={handleClick}>{children}</button>;
 };
 
-// SheetContent は、Sheetが開いているときに表示されるコンテンツです（オーバーレイとアニメーション付き）
+// SheetContent は、Sheetが開いているときに表示されるコンテンツです
 export const SheetContent = ({
   side = 'left',
   children,
@@ -71,49 +72,25 @@ export const SheetContent = ({
   const context = useContext(SheetContext);
   if (!context) throw new Error('SheetContent must be used within a Sheet');
 
-  const closeSheet = () => context.setOpen(false);
-
-  // アニメーションのため、visibility と animateIn 状態を管理
-  const [isVisible, setIsVisible] = useState(context.open);
-  const [animateIn, setAnimateIn] = useState(false);
-
-  useEffect(() => {
-    if (context.open) {
-      setIsVisible(true);
-      const timer = setTimeout(() => setAnimateIn(true), 20); // 20ms の遅延で開くアニメーションを発動
-      return () => clearTimeout(timer);
-    } else {
-      setAnimateIn(false);
-      const timer = setTimeout(() => setIsVisible(false), 300); // 300ms は閉じるアニメーションの期間
-      return () => clearTimeout(timer);
-    }
-  }, [context.open]);
+  const { isVisible, overlayClasses, sheetClasses } = useSheetAnimation({
+    open: context.open,
+    side,
+  });
 
   if (!isVisible) return null;
 
-  // オーバーレイのクラス（背景を暗くするアニメーション付き）
-  const overlayClasses = `fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out ${
-    context.open ? 'opacity-50' : 'opacity-0'
-  }`;
-
-  // サイドからのスライドインアニメーション
-  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
-    animateIn ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
-  }`;
-
-  return ReactDOM.createPortal(
-    <>
-      <div className={overlayClasses} onClick={closeSheet} />
+  return (
+    <div className="fixed inset-0 z-50">
+      <div className={overlayClasses} onClick={() => context.setOpen(false)} />
       <div className={sheetClasses}>
         <div className="p-4">
-          <button onClick={closeSheet} className="mb-4">
+          <button onClick={() => context.setOpen(false)} className="mb-4">
             {t('close')}
           </button>
           {children}
         </div>
       </div>
-    </>,
-    document.body
+    </div>
   );
 };
 

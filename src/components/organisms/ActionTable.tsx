@@ -5,6 +5,8 @@ import { IconButton } from '../atoms/IconButton';
 import type { Action } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
+import { useTableKeyboardNavigation } from '@/hooks/useTableKeyboardNavigation';
+import { useTableScroll } from '@/hooks/useTableScroll';
 
 // 編集モードに応じてグリッドレイアウトを切り替え
 const getGridClasses = (isEditMode: boolean) =>
@@ -18,15 +20,15 @@ const TOUCHPAD_SCROLL_THRESHOLD = 35;
 interface ActionTableProps {
   data: Action[];
   currentRow: number;
-  buttonPosition: 'right' | 'left';
-  onRowSelect: (_row: number) => void;
+  buttonPosition?: 'left' | 'right';
+  onRowSelect: (_index: number) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
   isEditMode?: boolean;
   onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
-  onDeleteRow?: (_rowIndex: number) => void;
-  onAddRow?: (_rowIndex: number) => void;
-  onPasteRows?: (_rowIndex: number, _rows: Partial<Action>[]) => void;
+  onDeleteRow?: (_index: number) => void;
+  onAddRow?: (_index: number) => void;
+  onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
 }
 
 export const ActionTable: React.FC<ActionTableProps> = ({
@@ -48,77 +50,22 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   const accumulatedDeltaRef = React.useRef(0);
   const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  React.useEffect(() => {
-    const container = containerRef.current;
-    if (!container || isEditMode) return;
+  // キーボードナビゲーションの設定
+  useTableKeyboardNavigation({
+    currentRow,
+    data,
+    onRowSelect,
+    isEditMode,
+  });
 
-    const handleWheel = (e: WheelEvent) => {
-      const target = e.target as HTMLElement;
-      if (!container.contains(target)) return;
-
-      e.preventDefault();
-
-      // タッチパッドの判定
-      const isTouchpad = e.deltaMode === 0;
-
-      if (isTouchpad) {
-        // タッチパッドの場合は相対位置での処理
-        accumulatedDeltaRef.current += e.deltaY;
-
-        // 累積値が一定のしきい値を超えたら行を移動
-        if (accumulatedDeltaRef.current < -TOUCHPAD_SCROLL_THRESHOLD && currentRow > 0) {
-          onRowSelect(currentRow - 1);
-          accumulatedDeltaRef.current = 0;
-        } else if (
-          accumulatedDeltaRef.current > TOUCHPAD_SCROLL_THRESHOLD &&
-          currentRow < data.length - 1
-        ) {
-          onRowSelect(currentRow + 1);
-          accumulatedDeltaRef.current = 0;
-        }
-      } else {
-        // マウスホイールの場合は従来通りの処理
-        if (e.deltaY < 0 && currentRow > 0) {
-          onRowSelect(currentRow - 1);
-        } else if (e.deltaY > 0 && currentRow < data.length - 1) {
-          onRowSelect(currentRow + 1);
-        }
-      }
-    };
-
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
-      container.removeEventListener('wheel', handleWheel);
-    };
-  }, [currentRow, data.length, onRowSelect, isEditMode]);
-
-  // 上下移動ボタンのクリックハンドラ（クールダウンなし）
-  const handleMove = (direction: 'up' | 'down') => {
-    if (direction === 'up') {
-      onMoveUp();
-    } else {
-      onMoveDown();
-    }
-  };
-
-  // キーボードイベントも編集モード時は無効化
-  React.useEffect(() => {
-    if (isEditMode) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowUp' && currentRow > 0) {
-        e.preventDefault();
-        onRowSelect(currentRow - 1);
-      } else if (e.key === 'ArrowDown' && currentRow < data.length - 1) {
-        e.preventDefault();
-        onRowSelect(currentRow + 1);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onRowSelect, currentRow, data.length, isEditMode]);
+  // スクロール制御の設定
+  useTableScroll({
+    containerRef,
+    currentRow,
+    data,
+    onRowSelect,
+    isEditMode,
+  });
 
   // 編集モード終了時に最初の行を選択
   React.useEffect(() => {
@@ -126,40 +73,6 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       onRowSelect(0);
     }
   }, [isEditMode, currentRow, onRowSelect]);
-
-  // スクロール位置の自動調整も編集モード時は無効化
-  React.useEffect(() => {
-    if (isEditMode) return;
-
-    const container = containerRef.current;
-    const target = document.getElementById(`action-row-${currentRow}`);
-    if (target && container) {
-      const containerRect = container.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      const controlBar = container.querySelector('.sticky.top-0');
-      const headerBar = container.querySelector('.sticky.top-12');
-      const controlHeight = controlBar ? controlBar.getBoundingClientRect().height : 0;
-      const headerHeight = headerBar ? headerBar.getBoundingClientRect().height : 0;
-      const fixedHeight = controlHeight + headerHeight;
-      const desiredScrollTop =
-        container.scrollTop + (targetRect.top - containerRect.top) - fixedHeight;
-      container.scrollTo({
-        top: desiredScrollTop,
-        behavior: 'smooth',
-      });
-    }
-  }, [currentRow, isEditMode]);
-
-  const handleCellChange = (rowIndex: number, field: keyof Action, value: string) => {
-    if (onCellEdit) {
-      onCellEdit(rowIndex, field, value);
-    }
-  };
-
-  const handlePasteRows = async (rowIndex: number, rows: Partial<Action>[]) => {
-    if (!onPasteRows) return;
-    onPasteRows(rowIndex, rows);
-  };
 
   const handleRowClick = (index: number) => {
     if (isEditMode) return;
@@ -175,14 +88,6 @@ export const ActionTable: React.FC<ActionTableProps> = ({
     }
   };
 
-  React.useEffect(() => {
-    return () => {
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
     <div ref={containerRef} className="flex flex-col h-full overflow-y-auto">
       {/* 上下移動ボタンは編集モード時は非表示 */}
@@ -192,20 +97,20 @@ export const ActionTable: React.FC<ActionTableProps> = ({
             <IconButton
               icon={ChevronUp}
               label={t('moveUp')}
-              onClick={() => handleMove('up')}
+              onClick={onMoveUp}
               disabled={currentRow <= 0}
             />
             <IconButton
               icon={ChevronDown}
               label={t('moveDown')}
-              onClick={() => handleMove('down')}
+              onClick={onMoveDown}
               disabled={currentRow >= data.length - 1}
             />
           </div>
         </div>
       )}
 
-      {/* ヘッダー部分：編集モード時はより上部に配置 */}
+      {/* ヘッダー部分 */}
       <div
         className={`${getGridClasses(isEditMode)} bg-green-300 sticky ${isEditMode ? 'top-0' : 'top-12'} z-10 shadow-sm border-b border-gray-400 border-l border-r`}
       >
@@ -231,7 +136,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
       </div>
 
       {/* データ部分 */}
-      <div className="flex flex-col">
+      <div className="flex-1">
         {data.map((row, index) => {
           // HPが空の場合、直前のHPが存在する行まで遡る
           let currentIndex = index;
@@ -252,10 +157,8 @@ export const ActionTable: React.FC<ActionTableProps> = ({
 
           return (
             <div
-              key={index}
+              key={`action-row-${index}`}
               id={`action-row-${index}`}
-              onClick={() => handleRowClick(index)}
-              onDoubleClick={() => handleRowDoubleClick(index)}
               className={`${getGridClasses(isEditMode)} border-b border-gray-400 border-l border-r ${
                 !isEditMode && index === currentRow
                   ? 'border border-yellow-500 bg-yellow-200'
@@ -263,21 +166,23 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                     ? `opacity-50 ${baseBackground}`
                     : baseBackground
               }`}
+              onClick={() => handleRowClick(index)}
+              onDoubleClick={() => handleRowDoubleClick(index)}
             >
               {isEditMode && (
                 <>
-                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
+                  <div className="flex items-center justify-center border-r border-gray-400">
                     <button
                       onClick={() => onDeleteRow?.(index)}
-                      className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
+                      className="w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center"
                     >
                       <Minus className="w-4 h-4 text-white" />
                     </button>
                   </div>
-                  <div className="w-full h-full border-b border-r border-gray-400 bg-muted font-medium flex justify-center pt-2">
+                  <div className="flex items-center justify-center border-r border-gray-400">
                     <button
                       onClick={() => onAddRow?.(index)}
-                      className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
+                      className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
                     >
                       <Plus className="w-4 h-4 text-white" />
                     </button>
@@ -288,8 +193,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.hp}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'hp', value)}
-                onPasteRows={(rows) => handlePasteRows(index, rows)}
+                onChange={(value) => onCellEdit?.(index, 'hp', value)}
                 field="hp"
                 alignment="right"
               />
@@ -297,7 +201,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.prediction}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'prediction', value)}
+                onChange={(value) => onCellEdit?.(index, 'prediction', value)}
                 field="prediction"
                 alignment="left"
               />
@@ -305,7 +209,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.charge}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'charge', value)}
+                onChange={(value) => onCellEdit?.(index, 'charge', value)}
                 field="charge"
                 alignment="center"
               />
@@ -313,7 +217,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.guard}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'guard', value)}
+                onChange={(value) => onCellEdit?.(index, 'guard', value)}
                 field="guard"
                 alignment="center"
               />
@@ -321,7 +225,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.action}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'action', value)}
+                onChange={(value) => onCellEdit?.(index, 'action', value)}
                 field="action"
                 alignment="left"
               />
@@ -329,7 +233,7 @@ export const ActionTable: React.FC<ActionTableProps> = ({
                 content={row.note}
                 isCurrentRow={!isEditMode && index === currentRow}
                 isEditable={isEditMode}
-                onChange={(value) => handleCellChange(index, 'note', value)}
+                onChange={(value) => onCellEdit?.(index, 'note', value)}
                 field="note"
                 alignment="left"
               />
