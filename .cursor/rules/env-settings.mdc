@@ -1,0 +1,15 @@
+---
+description: プロジェクトの環境設定
+globs: *.js, *.ts, *.jsx, *.tsx, *.astro
+---
+# javascriptランタイム、パッケージ
+
+- node/npmではなくbun を使用すること
+
+# テストについて
+
+- jestは使わない。
+- 単体テストはVitestを使用
+- ReactコンポーネントテストはReact Testing Libraryを使用
+- E2EテストはPlayWrightを使用
+
