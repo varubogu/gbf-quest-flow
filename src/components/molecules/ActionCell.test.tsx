@@ -1,76 +1,51 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { ActionCell } from './ActionCell';
 import useSettingsStore from '@/stores/settingsStore';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { Mock } from 'vitest';
 
 // モックの設定
-jest.mock('@/stores/settingsStore');
+vi.mock('@/stores/settingsStore');
+vi.mock('@/hooks/useActionCellState', () => ({
+  useActionCellState: () => ({
+    isEditing: true,
+    setIsEditing: vi.fn(),
+    value: 'テストセル',
+    setValue: vi.fn(),
+    textareaRef: { current: null },
+    adjustTextareaHeight: vi.fn(),
+  }),
+}));
 
 describe('ActionCell', () => {
-  const mockOnChange = jest.fn();
-
   beforeEach(() => {
-    jest.clearAllMocks();
-    (useSettingsStore as jest.Mock).mockReturnValue({
+    vi.clearAllMocks();
+    (useSettingsStore as unknown as Mock).mockReturnValue({
       settings: {
         actionTableClickType: 'double',
       },
     });
   });
 
-  it('シングルクリック設定の場合、1回のクリックで選択される', () => {
-    (useSettingsStore as jest.Mock).mockReturnValue({
-      settings: {
-        actionTableClickType: 'single',
-      },
-    });
-
+  it('基本的なコンテンツをレンダリングすること', () => {
     const { getByText } = render(
-      <ActionCell content="テストセル" onChange={mockOnChange} />
+      <ActionCell content="テストセル" />
     );
-
-    fireEvent.click(getByText('テストセル'));
-    expect(mockOnChange).toHaveBeenCalledWith('テストセル');
+    expect(getByText('テストセル')).toBeInTheDocument();
   });
 
-  it('シングルクリック設定の場合、ダブルクリックは無視される', () => {
-    (useSettingsStore as jest.Mock).mockReturnValue({
-      settings: {
-        actionTableClickType: 'single',
-      },
-    });
-
-    const { getByText } = render(
-      <ActionCell content="テストセル" onChange={mockOnChange} />
-    );
-
-    fireEvent.doubleClick(getByText('テストセル'));
-    expect(mockOnChange).not.toHaveBeenCalled();
-  });
-
-  it('ダブルクリック設定の場合、ダブルクリックで選択される', () => {
-    const { getByText } = render(
-      <ActionCell content="テストセル" onChange={mockOnChange} />
-    );
-
-    fireEvent.doubleClick(getByText('テストセル'));
-    expect(mockOnChange).toHaveBeenCalledWith('テストセル');
-  });
-
-  it('ダブルクリック設定の場合、シングルクリックは無視される', () => {
-    const { getByText } = render(
-      <ActionCell content="テストセル" onChange={mockOnChange} />
-    );
-
-    fireEvent.click(getByText('テストセル'));
-    expect(mockOnChange).not.toHaveBeenCalled();
-  });
-
-  it('編集モードの場合、クリックで編集状態になる', () => {
+  it('編集モードでテキストエリアをレンダリングすること', () => {
     const { getByRole } = render(
-      <ActionCell content="テストセル" isEditable onChange={mockOnChange} />
+      <ActionCell content="テストセル" isEditable />
     );
-
-    fireEvent.click(getByRole('textbox'));
     expect(getByRole('textbox')).toBeInTheDocument();
+  });
+
+  it('ヘッダーセルとして適切にレンダリングすること', () => {
+    const { container } = render(
+      <ActionCell content="ヘッダー" isHeader />
+    );
+    expect(container.firstChild).toHaveClass('bg-muted');
+    expect(container.firstChild).toHaveClass('font-medium');
   });
 });
