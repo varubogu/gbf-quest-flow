@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { SideMenu } from './SideMenu';
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import type { Flow } from '@/types/models';
 
 // モックの作成
