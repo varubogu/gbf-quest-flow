@@ -115,9 +115,7 @@ describe('SideMenu', () => {
 
     mockOnNew.mockImplementation(() => {
       mockStore.store.isEditMode = true;
-      console.log("mockOnNew", mockStore.store.isEditMode);
     });
-    console.log("mock set ok");
 
     render(
       <SideMenu onSave={mockOnSave} onNew={mockOnNew} onExitEditMode={mockOnExitEditMode} />
@@ -125,10 +123,8 @@ describe('SideMenu', () => {
 
     // メニューを開く
     await act(async () => {
-      console.log("mock click now");
       const menuButton = screen.getByLabelText('メニューを開く');
       fireEvent.click(menuButton);
-      console.log("mock click 1 ok");
     });
 
     // メニューが表示されるのを待つ
@@ -140,15 +136,12 @@ describe('SideMenu', () => {
     await act(async () => {
       const newButton = screen.getByRole('button', { name: /newData/i });
       fireEvent.click(newButton);
-      console.log("mock click 2 ok");
     });
 
     // 状態の変更を待つ
     await vi.waitFor(() => {
-      console.log("mock wait now: ", mockStore.store.isEditMode);
       return mockStore.store.isEditMode === true;
     }, { timeout: 2000 });
-    console.log("mock wait ok");
 
     expect(mockOnNew).toHaveBeenCalledTimes(1);
   });
