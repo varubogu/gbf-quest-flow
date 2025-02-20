@@ -16,7 +16,7 @@ describe('useTableCellBaseStyle', () => {
     const { result } = renderHook(() => useTableCellBaseStyle());
     const className = result.current.getBaseClassName({ isHeader: true });
     expect(className).toContain('border-b border-r border-gray-400');
-    expect(className).toContain('bg-muted font-medium');
+    expect(className).toContain('bg-green-300 font-medium');
     expect(className).not.toContain('cursor-text');
   });
 

@@ -14,7 +14,7 @@ export const useTableCellBaseStyle = () => {
     () => ({
       border: 'border-b border-r border-gray-400',
       background: 'bg-background',
-      header: 'bg-muted font-medium',
+      header: 'bg-green-300 font-medium',
       cursor: 'cursor-text',
     }),
     []
