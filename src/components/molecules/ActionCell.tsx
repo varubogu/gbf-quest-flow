@@ -93,14 +93,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
         />
       ) : (
         <Text variant={getTextVariant({ isCurrentRow, isHeader })}>
-          <pre
-            className={cn(
-              'whitespace-pre-wrap font-sans text-sm leading-normal',
-              getAlignmentClass(alignment)
-            )}
-          >
-            {content}
-          </pre>
+          {content}
         </Text>
       )}
     </div>
