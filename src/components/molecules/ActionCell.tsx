@@ -2,7 +2,6 @@ import * as React from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '../atoms/Text';
 import type { Action } from '@/types/models';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import useSettingsStore from '@/stores/settingsStore';
 import { useAlignmentStyle } from '@/hooks/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/useTableCellBaseStyle';
@@ -21,6 +20,7 @@ interface ActionCellProps {
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;
+  'data-testid'?: string;
 }
 
 export const ActionCell: React.FC<ActionCellProps> = ({
@@ -33,6 +33,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
   field,
   alignment = 'left',
   className = '',
+  'data-testid': dataTestId,
 }) => {
   const { settings } = useSettingsStore();
   const { getAlignmentClass } = useAlignmentStyle();
@@ -77,6 +78,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
       )}
       style={getBasePadding()}
       onClick={handleClick}
+      data-testid={dataTestId}
     >
       {isEditing ? (
         <textarea

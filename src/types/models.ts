@@ -127,3 +127,84 @@ export {
   jobEquipmentSchema,
   jobSchema,
 };
+
+// アクションテーブルの行データの型
+export interface Action {
+  hp: string;
+  prediction: string;
+  charge: string;
+  guard: string;
+  action: string;
+  note: string;
+}
+
+// アクションテーブルのカラム定義
+export type ActionTableColumn = keyof Action;
+
+// アクションテーブルの表示モード
+export type ActionTableMode = 'view' | 'edit';
+
+// アクションテーブルのボタン位置
+export type ActionTableButtonPosition = 'left' | 'right';
+
+// アクションテーブルの行選択イベントハンドラ
+export type ActionTableRowSelectHandler = (_index: number) => void;
+
+// アクションテーブルのセル編集イベントハンドラ
+export type ActionTableCellEditHandler = (
+  _rowIndex: number,
+  _field: ActionTableColumn,
+  _value: string
+) => void;
+
+// アクションテーブルの行操作イベントハンドラ
+export interface ActionTableRowOperationHandlers {
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDeleteRow?: (_index: number) => void;
+  onAddRow?: (_index: number) => void;
+  onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
+}
+
+// アクションテーブルの状態
+export interface ActionTableState {
+  currentRow: number;
+  data: Action[];
+  isEditMode: boolean;
+}
+
+// アクションテーブルのスタイル設定
+export interface ActionTableStyleConfig {
+  baseBackground: string;
+  selectedBackground: string;
+  completedBackground: string;
+  headerBackground: string;
+  borderColor: string;
+}
+
+// アクションテーブルのセル位置
+export interface ActionTableCellPosition {
+  rowIndex: number;
+  column: ActionTableColumn;
+}
+
+// アクションテーブルのセルの表示設定
+export interface ActionTableCellConfig {
+  alignment: 'left' | 'center' | 'right';
+  isEditable: boolean;
+  isHeader: boolean;
+  width: string;
+}
+
+// アクションテーブルのカラム設定
+export type ActionTableColumnConfig = {
+  [K in ActionTableColumn]: ActionTableCellConfig;
+};
+
+// アクションテーブルの設定
+export interface ActionTableConfig {
+  columns: ActionTableColumnConfig;
+  styles: ActionTableStyleConfig;
+  buttonPosition?: ActionTableButtonPosition;
+  clickType: 'single' | 'double';
+}
