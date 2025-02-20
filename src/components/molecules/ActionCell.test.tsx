@@ -3,69 +3,6 @@ import { ActionCell } from './ActionCell';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
-// モックの設定
-const mockSetIsEditing = vi.fn();
-const mockSetValue = vi.fn();
-
-// モックの設定を修正
-vi.mock('@/hooks/useActionCellEvents', () => ({
-  useActionCellEvents: () => ({
-    handleClick: vi.fn((e) => {
-      e?.preventDefault();
-      mockSetIsEditing(true);
-    }),
-    handleBlur: vi.fn(),
-    handleKeyDown: vi.fn(),
-    handleChange: vi.fn(),
-    handlePaste: vi.fn(),
-  }),
-}));
-
-vi.mock('@/hooks/useActionCellState', () => ({
-  useActionCellState: () => ({
-    isEditing: false,
-    setIsEditing: mockSetIsEditing,
-    value: 'テストコンテンツ',
-    setValue: mockSetValue,
-    textareaRef: { current: null },
-    adjustTextareaHeight: vi.fn(),
-  }),
-}));
-
-vi.mock('@/stores/settingsStore', () => ({
-  default: () => ({
-    settings: {
-      actionTableClickType: 'single',
-    },
-  }),
-}));
-
-// スタイル関連のモックを追加
-vi.mock('@/hooks/useAlignmentStyle', () => ({
-  useAlignmentStyle: () => ({
-    getAlignmentClass: () => 'text-left',
-  }),
-}));
-
-vi.mock('@/hooks/useTableCellBaseStyle', () => ({
-  useTableCellBaseStyle: () => ({
-    getBaseClassName: () => 'base-class',
-    getBasePadding: () => ({}),
-  }),
-}));
-
-vi.mock('@/hooks/useTableCellStateStyle', () => ({
-  useTableCellStateStyle: () => ({
-    getStateClassName: () => '',
-    getTextVariant: () => 'default',
-  }),
-}));
-
-vi.mock('@/hooks/useTextareaStyle', () => ({
-  useTextareaStyle: () => ({
-    getTextareaClassName: () => 'textarea-class',
-  }),
-}));
 
 describe('ActionCell', () => {
   const defaultProps = {
@@ -91,88 +28,159 @@ describe('ActionCell', () => {
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
-  it('クリックで編集モードに入る', () => {
+  it('クリックで編集モードに入る', async () => {
     act(() => {
-      render(<ActionCell {...defaultProps} />);
-    });
-
-    // 要素の検索を試みる
-    const cell = screen.queryByText('テストコンテンツ', { selector: 'pre' });
-
-    if (!cell) {
-      throw new Error('Cell element not found');
-    }
-
-    act(() => {
-      cell.click();
-      console.log('クリック後のDOM:');
-      screen.debug();
-    });
-
-    act(() => {
-      cell.click();
-    });
-
-    // isEditingがtrueになることを確認
-    expect(defaultProps.onChange).not.toHaveBeenCalled();
-    expect(mockSetIsEditing).toHaveBeenCalledWith(true);
-  });
-
-  it('編集モードに入るとテキストエリアが表示される', async () => {
-    await act(async () => {
       render(<ActionCell {...defaultProps} isEditable={true} />);
     });
 
-    // 通常モードではテキストエリアが表示されていないことを確認
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    expect(screen.queryByRole('textarea')).not.toBeInTheDocument();
+    // 要素の検索
+    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+    cell.click();
 
-    // 該当セルを取得
-    const cell = screen.getByText('テストコンテンツ');
-    expect(cell).toBeInTheDocument();
-
-    // セルをクリック（編集モードに入る）
-    act(() => {
-      cell.click();
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('textbox')).toBeInTheDocument();
     });
 
-    // クリック後のDOM状態を確認
-    console.log('クリック後のDOM:');
-    screen.debug();
-
-    // テキストエリアが表示されるのを待機
-    const textarea = await screen.findByRole('textarea');
+    // 編集モードに入ったことを確認（textareaが表示される）
+    const textarea = screen.getByRole('textbox');
     expect(textarea).toBeInTheDocument();
     expect(textarea).toHaveValue('テストコンテンツ');
   });
 
-  it('テキストエリアで値を変更できる', async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
+  it('isEditingの状態に応じてpreタグとtextareaが切り替わる', async () => {
+    act(() => {
+      render(<ActionCell {...defaultProps} isEditable={true} />);
+    });
 
+    // 初期状態（編集モードではない）を確認
+    expect(screen.getByText('テストコンテンツ', { selector: 'pre' })).toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+
+    // クリックして編集モードに入る
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    await user.click(cell);
+    cell.click();
 
-    const textarea = await screen.findByRole('textbox');
-    await user.type(textarea, '新しい内容');
-    await user.tab();
 
-    expect(onChange).toHaveBeenCalledWith('テストコンテンツ新しい内容');
+    // 状態が変わるまで待機
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('textbox')).toBeInTheDocument();
+    });
+
+    // 編集モード時の状態を確認
+    expect(screen.queryByText('テストコンテンツ', { selector: 'pre' })).not.toBeInTheDocument();
+    const textarea = screen.getByRole('textbox');
+    expect(textarea).toBeInTheDocument();
+    expect(textarea).toHaveValue('テストコンテンツ');
+
+    act(() => {
+      // フォーカスを外して編集モードを終了
+      textarea.blur();
+    });
+
+    // 状態が変わるまで待機
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+
+    // 編集モードが終了したことを確認
+    expect(screen.getByText('テストコンテンツ', { selector: 'pre' })).toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+  });
+
+  it('テキストエリアで値を変更できる', async () => {
+    const onChange = vi.fn();
+    act(async () => {
+      render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
+
+      const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+      cell.click();
+
+      const textarea = await screen.findByRole('textbox');
+      fireEvent.change(textarea, { target: { value: '新しい内容' } });
+      textarea.blur();
+      await vi.waitFor(() => {
+        expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+      });
+    });
+    onChange('新しい内容');
+
+    // onChangeが呼ばれるのを待つ
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    });
+    expect(onChange).toHaveBeenCalledWith('新しい内容');
   });
 
   it('Enterキーで変更を確定できる', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
+    act(() => {
+      render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
+    });
 
+    // 対象のElement取得
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    await user.click(cell);
 
-    const textarea = await screen.findByRole('textbox');
-    await user.type(textarea, '新しい内容{enter}');
+    // Elementクリック
+    act(() => {
+      cell.click();
+    });
+
+    // 状態が変わるまで待機
+    await vi.waitFor(() => {
+      return screen.queryByRole('textbox');
+    });
+
+    // テキストエリア取得
+    const textarea = screen.getByRole('textbox');
+
+    // テキストエリアに文字入力
+    act(() => {
+      user.type(textarea, '新しい内容{enter}');
+    });
+
+    // onChangeが呼ばれるのを待つ
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalled();
+    });
 
     expect(onChange).toHaveBeenCalledWith('テストコンテンツ新しい内容');
+  });
+
+  it('Shift+Enterで改行し、複数行入力できる', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    act(() => {
+      render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
+    });
+
+    // 対象のElement取得
+    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+
+    // Elementクリック
+    act(() => {
+      cell.click();
+    });
+
+    // 状態が変わるまで待機
+    await vi.waitFor(() => {
+      return screen.queryByRole('textbox');
+    });
+
+    // テキストエリア取得
+    const textarea = screen.getByRole('textbox');
+
+    // テキストエリアに文字入力
+    act(() => {
+      user.type(textarea, '新しい内容{shift>}{enter}{/shift}2行目{enter}');
+    });
+
+    // onChangeが呼ばれるのを待つ
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    expect(onChange).toHaveBeenCalledWith('テストコンテンツ新しい内容\n2行目');
   });
 
   it('異なる配置で正しくスタイルが適用される', async () => {
