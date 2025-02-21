@@ -7,6 +7,7 @@ import astroPlugin from 'eslint-plugin-astro';
 
 export default [
   eslint.configs.recommended,
+  ...astroPlugin.configs['flat/recommended'],
   {
     ignores: [
       '**/node_modules/**',
@@ -22,6 +23,8 @@ export default [
       '**/playwright-report/**',
     ]
   },
+
+  // js/ts/jsx/tsx コードファイル
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -54,7 +57,6 @@ export default [
       '@typescript-eslint': tseslint,
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
-      astro: astroPlugin,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -91,6 +93,8 @@ export default [
       },
     },
   },
+
+  // js/ts/jsx/tsx テストコードファイル
   {
     files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
     languageOptions: {
@@ -106,14 +110,20 @@ export default [
       },
     },
   },
+
+  // astro コードファイル
   {
     files: ['**/*.astro'],
     languageOptions: {
-      parser: tseslintParser,
+      parser: astroPlugin.parser,
       parserOptions: {
+        parser: tseslintParser,
         ecmaVersion: 'latest',
+        ecmaFeatures: {
+          jsx: true,
+        },
+        extraFileExtensions: ['.astro'],
         sourceType: 'module',
-        project: './tsconfig.json',
       },
       globals: {
         React: 'readonly',
@@ -122,6 +132,11 @@ export default [
     },
     plugins: {
       astro: astroPlugin,
+    },
+    rules: {
+      ...astroPlugin.configs.recommended.rules,
+      'astro/no-conflict-set-directives': 'error',
+      'astro/no-unused-define-vars-in-style': 'error',
     },
     processor: astroPlugin.processors['.astro'],
   },
