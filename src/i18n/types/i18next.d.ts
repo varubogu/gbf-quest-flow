@@ -10,6 +10,12 @@ declare module 'i18next' {
         createFlow: string;
         loadFlow: string;
         loading: string;
+        jobItem: string;
+        jobValue: string;
+        overview: string;
+        jobClass: string;
+        jobMainHand: string;
+        characterAbilities: string;
         // ... その他の共通翻訳キー
       };
       weapon: {

@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { textareaBaseStyle, useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { useAutoResizeTextArea } from '@/hooks/useAutoResizeTextArea';
 import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
 
 interface SkillDisplayProps {

@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, renderHook } from '@testing-library/react';
-import { IconTextButton, useAutoResizeTextArea } from './IconTextButton';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { IconTextButton } from './IconTextButton';
 import { Menu } from 'lucide-react';
 import { describe, it, expect, vi } from 'vitest';
 
@@ -58,14 +58,5 @@ describe('IconTextButton', () => {
 
     const ghostButton = screen.getByLabelText('メニュー');
     expect(ghostButton).toHaveClass('hover:bg-accent');
-  });
-});
-
-describe('useAutoResizeTextArea', () => {
-  it('テキストエリアのサイズが正しく調整される', () => {
-    const { result } = renderHook(() => useAutoResizeTextArea('テストテキスト'));
-
-    expect(result.current).toBeDefined();
-    expect(result.current.current).toBeNull(); // 初期状態ではnull
   });
 });

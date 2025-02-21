@@ -1,10 +1,9 @@
-import React, { useMemo, useRef } from 'react';
+import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
 import {
   textInputBaseStyle,
   textareaBaseStyle,
-  useAutoResizeTextArea,
 } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,6 +13,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
+import { useAutoResizeTextArea } from '@/hooks/useAutoResizeTextArea';
 
 interface JobPanelProps {
   isEditing: boolean;
@@ -26,29 +26,6 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   // テキストエリアの参照を作成
   const jobNoteRef = useAutoResizeTextArea(flowData?.organization.job.note ?? '');
   const equipmentNoteRef = useAutoResizeTextArea(flowData?.organization.job.equipment.note ?? '');
-
-  // アビリティのテキストエリアの参照を作成
-  const abilityTextareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
-
-  // アビリティの数が変更されたときに参照配列のサイズを更新
-  useMemo(() => {
-    if (!flowData) return;
-    abilityTextareaRefs.current = flowData.organization.job.abilities.map(() => null);
-  }, [flowData]);
-
-  // 各テキストエリアに対してリサイズ処理を設定
-  useMemo(() => {
-    if (!flowData) return;
-    flowData.organization.job.abilities.forEach((_ability, index) => {
-      if (abilityTextareaRefs.current[index]) {
-        const textarea = abilityTextareaRefs.current[index];
-        if (textarea) {
-          textarea.style.height = 'auto';
-          textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-      }
-    });
-  }, [flowData]);
 
   if (!flowData) return null;
 
@@ -184,49 +161,50 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             </td>
           </tr>
           {/* アビリティ行 */}
-          {flowData.organization.job.abilities.map((ability, index) => (
-            <tr key={`ability-${index}`}>
-              {index === 0 && (
-                <td
-                  className={tableCellBaseStyle}
-                  rowSpan={flowData.organization.job.abilities.length}
-                >
-                  {t('characterAbilities')}
+          {flowData.organization.job.abilities.map((ability, index) => {
+            const abilityNoteRef = useAutoResizeTextArea(ability.note);
+            return (
+              <tr key={`ability-${index}`}>
+                {index === 0 && (
+                  <td
+                    className={tableCellBaseStyle}
+                    rowSpan={flowData.organization.job.abilities.length}
+                  >
+                    {t('characterAbilities')}
+                  </td>
+                )}
+                <td className={tableCellBaseStyle}>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={ability.name}
+                      onChange={(e) => handleAbilityChange(index, 'name', e.target.value)}
+                      className={textInputBaseStyle}
+                    />
+                  ) : (
+                    ability.name
+                  )}
                 </td>
-              )}
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={ability.name}
-                    onChange={(e) => handleAbilityChange(index, 'name', e.target.value)}
-                    className={textInputBaseStyle}
-                  />
-                ) : (
-                  ability.name
-                )}
-              </td>
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <textarea
-                    ref={(el) => {
-                      abilityTextareaRefs.current[index] = el;
-                    }}
-                    value={ability.note}
-                    onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  ability.note.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < ability.note.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-            </tr>
-          ))}
+                <td className={tableCellBaseStyle}>
+                  {isEditing ? (
+                    <textarea
+                      ref={abilityNoteRef}
+                      value={ability.note}
+                      onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
+                      className={textareaBaseStyle}
+                    />
+                  ) : (
+                    ability.note.split('\n').map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i < ability.note.split('\n').length - 1 && <br />}
+                      </React.Fragment>
+                    ))
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

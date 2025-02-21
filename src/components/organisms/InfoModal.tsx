@@ -3,25 +3,12 @@ import { Dialog as HeadlessDialog } from '@headlessui/react';
 import useFlowStore from '@/stores/flowStore';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { useAutoResizeTextArea } from '@/hooks/useAutoResizeTextArea';
 
 interface InfoModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-// テキストエリアの自動リサイズ用カスタムフック
-const useAutoResizeTextArea = (value: string) => {
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-
-  React.useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  }, [value]);
-
-  return textareaRef;
-};
 
 export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();

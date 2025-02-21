@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
-import { useAutoResizeTextArea } from '@/components/atoms/IconTextButton';
+import { useAutoResizeTextArea } from '@/hooks/useAutoResizeTextArea';
+import { textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,
@@ -48,7 +49,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
                   ref={taRateRef}
                   value={values.taRate}
                   onChange={(e) => onChange('taRate', e.target.value)}
-                  className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 values.taRate.split('\n').map((line, i) => (
@@ -68,7 +69,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
                   ref={hpRef}
                   value={values.hp}
                   onChange={(e) => onChange('hp', e.target.value)}
-                  className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 values.hp.split('\n').map((line, i) => (
@@ -88,7 +89,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
                   ref={defenseRef}
                   value={values.defense}
                   onChange={(e) => onChange('defense', e.target.value)}
-                  className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
+                  className={textareaBaseStyle}
                 />
               ) : (
                 values.defense.split('\n').map((line, i) => (

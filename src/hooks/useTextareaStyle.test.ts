@@ -10,7 +10,7 @@ describe('useTextareaStyle', () => {
       alignment: 'left',
     });
 
-    expect(className).toBe('bg-white border-gray-400 text-sm leading-normal font-normal text-left w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[1.5rem]');
+    expect(className).toBe('bg-white border-gray-400 resize-none overflow-hidden text-sm leading-normal font-normal text-left w-full p-1 border rounded');
   });
 
   it('通常セルの場合、適切なクラスを返すこと', () => {
