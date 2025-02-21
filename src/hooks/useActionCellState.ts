@@ -14,6 +14,13 @@ export const useActionCellState = ({ content, onFocus }: ActionCellStateProps) =
     setValue(content || '');
   }, [content]);
 
+  const adjustTextareaHeight = useCallback(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, []);
+
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
@@ -24,14 +31,7 @@ export const useActionCellState = ({ content, onFocus }: ActionCellStateProps) =
       adjustTextareaHeight();
       onFocus?.();
     }
-  }, [isEditing, onFocus]);
-
-  const adjustTextareaHeight = useCallback(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-    }
-  }, []);
+  }, [isEditing, onFocus, adjustTextareaHeight]);
 
   return {
     isEditing,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
 import {
@@ -23,14 +23,18 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
-  if (!flowData) return null;
+  // テキストエリアの参照を作成
+  const jobNoteRef = useAutoResizeTextArea(flowData?.organization.job.note ?? '');
+  const equipmentNoteRef = useAutoResizeTextArea(flowData?.organization.job.equipment.note ?? '');
+  const abilityNoteRefs = useMemo(() => {
+    if (!flowData) return [];
+    return flowData.organization.job.abilities.map(ability => ability.note);
+  }, [flowData]);
 
-  const jobNoteRef = useAutoResizeTextArea(flowData.organization.job.note);
-  const equipmentNoteRef = useAutoResizeTextArea(flowData.organization.job.equipment.note);
-  // アビリティごとのrefを作成
-  const abilityNoteRefs = flowData.organization.job.abilities.map(ability =>
-    useAutoResizeTextArea(ability.note)
-  );
+  // 各アビリティのテキストエリアの参照を作成
+  const abilityTextareaRefs = abilityNoteRefs.map(note => useAutoResizeTextArea(note));
+
+  if (!flowData) return null;
 
   const handleJobChange = (field: keyof Job, value: string) => {
     if (!flowData) return;
@@ -168,7 +172,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <tr key={`ability-${index}`}>
               {index === 0 && (
                 <td
-                  className={`${tableCellBaseStyle}`}
+                  className={tableCellBaseStyle}
                   rowSpan={flowData.organization.job.abilities.length}
                 >
                   {t('characterAbilities')}
@@ -189,7 +193,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
               <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
-                    ref={abilityNoteRefs[index]}
+                    ref={abilityTextareaRefs[index]}
                     value={ability.note}
                     onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
                     className={textareaBaseStyle}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon, WeaponSkillEffect } from '@/types/models';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,30 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
   const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
-  if (!flowData) return null;
+  // メモ化された武器データを作成
+  const weaponData = useMemo(() => {
+    if (!flowData) return null;
+    return {
+      main: {
+        name: flowData.organization.weapon.main.name,
+        note: flowData.organization.weapon.main.note,
+        additionalSkill: flowData.organization.weapon.main.additionalSkill,
+      },
+      other: flowData.organization.weapon.other.map(weapon => ({
+        name: weapon.name,
+        note: weapon.note,
+        additionalSkill: weapon.additionalSkill,
+      })),
+      additional: flowData.organization.weapon.additional.map(weapon => ({
+        name: weapon.name,
+        note: weapon.note,
+        additionalSkill: weapon.additionalSkill,
+      })),
+      effects: flowData.organization.weaponEffects,
+    };
+  }, [flowData]);
+
+  if (!flowData || !weaponData) return null;
 
   const handleWeaponChange = (
     type: 'main' | 'other' | 'additional',
@@ -125,19 +148,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           <tr>
             <td className={tableCellBaseStyle}>{t('weaponMain')}</td>
             <WeaponIcon
-              name={flowData.organization.weapon.main.name}
+              name={weaponData.main.name}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'name', value)}
               aria-label={t('weaponName')}
             />
             <WeaponNote
-              text={flowData.organization.weapon.main.additionalSkill}
+              text={weaponData.main.additionalSkill}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'additionalSkill', value)}
               aria-label={t('weaponAdditionalSkill')}
             />
             <WeaponNote
-              text={flowData.organization.weapon.main.note}
+              text={weaponData.main.note}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'note', value)}
               aria-label={t('overview')}
@@ -145,12 +168,12 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           </tr>
 
           {/* その他の武器 */}
-          {flowData.organization.weapon.other.map((weapon, index) => (
+          {weaponData.other.map((weapon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
                 <td
                   className={tableCellBaseStyle}
-                  rowSpan={flowData.organization.weapon.other.length}
+                  rowSpan={weaponData.other.length}
                 >
                   {t('weaponNormal')}
                 </td>
@@ -177,12 +200,12 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           ))}
 
           {/* 追加武器 */}
-          {flowData.organization.weapon.additional.map((weapon, index) => (
+          {weaponData.additional.map((weapon, index) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
                 <td
                   className={tableCellBaseStyle}
-                  rowSpan={flowData.organization.weapon.additional.length}
+                  rowSpan={weaponData.additional.length}
                 >
                   {t('weaponAdditional')}
                 </td>
@@ -214,7 +237,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       <SkillTable
         isEditing={isEditing}
         title={t('skillEffects')}
-        values={flowData.organization.weaponEffects}
+        values={weaponData.effects}
         onChange={handleSkillEffectChange}
       />
     </div>

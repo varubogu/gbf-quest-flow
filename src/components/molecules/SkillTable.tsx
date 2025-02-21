@@ -19,6 +19,8 @@ interface SkillTableProps {
 
 export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values, onChange }) => {
   const { t } = useTranslation();
+
+  // フックをトップレベルで直接呼び出す
   const taRateRef = useAutoResizeTextArea(values.taRate);
   const hpRef = useAutoResizeTextArea(values.hp);
   const defenseRef = useAutoResizeTextArea(values.defense);
