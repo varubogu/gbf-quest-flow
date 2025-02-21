@@ -23,14 +23,13 @@ export default [
     ]
   },
   {
-    files: ['**/*.{js,jsx,ts,tsx,astro}'],
+    files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       parser: tseslintParser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.json',
-        extraFileExtensions: ['.astro'],
       },
       globals: {
         window: 'readonly',
@@ -109,6 +108,15 @@ export default [
   },
   {
     files: ['**/*.astro'],
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      project: './tsconfig.json',
+    },
+    globals: {
+      React: 'readonly',
+      Astro: 'readonly',
+    },
     plugins: {
       astro: astroPlugin,
     },
