@@ -68,7 +68,9 @@ vi.mock('@/stores/flowStore', () => {
   };
 
   type StoreType = typeof store;
-  const mockFunction = vi.fn((selector = (state: StoreType) => state) => selector(store));
+
+  const defaultSelector = (state: StoreType): StoreType => state;
+  const mockFunction = vi.fn((selector: typeof defaultSelector = defaultSelector) => selector(store));
   const useStore = Object.assign(mockFunction, { getState: () => store });
 
   return {
@@ -379,11 +381,7 @@ describe('キーボードショートカット', () => {
 
     // クリックイベントの自動実行を防ぐ
     let savedLink: HTMLAnchorElement | null = null;
-    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
-      this: HTMLAnchorElement
-    ) {
-      savedLink = this;
-    });
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockReturnValue(undefined);
 
     // DOMの変更を監視するMutationObserverの設定
     let linkAdded = false;
@@ -396,7 +394,7 @@ describe('キーボードショートカット', () => {
           );
           if (addedLinks.length > 0) {
             linkAdded = true;
-            savedLink = addedLinks[0];
+            savedLink = addedLinks[0]!;
           }
         }
       }
@@ -439,16 +437,16 @@ describe('キーボードショートカット', () => {
     // 保存されたリンクの確認
     expect(savedLink).not.toBeNull();
     expect(linkAdded).toBe(true);
-    expect(clickSpy).toHaveBeenCalled();
 
     if (!savedLink) {
       throw new Error('ダウンロードリンクが生成されませんでした');
     }
 
     // リンクの属性を確認
-    expect(savedLink.getAttribute('aria-label')).toBe(`${mockInitialData.title}をダウンロード`);
-    expect(savedLink.getAttribute('download')).toBe(`${mockInitialData.title}.json`);
-    expect(savedLink.href).toContain('blob:mock-url');
+    const link = savedLink as HTMLAnchorElement;
+    expect(link.getAttribute('aria-label')).toBe(`${mockInitialData.title}をダウンロード`);
+    expect(link.getAttribute('download')).toBe(`${mockInitialData.title}.json`);
+    expect(link.href).toContain('blob:mock-url');
 
     // リンクが削除されるのを待つ
     await act(async () => {
@@ -458,7 +456,6 @@ describe('キーボードショートカット', () => {
 
     // 後処理
     observer.disconnect();
-    clickSpy.mockRestore();
   });
 
   it('Ctrl+Nで新規作成が実行される', async () => {

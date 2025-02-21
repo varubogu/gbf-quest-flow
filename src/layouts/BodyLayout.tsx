@@ -5,6 +5,11 @@ import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
 import type { Flow, ViewMode } from '@/types/models';
 
+interface HistoryState {
+  isSaving: boolean;
+  flowData: Flow;
+}
+
 // アクセシビリティ通知のユーティリティ
 function announceToScreenReader(message: string, type: 'status' | 'alert' = 'status') {
   const element = document.createElement('div');
@@ -31,7 +36,7 @@ function useUrlManagement(
 ) {
   useEffect(() => {
     try {
-      if (history.state?.isSaving) {
+      if ((history.state as HistoryState | null)?.isSaving) {
         return;
       }
 
@@ -67,7 +72,7 @@ function useHistoryManagement(
       try {
         const searchParams = new URLSearchParams(window.location.search);
         const mode = searchParams.get('mode');
-        const state: { isSaving: boolean; flowData: Flow } | null = event.state;
+        const state = event.state as HistoryState | null;
 
         if (mode === 'new') {
           createNewFlow();
@@ -98,7 +103,7 @@ function useHistoryManagement(
 }
 
 // 変更履歴を管理するカスタムフック
-function useEditHistory(flowData: Flow | null) {
+function useEditHistory(_flowData: Flow | null) {
   const [editHistory, setEditHistory] = useState<Flow[]>([]);
 
   // 変更を記録
