@@ -3,7 +3,7 @@ import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react'
 import { WeaponPanel } from './WeaponPanel/index';
 import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
-import { CharacterPanel } from './CharacterPanel';
+import { CharacterPanel } from './CharacterPanel/index';
 import { SkillTotalPanel } from './SkillTotalPanel';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
