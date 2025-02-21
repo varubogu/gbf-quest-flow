@@ -3,7 +3,6 @@ import type { Action, ActionTableConfig } from '@/types/models';
 
 interface UseActionTableEventsProps {
   config: ActionTableConfig;
-  currentRow: number;
   isEditMode: boolean;
   onRowSelect: (_index: number) => void;
   onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
@@ -12,7 +11,6 @@ interface UseActionTableEventsProps {
 
 export const useActionTableEvents = ({
   config,
-  currentRow,
   isEditMode,
   onRowSelect,
   onCellEdit,
@@ -60,7 +58,14 @@ export const useActionTableEvents = ({
       const text = clipboardData.getData('text');
       const rows = text.split('\n').map((row) => {
         const [hp, prediction, charge, guard, action, note] = row.split('\t');
-        return { hp, prediction, charge, guard, action, note };
+        return {
+          hp: hp || '',
+          prediction: prediction || '',
+          charge: charge || '',
+          guard: guard || '',
+          action: action || '',
+          note: note || '',
+        } satisfies Partial<Action>;
       });
 
       if (rows.length > 0) {

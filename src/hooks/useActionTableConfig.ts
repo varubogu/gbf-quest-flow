@@ -2,13 +2,20 @@ import { useMemo } from 'react';
 import type { ActionTableButtonPosition } from '@/types/models';
 import { cn } from '@/utils/cn';
 
+interface ActionTableColumnConfig {
+  [key: string]: {
+    alignment: string;
+    isEditable: boolean;
+    isHeader: boolean;
+    width: string;
+  };
+}
+
 interface UseActionTableConfigProps {
-  buttonPosition: ActionTableButtonPosition;
   isEditMode: boolean;
 }
 
 export const useActionTableConfig = ({
-  buttonPosition,
   isEditMode,
 }: UseActionTableConfigProps) => {
   // グリッドレイアウトのクラスを生成

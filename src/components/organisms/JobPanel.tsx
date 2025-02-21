@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/models';
 import {
@@ -26,13 +26,29 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   // テキストエリアの参照を作成
   const jobNoteRef = useAutoResizeTextArea(flowData?.organization.job.note ?? '');
   const equipmentNoteRef = useAutoResizeTextArea(flowData?.organization.job.equipment.note ?? '');
-  const abilityNoteRefs = useMemo(() => {
-    if (!flowData) return [];
-    return flowData.organization.job.abilities.map(ability => ability.note);
-  }, [flowData]);
 
-  // 各アビリティのテキストエリアの参照を作成
-  const abilityTextareaRefs = abilityNoteRefs.map(note => useAutoResizeTextArea(note));
+  // アビリティのテキストエリアの参照を作成
+  const abilityTextareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
+
+  // アビリティの数が変更されたときに参照配列のサイズを更新
+  useMemo(() => {
+    if (!flowData) return;
+    abilityTextareaRefs.current = flowData.organization.job.abilities.map(() => null);
+  }, [flowData?.organization.job.abilities.length]);
+
+  // 各テキストエリアに対してリサイズ処理を設定
+  useMemo(() => {
+    if (!flowData) return;
+    flowData.organization.job.abilities.forEach((ability, index) => {
+      if (abilityTextareaRefs.current[index]) {
+        const textarea = abilityTextareaRefs.current[index];
+        if (textarea) {
+          textarea.style.height = 'auto';
+          textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+      }
+    });
+  }, [flowData?.organization.job.abilities]);
 
   if (!flowData) return null;
 
@@ -193,7 +209,9 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
               <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
-                    ref={abilityTextareaRefs[index]}
+                    ref={(el) => {
+                      abilityTextareaRefs.current[index] = el;
+                    }}
                     value={ability.note}
                     onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
                     className={textareaBaseStyle}

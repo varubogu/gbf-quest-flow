@@ -128,16 +128,6 @@ export {
   jobSchema,
 };
 
-// アクションテーブルの行データの型
-export interface Action {
-  hp: string;
-  prediction: string;
-  charge: string;
-  guard: string;
-  action: string;
-  note: string;
-}
-
 // アクションテーブルのカラム定義
 export type ActionTableColumn = keyof Action;
 
@@ -198,7 +188,7 @@ export interface ActionTableCellConfig {
 
 // アクションテーブルのカラム設定
 export type ActionTableColumnConfig = {
-  [K in ActionTableColumn]: ActionTableCellConfig;
+  [_K in ActionTableColumn]: ActionTableCellConfig;
 };
 
 // アクションテーブルの設定

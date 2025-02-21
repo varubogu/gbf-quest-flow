@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Action, ActionTableState, ActionTableConfig } from '@/types/models';
+import type { Action, ActionTableState } from '@/types/models';
 
 interface UseActionTableStateProps {
   initialData: Action[];
-  config: ActionTableConfig;
   isEditMode?: boolean;
   onDataChange?: (_data: Action[]) => void;
   onRowSelect?: (_index: number) => void;
@@ -11,7 +10,6 @@ interface UseActionTableStateProps {
 
 export const useActionTableState = ({
   initialData,
-  config,
   isEditMode = false,
   onDataChange,
   onRowSelect,
@@ -90,7 +88,8 @@ export const useActionTableState = ({
       if (!isEditMode) return;
 
       const newData = [...state.data];
-      newData[rowIndex] = { ...newData[rowIndex], [field]: value };
+      const updatedRow = { ...newData[rowIndex], [field]: value } as Action;
+      newData[rowIndex] = updatedRow;
       updateData(newData);
     },
     [isEditMode, state.data, updateData]
