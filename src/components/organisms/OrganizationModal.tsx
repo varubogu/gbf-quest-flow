@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
-import { WeaponPanel } from './WeaponPanel';
+import { WeaponPanel } from './WeaponPanel/index';
 import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel';
