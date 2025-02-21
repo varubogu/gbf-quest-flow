@@ -36,3 +36,6 @@ dist/**/*.spec.*
 dist/**/__tests__/
 dist/**/__mocks__/
 dist/**/mocks/
+
+# Temporary files
+.temp/
