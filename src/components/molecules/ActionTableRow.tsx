@@ -38,13 +38,6 @@ export const ActionTableRow: React.FC<ActionTableRowProps> = ({
     note: 'left',
   };
 
-  const hpRowCount = React.useMemo(() => {
-    return Array.from({ length: index + 1 }).filter((_, i) => i <= index).length;
-  }, [index]);
-
-  const isEvenRow = hpRowCount % 2 === 1;
-  const baseBackground = 'bg-yellow-200';
-
   return (
     <div
       id={`action-row-${index}`}

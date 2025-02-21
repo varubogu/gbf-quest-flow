@@ -15,11 +15,13 @@ export const SkillDisplay: React.FC<SkillDisplayProps> = memo(({
   onChange,
   'aria-label': ariaLabel,
 }) => {
+  const textareaRef = useAutoResizeTextArea(text);
+
   return (
     <td className={tableCellBaseStyle} role="cell">
       {isEditing ? (
         <textarea
-          ref={useAutoResizeTextArea(text)}
+          ref={textareaRef}
           value={text}
           onChange={(e) => onChange(e.target.value)}
           className={textareaBaseStyle}

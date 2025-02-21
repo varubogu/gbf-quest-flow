@@ -19,6 +19,9 @@ interface SkillTableProps {
 
 export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values, onChange }) => {
   const { t } = useTranslation();
+  const taRateRef = useAutoResizeTextArea(values.taRate);
+  const hpRef = useAutoResizeTextArea(values.hp);
+  const defenseRef = useAutoResizeTextArea(values.defense);
 
   return (
     <div className="mt-8">
@@ -40,7 +43,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
-                  ref={useAutoResizeTextArea(values.taRate)}
+                  ref={taRateRef}
                   value={values.taRate}
                   onChange={(e) => onChange('taRate', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
@@ -60,7 +63,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
-                  ref={useAutoResizeTextArea(values.hp)}
+                  ref={hpRef}
                   value={values.hp}
                   onChange={(e) => onChange('hp', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
@@ -80,7 +83,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
-                  ref={useAutoResizeTextArea(values.defense)}
+                  ref={defenseRef}
                   value={values.defense}
                   onChange={(e) => onChange('defense', e.target.value)}
                   className="w-full p-1 border rounded resize-none overflow-hidden whitespace-pre-wrap break-words min-h-[3rem]"
