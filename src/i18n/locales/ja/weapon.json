@@ -13,5 +13,9 @@
   "weaponNormal": "通常武器",
   "weaponAdditional": "追加武器",
   "skillEffects": "スキル効果量",
-  "totalAmount": "スキル総量"
+  "totalAmount": "スキル総量",
+  "skill": "スキル",
+  "effectAmount": "効果量",
+  "taRate": "TA率",
+  "defense": "防御力"
 }

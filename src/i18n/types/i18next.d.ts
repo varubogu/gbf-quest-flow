@@ -22,6 +22,22 @@ declare module 'i18next' {
         weaponCategory: string;
         weaponName: string;
         weaponLevel: string;
+        weaponPlus: string;
+        weaponSkillLevel1: string;
+        weaponSkillLevel2: string;
+        weaponAx: string;
+        weaponTranscendence: string;
+        weaponAwakening: string;
+        weaponAdditionalSkill: string;
+        weaponMain: string;
+        weaponNormal: string;
+        weaponAdditional: string;
+        skillEffects: string;
+        totalAmount: string;
+        skill: string;
+        effectAmount: string;
+        taRate: string;
+        defense: string;
         // ... その他の武器関連翻訳キー
       };
       character: {

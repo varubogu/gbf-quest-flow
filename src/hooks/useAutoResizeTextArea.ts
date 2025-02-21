@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
  * @returns テキストエリアのref
  */
 export const useAutoResizeTextArea = (value: string, minHeight: string = 'auto') => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     const textarea = textareaRef.current;
