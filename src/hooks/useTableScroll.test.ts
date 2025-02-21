@@ -7,7 +7,7 @@ import type { Action } from '@/types/models';
 describe('useTableScroll', () => {
   const mockOnRowSelect = vi.fn();
   const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
-  const mockData: Action[] = Array(5).fill(mockSingleAction);
+  const mockData: Action[] = Array<Action>(5).fill(mockSingleAction);
 
   const mockContainer = document.createElement('div');
   const mockTarget = document.createElement('div');

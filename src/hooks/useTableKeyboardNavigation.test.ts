@@ -6,7 +6,8 @@ import type { Action } from '@/types/models';
 
 describe('useTableKeyboardNavigation', () => {
   const mockOnRowSelect = vi.fn();
-  const mockData: Action[] = Array(5).fill({ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' });
+  const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
+  const mockData: Action[] = Array<Action>(5).fill(mockSingleAction);
 
   beforeEach(() => {
     vi.clearAllMocks();

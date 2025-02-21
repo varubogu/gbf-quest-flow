@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { ActionTable } from '../components/organisms/ActionTable';
 import type { Action } from '@/types/models';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -46,7 +46,7 @@ describe('ActionTable', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(2);
   });
 
-  it('タッチパッドのスクロールは累積値に基づいて移動する', () => {
+  it('タッチパッドのスクロールは累積値に基づいて移動する', async () => {
     const { container } = render(
       <ActionTable
         data={mockData}
@@ -62,7 +62,9 @@ describe('ActionTable', () => {
     if (!tableContainer) throw new Error('Table container not found');
 
     // 閾値未満のスクロール
-    fireEvent.wheel(tableContainer, { deltaY: 10, deltaMode: 0 });
+    await act(async () => {
+      fireEvent.wheel(tableContainer, { deltaY: 10, deltaMode: 0 });
+    });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
 
     // 閾値を超えるスクロール（複数回の累積）

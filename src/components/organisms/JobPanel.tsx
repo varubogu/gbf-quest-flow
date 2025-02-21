@@ -34,7 +34,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   useMemo(() => {
     if (!flowData) return;
     abilityTextareaRefs.current = flowData.organization.job.abilities.map(() => null);
-  }, [flowData?.organization.job.abilities.length]);
+  }, [flowData]);
 
   // 各テキストエリアに対してリサイズ処理を設定
   useMemo(() => {
@@ -48,7 +48,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
         }
       }
     });
-  }, [flowData?.organization.job.abilities]);
+  }, [flowData]);
 
   if (!flowData) return null;
 
