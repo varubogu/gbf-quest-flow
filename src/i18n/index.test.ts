@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import i18next from './index';
 
+interface I18nResource {
+  title: string;
+  description: string;
+  [key: string]: string | I18nResource;
+}
+
 describe('i18n', () => {
   // テスト前の状態を保存
   const originalLanguage = i18next.language;
@@ -33,14 +39,14 @@ describe('i18n', () => {
     });
 
     it('日本語リソースが存在すること', () => {
-      const jaResource = i18next.getResourceBundle('ja', 'translation');
+      const jaResource = i18next.getResourceBundle('ja', 'translation') as I18nResource;
       expect(jaResource).toBeDefined();
       expect(jaResource.title).toBe('グラブル行動表');
       expect(jaResource.description).toBe('グラブルの行動表を管理・共有するためのツール');
     });
 
     it('英語リソースが存在すること', () => {
-      const enResource = i18next.getResourceBundle('en', 'translation');
+      const enResource = i18next.getResourceBundle('en', 'translation') as I18nResource;
       expect(enResource).toBeDefined();
       expect(enResource.title).toBe('GBF Quest Flow');
       expect(enResource.description).toBe('A tool to manage and share quest flows for Granblue Fantasy');

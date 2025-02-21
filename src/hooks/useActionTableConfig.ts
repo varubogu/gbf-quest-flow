@@ -76,15 +76,23 @@ export const useActionTableConfig = ({
 export const isValidColumnConfig = (config: unknown): config is ActionTableColumnConfig => {
   if (typeof config !== 'object' || config === null) return false;
 
-  const requiredColumns = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
+  const requiredColumns = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'] as const;
+  const configObject = config as Record<string, unknown>;
+
   return requiredColumns.every((column) => {
-    const col = (config as any)[column];
+    const col = configObject[column];
     return (
       col &&
-      typeof col.alignment === 'string' &&
-      typeof col.isEditable === 'boolean' &&
-      typeof col.isHeader === 'boolean' &&
-      typeof col.width === 'string'
+      typeof col === 'object' &&
+      col !== null &&
+      'alignment' in col &&
+      typeof (col as { alignment: unknown }).alignment === 'string' &&
+      'isEditable' in col &&
+      typeof (col as { isEditable: unknown }).isEditable === 'boolean' &&
+      'isHeader' in col &&
+      typeof (col as { isHeader: unknown }).isHeader === 'boolean' &&
+      'width' in col &&
+      typeof (col as { width: unknown }).width === 'string'
     );
   });
 };

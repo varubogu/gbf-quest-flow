@@ -67,7 +67,7 @@ const createMockStore = () => {
 const mockStore = createMockStore();
 
 vi.mock('@/stores/flowStore', () => ({
-  default: vi.fn((selector) => selector(mockStore.store)),
+  default: vi.fn((selector: (_store: typeof mockStore.store) => unknown) => selector(mockStore.store)),
 }));
 
 describe('SideMenu', () => {

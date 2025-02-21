@@ -2,10 +2,11 @@ import { renderHook } from '@testing-library/react';
 import { useTableKeyboardNavigation } from './useTableKeyboardNavigation';
 import { fireEvent } from '@testing-library/dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { Action } from '@/types/models';
 
 describe('useTableKeyboardNavigation', () => {
   const mockOnRowSelect = vi.fn();
-  const mockData = Array(5).fill({ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' });
+  const mockData: Action[] = Array(5).fill({ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' });
 
   beforeEach(() => {
     vi.clearAllMocks();

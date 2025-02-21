@@ -39,7 +39,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   // 各テキストエリアに対してリサイズ処理を設定
   useMemo(() => {
     if (!flowData) return;
-    flowData.organization.job.abilities.forEach((ability, index) => {
+    flowData.organization.job.abilities.forEach((_ability, index) => {
       if (abilityTextareaRefs.current[index]) {
         const textarea = abilityTextareaRefs.current[index];
         if (textarea) {

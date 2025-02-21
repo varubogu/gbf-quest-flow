@@ -2,10 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { useTableScroll } from './useTableScroll';
 import { fireEvent } from '@testing-library/dom';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { Action } from '@/types/models';
 
 describe('useTableScroll', () => {
   const mockOnRowSelect = vi.fn();
-  const mockData = Array(5).fill({ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' });
+  const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
+  const mockData: Action[] = Array(5).fill(mockSingleAction);
 
   const mockContainer = document.createElement('div');
   const mockTarget = document.createElement('div');
