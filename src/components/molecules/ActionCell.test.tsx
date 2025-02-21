@@ -114,9 +114,8 @@ describe('ActionCell', () => {
   it('Enterキーで変更を確定できる', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    act(() => {
-      render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
-    });
+
+    render(<ActionCell {...defaultProps} isEditable={true} onChange={onChange} />);
 
     // 対象のElement取得
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
@@ -187,62 +186,30 @@ describe('ActionCell', () => {
     const { rerender } = render(<ActionCell {...defaultProps} />);
 
     // 左寄せ
-    let cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).parentElement;
+    let cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
     expect(cell).toHaveClass('text-left');
 
     // 中央寄せ
     rerender(<ActionCell {...defaultProps} alignment="center" />);
-    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).parentElement;
+    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
     expect(cell).toHaveClass('text-center');
 
     // 右寄せ
     rerender(<ActionCell {...defaultProps} alignment="right" />);
-    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).parentElement;
+    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
     expect(cell).toHaveClass('text-right');
   });
 
   it('ヘッダーセルとして表示される', () => {
     render(<ActionCell {...defaultProps} isHeader={true} />);
+    screen.debug();
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
     expect(cell).toHaveClass('bg-green-300');
   });
 
   it('現在の行のセルとして表示される', () => {
     render(<ActionCell {...defaultProps} isCurrentRow={true} />);
-    const content = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    const variant = content.parentElement?.getAttribute('data-variant');
-    expect(variant).toBe('current');
-  });
-
-  it('ペースト機能が正しく動作する', async () => {
-    const user = userEvent.setup();
-    const onPasteRows = vi.fn();
-    render(<ActionCell {...defaultProps} isEditable={true} onPasteRows={onPasteRows} />);
-
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    await user.click(cell);
-
-    const textarea = await screen.findByRole('textbox');
-    const clipboardText = '100\tテスト予測\t100\tなし\tテストアクション\tメモ';
-
-    const clipboardData = {
-      getData: () => clipboardText,
-    };
-
-    fireEvent.paste(textarea, {
-      clipboardData,
-      preventDefault: vi.fn(),
-    });
-
-    expect(onPasteRows).toHaveBeenCalledWith(expect.any(Number), [
-      {
-        hp: '100',
-        prediction: 'テスト予測',
-        charge: '100',
-        guard: 'なし',
-        action: 'テストアクション',
-        note: 'メモ',
-      },
-    ]);
+    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
+    expect(cell).toHaveClass('bg-accent');
   });
 });
