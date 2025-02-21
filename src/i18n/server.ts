@@ -1,10 +1,11 @@
-import initI18n from './index'
+import i18next from './index'
+import type { i18n } from 'i18next'
 
-let i18nInstance: Awaited<ReturnType<typeof initI18n>> | null = null
+let i18nInstance: i18n | null = null
 
 export const getServerSideI18n = async () => {
   if (!i18nInstance) {
-    i18nInstance = await initI18n()
+    i18nInstance = i18next
   }
   return i18nInstance
 }

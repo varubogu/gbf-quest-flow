@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useTableScroll } from './useTableScroll';
 import { fireEvent } from '@testing-library/dom';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import type { Action } from '@/types/models';
 
 describe('useTableScroll', () => {
@@ -9,7 +9,9 @@ describe('useTableScroll', () => {
   const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
   const mockData: Action[] = Array<Action>(5).fill(mockSingleAction);
 
-  const mockContainer = document.createElement('div');
+  const mockContainer = document.createElement('div') as HTMLDivElement & {
+    scrollTo: (_ptions: ScrollToOptions) => void;
+  };
   const mockTarget = document.createElement('div');
   mockTarget.id = 'action-row-2';
 
@@ -101,9 +103,13 @@ describe('useTableScroll', () => {
     );
 
     // スクロール位置の計算が正しく行われ、scrollToが呼ばれることを確認
-    expect(mockContainer.scrollTo).toHaveBeenCalledWith({
-      top: expect.any(Number),
-      behavior: 'smooth',
-    });
+    expect(mockContainer.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({
+        behavior: 'smooth',
+      })
+    );
+    const mockScrollTo = mockContainer.scrollTo as Mock;
+    const scrollOptions = mockScrollTo.mock.lastCall?.[0] as ScrollToOptions;
+    expect(typeof scrollOptions?.top).toBe('number');
   });
 });

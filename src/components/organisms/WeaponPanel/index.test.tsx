@@ -4,10 +4,32 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 import useFlowStore from '@/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
+import type { Flow } from '@/types/models';
 
 // モックデータ
-const mockFlowData = {
+const mockFlowData: Flow = {
+  title: 'テストフロー',
+  quest: 'テストクエスト',
+  author: 'テストユーザー',
+  description: 'テスト用フローデータ',
+  updateDate: '2024-03-21',
+  note: 'テストノート',
+  always: '',
+  flow: [],
   organization: {
+    job: {
+      name: 'テストジョブ',
+      note: 'テストジョブノート',
+      equipment: {
+        name: 'テスト装備',
+        note: 'テスト装備ノート'
+      },
+      abilities: []
+    },
+    member: {
+      front: [],
+      back: []
+    },
     weapon: {
       main: {
         name: 'テスト武器',
@@ -34,7 +56,24 @@ const mockFlowData = {
       hp: '3000',
       defense: '10%',
     },
-  },
+    totalEffects: {
+      taRate: '50%',
+      hp: '3000',
+      defense: '10%',
+    },
+    summon: {
+      main: {
+        name: 'テスト召喚石',
+        note: 'テスト召喚石ノート'
+      },
+      friend: {
+        name: 'フレンド召喚石',
+        note: 'フレンド召喚石ノート'
+      },
+      other: [],
+      sub: []
+    }
+  }
 };
 
 // Vitestでのモック設定
@@ -86,15 +125,24 @@ describe('WeaponPanel', () => {
       const input = screen.getByDisplayValue('テスト武器');
       fireEvent.change(input, { target: { value: '新しい武器名' } });
 
-      expect(mockUpdateFlowData).toHaveBeenCalledWith(expect.objectContaining({
-        organization: expect.objectContaining({
-          weapon: expect.objectContaining({
-            main: expect.objectContaining({
+      const expectedData = {
+        organization: {
+          job: mockFlowData.organization.job,
+          member: mockFlowData.organization.member,
+          weapon: {
+            ...mockFlowData.organization.weapon,
+            main: {
+              ...mockFlowData.organization.weapon.main,
               name: '新しい武器名',
-            }),
-          }),
-        }),
-      }));
+            },
+          },
+          weaponEffects: mockFlowData.organization.weaponEffects,
+          totalEffects: mockFlowData.organization.totalEffects,
+          summon: mockFlowData.organization.summon,
+        },
+      };
+
+      expect(mockUpdateFlowData).toHaveBeenCalledWith(expectedData);
     });
   });
 
@@ -107,24 +155,24 @@ describe('WeaponPanel', () => {
       );
 
       // メイン武器の確認
-      expect(screen.getByText('テスト武器')).toBeDefined();
-      expect(screen.getByText('テストスキル')).toBeDefined();
-      expect(screen.getByText('テストノート')).toBeDefined();
+      expect(screen.getByText('テスト武器')).toBeInTheDocument();
+      expect(screen.getByText('テストスキル')).toBeInTheDocument();
+      expect(screen.getByText('テストノート')).toBeInTheDocument();
 
       // その他武器の確認
-      expect(screen.getByText('その他武器1')).toBeDefined();
-      expect(screen.getByText('その他スキル1')).toBeDefined();
-      expect(screen.getByText('その他ノート1')).toBeDefined();
+      expect(screen.getByText('その他武器1')).toBeInTheDocument();
+      expect(screen.getByText('その他スキル1')).toBeInTheDocument();
+      expect(screen.getByText('その他ノート1')).toBeInTheDocument();
 
       // 追加武器の確認
-      expect(screen.getByText('追加武器1')).toBeDefined();
-      expect(screen.getByText('追加スキル1')).toBeDefined();
-      expect(screen.getByText('追加ノート1')).toBeDefined();
+      expect(screen.getByText('追加武器1')).toBeInTheDocument();
+      expect(screen.getByText('追加スキル1')).toBeInTheDocument();
+      expect(screen.getByText('追加ノート1')).toBeInTheDocument();
 
       // スキル効果の確認
-      expect(screen.getByText('50%')).toBeDefined();
-      expect(screen.getByText('3000')).toBeDefined();
-      expect(screen.getByText('10%')).toBeDefined();
+      expect(screen.getByText('50%')).toBeInTheDocument();
+      expect(screen.getByText('3000')).toBeInTheDocument();
+      expect(screen.getByText('10%')).toBeInTheDocument();
     });
 
     it('編集モードで入力フィールドが表示される', () => {
@@ -135,24 +183,24 @@ describe('WeaponPanel', () => {
       );
 
       // メイン武器の入力フィールド確認
-      expect(screen.getByDisplayValue('テスト武器')).toBeDefined();
-      expect(screen.getByDisplayValue('テストスキル')).toBeDefined();
-      expect(screen.getByDisplayValue('テストノート')).toBeDefined();
+      expect(screen.getByDisplayValue('テスト武器')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('テストスキル')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('テストノート')).toBeInTheDocument();
 
       // その他武器の入力フィールド確認
-      expect(screen.getByDisplayValue('その他武器1')).toBeDefined();
-      expect(screen.getByDisplayValue('その他スキル1')).toBeDefined();
-      expect(screen.getByDisplayValue('その他ノート1')).toBeDefined();
+      expect(screen.getByDisplayValue('その他武器1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('その他スキル1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('その他ノート1')).toBeInTheDocument();
 
       // 追加武器の入力フィールド確認
-      expect(screen.getByDisplayValue('追加武器1')).toBeDefined();
-      expect(screen.getByDisplayValue('追加スキル1')).toBeDefined();
-      expect(screen.getByDisplayValue('追加ノート1')).toBeDefined();
+      expect(screen.getByDisplayValue('追加武器1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('追加スキル1')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('追加ノート1')).toBeInTheDocument();
 
       // スキル効果の入力フィールド確認
-      expect(screen.getByDisplayValue('50%')).toBeDefined();
-      expect(screen.getByDisplayValue('3000')).toBeDefined();
-      expect(screen.getByDisplayValue('10%')).toBeDefined();
+      expect(screen.getByDisplayValue('50%')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('3000')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('10%')).toBeInTheDocument();
     });
 
     it('武器データの編集が正しく機能する', () => {
