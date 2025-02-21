@@ -1,5 +1,7 @@
-import { useEffect, type RefObject } from 'react';
+import { useEffect, type RefObject, useRef } from 'react';
 import type { Action } from '@/types/models';
+
+const TOUCHPAD_SCROLL_THRESHOLD = 35;
 
 interface UseTableScrollProps {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -16,20 +18,44 @@ export const useTableScroll = ({
   onRowSelect,
   isEditMode,
 }: UseTableScrollProps) => {
-  // ホイールイベントの制御
+  const accumulatedDeltaRef = useRef(0);
+
+  // ホイールスクロール制御
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || isEditMode) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (isEditMode) return;
+      const target = e.target as HTMLElement;
+      if (!container.contains(target)) return;
 
       e.preventDefault();
-      const delta = e.deltaY > 0 ? 1 : -1;
-      const newIndex = currentRow + delta;
 
-      if (newIndex >= 0 && newIndex < data.length) {
-        onRowSelect(newIndex);
+      // タッチパッドの判定
+      const isTouchpad = e.deltaMode === 0;
+
+      if (isTouchpad) {
+        // タッチパッドの場合は相対位置での処理
+        accumulatedDeltaRef.current += e.deltaY;
+
+        // 累積値が一定のしきい値を超えたら行を移動
+        if (accumulatedDeltaRef.current < -TOUCHPAD_SCROLL_THRESHOLD && currentRow > 0) {
+          onRowSelect(currentRow - 1);
+          accumulatedDeltaRef.current = 0;
+        } else if (
+          accumulatedDeltaRef.current > TOUCHPAD_SCROLL_THRESHOLD &&
+          currentRow < data.length - 1
+        ) {
+          onRowSelect(currentRow + 1);
+          accumulatedDeltaRef.current = 0;
+        }
+      } else {
+        // マウスホイールの場合は従来通りの処理
+        if (e.deltaY < 0 && currentRow > 0) {
+          onRowSelect(currentRow - 1);
+        } else if (e.deltaY > 0 && currentRow < data.length - 1) {
+          onRowSelect(currentRow + 1);
+        }
       }
     };
 

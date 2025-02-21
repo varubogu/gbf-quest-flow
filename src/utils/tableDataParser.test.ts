@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { parseTabSeparatedText, convertToActions } from './tableDataParser';
 import type { Action } from '@/types/models';
 

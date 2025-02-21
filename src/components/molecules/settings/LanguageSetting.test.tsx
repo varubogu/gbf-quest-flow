@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageSetting } from './LanguageSetting';
 import useSettingsStore from '@/stores/settingsStore';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // i18nextのモック
 vi.mock('i18next', () => ({

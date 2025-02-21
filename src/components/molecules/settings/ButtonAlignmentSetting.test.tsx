@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ButtonAlignmentSetting } from './ButtonAlignmentSetting';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // モックの作成
 vi.mock('react-i18next', () => ({

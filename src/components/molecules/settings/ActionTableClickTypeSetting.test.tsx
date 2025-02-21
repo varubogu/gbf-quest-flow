@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ActionTableClickTypeSetting } from './ActionTableClickTypeSetting';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // モックの作成
 vi.mock('react-i18next', () => ({
