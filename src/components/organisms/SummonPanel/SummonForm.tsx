@@ -1,0 +1,46 @@
+import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { Summon } from '@/types/models';
+import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
+import { SummonNote } from '@/components/molecules/Summon/SummonNote';
+import { useSummonForm } from '@/hooks/summons/useSummonForm';
+
+interface SummonFormProps {
+  type: 'main' | 'friend' | 'other' | 'sub';
+  summons: Summon[];
+  isEditing: boolean;
+}
+
+export const SummonForm = memo(({ type, summons, isEditing }: SummonFormProps) => {
+  const { t } = useTranslation();
+  const { handleSummonChange } = useSummonForm();
+
+  return (
+    <table role="table" aria-label={t(`summon.${type}Label`)}>
+      <thead>
+        <tr role="row">
+          <th role="columnheader" scope="col">{t('summon.name')}</th>
+          <th role="columnheader" scope="col">{t('summon.note')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {summons.map((summon, index) => (
+          <tr key={index} role="row">
+            <SummonIcon
+              name={summon.name}
+              isEditing={isEditing}
+              onChange={(value) => handleSummonChange(type, index, 'name', value)}
+              aria-label={t('summon.nameLabel')}
+            />
+            <SummonNote
+              note={summon.note}
+              isEditing={isEditing}
+              onChange={(value) => handleSummonChange(type, index, 'note', value)}
+              aria-label={t('summon.noteLabel')}
+            />
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+});
