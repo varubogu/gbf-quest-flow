@@ -1,13 +1,10 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Weapon, WeaponSkillEffect } from '@/types/models';
-import {
-  textInputBaseStyle,
-  textareaBaseStyle,
-  useAutoResizeTextArea,
-} from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
+import { WeaponIcon } from '@/components/molecules/Weapon/WeaponIcon';
+import { WeaponNote } from '@/components/molecules/Weapon/WeaponNote';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,
@@ -34,46 +31,57 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
   ) => {
     if (!flowData) return;
 
-    const newWeapon = {
-      name: '',
-      note: '',
-      additionalSkill: '',
-      ...(type === 'main'
-        ? flowData.organization.weapon.main
-        : type === 'other'
-          ? flowData.organization.weapon.other[index!]
-          : flowData.organization.weapon.additional[index!]),
-      [field]: value,
-    };
-
     let newWeaponData;
     if (type === 'main') {
       newWeaponData = {
         ...flowData.organization.weapon,
-        main: newWeapon,
+        main: {
+          name: flowData.organization.weapon.main.name,
+          note: flowData.organization.weapon.main.note,
+          additionalSkill: flowData.organization.weapon.main.additionalSkill,
+          [field]: value,
+        },
       };
-    } else if (type === 'other') {
+    } else if (type === 'other' && index !== null) {
       const newOther = [...flowData.organization.weapon.other];
-      newOther[index!] = newWeapon;
+      const currentWeapon = newOther[index];
+      if (currentWeapon) {
+        newOther[index] = {
+          name: currentWeapon.name,
+          note: currentWeapon.note,
+          additionalSkill: currentWeapon.additionalSkill,
+          [field]: value,
+        };
+      }
       newWeaponData = {
         ...flowData.organization.weapon,
         other: newOther,
       };
-    } else {
+    } else if (type === 'additional' && index !== null) {
       const newAdditional = [...flowData.organization.weapon.additional];
-      newAdditional[index!] = newWeapon;
+      const currentWeapon = newAdditional[index];
+      if (currentWeapon) {
+        newAdditional[index] = {
+          name: currentWeapon.name,
+          note: currentWeapon.note,
+          additionalSkill: currentWeapon.additionalSkill,
+          [field]: value,
+        };
+      }
       newWeaponData = {
         ...flowData.organization.weapon,
         additional: newAdditional,
       };
     }
 
-    updateFlowData({
-      organization: {
-        ...flowData.organization,
-        weapon: newWeaponData,
-      },
-    });
+    if (newWeaponData) {
+      updateFlowData({
+        organization: {
+          ...flowData.organization,
+          weapon: newWeaponData,
+        },
+      });
+    }
   };
 
   const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string) => {
@@ -116,57 +124,24 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {/* メイン武器 */}
           <tr>
             <td className={tableCellBaseStyle}>{t('weaponMain')}</td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={flowData.organization.weapon.main.name}
-                  onChange={(e) => handleWeaponChange('main', null, 'name', e.target.value)}
-                  className={textInputBaseStyle}
-                />
-              ) : (
-                flowData.organization.weapon.main.name
-              )}
-            </td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <textarea
-                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.additionalSkill)}
-                  value={flowData.organization.weapon.main.additionalSkill}
-                  onChange={(e) =>
-                    handleWeaponChange('main', null, 'additionalSkill', e.target.value)
-                  }
-                  className={textareaBaseStyle}
-                />
-              ) : (
-                flowData.organization.weapon.main.additionalSkill.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i <
-                      flowData.organization.weapon.main.additionalSkill.split('\n').length - 1 && (
-                      <br />
-                    )}
-                  </React.Fragment>
-                ))
-              )}
-            </td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <textarea
-                  ref={useAutoResizeTextArea(flowData.organization.weapon.main.note)}
-                  value={flowData.organization.weapon.main.note}
-                  onChange={(e) => handleWeaponChange('main', null, 'note', e.target.value)}
-                  className={textareaBaseStyle}
-                />
-              ) : (
-                flowData.organization.weapon.main.note.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < flowData.organization.weapon.main.note.split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))
-              )}
-            </td>
+            <WeaponIcon
+              name={flowData.organization.weapon.main.name}
+              isEditing={isEditing}
+              onChange={(value) => handleWeaponChange('main', null, 'name', value)}
+              aria-label={t('weaponName')}
+            />
+            <WeaponNote
+              text={flowData.organization.weapon.main.additionalSkill}
+              isEditing={isEditing}
+              onChange={(value) => handleWeaponChange('main', null, 'additionalSkill', value)}
+              aria-label={t('weaponAdditionalSkill')}
+            />
+            <WeaponNote
+              text={flowData.organization.weapon.main.note}
+              isEditing={isEditing}
+              onChange={(value) => handleWeaponChange('main', null, 'note', value)}
+              aria-label={t('overview')}
+            />
           </tr>
 
           {/* その他の武器 */}
@@ -174,60 +149,30 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <tr key={`other-${index}`}>
               {index === 0 && (
                 <td
-                  className={`${tableCellBaseStyle}`}
+                  className={tableCellBaseStyle}
                   rowSpan={flowData.organization.weapon.other.length}
                 >
                   {t('weaponNormal')}
                 </td>
               )}
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={weapon.name}
-                    onChange={(e) => handleWeaponChange('other', index, 'name', e.target.value)}
-                    className={textInputBaseStyle}
-                  />
-                ) : (
-                  weapon.name
-                )}
-              </td>
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(weapon.additionalSkill)}
-                    value={weapon.additionalSkill}
-                    onChange={(e) =>
-                      handleWeaponChange('other', index, 'additionalSkill', e.target.value)
-                    }
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  weapon.additionalSkill.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < weapon.additionalSkill.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(weapon.note)}
-                    value={weapon.note}
-                    onChange={(e) => handleWeaponChange('other', index, 'note', e.target.value)}
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  weapon.note.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < weapon.note.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
+              <WeaponIcon
+                name={weapon.name}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('other', index, 'name', value)}
+                aria-label={t('weaponName')}
+              />
+              <WeaponNote
+                text={weapon.additionalSkill}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('other', index, 'additionalSkill', value)}
+                aria-label={t('weaponAdditionalSkill')}
+              />
+              <WeaponNote
+                text={weapon.note}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('other', index, 'note', value)}
+                aria-label={t('overview')}
+              />
             </tr>
           ))}
 
@@ -236,74 +181,41 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
             <tr key={`additional-${index}`}>
               {index === 0 && (
                 <td
-                  className={`${tableCellBaseStyle}`}
+                  className={tableCellBaseStyle}
                   rowSpan={flowData.organization.weapon.additional.length}
                 >
                   {t('weaponAdditional')}
                 </td>
               )}
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={weapon.name}
-                    onChange={(e) =>
-                      handleWeaponChange('additional', index, 'name', e.target.value)
-                    }
-                    className={textInputBaseStyle}
-                  />
-                ) : (
-                  weapon.name
-                )}
-              </td>
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(weapon.additionalSkill)}
-                    value={weapon.additionalSkill}
-                    onChange={(e) =>
-                      handleWeaponChange('additional', index, 'additionalSkill', e.target.value)
-                    }
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  weapon.additionalSkill.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < weapon.additionalSkill.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
-              <td className={tableCellBaseStyle}>
-                {isEditing ? (
-                  <textarea
-                    ref={useAutoResizeTextArea(weapon.note)}
-                    value={weapon.note}
-                    onChange={(e) =>
-                      handleWeaponChange('additional', index, 'note', e.target.value)
-                    }
-                    className={textareaBaseStyle}
-                  />
-                ) : (
-                  weapon.note.split('\n').map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      {i < weapon.note.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))
-                )}
-              </td>
+              <WeaponIcon
+                name={weapon.name}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('additional', index, 'name', value)}
+                aria-label={t('weaponName')}
+              />
+              <WeaponNote
+                text={weapon.additionalSkill}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('additional', index, 'additionalSkill', value)}
+                aria-label={t('weaponAdditionalSkill')}
+              />
+              <WeaponNote
+                text={weapon.note}
+                isEditing={isEditing}
+                onChange={(value) => handleWeaponChange('additional', index, 'note', value)}
+                aria-label={t('overview')}
+              />
             </tr>
           ))}
         </tbody>
       </table>
 
+      {/* スキル効果 */}
       <SkillTable
+        isEditing={isEditing}
         title={t('skillEffects')}
         values={flowData.organization.weaponEffects}
         onChange={handleSkillEffectChange}
-        isEditing={isEditing}
       />
     </div>
   );
