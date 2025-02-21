@@ -97,7 +97,6 @@ export const useActionTableStyles = ({
       column,
       isHeader = false,
     }: ActionTableCellPosition & { isHeader?: boolean }) => {
-      const columnConfig = config.columns[column];
       const isCurrentRow = rowIndex === currentRow;
       const baseBackground = getRowBackground(rowIndex);
 
@@ -109,11 +108,11 @@ export const useActionTableStyles = ({
           'opacity-50': !isEditMode && rowIndex < currentRow,
           [baseBackground]: !isCurrentRow || isEditMode,
         },
-        getColumnAlignment(columnConfig),
+        getColumnAlignment(column),
         isHeader && config.styles.headerBackground
       );
     };
-  }, [config.styles, currentRow, isEditMode, getRowBackground]);
+  }, [config.styles.borderColor, config.styles.selectedBackground, config.styles.headerBackground, currentRow, getRowBackground, isEditMode]);
 
   // コントロールバーのクラスを生成
   const controlBarClasses = useMemo(() => {
