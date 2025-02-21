@@ -5,8 +5,10 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import astroPlugin from 'eslint-plugin-astro';
 
-export default [
+/** @type {import('eslint').Linter.Config[]} */
+const config = [
   eslint.configs.recommended,
+  /** @type {import('eslint').Linter.FlatConfig} */
   ...astroPlugin.configs['flat/recommended'],
   {
     ignores: [
@@ -54,9 +56,9 @@ export default [
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint,
-      react: reactPlugin,
-      'react-hooks': reactHooksPlugin,
+      '@typescript-eslint': /** @type {import('@typescript-eslint/utils').TSESLint.Plugin} */ (tseslint),
+      react: /** @type {import('eslint-plugin-react').Plugin} */ (reactPlugin),
+      'react-hooks': /** @type {import('eslint').ESLint.Plugin} */ (reactHooksPlugin),
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -131,13 +133,14 @@ export default [
       },
     },
     plugins: {
-      astro: astroPlugin,
+      astro: /** @type {import('eslint').ESLint.Plugin} */ (astroPlugin),
     },
     rules: {
-      ...astroPlugin.configs.recommended.rules,
       'astro/no-conflict-set-directives': 'error',
       'astro/no-unused-define-vars-in-style': 'error',
     },
     processor: astroPlugin.processors['.astro'],
   },
 ];
+
+export default config;
