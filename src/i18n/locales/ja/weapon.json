@@ -1,0 +1,17 @@
+{
+  "weaponCategory": "カテゴリ",
+  "weaponName": "武器名",
+  "weaponLevel": "レベル",
+  "weaponPlus": "+値",
+  "weaponSkillLevel1": "スキルLv1",
+  "weaponSkillLevel2": "スキルLv2",
+  "weaponAx": "AX",
+  "weaponTranscendence": "上限解放",
+  "weaponAwakening": "覚醒",
+  "weaponAdditionalSkill": "追加スキル",
+  "weaponMain": "メイン",
+  "weaponNormal": "通常武器",
+  "weaponAdditional": "追加武器",
+  "skillEffects": "スキル効果量",
+  "totalAmount": "スキル総量"
+}

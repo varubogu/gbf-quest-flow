@@ -1,0 +1,33 @@
+{
+  "jobAndCharacters": "ジョブ、キャラ、アビリティ",
+  "job": "ジョブ",
+  "characters": "キャラクター",
+  "skill": "スキル",
+  "effectAmount": "効果量",
+  "taRate": "TA確率",
+  "hp": "HP",
+  "defense": "防御",
+
+  "jobItem": "項目",
+  "jobValue": "名前",
+  "jobClass": "ジョブ",
+  "jobLevel": "レベル",
+  "jobArk": "アーク",
+  "jobMainHand": "特殊装備",
+  "jobRing1": "リング1",
+  "jobRing2": "リング2",
+  "characterAbilities": "アビリティ",
+
+  "characterPosition": "ポジション",
+  "characterName": "キャラ",
+  "characterLevel": "レベル",
+  "characterRing1": "リング1",
+  "characterRing2": "リング2",
+  "characterEarring": "イヤリング",
+  "characterUsage": "用途",
+  "characterAwakening": "覚醒",
+  "characterAccessories": "指輪・耳飾り",
+  "characterLimitBonus": "LB",
+  "characterFront": "フロント",
+  "characterBack": "サブ"
+}

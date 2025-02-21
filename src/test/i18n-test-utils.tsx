@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import type { RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';
 import { I18nextProvider } from 'react-i18next';
-import i18next from 'i18next';
+import i18next from '@/i18n';
 import type { ReactNode } from 'react';
 
 // i18nのモック
@@ -30,7 +30,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // i18nextのモック
-vi.mock('i18next', () => ({
+vi.mock('@/i18n', () => ({
   default: {
     use: () => ({
       use: () => ({

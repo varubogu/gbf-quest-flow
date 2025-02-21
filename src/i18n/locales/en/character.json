@@ -1,0 +1,33 @@
+{
+  "jobAndCharacters": "Job, Characters & Abilities",
+  "job": "Job",
+  "characters": "Characters",
+  "skill": "Skill",
+  "effectAmount": "Effect Amount",
+  "taRate": "Triple Attack Rate",
+  "hp": "HP",
+  "defense": "Defense",
+
+  "jobItem": "Item",
+  "jobValue": "Name",
+  "jobClass": "Job",
+  "jobLevel": "Level",
+  "jobArk": "Ark",
+  "jobMainHand": "Special Equipment",
+  "jobRing1": "Ring 1",
+  "jobRing2": "Ring 2",
+  "characterAbilities": "Abilities",
+
+  "characterPosition": "Position",
+  "characterName": "Character",
+  "characterLevel": "Level",
+  "characterRing1": "Ring 1",
+  "characterRing2": "Ring 2",
+  "characterEarring": "Earring",
+  "characterUsage": "Usage",
+  "characterAwakening": "Awakening",
+  "characterAccessories": "Rings & Earrings",
+  "characterLimitBonus": "LB",
+  "characterFront": "Front",
+  "characterBack": "Sub"
+}

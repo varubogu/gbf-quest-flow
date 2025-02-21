@@ -1,0 +1,12 @@
+{
+  "summonCategory": "Category",
+  "summonName": "Summon Name",
+  "summonLevel": "Level",
+  "summonPlus": "Plus",
+  "summonTranscendence": "Transcendence",
+  "summonSubAura": "Sub Aura",
+  "summonMain": "Main",
+  "summonFriend": "Friend",
+  "summonNormal": "Normal Summon",
+  "summonSub": "Sub"
+}

@@ -1,0 +1,17 @@
+{
+  "weaponCategory": "Category",
+  "weaponName": "Weapon Name",
+  "weaponLevel": "Level",
+  "weaponPlus": "Plus",
+  "weaponSkillLevel1": "Skill Lv1",
+  "weaponSkillLevel2": "Skill Lv2",
+  "weaponAx": "AX",
+  "weaponTranscendence": "Transcendence",
+  "weaponAwakening": "Awakening",
+  "weaponAdditionalSkill": "Additional Skill",
+  "weaponMain": "Main",
+  "weaponNormal": "Normal Weapon",
+  "weaponAdditional": "Additional Weapon",
+  "skillEffects": "Skill Effects",
+  "totalAmount": "Total Amount"
+}

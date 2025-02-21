@@ -1,0 +1,12 @@
+{
+  "summonCategory": "カテゴリ",
+  "summonName": "召喚石名",
+  "summonLevel": "レベル",
+  "summonPlus": "+値",
+  "summonTranscendence": "上限解放",
+  "summonSubAura": "サブ加護",
+  "summonMain": "メイン",
+  "summonFriend": "フレンド",
+  "summonNormal": "通常石",
+  "summonSub": "サブ"
+}
