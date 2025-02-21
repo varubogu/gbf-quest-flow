@@ -236,7 +236,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       {/* スキル効果 */}
       <SkillTable
         isEditing={isEditing}
-        title={t('skillEffects', { ns: 'weapon' })}
+        title={t('skillEffects')}
         values={weaponData.effects}
         onChange={handleSkillEffectChange}
       />

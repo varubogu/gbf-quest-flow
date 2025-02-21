@@ -42,7 +42,7 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
   return (
     <div>
       <SkillTable
-        title={t('totalAmount', { ns: 'weapon' })}
+        title={t('skillTotals')}
         values={skillTotalData}
         onChange={handleSkillTotalChange}
         isEditing={isEditing}
