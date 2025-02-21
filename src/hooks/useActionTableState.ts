@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Action, ActionTableState } from '@/types/models';
+import type { Action } from '@/types/models';
 
 interface UseActionTableStateProps {
   initialData: Action[];
@@ -8,33 +8,40 @@ interface UseActionTableStateProps {
   onRowSelect?: (_index: number) => void;
 }
 
+// 新しい行を作成するユーティリティ関数
+const createEmptyRow = (): Action => ({
+  hp: '',
+  prediction: '',
+  charge: '',
+  guard: '',
+  action: '',
+  note: '',
+});
+
 export const useActionTableState = ({
   initialData,
   isEditMode = false,
   onDataChange,
   onRowSelect,
 }: UseActionTableStateProps) => {
-  // 基本的な状態管理
-  const [state, setState] = useState<ActionTableState>({
-    currentRow: -1,
-    data: initialData,
-    isEditMode,
-  });
+  // 状態を分割
+  const [data, setData] = useState<Action[]>(initialData);
+  const [currentRow, setCurrentRow] = useState<number>(-1);
+  const [editMode, setEditMode] = useState<boolean>(isEditMode);
 
   // 編集モード変更時の処理
   useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      isEditMode,
-      // 編集モード終了時に最初の行を選択
-      currentRow: !isEditMode && prev.currentRow === -1 ? 0 : prev.currentRow,
-    }));
-  }, [isEditMode]);
+    setEditMode(isEditMode);
+    // 編集モード終了時に最初の行を選択
+    if (!isEditMode && currentRow === -1) {
+      setCurrentRow(0);
+    }
+  }, [isEditMode, currentRow]);
 
   // データ更新のハンドラー
   const updateData = useCallback(
     (newData: Action[]) => {
-      setState((prev) => ({ ...prev, data: newData }));
+      setData(newData);
       onDataChange?.(newData);
     },
     [onDataChange]
@@ -43,97 +50,103 @@ export const useActionTableState = ({
   // 行選択のハンドラー
   const selectRow = useCallback(
     (index: number) => {
-      if (isEditMode) return;
-      setState((prev) => ({ ...prev, currentRow: index }));
-      onRowSelect?.(index);
+      if (editMode) return;
+      if (index >= 0 && index < data.length) {
+        setCurrentRow(index);
+        onRowSelect?.(index);
+      }
     },
-    [isEditMode, onRowSelect]
+    [editMode, data.length, onRowSelect]
   );
 
   // 行の追加
   const addRow = useCallback(
     (index: number) => {
-      if (!isEditMode) return;
-
-      const newRow: Action = {
-        hp: '',
-        prediction: '',
-        charge: '',
-        guard: '',
-        action: '',
-        note: '',
-      };
-
-      const newData = [...state.data];
-      newData.splice(index + 1, 0, newRow);
-      updateData(newData);
+      if (!editMode) return;
+      try {
+        const newData = [...data];
+        newData.splice(index + 1, 0, createEmptyRow());
+        updateData(newData);
+      } catch (error) {
+        console.error('行の追加中にエラーが発生しました:', error);
+      }
     },
-    [isEditMode, state.data, updateData]
+    [editMode, data, updateData]
   );
 
   // 行の削除
   const deleteRow = useCallback(
     (index: number) => {
-      if (!isEditMode) return;
-
-      const newData = state.data.filter((_, i) => i !== index);
-      updateData(newData);
+      if (!editMode) return;
+      try {
+        if (index >= 0 && index < data.length) {
+          const newData = data.filter((_, i) => i !== index);
+          updateData(newData);
+        }
+      } catch (error) {
+        console.error('行の削除中にエラーが発生しました:', error);
+      }
     },
-    [isEditMode, state.data, updateData]
+    [editMode, data, updateData]
   );
 
   // セルの編集
   const editCell = useCallback(
     (rowIndex: number, field: keyof Action, value: string) => {
-      if (!isEditMode) return;
-
-      const newData = [...state.data];
-      const updatedRow = { ...newData[rowIndex], [field]: value } as Action;
-      newData[rowIndex] = updatedRow;
-      updateData(newData);
+      if (!editMode) return;
+      try {
+        if (rowIndex >= 0 && rowIndex < data.length) {
+          const newData = [...data];
+          const updatedRow = { ...createEmptyRow(), ...newData[rowIndex], [field]: value };
+          newData[rowIndex] = updatedRow;
+          updateData(newData);
+        }
+      } catch (error) {
+        console.error('セルの編集中にエラーが発生しました:', error);
+      }
     },
-    [isEditMode, state.data, updateData]
+    [editMode, data, updateData]
   );
 
   // 行の移動（上へ）
   const moveRowUp = useCallback(() => {
-    if (isEditMode || state.currentRow <= 0) return;
-
-    const newIndex = state.currentRow - 1;
-    selectRow(newIndex);
-  }, [isEditMode, state.currentRow, selectRow]);
+    if (editMode || currentRow <= 0) return;
+    selectRow(currentRow - 1);
+  }, [editMode, currentRow, selectRow]);
 
   // 行の移動（下へ）
   const moveRowDown = useCallback(() => {
-    if (isEditMode || state.currentRow >= state.data.length - 1) return;
-
-    const newIndex = state.currentRow + 1;
-    selectRow(newIndex);
-  }, [isEditMode, state.currentRow, state.data.length, selectRow]);
+    if (editMode || currentRow >= data.length - 1) return;
+    selectRow(currentRow + 1);
+  }, [editMode, currentRow, data.length, selectRow]);
 
   // 行の貼り付け
   const pasteRows = useCallback(
     (index: number, rows: Partial<Action>[]) => {
-      if (!isEditMode) return;
-
-      const newData = [...state.data];
-      const validRows = rows.map((row) => ({
-        hp: row.hp ?? '',
-        prediction: row.prediction ?? '',
-        charge: row.charge ?? '',
-        guard: row.guard ?? '',
-        action: row.action ?? '',
-        note: row.note ?? '',
-      }));
-
-      newData.splice(index + 1, 0, ...validRows);
-      updateData(newData);
+      if (!editMode) return;
+      try {
+        if (index >= -1 && index < data.length) {
+          const newData = [...data];
+          const validRows = rows.map((row) => ({
+            ...createEmptyRow(),
+            ...row,
+          }));
+          newData.splice(index + 1, 0, ...validRows);
+          updateData(newData);
+        }
+      } catch (error) {
+        console.error('行の貼り付け中にエラーが発生しました:', error);
+      }
     },
-    [isEditMode, state.data, updateData]
+    [editMode, data, updateData]
   );
 
   return {
-    state,
+    state: {
+      currentRow,
+      data,
+      isEditMode: editMode,
+    },
     selectRow,
     addRow,
     deleteRow,
