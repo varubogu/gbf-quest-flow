@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/stores/flowStore';
 import { CharacterForm } from './CharacterForm';
@@ -14,7 +14,7 @@ interface CharacterPanelProps {
   isEditing: boolean;
 }
 
-export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => {
+export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }) => {
   const { t } = useTranslation();
   const { flowData } = useFlowStore();
   const { handleMemberChange } = useCharacterForm();
@@ -23,25 +23,49 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
 
   return (
     <div className="overflow-x-auto">
-      <table className={tableBaseStyle}>
+      <table className={tableBaseStyle} role="table" aria-label={t('characters')}>
         <thead>
-          <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>
+          <tr className={tableHeaderRowStyle} role="row">
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterPosition')}
             </th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterName')}
             </th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterUsage')}
             </th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}>
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterAwakening')}
             </th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterAccessories')}
             </th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}>
+            <th
+              className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}
+              role="columnheader"
+              scope="col"
+            >
               {t('characterLimitBonus')}
             </th>
           </tr>
@@ -63,4 +87,4 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = ({ isEditing }) => 
       </table>
     </div>
   );
-};
+});

@@ -7,36 +7,59 @@ describe('SkillDisplay', () => {
 2行目
 3行目`;
 
-  it('表示モードで正しくレンダリングされる', () => {
-    const { container } = render(
-      <SkillDisplay text={multilineText} isEditing={false} onChange={() => {}} />
-    );
+  const defaultProps = {
+    text: multilineText,
+    isEditing: false,
+    onChange: () => {},
+    'aria-label': 'スキル説明',
+  };
 
-    // tdタグ内のテキストコンテンツ全体を確認
+  it('表示モードで正しくレンダリングされる', () => {
+    const { container } = render(<SkillDisplay {...defaultProps} />);
+
+    const cell = screen.getByRole('cell');
+    const text = screen.getByRole('text');
+    expect(cell).toBeInTheDocument();
+    expect(text).toHaveAttribute('aria-label', 'スキル説明');
+
+    // テキストコンテンツの確認
     const td = container.querySelector('td');
     expect(td).toHaveTextContent('1行目');
     expect(td).toHaveTextContent('2行目');
     expect(td).toHaveTextContent('3行目');
 
-    // 改行要素の存在を確認
+    // 改行要素の確認
     const brElements = container.getElementsByTagName('br');
-    expect(brElements).toHaveLength(2); // 3行なので改行は2つ
+    expect(brElements).toHaveLength(2);
   });
 
   it('編集モードで正しくレンダリングされる', () => {
-    render(<SkillDisplay text={multilineText} isEditing={true} onChange={() => {}} />);
+    render(<SkillDisplay {...defaultProps} isEditing={true} />);
     const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
+
     expect(textarea).toBeInTheDocument();
     expect(textarea.value).toBe(multilineText);
+    expect(textarea).toHaveAttribute('aria-label', 'スキル説明');
   });
 
   it('入力値の変更が正しく処理される', () => {
     const handleChange = vi.fn();
-    render(<SkillDisplay text="テスト" isEditing={true} onChange={handleChange} />);
+    render(<SkillDisplay {...defaultProps} isEditing={true} onChange={handleChange} />);
 
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: '新しいテスト' } });
 
     expect(handleChange).toHaveBeenCalledWith('新しいテスト');
+  });
+
+  it('メモ化されたコンポーネントが正しく再レンダリングされる', () => {
+    const { rerender } = render(<SkillDisplay {...defaultProps} />);
+    const initialText = screen.getByRole('text');
+    expect(initialText).toHaveTextContent('1行目');
+
+    const newText = '新しいテキスト';
+    rerender(<SkillDisplay {...defaultProps} text={newText} />);
+    const updatedText = screen.getByRole('text');
+    expect(updatedText).toHaveTextContent(newText);
   });
 });
