@@ -7,11 +7,6 @@ import { CharacterPanel } from './CharacterPanel/index';
 import { SkillTotalPanel } from './SkillTotalPanel';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
-import {
-  textInputBaseStyle,
-  textareaBaseStyle,
-  useAutoResizeTextArea,
-} from '@/components/atoms/IconTextButton';
 
 interface OrganizationModalProps {
   isOpen: boolean;

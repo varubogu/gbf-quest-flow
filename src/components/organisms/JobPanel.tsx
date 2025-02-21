@@ -25,6 +25,13 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
+  const jobNoteRef = useAutoResizeTextArea(flowData.organization.job.note);
+  const equipmentNoteRef = useAutoResizeTextArea(flowData.organization.job.equipment.note);
+  // アビリティごとのrefを作成
+  const abilityNoteRefs = flowData.organization.job.abilities.map(ability =>
+    useAutoResizeTextArea(ability.note)
+  );
+
   const handleJobChange = (field: keyof Job, value: string) => {
     if (!flowData) return;
     updateFlowData({
@@ -108,7 +115,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
-                  ref={useAutoResizeTextArea(flowData.organization.job.note)}
+                  ref={jobNoteRef}
                   value={flowData.organization.job.note}
                   onChange={(e) => handleJobChange('note', e.target.value)}
                   className={textareaBaseStyle}
@@ -141,7 +148,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <textarea
-                  ref={useAutoResizeTextArea(flowData.organization.job.equipment.note)}
+                  ref={equipmentNoteRef}
                   value={flowData.organization.job.equipment.note}
                   onChange={(e) => handleEquipmentChange('note', e.target.value)}
                   className={textareaBaseStyle}
@@ -182,7 +189,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
               <td className={tableCellBaseStyle}>
                 {isEditing ? (
                   <textarea
-                    ref={useAutoResizeTextArea(ability.note)}
+                    ref={abilityNoteRefs[index]}
                     value={ability.note}
                     onChange={(e) => handleAbilityChange(index, 'note', e.target.value)}
                     className={textareaBaseStyle}
