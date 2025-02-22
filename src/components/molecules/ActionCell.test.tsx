@@ -100,7 +100,7 @@ describe('ActionCell', () => {
         expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
       });
     });
-    // onChange('新しい内容');
+    //onChange('新しい内容');
 
     // onChangeが呼ばれるのを待つ
     await vi.waitFor(() => {
