@@ -67,15 +67,6 @@
   "video": "動画",
   "skillTotals": "スキル総合値",
 
-  "moveUp": "上に移動",
-  "moveDown": "下に移動",
-  "hpColumn": "HP",
-  "triggerColumn": "予兆",
-  "ougiColumn": "奥義",
-  "guardColumn": "ガード",
-  "actionColumn": "行動",
-  "notesColumn": "備考",
-
   "pasteError": {
     "specific": "貼り付け処理中にエラーが発生しました: {{message}}",
     "generic": "貼り付け処理中に予期せぬエラーが発生しました"

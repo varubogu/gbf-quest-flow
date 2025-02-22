@@ -1,0 +1,10 @@
+{
+  "hpColumn": "HP",
+  "triggerColumn": "Trigger",
+  "ougiColumn": "Ougi",
+  "guardColumn": "Guard",
+  "actionColumn": "Action",
+  "notesColumn": "Notes",
+  "moveUp": "Move Up",
+  "moveDown": "Move Down"
+}

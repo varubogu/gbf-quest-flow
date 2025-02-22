@@ -62,15 +62,6 @@
   "video": "Video",
   "skillTotals": "Skill Totals",
 
-  "moveUp": "Move Up",
-  "moveDown": "Move Down",
-  "hpColumn": "HP",
-  "triggerColumn": "Trigger",
-  "ougiColumn": "Ougi",
-  "guardColumn": "Guard",
-  "actionColumn": "Action",
-  "notesColumn": "Notes",
-
   "pasteError": {
     "specific": "An error occurred during paste operation: {{message}}",
     "generic": "An unexpected error occurred during paste operation"
