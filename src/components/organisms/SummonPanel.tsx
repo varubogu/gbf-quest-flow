@@ -102,13 +102,13 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
               name={flowData.organization.summon.main.name}
               isEditing={isEditing}
               onChange={(value) => handleSummonChange('main', null, 'name', value)}
-              aria-label={t('summonName')}
+              aria-label={t('summonName') as string}
             />
             <SummonNote
               note={flowData.organization.summon.main.note}
               isEditing={isEditing}
               onChange={(value) => handleSummonChange('main', null, 'note', value)}
-              aria-label={t('overview')}
+              aria-label={t('overview') as string}
             />
           </tr>
           {/* フレンド召喚石 */}
@@ -118,13 +118,13 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
               name={flowData.organization.summon.friend.name}
               isEditing={isEditing}
               onChange={(value) => handleSummonChange('friend', null, 'name', value)}
-              aria-label={t('summonName')}
+              aria-label={t('summonName') as string}
             />
             <SummonNote
               note={flowData.organization.summon.friend.note}
               isEditing={isEditing}
               onChange={(value) => handleSummonChange('friend', null, 'note', value)}
-              aria-label={t('overview')}
+              aria-label={t('overview') as string}
             />
           </tr>
           {/* その他の召喚石 */}
@@ -142,13 +142,13 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 name={summon.name}
                 isEditing={isEditing}
                 onChange={(value) => handleSummonChange('other', index, 'name', value)}
-                aria-label={t('summonName')}
+                aria-label={t('summonName') as string}
               />
               <SummonNote
                 note={summon.note}
                 isEditing={isEditing}
                 onChange={(value) => handleSummonChange('other', index, 'note', value)}
-                aria-label={t('overview')}
+                aria-label={t('overview') as string}
               />
             </tr>
           ))}
@@ -167,13 +167,13 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
                 name={summon.name}
                 isEditing={isEditing}
                 onChange={(value) => handleSummonChange('sub', index, 'name', value)}
-                aria-label={t('summonName')}
+                aria-label={t('summonName') as string}
               />
               <SummonNote
                 note={summon.note}
                 isEditing={isEditing}
                 onChange={(value) => handleSummonChange('sub', index, 'note', value)}
-                aria-label={t('overview')}
+                aria-label={t('overview') as string}
               />
             </tr>
           ))}

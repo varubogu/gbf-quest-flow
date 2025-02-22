@@ -38,22 +38,22 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
               className={tableCellBaseStyle}
               rowSpan={members.length}
               role="cell"
-              aria-label={t(position === 'front' ? 'characterFront' : 'characterBack')}
+              aria-label={t(position === 'front' ? 'characterFront' : 'characterBack') as string}
             >
-              {t(position === 'front' ? 'characterFront' : 'characterBack')}
+              {t(position === 'front' ? 'characterFront' : 'characterBack') as string}
             </td>
           )}
           <CharacterIcon
             name={char.name}
             isEditing={isEditing}
             onChange={handleChange(index, 'name')}
-            aria-label={t('characterName')}
+            aria-label={t('characterName') as string}
           />
           <SkillDisplay
             text={char.note}
             isEditing={isEditing}
             onChange={handleChange(index, 'note')}
-            aria-label={t('characterUsage')}
+            aria-label={t('characterUsage') as string}
           />
           <td className={tableCellBaseStyle} role="cell">
             {isEditing ? (
@@ -63,7 +63,7 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
                 onChange={handleAwakeTypeChange(index)}
                 className={textInputBaseStyle}
                 maxLength={4}
-                aria-label={t('characterAwakening')}
+                aria-label={t('characterAwakening') as string}
               />
             ) : (
               char.awaketype
@@ -73,13 +73,13 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
             text={char.accessories}
             isEditing={isEditing}
             onChange={handleChange(index, 'accessories')}
-            aria-label={t('characterAccessories')}
+            aria-label={t('characterAccessories') as string}
           />
           <SkillDisplay
             text={char.limitBonus}
             isEditing={isEditing}
             onChange={handleChange(index, 'limitBonus')}
-            aria-label={t('characterLimitBonus')}
+            aria-label={t('characterLimitBonus') as string}
           />
         </tr>
       ))}

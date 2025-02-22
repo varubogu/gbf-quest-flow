@@ -151,19 +151,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
               name={weaponData.main.name}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'name', value)}
-              aria-label={t('weaponName')}
+              aria-label={t('weaponName') as string}
             />
             <WeaponNote
               text={weaponData.main.additionalSkill}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'additionalSkill', value)}
-              aria-label={t('weaponAdditionalSkill')}
+              aria-label={t('weaponAdditionalSkill') as string}
             />
             <WeaponNote
               text={weaponData.main.note}
               isEditing={isEditing}
               onChange={(value) => handleWeaponChange('main', null, 'note', value)}
-              aria-label={t('overview')}
+              aria-label={t('overview') as string}
             />
           </tr>
 
@@ -182,19 +182,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 name={weapon.name}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('other', index, 'name', value)}
-                aria-label={t('weaponName')}
+                aria-label={t('weaponName') as string}
               />
               <WeaponNote
                 text={weapon.additionalSkill}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('other', index, 'additionalSkill', value)}
-                aria-label={t('weaponAdditionalSkill')}
+                aria-label={t('weaponAdditionalSkill') as string}
               />
               <WeaponNote
                 text={weapon.note}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('other', index, 'note', value)}
-                aria-label={t('overview')}
+                aria-label={t('overview') as string}
               />
             </tr>
           ))}
@@ -214,19 +214,19 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
                 name={weapon.name}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('additional', index, 'name', value)}
-                aria-label={t('weaponName')}
+                aria-label={t('weaponName') as string}
               />
               <WeaponNote
                 text={weapon.additionalSkill}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('additional', index, 'additionalSkill', value)}
-                aria-label={t('weaponAdditionalSkill')}
+                aria-label={t('weaponAdditionalSkill') as string}
               />
               <WeaponNote
                 text={weapon.note}
                 isEditing={isEditing}
                 onChange={(value) => handleWeaponChange('additional', index, 'note', value)}
-                aria-label={t('overview')}
+                aria-label={t('overview') as string}
               />
             </tr>
           ))}

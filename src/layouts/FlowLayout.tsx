@@ -80,17 +80,17 @@ export function FlowLayout({
           ) : null}
           <IconTextButton
             icon={isMemoCollapsed ? Maximize2 : Minimize2}
-            label={t('toggleMemo')}
-            text={t('memo')}
+            label={t('toggleMemo') as string}
+            text={t('memo') as string}
             onClick={handleMemoToggle}
           />
           <IconTextButton
             icon={Sword}
-            label={t('organization')}
-            text={t('organization')}
+            label={t('organization') as string}
+            text={t('organization') as string}
             onClick={() => setIsOrganizationModalOpen(true)}
           />
-          <IconButton icon={Info} label={t('otherInfo')} onClick={() => setIsInfoModalOpen(true)} />
+          <IconButton icon={Info} label={t('otherInfo') as string} onClick={() => setIsInfoModalOpen(true)} />
         </div>
       </header>
       <main className="flex-1 pt-14">

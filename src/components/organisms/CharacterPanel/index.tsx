@@ -23,7 +23,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }
 
   return (
     <div className="overflow-x-auto">
-      <table className={tableBaseStyle} role="table" aria-label={t('characters')}>
+      <table className={tableBaseStyle} role="table" aria-label={t('characters') as string}>
         <thead>
           <tr className={tableHeaderRowStyle} role="row">
             <th
@@ -31,42 +31,42 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }
               role="columnheader"
               scope="col"
             >
-              {t('characterPosition')}
+              {t('characterPosition') as string}
             </th>
             <th
               className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}
               role="columnheader"
               scope="col"
             >
-              {t('characterName')}
+              {t('characterName') as string}
             </th>
             <th
               className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}
               role="columnheader"
               scope="col"
             >
-              {t('characterUsage')}
+              {t('characterUsage') as string}
             </th>
             <th
               className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xs}`}
               role="columnheader"
               scope="col"
             >
-              {t('characterAwakening')}
+              {t('characterAwakening') as string}
             </th>
             <th
               className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}
               role="columnheader"
               scope="col"
             >
-              {t('characterAccessories')}
+              {t('characterAccessories') as string}
             </th>
             <th
               className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.lg}`}
               role="columnheader"
               scope="col"
             >
-              {t('characterLimitBonus')}
+              {t('characterLimitBonus') as string}
             </th>
           </tr>
         </thead>

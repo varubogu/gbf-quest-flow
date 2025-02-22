@@ -8,7 +8,7 @@ export const useActionCellError = () => {
     (error: unknown) => {
       if (error instanceof Error) {
         const message = error.message.startsWith('too') || error.message.startsWith('no')
-          ? t(error.message)
+          ? t(error.message) as string
           : error.message;
         alert(t('pasteError.specific', { message }));
       } else {
@@ -21,7 +21,7 @@ export const useActionCellError = () => {
   const handleValidationError = useCallback(
     (message: string) => {
       const translatedMessage = message.startsWith('too') || message.startsWith('no')
-        ? t(message)
+        ? t(message) as string
         : message;
       alert(t('validationError', { message: translatedMessage }));
     },

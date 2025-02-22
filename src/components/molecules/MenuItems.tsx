@@ -31,25 +31,25 @@ export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps) {
   const isEditMode = useFlowStore((state) => state.isEditMode);
 
   const menuItems: MenuItem[] = [
-    { id: 'new', label: t('newData'), icon: FileText },
-    { id: 'load', label: t('loadData'), icon: FolderOpen },
+    { id: 'new', label: t('newData') as string, icon: FileText },
+    { id: 'load', label: t('loadData') as string, icon: FolderOpen },
     ...(flowData
       ? [
           {
             id: 'download',
-            label: isEditMode ? t('downloadOriginalData') : t('downloadData'),
+            label: isEditMode ? t('downloadOriginalData') as string : t('downloadData') as string,
             icon: Download,
           },
           {
             id: 'edit',
-            label: isEditMode ? t('save') : t('edit'),
+            label: isEditMode ? t('save') as string : t('edit') as string,
             icon: isEditMode ? Save : Edit2,
           },
-          ...(isEditMode ? [{ id: 'cancel', label: t('cancelEdit'), icon: XCircle }] : []),
+          ...(isEditMode ? [{ id: 'cancel', label: t('cancelEdit') as string, icon: XCircle }] : []),
         ]
       : []),
-    { id: 'options', label: t('options'), icon: Settings },
-    { id: 'help', label: t('help'), icon: HelpCircle },
+    { id: 'options', label: t('options') as string, icon: Settings },
+    { id: 'help', label: t('help') as string, icon: HelpCircle },
   ];
 
   return (

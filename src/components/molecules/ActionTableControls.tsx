@@ -26,13 +26,13 @@ export const ActionTableControls: React.FC<ActionTableControlsProps> = ({
       <div className={`flex gap-2 ${buttonPosition === 'right' ? 'ml-auto' : ''}`}>
         <IconButton
           icon={ChevronUp}
-          label={t('moveUp')}
+          label={t('moveUp') as string}
           onClick={onMoveUp}
           disabled={currentRow <= 0}
         />
         <IconButton
           icon={ChevronDown}
-          label={t('moveDown')}
+          label={t('moveDown') as string}
           onClick={onMoveDown}
           disabled={currentRow >= totalRows - 1}
         />

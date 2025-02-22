@@ -96,7 +96,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, val
             <SkillRow
               key={field}
               field={field}
-              label={t(labelKey)}
+              label={t(labelKey) as string}
               value={values[field]}
               isEditing={isEditing}
               onChange={onChange}

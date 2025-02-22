@@ -16,7 +16,7 @@ export const SummonPanel = memo(({ isEditing }: SummonPanelProps) => {
   const { main, friend, other, sub } = flowData.organization.summon;
 
   return (
-    <div role="region" aria-label={t('summon.panelLabel')}>
+    <div role="region" aria-label={t('summon.panelLabel') as string}>
       <h2>{t('summon.title')}</h2>
       <div>
         <h3>{t('summon.mainTitle')}</h3>

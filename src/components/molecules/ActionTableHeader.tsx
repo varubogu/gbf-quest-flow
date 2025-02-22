@@ -45,7 +45,7 @@ export const ActionTableHeader: React.FC<ActionTableHeaderProps> = ({
       {columns.map((column) => (
         <ActionCell
           key={column}
-          content={t(columnTranslationKeys[column])}
+          content={t(columnTranslationKeys[column]) as string}
           isHeader
           alignment={alignments[column]}
           data-testid={`cell-${column}`}

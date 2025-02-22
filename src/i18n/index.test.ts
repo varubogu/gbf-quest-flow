@@ -54,13 +54,13 @@ describe('i18n', () => {
 
     it('存在しない翻訳キーの場合はフォールバック言語の値を返すこと', () => {
       const nonExistentKey = 'nonexistent.key';
-      const translation = i18next.t(nonExistentKey);
+      const translation = i18next.t(nonExistentKey) as string;
       expect(translation).toBe(nonExistentKey); // i18nextのデフォルト動作ではキー名を返す
     });
 
     it('補間が正しく機能すること', () => {
       const message = 'エラーメッセージ';
-      const translation = i18next.t('pasteError.specific', { message });
+      const translation = i18next.t('pasteError.specific', { message }) as string;
       expect(translation).toBe(`貼り付け処理中にエラーが発生しました: ${message}`);
     });
   });
