@@ -20,22 +20,20 @@ describe('ActionCell', () => {
   });
 
   it('通常モードで正しく表示される', () => {
-    act(() => {
-      render(<ActionCell {...defaultProps} />);
-    });
+    render(<ActionCell {...defaultProps} />);
 
     expect(screen.getByText('テストコンテンツ')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('クリックで編集モードに入る', async () => {
-    act(() => {
-      render(<ActionCell {...defaultProps} isEditable={true} />);
-    });
+    render(<ActionCell {...defaultProps} isEditable={true} />);
 
     // 要素の検索
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    cell.click();
+    act(() => {
+      cell.click();
+    });
 
     await vi.waitFor(() => {
       expect(screen.queryByRole('textbox')).toBeInTheDocument();
@@ -48,9 +46,7 @@ describe('ActionCell', () => {
   });
 
   it('isEditingの状態に応じてpreタグとtextareaが切り替わる', async () => {
-    act(() => {
-      render(<ActionCell {...defaultProps} isEditable={true} />);
-    });
+    render(<ActionCell {...defaultProps} isEditable={true} />);
 
     // 初期状態（編集モードではない）を確認
     expect(screen.getByText('テストコンテンツ', { selector: 'pre' })).toBeInTheDocument();
@@ -58,7 +54,9 @@ describe('ActionCell', () => {
 
     // クリックして編集モードに入る
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
-    cell.click();
+    act(() => {
+      cell.click();
+    });
 
 
     // 状態が変わるまで待機
@@ -102,7 +100,7 @@ describe('ActionCell', () => {
         expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
       });
     });
-    onChange('新しい内容');
+    // onChange('新しい内容');
 
     // onChangeが呼ばれるのを待つ
     await vi.waitFor(() => {
@@ -202,7 +200,6 @@ describe('ActionCell', () => {
 
   it('ヘッダーセルとして表示される', () => {
     render(<ActionCell {...defaultProps} isHeader={true} />);
-    screen.debug();
     const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('div');
     expect(cell).toHaveClass('bg-green-300');
   });
