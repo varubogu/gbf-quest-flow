@@ -2,8 +2,27 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { SkillTable } from './SkillTable';
 import type { WeaponSkillEffect } from '@/types/models';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '@/i18n';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
+
+// i18nの設定をモック化
+i18n.use(initReactI18next).init({
+  lng: 'ja',
+  resources: {
+    ja: {
+      translation: {
+        skill: 'スキル',
+        effectAmount: '効果量',
+        skillEffects: 'スキル効果量',
+        totalAmount: 'スキル総合値',
+        taRate: 'TA率',
+        hp: '守護',
+        defense: '防御力',
+      },
+    },
+  },
+});
 
 describe('SkillTable', () => {
   const mockValues: WeaponSkillEffect = {
@@ -16,28 +35,25 @@ describe('SkillTable', () => {
 
   beforeEach(() => {
     mockOnChange.mockClear();
-    // テスト前に言語を日本語に設定
-    i18n.changeLanguage('ja');
+    window.scrollTo = vi.fn();
   });
 
-  it('表示モードで正しくデータが表示される', async () => {
+  it('表示モードで正しくデータが表示される', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={false}
-          title={i18n.t('skillEffects', { ns: 'weapon' })}
+          titleKey="skillEffects"
           values={mockValues}
           onChange={mockOnChange}
         />
       </I18nextProvider>
     );
 
-    // 翻訳の読み込みを待機
-    await screen.findByRole('table');
-
     // ヘッダーの検証
-    expect(screen.getByText(i18n.t('skill', { ns: 'weapon' }))).toBeDefined();
-    expect(screen.getByText(i18n.t('effectAmount', { ns: 'weapon' }))).toBeDefined();
+    expect(screen.getByText('スキル')).toBeDefined();
+    expect(screen.getByText('効果量')).toBeDefined();
+    expect(screen.getByText('スキル効果量')).toBeDefined();
 
     // データの検証
     expect(screen.getByText('50%')).toBeDefined();
@@ -50,7 +66,7 @@ describe('SkillTable', () => {
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={true}
-          title="スキル効果量"
+          titleKey="skillEffects"
           values={mockValues}
           onChange={mockOnChange}
         />
@@ -76,7 +92,7 @@ describe('SkillTable', () => {
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={false}
-          title="スキル効果量"
+          titleKey="skillEffects"
           values={defaultValues}
           onChange={mockOnChange}
         />
@@ -85,9 +101,9 @@ describe('SkillTable', () => {
 
     // デフォルト値の各フィールドを個別に検証
     const cells = screen.getAllByRole('cell');
-    const taRateCell = cells[0];
-    const hpCell = cells[1];
-    const defenseCell = cells[2];
+    const taRateCell = cells[1];
+    const hpCell = cells[3];
+    const defenseCell = cells[5];
 
     expect(taRateCell).toHaveTextContent('');
     expect(hpCell).toHaveTextContent('');
@@ -110,7 +126,7 @@ describe('SkillTable', () => {
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={false}
-          title="スキル効果量"
+          titleKey="skillEffects"
           values={valuesWithNewlines}
           onChange={mockOnChange}
         />
@@ -119,28 +135,29 @@ describe('SkillTable', () => {
 
     // セルごとに改行を含むテキストを検証
     const cells = screen.getAllByRole('cell');
-    expect(cells).toHaveLength(3); // 3つのセルが存在することを確認
+    expect(cells).toHaveLength(6); // ラベル3つ + 値3つ
 
     // TA率のセル
-    const taRateCell = cells[0];
+    const taRateCell = cells[1];
     const taRateLines = taRateCell?.getElementsByTagName('br');
     expect(taRateLines).toHaveLength(1); // 改行が1つ存在
     expect(taRateCell?.textContent).toBe('50%60%');
 
     // HPのセル
-    const hpCell = cells[1];
+    const hpCell = cells[3];
     const hpLines = hpCell?.getElementsByTagName('br');
     expect(hpLines).toHaveLength(1);
     expect(hpCell?.textContent).toBe('30004000');
 
     // 防御力のセル
-    const defenseCell = cells[2];
+    const defenseCell = cells[5];
     const defenseLines = defenseCell?.getElementsByTagName('br');
     expect(defenseLines).toHaveLength(1);
     expect(defenseCell?.textContent).toBe('10%15%');
 
     // 各セルに<br>要素が正しく配置されていることを確認
-    cells.forEach((cell) => {
+    [taRateCell, hpCell, defenseCell].forEach((cell) => {
+      if (!cell) return;
       const fragments = cell.childNodes;
       expect(fragments).toHaveLength(3); // テキスト、br、テキストの3要素
       const brElement = fragments[1] as ChildNode;
@@ -148,61 +165,56 @@ describe('SkillTable', () => {
     });
   });
 
-  it('アクセシビリティ属性が正しく設定されている', async () => {
+  it('アクセシビリティ属性が正しく設定されている', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={true}
-          title="スキル効果量"
+          titleKey="skillEffects"
           values={mockValues}
           onChange={mockOnChange}
         />
       </I18nextProvider>
     );
 
-    // 翻訳の読み込みを待機
-    await screen.findByLabelText(i18n.t('taRate', { ns: 'weapon' }));
-
-    const taRateInput = screen.getByLabelText(i18n.t('taRate', { ns: 'weapon' }));
+    const taRateInput = screen.getByLabelText('TA率');
     expect(taRateInput).toBeDefined();
-    expect(taRateInput.getAttribute('aria-label')).toBe(i18n.t('taRate', { ns: 'weapon' }));
+    expect(taRateInput.getAttribute('aria-label')).toBe('TA率');
 
-    const hpInput = screen.getByLabelText('HP');
+    const hpInput = screen.getByLabelText('守護');
     expect(hpInput).toBeDefined();
-    expect(hpInput.getAttribute('aria-label')).toBe('HP');
+    expect(hpInput.getAttribute('aria-label')).toBe('守護');
 
-    const defenseInput = screen.getByLabelText(i18n.t('defense', { ns: 'weapon' }));
+    const defenseInput = screen.getByLabelText('防御力');
     expect(defenseInput).toBeDefined();
-    expect(defenseInput.getAttribute('aria-label')).toBe(i18n.t('defense', { ns: 'weapon' }));
+    expect(defenseInput.getAttribute('aria-label')).toBe('防御力');
   });
 
-  it('タイトルに応じて正しいヘッダーが表示される', async () => {
+  it('タイトルに応じて正しいヘッダーが表示される', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={false}
-          title={i18n.t('skillEffects', { ns: 'weapon' })}
+          titleKey="skillEffects"
           values={mockValues}
           onChange={mockOnChange}
         />
       </I18nextProvider>
     );
 
-    await screen.findByRole('table');
-    expect(screen.getByText(i18n.t('effectAmount', { ns: 'weapon' }))).toBeDefined();
+    expect(screen.getByText('スキル効果量')).toBeDefined();
 
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
           isEditing={false}
-          title={i18n.t('totalAmount', { ns: 'weapon' })}
+          titleKey="totalAmount"
           values={mockValues}
           onChange={mockOnChange}
         />
       </I18nextProvider>
     );
 
-    await screen.findByRole('table');
-    expect(screen.getByText(i18n.t('totalAmount', { ns: 'weapon' }))).toBeDefined();
+    expect(screen.getByText('スキル総合値')).toBeDefined();
   });
 });

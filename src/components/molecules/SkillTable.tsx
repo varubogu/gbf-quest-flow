@@ -27,14 +27,18 @@ const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onC
 
   return (
     <tr>
-      <td className={tableCellBaseStyle}>{label}</td>
+      <td className={tableCellBaseStyle}>
+        <label htmlFor={`skill-${field}`}>{label}</label>
+      </td>
       <td className={tableCellBaseStyle}>
         {isEditing ? (
           <textarea
+            id={`skill-${field}`}
             ref={textareaRef}
             value={value}
             onChange={(e) => onChange(field, e.target.value)}
             className={textareaBaseStyle}
+            aria-label={label}
           />
         ) : (
           value.split('\n').map((line, i) => (
@@ -58,6 +62,14 @@ interface SkillTableProps {
 
 export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, values, onChange }) => {
   const { t } = useTranslation();
+
+  if (!values) {
+    values = {
+      taRate: '',
+      hp: '',
+      defense: '',
+    };
+  }
 
   const skillRows: { field: SkillField; labelKey: string }[] = [
     { field: 'taRate', labelKey: 'taRate' },
