@@ -58,6 +58,7 @@ const config = [
     plugins: {
       '@typescript-eslint': /** @type {import('@typescript-eslint/utils').TSESLint.Plugin} */ (tseslint),
       react: /** @type {import('eslint-plugin-react').Plugin} */ (reactPlugin),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       'react-hooks': /** @type {import('eslint').ESLint.Plugin} */ (reactHooksPlugin),
     },
     rules: {
@@ -117,6 +118,7 @@ const config = [
   {
     files: ['**/*.astro'],
     languageOptions: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       parser: astroPlugin.parser,
       parserOptions: {
         parser: tseslintParser,
