@@ -1,15 +1,25 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FlowLayout } from './FlowLayout';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // react-resizable-panelsのモック
-vi.mock('react-resizable-panels', () => ({
-  Panel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  PanelGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  PanelResizeHandle: () => <div data-testid="resize-handle" />,
-  ImperativePanelHandle: vi.fn(),
-}));
+const mockOnResize = vi.fn();
+
+vi.mock('react-resizable-panels', () => {
+  return {
+    Panel: ({ children, onResize }: { children: React.ReactNode; onResize?: (_size: number) => void }) => {
+      if (onResize) {
+        mockOnResize.mockImplementation(onResize);
+        setTimeout(() => onResize(30), 0);
+      }
+      return <div>{children}</div>;
+    },
+    PanelGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    PanelResizeHandle: () => <div data-testid="resize-handle" />,
+    ImperativePanelHandle: vi.fn(),
+  };
+});
 
 // モーダルコンポーネントのモック
 vi.mock('@/components/organisms/OrganizationModal', () => ({
@@ -54,6 +64,8 @@ describe('FlowLayout', () => {
     onSave: vi.fn(),
     onTitleChange: vi.fn(),
     onAlwaysChange: vi.fn(),
+    onNew: vi.fn(),
+    onExitEditMode: vi.fn(),
   };
 
   beforeEach(() => {
@@ -101,5 +113,91 @@ describe('FlowLayout', () => {
 
     fireEvent.click(infoButton);
     expect(screen.getByText('その他の情報')).toBeInTheDocument();
+  });
+
+  it('編集モードの終了処理が正しく動作する', () => {
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={true} {...mockHandlers} />);
+
+    const cancelButton = screen.getByLabelText('編集をキャンセル');
+    fireEvent.click(cancelButton);
+
+    expect(mockHandlers.onExitEditMode).toHaveBeenCalledTimes(1);
+  });
+
+  it('メモパネルのリサイズが正しく動作する', () => {
+
+    renderWithI18n(
+      <FlowLayout flowData={mockFlowData} isEditMode={false} {...mockHandlers} />
+    );
+
+    const toggleButton = screen.getByText('メモ開閉');
+
+    // メモパネルを開く - onResizeが30で呼ばれることを確認
+    act(() => {
+      toggleButton.click();
+
+    });
+
+    vi.waitFor(() => {
+      expect(mockOnResize).toHaveBeenCalled();
+      expect(mockOnResize).toHaveBeenCalledWith(30);
+    }, { timeout: 1000 });
+
+    act(() => {
+      mockOnResize.mockClear();
+    });
+
+    // メモパネルを閉じる - onResizeが0で呼ばれることを確認
+    act(() => {
+      toggleButton.click();
+    });
+
+    vi.waitFor(() => {
+      expect(mockOnResize).toHaveBeenCalledWith(0);
+    }, { timeout: 1000 });
+
+    // メモパネルを閉じる - onResizeが0で呼ばれることを確認
+    act(() => {
+      toggleButton.click();
+    });
+
+    vi.waitFor(() => {
+      expect(mockOnResize).toHaveBeenCalledWith(0);
+    }, { timeout: 1000 });
+  });
+
+  it('保存ボタンが正しく動作する', () => {
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={true} {...mockHandlers} />);
+
+    const saveButton = screen.getByLabelText('保存して編集を終了');
+    act(() => {
+      saveButton.click();
+    });
+
+    expect(mockHandlers.onSave).toHaveBeenCalledTimes(1);
+  });
+
+  it('キャンセルボタンが正しく動作する', () => {
+    renderWithI18n(<FlowLayout flowData={mockFlowData} isEditMode={true} {...mockHandlers} />);
+
+    const cancelButton = screen.getByLabelText('編集をキャンセル');
+    act(() => {
+      cancelButton.click();
+    });
+
+    expect(mockHandlers.onExitEditMode).toHaveBeenCalledTimes(1);
+  });
+
+  it('エラー状態でも正しくレンダリングされる', () => {
+    const errorFlowData = {
+      ...mockFlowData,
+      title: undefined as unknown as string, // 意図的にエラーを発生させる
+    };
+
+    renderWithI18n(<FlowLayout flowData={errorFlowData} isEditMode={true} {...mockHandlers} />);
+
+    // エラー状態でもUIが崩れないことを確認
+    expect(screen.getByLabelText('保存して編集を終了')).toBeInTheDocument();
+    expect(screen.getByLabelText('編集をキャンセル')).toBeInTheDocument();
   });
 });
