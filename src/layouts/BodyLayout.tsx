@@ -8,6 +8,7 @@ import { announceToScreenReader, handleError } from '@/utils/accessibility';
 import { useUrlManagement } from '@/hooks/useUrlManagement';
 import { useHistoryManagement } from '@/hooks/useHistoryManagement';
 import { useEditHistory } from '@/hooks/useEditHistory';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 interface Props {
   initialData?: Flow | null;
@@ -84,75 +85,20 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
     [flowData, setFlowData, recordChange]
   );
 
-  // 保存処理
-  const handleSave = useCallback(async () => {
-    if (!flowData) return;
-
-    try {
-      const dataStr = JSON.stringify(flowData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${flowData.title || 'flow'}.json`;
-      a.setAttribute('aria-label', `${flowData.title}をダウンロード`);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      setIsEditMode(false);
-      clearHistory();
-      const currentPath = sourceId ? `/${sourceId}` : '/';
-      history.replaceState({ flowData, isSaving: true }, '', currentPath);
-      announceToScreenReader('フローを保存しました');
-    } catch (error) {
-      handleError(error, '保存中');
-    }
-  }, [flowData, sourceId, setIsEditMode, clearHistory]);
-
-  const handleNew = useCallback(() => {
-    try {
-      history.pushState({ flowData }, '', '/?mode=new');
-      createNewFlow();
-      setIsEditMode(true);
-      announceToScreenReader('新しいフローを作成しました');
-    } catch (error) {
-      handleError(error, '新規作成中');
-    }
-  }, [flowData, createNewFlow, setIsEditMode]);
-
-  // キーボードショートカットの処理
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl + S で保存
-      if (e.ctrlKey && e.key === 's' && isEditMode) {
-        e.preventDefault();
-        handleSave();
-      }
-      // Ctrl + N で新規作成
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault();
-        handleNew();
-      }
-      // Escで編集モード終了
-      if (e.key === 'Escape' && isEditMode) {
-        e.preventDefault();
-        handleExitEditMode();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleSave, handleNew, isEditMode, handleExitEditMode]);
+  // キーボードショートカットの設定
+  useKeyboardShortcuts({
+    isEditMode,
+    flowData,
+    sourceId,
+    onExitEditMode: handleExitEditMode,
+    clearHistory,
+  });
 
   const flowLayoutProps = useMemo(() => {
     if (!flowData) return null;
     return {
       flowData,
       isEditMode,
-      onSave: handleSave,
-      onNew: handleNew,
       onTitleChange: handleTitleChange,
       onAlwaysChange: handleAlwaysChange,
       onExitEditMode: handleExitEditMode,
@@ -160,8 +106,6 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
   }, [
     flowData,
     isEditMode,
-    handleSave,
-    handleNew,
     handleTitleChange,
     handleAlwaysChange,
     handleExitEditMode,
