@@ -11,7 +11,7 @@ export default defineConfig({
     exclude: ['e2e/**', '**/node_modules/**', '.bun/**', 'dist/**'],
     isolate: true,
     maxConcurrency: 1,
-    testTimeout: 20000,
+    testTimeout: 10000, // 10秒
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
