@@ -4,5 +4,6 @@
   "skillEffects": "Skill Effect Amount",
   "totalAmount": "Total Skill Value",
   "taRate": "TA Rate",
+  "hp": "HP",
   "defense": "Defense"
 }

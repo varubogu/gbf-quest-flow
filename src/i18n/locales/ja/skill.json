@@ -4,5 +4,6 @@
   "skillEffects": "スキル効果量",
   "totalAmount": "スキル総合値",
   "taRate": "TA率",
+  "hp": "守護",
   "defense": "防御力"
 }

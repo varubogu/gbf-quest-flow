@@ -11,20 +11,59 @@ import {
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
 
+type SkillValue = WeaponSkillEffect | WeaponSkillTotal;
+type SkillField = keyof SkillValue;
+
+interface SkillRowProps {
+  field: SkillField;
+  label: string;
+  value: string;
+  isEditing: boolean;
+  onChange: (_field: SkillField, _value: string) => void;
+}
+
+const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onChange }) => {
+  const textareaRef = useAutoResizeTextArea(value);
+
+  return (
+    <tr>
+      <td className={tableCellBaseStyle}>{label}</td>
+      <td className={tableCellBaseStyle}>
+        {isEditing ? (
+          <textarea
+            ref={textareaRef}
+            value={value}
+            onChange={(e) => onChange(field, e.target.value)}
+            className={textareaBaseStyle}
+          />
+        ) : (
+          value.split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+              {line}
+              {i < value.split('\n').length - 1 && <br />}
+            </React.Fragment>
+          ))
+        )}
+      </td>
+    </tr>
+  );
+};
+
 interface SkillTableProps {
   isEditing: boolean;
   titleKey: string;
-  values: WeaponSkillEffect | WeaponSkillTotal;
-  onChange: (_field: keyof (WeaponSkillEffect | WeaponSkillTotal), _value: string) => void;
+  values: SkillValue;
+  onChange: (_field: SkillField, _value: string) => void;
 }
 
 export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, values, onChange }) => {
   const { t } = useTranslation();
 
-  // フックをトップレベルで直接呼び出す
-  const taRateRef = useAutoResizeTextArea(values.taRate);
-  const hpRef = useAutoResizeTextArea(values.hp);
-  const defenseRef = useAutoResizeTextArea(values.defense);
+  const skillRows: { field: SkillField; labelKey: string }[] = [
+    { field: 'taRate', labelKey: 'taRate' },
+    { field: 'hp', labelKey: 'hp' },
+    { field: 'defense', labelKey: 'defense' },
+  ];
 
   return (
     <div className="mt-8">
@@ -41,66 +80,16 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, val
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className={tableCellBaseStyle}>{t('taRate')}</td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <textarea
-                  ref={taRateRef}
-                  value={values.taRate}
-                  onChange={(e) => onChange('taRate', e.target.value)}
-                  className={textareaBaseStyle}
-                />
-              ) : (
-                values.taRate.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < values.taRate.split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td className={tableCellBaseStyle}>HP</td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <textarea
-                  ref={hpRef}
-                  value={values.hp}
-                  onChange={(e) => onChange('hp', e.target.value)}
-                  className={textareaBaseStyle}
-                />
-              ) : (
-                values.hp.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < values.hp.split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td className={tableCellBaseStyle}>{t('defense')}</td>
-            <td className={tableCellBaseStyle}>
-              {isEditing ? (
-                <textarea
-                  ref={defenseRef}
-                  value={values.defense}
-                  onChange={(e) => onChange('defense', e.target.value)}
-                  className={textareaBaseStyle}
-                />
-              ) : (
-                values.defense.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i < values.defense.split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))
-              )}
-            </td>
-          </tr>
+          {skillRows.map(({ field, labelKey }) => (
+            <SkillRow
+              key={field}
+              field={field}
+              label={t(labelKey)}
+              value={values[field]}
+              isEditing={isEditing}
+              onChange={onChange}
+            />
+          ))}
         </tbody>
       </table>
     </div>
