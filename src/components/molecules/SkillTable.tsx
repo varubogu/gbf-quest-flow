@@ -13,12 +13,12 @@ import {
 
 interface SkillTableProps {
   isEditing: boolean;
-  title: string;
+  titleKey: string;
   values: WeaponSkillEffect | WeaponSkillTotal;
   onChange: (_field: keyof (WeaponSkillEffect | WeaponSkillTotal), _value: string) => void;
 }
 
-export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values, onChange }) => {
+export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, values, onChange }) => {
   const { t } = useTranslation();
 
   // フックをトップレベルで直接呼び出す
@@ -28,7 +28,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
 
   return (
     <div className="mt-8">
-      <h3 className="text-lg font-bold mb-4">{title}</h3>
+      <h3 className="text-lg font-bold mb-4">{t(titleKey)}</h3>
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
@@ -36,7 +36,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, title, values
               {t('skill')}
             </th>
             <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles['3/4']}`}>
-              {title === t('skillEffects') ? t('effectAmount') : t('totalAmount')}
+              {t('effectAmount')}
             </th>
           </tr>
         </thead>

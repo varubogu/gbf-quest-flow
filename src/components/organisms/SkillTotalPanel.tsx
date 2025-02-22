@@ -9,7 +9,6 @@ interface SkillTotalPanelProps {
 }
 
 export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) => {
-  const { t } = useTranslation();
   const { flowData, updateFlowData } = useFlowStore();
 
   // メモ化されたスキル総合値データを作成
@@ -42,10 +41,10 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
   return (
     <div>
       <SkillTable
-        title={t('skillTotals')}
+        isEditing={isEditing}
+        titleKey="totalAmount"
         values={skillTotalData}
         onChange={handleSkillTotalChange}
-        isEditing={isEditing}
       />
     </div>
   );

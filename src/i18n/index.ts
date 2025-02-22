@@ -5,10 +5,12 @@ import jaCommon from './locales/ja/common.json'
 import jaWeapon from './locales/ja/weapon.json'
 import jaCharacter from './locales/ja/character.json'
 import jaSummon from './locales/ja/summon.json'
+import jaSkill from './locales/ja/skill.json'
 import enCommon from './locales/en/common.json'
 import enWeapon from './locales/en/weapon.json'
 import enCharacter from './locales/en/character.json'
 import enSummon from './locales/en/summon.json'
+import enSkill from './locales/en/skill.json'
 
 // i18nextインスタンスを初期化
 i18next
@@ -17,6 +19,7 @@ i18next
   .init({
     debug: true,
     fallbackLng: 'ja',
+    defaultNS: 'translation',
     interpolation: {
       escapeValue: false,
     },
@@ -27,6 +30,7 @@ i18next
           ...jaWeapon,
           ...jaCharacter,
           ...jaSummon,
+          ...jaSkill,
         },
       },
       en: {
@@ -35,6 +39,7 @@ i18next
           ...enWeapon,
           ...enCharacter,
           ...enSummon,
+          ...enSkill,
         },
       },
     },
