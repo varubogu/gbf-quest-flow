@@ -4,15 +4,14 @@ import { useFlowDataModification } from './useFlowDataModification';
 import type { Flow } from '@/types/models';
 
 // FlowStoreのモック
-vi.mock('@/stores/flowStore', () => {
-  const store = {
-    setFlowData: vi.fn(),
-  };
+const mockSetFlowData = vi.fn();
+const mockStore = {
+  setFlowData: mockSetFlowData,
+};
 
-  return {
-    default: vi.fn((selector) => selector(store)),
-  };
-});
+vi.mock('@/stores/flowStore', () => ({
+  default: (selector: (_state: typeof mockStore) => unknown) => selector(mockStore),
+}));
 
 describe('useFlowDataModification', () => {
   const mockFlowData: Flow = {
@@ -69,7 +68,7 @@ describe('useFlowDataModification', () => {
       title: newTitle,
     };
 
-    expect(useFlowStore.mock.results[0].value.setFlowData).toHaveBeenCalledWith(expectedData);
+    expect(mockSetFlowData).toHaveBeenCalledWith(expectedData);
     expect(mockRecordChange).toHaveBeenCalledWith(expectedData);
   });
 
@@ -93,7 +92,7 @@ describe('useFlowDataModification', () => {
       always: newAlways,
     };
 
-    expect(useFlowStore.mock.results[0].value.setFlowData).toHaveBeenCalledWith(expectedData);
+    expect(mockSetFlowData).toHaveBeenCalledWith(expectedData);
     expect(mockRecordChange).toHaveBeenCalledWith(expectedData);
   });
 
@@ -116,7 +115,7 @@ describe('useFlowDataModification', () => {
     result.current.handleTitleChange(titleEvent);
     result.current.handleAlwaysChange(alwaysEvent);
 
-    expect(useFlowStore.mock.results[0].value.setFlowData).not.toHaveBeenCalled();
+    expect(mockSetFlowData).not.toHaveBeenCalled();
     expect(mockRecordChange).not.toHaveBeenCalled();
   });
 });
