@@ -1,55 +1,41 @@
 import { useEffect } from 'react';
-import { announceToScreenReader, handleError } from '@/utils/accessibility';
-import useFlowStore from '@/stores/flowStore';
 import type { Flow } from '@/types/models';
-import { saveFlow, updateNewFlowState as updateNewState } from '@/utils/flowOperations';
+import { handleFlowSave, handleNewFlow } from '@/services/flowEventService';
 
-interface UseKeyboardShortcutsProps {
+interface Props {
   isEditMode: boolean;
   flowData: Flow | null;
-  sourceId: string | null;
   onExitEditMode: () => Promise<void>;
   clearHistory: () => void;
+  sourceId?: string | null;
 }
 
 export const useKeyboardShortcuts = ({
   isEditMode,
   flowData,
-  sourceId,
   onExitEditMode,
   clearHistory,
-}: UseKeyboardShortcutsProps) => {
+  sourceId = null,
+}: Props) => {
   useEffect(() => {
-    const handleKeyDown = async (e: KeyboardEvent) => {
-      const { setIsEditMode, createNewFlow } = useFlowStore.getState();
-
-      // Ctrl + S で保存
-      if (e.ctrlKey && e.key === 's' && isEditMode && flowData) {
-        e.preventDefault();
-        const success = await saveFlow(flowData, sourceId);
-        if (success) {
-          setIsEditMode(false);
-          clearHistory();
-          const currentPath = sourceId ? `/${sourceId}` : '/';
-          history.replaceState({ flowData, isSaving: true }, '', currentPath);
-        }
-      }
-
-      // Ctrl + N で新規作成
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault();
-        createNewFlow();
-        updateNewState(flowData);
-      }
-
-      // Escで編集モード終了
-      if (e.key === 'Escape' && isEditMode) {
-        e.preventDefault();
+    const handleKeyDown = async (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         await onExitEditMode();
+        return;
+      }
+
+      if (!event.ctrlKey) return;
+
+      if (event.key === 's' && isEditMode && flowData) {
+        event.preventDefault();
+        await handleFlowSave(flowData, sourceId, clearHistory);
+      } else if (event.key === 'n') {
+        event.preventDefault();
+        handleNewFlow(flowData);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isEditMode, flowData, sourceId, onExitEditMode, clearHistory]);
+  }, [isEditMode, flowData, onExitEditMode, clearHistory, sourceId]);
 };
