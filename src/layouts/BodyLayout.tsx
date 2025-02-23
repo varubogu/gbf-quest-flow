@@ -9,6 +9,8 @@ import { useUrlManagement } from '@/hooks/useUrlManagement';
 import { useHistoryManagement } from '@/hooks/useHistoryManagement';
 import { useEditHistory } from '@/hooks/useEditHistory';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useFlowDataModification } from '@/hooks/useFlowDataModification';
+import { saveFlow, updateNewFlowState } from '@/utils/flowOperations';
 
 interface Props {
   initialData?: Flow | null;
@@ -16,7 +18,7 @@ interface Props {
   sourceId?: string | null;
 }
 
-function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Props) {
+function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props) {
   const [isLoading, setIsLoading] = React.useState(true);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
@@ -49,41 +51,28 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
     }
   }, [hasChanges, setIsEditMode, clearHistory, setFlowData]);
 
-  // タイトルの変更処理
-  const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!flowData) return;
-      try {
-        const newData = {
-          ...flowData,
-          title: e.target.value,
-        };
-        setFlowData(newData);
-        recordChange(newData);
-      } catch (error) {
-        handleError(error, 'タイトル更新中');
-      }
-    },
-    [flowData, setFlowData, recordChange]
-  );
+  // データ変更処理
+  const { handleTitleChange, handleAlwaysChange } = useFlowDataModification({
+    flowData,
+    recordChange,
+  });
 
-  // 常時実行項目の変更処理
-  const handleAlwaysChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (!flowData) return;
-      try {
-        const newData = {
-          ...flowData,
-          always: e.target.value,
-        };
-        setFlowData(newData);
-        recordChange(newData);
-      } catch (error) {
-        handleError(error, '常時実行項目更新中');
-      }
-    },
-    [flowData, setFlowData, recordChange]
-  );
+  // 保存処理
+  const handleSave = useCallback(async () => {
+    if (!flowData) return;
+    const success = await saveFlow(flowData, sourceId);
+    if (success) {
+      setIsEditMode(false);
+      clearHistory();
+    }
+  }, [flowData, sourceId, setIsEditMode, clearHistory]);
+
+  // 新規作成処理
+  const handleNew = useCallback(() => {
+    updateNewFlowState(flowData);
+    createNewFlow();
+    setIsEditMode(true);
+  }, [flowData, createNewFlow, setIsEditMode]);
 
   // キーボードショートカットの設定
   useKeyboardShortcuts({
@@ -102,6 +91,8 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
       onTitleChange: handleTitleChange,
       onAlwaysChange: handleAlwaysChange,
       onExitEditMode: handleExitEditMode,
+      onSave: handleSave,
+      onNew: handleNew,
     };
   }, [
     flowData,
@@ -109,6 +100,8 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId }: Pro
     handleTitleChange,
     handleAlwaysChange,
     handleExitEditMode,
+    handleSave,
+    handleNew,
   ]);
 
   useUrlManagement(isEditMode, sourceId, initialMode, flowData);

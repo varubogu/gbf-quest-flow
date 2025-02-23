@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
 import useFlowStore from '@/stores/flowStore';
 import type { Flow } from '@/types/models';
@@ -7,8 +7,11 @@ import type { Flow } from '@/types/models';
 // FlowStoreのモック
 vi.mock('@/stores/flowStore', () => {
   const store = {
-    setIsEditMode: vi.fn(),
+    setIsEditMode: vi.fn().mockImplementation((value: boolean) => {
+      store.isEditMode = value;
+    }),
     createNewFlow: vi.fn(),
+    isEditMode: false,
   };
 
   return {
@@ -57,19 +60,20 @@ describe('useKeyboardShortcuts', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // ストアの状態をリセット
+    useFlowStore.getState().isEditMode = false;
     // BlobとURL操作のモック
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn(() => 'blob:test'),
       revokeObjectURL: vi.fn(),
     });
     // document.createElement のモック
-    const mockAnchor = {
-      href: '',
-      download: '',
-      setAttribute: vi.fn(),
-      click: vi.fn(),
-    };
-    vi.spyOn(document, 'createElement').mockReturnValue(mockAnchor as any);
+    const mockAnchor = document.createElement('a');
+    Object.defineProperties(mockAnchor, {
+      setAttribute: { value: vi.fn() },
+      click: { value: vi.fn() }
+    });
+    vi.spyOn(document, 'createElement').mockReturnValue(mockAnchor);
     // document.body のメソッドをモック
     vi.spyOn(document.body, 'appendChild').mockImplementation(() => document.body);
     vi.spyOn(document.body, 'removeChild').mockImplementation(() => document.body);
@@ -83,7 +87,10 @@ describe('useKeyboardShortcuts', () => {
       ctrlKey: true,
       bubbles: true,
     });
-    window.dispatchEvent(event);
+
+    await act(async () => {
+      window.dispatchEvent(event);
+    });
 
     expect(mockProps.clearHistory).toHaveBeenCalled();
     expect(useFlowStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
@@ -91,7 +98,7 @@ describe('useKeyboardShortcuts', () => {
     expect(URL.revokeObjectURL).toHaveBeenCalled();
   });
 
-  it('Ctrl + Nで新規作成処理が実行される', () => {
+  it('Ctrl + Nで新規作成処理が実行される', async () => {
     renderHook(() => useKeyboardShortcuts(mockProps));
 
     const event = new KeyboardEvent('keydown', {
@@ -99,10 +106,14 @@ describe('useKeyboardShortcuts', () => {
       ctrlKey: true,
       bubbles: true,
     });
-    window.dispatchEvent(event);
+
+    await act(async () => {
+      window.dispatchEvent(event);
+    });
 
     expect(useFlowStore.getState().createNewFlow).toHaveBeenCalled();
     expect(useFlowStore.getState().setIsEditMode).toHaveBeenCalledWith(true);
+    expect(useFlowStore.getState().isEditMode).toBe(true);
   });
 
   it('Escapeで編集モード終了処理が実行される', async () => {
@@ -112,12 +123,15 @@ describe('useKeyboardShortcuts', () => {
       key: 'Escape',
       bubbles: true,
     });
-    window.dispatchEvent(event);
+
+    await act(async () => {
+      window.dispatchEvent(event);
+    });
 
     expect(mockProps.onExitEditMode).toHaveBeenCalled();
   });
 
-  it('編集モードでない場合、Ctrl + Sは実行されない', () => {
+  it('編集モードでない場合、Ctrl + Sは実行されない', async () => {
     renderHook(() =>
       useKeyboardShortcuts({
         ...mockProps,
@@ -130,14 +144,17 @@ describe('useKeyboardShortcuts', () => {
       ctrlKey: true,
       bubbles: true,
     });
-    window.dispatchEvent(event);
+
+    await act(async () => {
+      window.dispatchEvent(event);
+    });
 
     expect(mockProps.clearHistory).not.toHaveBeenCalled();
     expect(useFlowStore.getState().setIsEditMode).not.toHaveBeenCalled();
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
 
-  it('flowDataがない場合、Ctrl + Sは実行されない', () => {
+  it('flowDataがない場合、Ctrl + Sは実行されない', async () => {
     renderHook(() =>
       useKeyboardShortcuts({
         ...mockProps,
@@ -150,7 +167,10 @@ describe('useKeyboardShortcuts', () => {
       ctrlKey: true,
       bubbles: true,
     });
-    window.dispatchEvent(event);
+
+    await act(async () => {
+      window.dispatchEvent(event);
+    });
 
     expect(mockProps.clearHistory).not.toHaveBeenCalled();
     expect(useFlowStore.getState().setIsEditMode).not.toHaveBeenCalled();

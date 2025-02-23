@@ -14,9 +14,10 @@ import { SettingsPanel } from './SettingsPanel';
 import {
   downloadFlow,
   getDownloadFilename,
-  shouldConfirmDiscard,
   showNoDataAlert,
 } from '@/utils/FileOperations';
+import { useFlowDataModification } from '@/hooks/useFlowDataModification';
+import { useEditHistory } from '@/hooks/useEditHistory';
 
 interface Props {
   onSave: () => void;
@@ -35,28 +36,29 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props) {
   const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
   const isEditMode = useFlowStore((state) => state.isEditMode);
   const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
-  const cancelEdit = useFlowStore((state) => state.cancelEdit);
+
+  const { hasChanges } = useEditHistory(flowData);
+
+  const { handleSave, handleCancel, handleNew } = useFlowDataModification({
+    flowData,
+    recordChange: () => {}, // サイドメニューでは変更記録は不要
+    hasChanges,
+  });
 
   const handleMenuClick = async (id: string) => {
     switch (id) {
       case 'new':
-        if (isEditMode) {
-          if (!shouldConfirmDiscard(isEditMode, t)) {
-            break;
-          }
-          cancelEdit();
+        if (await handleNew()) {
+          onNew();
         }
-        onNew();
         setIsOpen(false);
         break;
 
       case 'load':
         try {
           if (isEditMode) {
-            if (!shouldConfirmDiscard(isEditMode, t)) {
-              break;
-            }
-            cancelEdit();
+            const cancelled = !await handleCancel();
+            if (cancelled) break;
           }
 
           setIsLoading(true);
@@ -86,7 +88,8 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props) {
 
       case 'edit':
         if (isEditMode) {
-          if (onSave) {
+          const success = await handleSave();
+          if (success) {
             onSave();
           }
         } else {
@@ -96,7 +99,9 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props) {
         break;
 
       case 'cancel':
-        onExitEditMode();
+        if (await handleCancel()) {
+          onExitEditMode();
+        }
         setIsOpen(false);
         break;
 
