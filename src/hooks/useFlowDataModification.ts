@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import type { Flow } from '@/types/models';
 import { handleError } from '@/utils/accessibility';
 import useFlowStore from '@/stores/flowStore';
-import { saveFlow, updateNewFlowState } from '@/utils/flowOperations';
+import { handleFlowSave, handleNewFlow, handleCancel } from '@/services/flowEventService';
 import { useTranslation } from 'react-i18next';
 
 interface UseFlowDataModificationProps {
@@ -25,9 +25,6 @@ export const useFlowDataModification = ({
 }: UseFlowDataModificationProps) => {
   const { t } = useTranslation();
   const setFlowData = useFlowStore((state) => state.setFlowData);
-  const setIsEditMode = useFlowStore((state) => state.setIsEditMode);
-  const originalData = useFlowStore((state) => state.originalData);
-  const initializeNewFlow = useFlowStore((state) => state.createNewFlow);
 
   // データ変更のハンドラー
   const handleTitleChange = useCallback(
@@ -80,63 +77,40 @@ export const useFlowDataModification = ({
   const handleSave = useCallback(async () => {
     if (!flowData) return false;
     try {
-      // 1. ファイルの保存とUI状態の更新
-      const success = await saveFlow(flowData);
-      if (success) {
-        // 2. 編集モードの終了（これにより履歴もクリアされる）
-        setIsEditMode(false);
-        return true;
-      }
-      return false;
+      return await handleFlowSave(flowData, null, recordChange);
     } catch (error) {
       handleError(error, '保存中');
       return false;
     }
-  }, [flowData, setIsEditMode]);
+  }, [flowData, recordChange]);
 
-  const handleCancel = useCallback(() => {
+  const handleCancelEdit = useCallback(async () => {
     try {
-      // 1. 変更確認
-      if (!confirmDiscard()) {
-        return false;
-      }
-
-      // 2. データの復元
-      if (originalData) {
-        setFlowData(structuredClone(originalData));
-      }
-      // 3. 編集モードの終了（これにより履歴もクリアされる）
-      setIsEditMode(false);
-      return true;
+      return await handleCancel(hasChanges, recordChange);
     } catch (error) {
       handleError(error, '編集キャンセル中');
       return false;
     }
-  }, [confirmDiscard, originalData, setFlowData, setIsEditMode]);
+  }, [hasChanges, recordChange]);
 
   const handleNew = useCallback(async () => {
     try {
-      // 1. 変更確認
       if (!confirmDiscard()) {
         return false;
       }
-
-      // 2. 新規データの初期化（これにより編集モードONと履歴クリアが行われる）
-      initializeNewFlow();
-      // 3. UI状態の更新
-      updateNewFlowState(flowData);
+      handleNewFlow(flowData);
       return true;
     } catch (error) {
       handleError(error, '新規作成中');
       return false;
     }
-  }, [confirmDiscard, flowData, initializeNewFlow]);
+  }, [confirmDiscard, flowData]);
 
   return {
     handleTitleChange,
     handleAlwaysChange,
     handleSave,
-    handleCancel,
+    handleCancel: handleCancelEdit,
     handleNew,
   };
 };

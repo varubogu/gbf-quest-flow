@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { handleFlowSave, handleNewFlow } from './flowEventService';
+import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
 import type { Flow } from '@/types/models';
 import useFlowStore from '@/stores/flowStore';
 
@@ -14,6 +14,10 @@ vi.mock('@/stores/flowStore', () => {
   const store = {
     setIsEditMode: vi.fn(),
     createNewFlow: vi.fn(),
+    setFlowData: vi.fn(),
+    originalData: {
+      title: '元のフロー',
+    },
   };
   return {
     default: {
@@ -21,6 +25,9 @@ vi.mock('@/stores/flowStore', () => {
     },
   };
 });
+
+// window.confirmのモック
+const mockConfirm = vi.spyOn(window, 'confirm');
 
 describe('flowEventService', () => {
   const mockFlowData: Flow = {
@@ -56,6 +63,7 @@ describe('flowEventService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockConfirm.mockImplementation(() => true);
   });
 
   describe('handleFlowSave', () => {
@@ -99,6 +107,52 @@ describe('flowEventService', () => {
 
       expect(useFlowStore.getState().createNewFlow).toHaveBeenCalled();
       expect(updateNewFlowState).toHaveBeenCalledWith(null);
+    });
+  });
+
+  describe('handleExitEditMode', () => {
+    it('変更がない場合は確認なしで編集モードを終了する', async () => {
+      const result = await handleExitEditMode(false, mockClearHistory);
+
+      expect(mockConfirm).not.toHaveBeenCalled();
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
+      expect(mockClearHistory).toHaveBeenCalled();
+      expect(result).toBe(true);
+    });
+
+    it('変更があり確認でキャンセルした場合は編集モードを維持する', async () => {
+      mockConfirm.mockImplementationOnce(() => false);
+
+      const result = await handleExitEditMode(true, mockClearHistory);
+
+      expect(mockConfirm).toHaveBeenCalled();
+      expect(useFlowStore.getState().setFlowData).not.toHaveBeenCalled();
+      expect(useFlowStore.getState().setIsEditMode).not.toHaveBeenCalled();
+      expect(mockClearHistory).not.toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+
+    it('変更があり確認でOKした場合は編集モードを終了する', async () => {
+      const result = await handleExitEditMode(true, mockClearHistory);
+
+      expect(mockConfirm).toHaveBeenCalled();
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
+      expect(mockClearHistory).toHaveBeenCalled();
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('handleCancel', () => {
+    it('handleExitEditModeを呼び出す', async () => {
+      const result = await handleCancel(true, mockClearHistory);
+
+      expect(mockConfirm).toHaveBeenCalled();
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
+      expect(mockClearHistory).toHaveBeenCalled();
+      expect(result).toBe(true);
     });
   });
 });

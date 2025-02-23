@@ -10,7 +10,7 @@ import { useHistoryManagement } from '@/hooks/useHistoryManagement';
 import { useEditHistory } from '@/hooks/useEditHistory';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/hooks/useFlowDataModification';
-import { saveFlow, updateNewFlowState } from '@/utils/flowOperations';
+import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/services/flowEventService';
 
 interface Props {
   initialData?: Flow | null;
@@ -28,28 +28,13 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
   // 編集モードの終了処理
-  const handleExitEditMode = useCallback(async () => {
+  const handleExitEditModeCallback = useCallback(async () => {
     try {
-      if (hasChanges) {
-        const shouldDiscard = window.confirm(
-          '変更内容が保存されていません。変更を破棄してもよろしいですか？'
-        );
-        if (!shouldDiscard) {
-          return;
-        }
-      }
-      const store = useFlowStore.getState();
-      const originalData = store.originalData;
-      if (originalData) {
-        setFlowData(structuredClone(originalData));
-      }
-      setIsEditMode(false);
-      clearHistory();
-      announceToScreenReader('編集モードを終了しました');
+      await handleExitEditMode(hasChanges, clearHistory);
     } catch (error) {
       handleError(error, '編集モード終了中');
     }
-  }, [hasChanges, setIsEditMode, clearHistory, setFlowData]);
+  }, [hasChanges, clearHistory]);
 
   // データ変更処理
   const { handleTitleChange, handleAlwaysChange } = useFlowDataModification({
@@ -60,26 +45,20 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   // 保存処理
   const handleSave = useCallback(async () => {
     if (!flowData) return;
-    const success = await saveFlow(flowData, sourceId);
-    if (success) {
-      setIsEditMode(false);
-      clearHistory();
-    }
-  }, [flowData, sourceId, setIsEditMode, clearHistory]);
+    await handleFlowSave(flowData, sourceId, clearHistory);
+  }, [flowData, sourceId, clearHistory]);
 
   // 新規作成処理
   const handleNew = useCallback(() => {
-    updateNewFlowState(flowData);
-    createNewFlow();
-    setIsEditMode(true);
-  }, [flowData, createNewFlow, setIsEditMode]);
+    handleNewFlow(flowData);
+  }, [flowData]);
 
   // キーボードショートカットの設定
   useKeyboardShortcuts({
     isEditMode,
     flowData,
     sourceId,
-    onExitEditMode: handleExitEditMode,
+    onExitEditMode: handleExitEditModeCallback,
     clearHistory,
   });
 
@@ -90,7 +69,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
       isEditMode,
       onTitleChange: handleTitleChange,
       onAlwaysChange: handleAlwaysChange,
-      onExitEditMode: handleExitEditMode,
+      onExitEditMode: handleExitEditModeCallback,
       onSave: handleSave,
       onNew: handleNew,
     };
@@ -99,7 +78,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
     isEditMode,
     handleTitleChange,
     handleAlwaysChange,
-    handleExitEditMode,
+    handleExitEditModeCallback,
     handleSave,
     handleNew,
   ]);
