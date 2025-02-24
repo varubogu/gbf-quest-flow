@@ -1,9 +1,9 @@
 import * as React from 'react';
 import type { Action } from '@/types/models';
 import useSettingsStore from '@/stores/settingsStore';
-import { useTableKeyboardNavigation } from '@/hooks/table/useTableKeyboardNavigation';
-import { useTableScroll } from '@/hooks/table/useTableScroll';
-import { useActionTableConfig } from '@/hooks/table/useActionTableConfig';
+import { useTableKeyboardNavigation } from '@/hooks/ui/table/useTableKeyboardNavigation';
+import { useTableScroll } from '@/hooks/ui/table/useTableScroll';
+import { useActionTableConfig } from '@/hooks/ui/table/useActionTableConfig';
 import { ActionTableControls } from '../molecules/ActionTableControls';
 import { ActionTableHeader } from '../molecules/ActionTableHeader';
 import { ActionTableRow } from '../molecules/ActionTableRow';

@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { textareaBaseStyle } from '@/components/atoms/IconTextButton';
-import { useAutoResizeTextArea } from '@/hooks/ui/useAutoResizeTextArea';
+import { useAutoResizeTextArea } from '@/hooks/ui/base/useAutoResizeTextArea';
 import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
 
 interface WeaponNoteProps {

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/stores/flowStore';
+import { useCharacterForm } from '@/hooks/domain/characters/useCharacterForm';
 import { CharacterForm } from './CharacterForm';
-import { useCharacterForm } from '@/hooks/characters/useCharacterForm';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,
