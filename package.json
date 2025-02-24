@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev --host",
+    "dev:e2e": "astro dev --host --port 4322",
     "build": "astro build",
     "deploy": "bun install && bunx --bun astro build && mkdir -p dist/content && cp -r src/content/flows dist/content/flows",
     "preview": "astro preview --host",

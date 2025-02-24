@@ -2,15 +2,15 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   use: {
-    baseURL: 'http://localhost:4321', // 適切なベースURLを設定
+    baseURL: 'http://localhost:4322', // 適切なベースURLを設定
     // ナビゲーションのタイムアウトを設定
     navigationTimeout: 10000,
     // アクションのタイムアウトを設定
     actionTimeout: 10000,
   },
   webServer: {
-    command: 'bun run dev',
-    url: 'http://localhost:4321',
+    command: 'bun run dev:e2e',
+    url: 'http://localhost:4322',
     // @ts-ignore
     reuseExistingServer: !process.env.CI,
     // サーバー起動のタイムアウトを設定
