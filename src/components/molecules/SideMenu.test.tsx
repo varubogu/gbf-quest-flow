@@ -2,8 +2,13 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { SideMenu } from './SideMenu';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Flow } from '@/types/models';
+import { handleNewFlow } from '@/services/flowEventService';
 
 // モックの作成
+vi.mock('@/services/flowEventService', () => ({
+  handleNewFlow: vi.fn().mockResolvedValue(true),
+}));
+
 vi.mock('react-i18next', () => ({
   // Trans and Translation components
   Trans: ({ children }: { children: unknown }) => children,
@@ -138,11 +143,9 @@ describe('SideMenu', () => {
       fireEvent.click(newButton);
     });
 
-    // 状態の変更を待つ
-    await vi.waitFor(() => {
-      return mockStore.store.isEditMode === true;
-    }, { timeout: 2000 });
-
+    // サービスの呼び出しを確認
+    expect(handleNewFlow).toHaveBeenCalledWith(null);
+    // コールバックの呼び出しを確認
     expect(mockOnNew).toHaveBeenCalledTimes(1);
   });
 
