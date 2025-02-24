@@ -4,9 +4,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4321', // 適切なベースURLを設定
     // ナビゲーションのタイムアウトを設定
-    navigationTimeout: 60000,
+    navigationTimeout: 10000,
     // アクションのタイムアウトを設定
-    actionTimeout: 60000,
+    actionTimeout: 10000,
   },
   webServer: {
     command: 'bun run dev',
