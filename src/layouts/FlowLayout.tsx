@@ -103,12 +103,17 @@ export function FlowLayout({
                 <div className="p-4 h-full">
                   {isEditMode ? (
                     <textarea
+                      id="flow-memo-input"
                       value={flowData.always}
                       onChange={onAlwaysChange}
                       className="w-full h-full p-2 bg-white border rounded resize-none"
                     />
                   ) : (
-                    <pre className="whitespace-pre-wrap h-full">{flowData.always}</pre>
+                    <pre
+                      id="flow-memo-input"
+                      className="whitespace-pre-wrap h-full">
+                        {flowData.always}
+                    </pre>
                   )}
                 </div>
               </div>
