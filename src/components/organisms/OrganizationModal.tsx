@@ -28,7 +28,11 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
 
         {/* モーダルコンテンツ */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <HeadlessDialog.Panel className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
+          <HeadlessDialog.Panel
+            id="organization-modal"
+            role="dialog"
+            aria-labelledby="organization-modal-title"
+            className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
             <HeadlessTab.Group
               selectedIndex={selectedTab}
               onChange={setSelectedTab}

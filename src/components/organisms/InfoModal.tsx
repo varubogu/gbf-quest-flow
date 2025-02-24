@@ -35,13 +35,22 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 
         {/* モーダルコンテンツ */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <HeadlessDialog.Panel className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl h-[90vh] flex flex-col">
+          <HeadlessDialog.Panel
+            id="info-modal"
+            role="dialog"
+            aria-labelledby="info-modal-title"
+            className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl h-[90vh] flex flex-col"
+          >
             {/* ヘッダー部分 */}
             <div className="flex-none p-4 border-b bg-white flex items-center justify-between">
-              <HeadlessDialog.Title className="text-lg font-medium">
+              <HeadlessDialog.Title id="info-modal-title" className="text-lg font-medium">
                 {t('infoModalTitle')}
               </HeadlessDialog.Title>
-              <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700"
+                aria-label={t('close') as string}
+              >
                 ✕
               </button>
             </div>
@@ -59,6 +68,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.title || ''}
                           onChange={(e) => handleInfoChange('title', e.target.value)}
                           className={textInputBaseStyle}
+                          aria-label={t('flowTitle') as string}
                         />
                       ) : (
                         flowData.title
@@ -74,6 +84,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.quest || ''}
                           onChange={(e) => handleInfoChange('quest', e.target.value)}
                           className={textInputBaseStyle}
+                          aria-label={t('quest') as string}
                         />
                       ) : (
                         flowData.quest
@@ -89,6 +100,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.author || ''}
                           onChange={(e) => handleInfoChange('author', e.target.value)}
                           className={textInputBaseStyle}
+                          aria-label={t('author') as string}
                         />
                       ) : (
                         flowData.author
@@ -104,6 +116,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.description || ''}
                           onChange={(e) => handleInfoChange('description', e.target.value)}
                           className={textareaBaseStyle}
+                          aria-label={t('overview') as string}
                         />
                       ) : (
                         flowData.description?.split('\n').map((line, i) => (
@@ -124,6 +137,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.updateDate || ''}
                           onChange={(e) => handleInfoChange('updateDate', e.target.value)}
                           className={textInputBaseStyle}
+                          aria-label={t('updateDate') as string}
                         />
                       ) : (
                         flowData.updateDate
@@ -139,6 +153,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.movie || ''}
                           onChange={(e) => handleInfoChange('movie', e.target.value)}
                           className={textInputBaseStyle}
+                          aria-label={t('referenceVideoUrl') as string}
                         />
                       ) : (
                         flowData.movie && (
@@ -163,6 +178,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                           value={flowData.note || ''}
                           onChange={(e) => handleInfoChange('note', e.target.value)}
                           className={textareaBaseStyle}
+                          aria-label={t('otherNotes') as string}
                         />
                       ) : (
                         flowData.note?.split('\n').map((line, i) => (

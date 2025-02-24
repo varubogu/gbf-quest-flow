@@ -92,7 +92,12 @@ export function FlowLayout({
             text={t('organization') as string}
             onClick={() => setIsOrganizationModalOpen(true)}
           />
-          <IconButton icon={Info} label={t('otherInfo') as string} onClick={() => setIsInfoModalOpen(true)} />
+          <IconButton
+           icon={Info}
+           label={t('otherInfo') as string}
+           aria-label={t('otherInfo') as string}
+           onClick={() => setIsInfoModalOpen(true)}
+          />
         </div>
       </header>
       <main className="flex-1 pt-14">
