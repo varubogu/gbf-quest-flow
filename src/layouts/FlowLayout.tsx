@@ -61,6 +61,8 @@ export function FlowLayout({
             value={flowData.title}
             onChange={onTitleChange}
             className="ml-4 flex-1 text-lg font-medium bg-white border rounded px-2"
+            aria-label={t('flowTitle') as string}
+            id="flow-title-input"
           />
         ) : (
           <h1 className="ml-4 flex-1 text-lg font-medium">{flowData.title}</h1>
