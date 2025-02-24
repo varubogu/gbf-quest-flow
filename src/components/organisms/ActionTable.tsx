@@ -83,7 +83,11 @@ export const ActionTable: React.FC<ActionTableProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col h-full overflow-y-auto">
+    <div
+      ref={containerRef}
+      id="flow-action-table"
+      className="flex flex-col h-full overflow-y-auto"
+    >
       {/* 上下移動ボタンは編集モード時は非表示 */}
       {!isEditMode && (
         <ActionTableControls

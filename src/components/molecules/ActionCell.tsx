@@ -79,6 +79,7 @@ export const ActionCell: React.FC<ActionCellProps> = ({
       style={getBasePadding()}
       onClick={handleClick}
       data-testid={dataTestId}
+      data-field={field}
     >
       {isEditing ? (
         <textarea

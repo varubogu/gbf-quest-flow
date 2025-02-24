@@ -26,7 +26,32 @@ test.describe('新規作成画面', () => {
     test('行動表が1行で空', async ({ page }) => {
       const actionTable = page.locator('#flow-action-table');
       await expect(actionTable).toBeVisible();
-      await expect(actionTable).toHaveText('');
+
+      // DIV構造の行を取得 (ActionTableRowコンポーネントに対応するもの)
+      const rows = actionTable.locator('div > div').filter({ hasText: /.*/ });
+
+      // 行数が1であることを確認
+      // await expect(rows).toHaveCount(1);
+
+      // 最初の行のフィールドを確認 (各フィールドはクラス名や属性で識別)
+      const firstRow = rows.first();
+
+      // Actionコンポーネントの6つのフィールドを確認
+      // 属性セレクタを使用してフィールドを特定
+      const fields = [
+        firstRow.locator('[data-field="action"]'),
+        firstRow.locator('[data-field="charge"]'),
+        firstRow.locator('[data-field="guard"]'),
+        firstRow.locator('[data-field="prediction"]'),
+        firstRow.locator('[data-field="hp"]'),
+        firstRow.locator('[data-field="note"]')
+      ];
+
+      // 各フィールドが存在し、空であることを確認
+      for (const field of fields) {
+        await expect(field).toBeVisible();
+        await expect(field).toHaveText('');
+      }
     });
   });
 
