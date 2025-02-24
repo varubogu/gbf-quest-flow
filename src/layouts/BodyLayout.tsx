@@ -5,11 +5,11 @@ import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
 import type { Flow, ViewMode } from '@/types/models';
 import { announceToScreenReader, handleError } from '@/utils/accessibility';
-import { useUrlManagement } from '@/hooks/useUrlManagement';
-import { useHistoryManagement } from '@/hooks/useHistoryManagement';
-import { useEditHistory } from '@/hooks/useEditHistory';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useFlowDataModification } from '@/hooks/useFlowDataModification';
+import { useUrlManagement } from '@/hooks/flow/useUrlManagement';
+import { useHistoryManagement } from '@/hooks/flow/useHistoryManagement';
+import { useEditHistory } from '@/hooks/flow/useEditHistory';
+import { useKeyboardShortcuts } from '@/hooks/ui/useKeyboardShortcuts';
+import { useFlowDataModification } from '@/hooks/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/services/flowEventService';
 
 interface Props {

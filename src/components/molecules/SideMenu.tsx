@@ -16,8 +16,8 @@ import {
   getDownloadFilename,
   showNoDataAlert,
 } from '@/utils/FileOperations';
-import { useFlowDataModification } from '@/hooks/useFlowDataModification';
-import { useEditHistory } from '@/hooks/useEditHistory';
+import { useFlowDataModification } from '@/hooks/flow/useFlowDataModification';
+import { useEditHistory } from '@/hooks/flow/useEditHistory';
 
 interface Props {
   onSave: () => void;

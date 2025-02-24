@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSheetAnimation } from '@/hooks/useSheetAnimation';
+import { useSheetAnimation } from '@/hooks/ui/useSheetAnimation';
 
 // Sheet の状態管理用のコンテキストを作成
 interface SheetContextValue {
