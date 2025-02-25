@@ -27,23 +27,23 @@ test.describe('新規作成画面', () => {
       const actionTable = page.locator('#flow-action-table');
       await expect(actionTable).toBeVisible();
 
-      // DIV構造の行を取得 (ActionTableRowコンポーネントに対応するもの)
-      const rows = actionTable.locator('div > div').filter({ hasText: /.*/ });
+      // テーブルの行を取得 (table > tr または div.row 相当の要素)
+      const rows = actionTable.locator('[data-testid^="action-row-"]');
 
       // 行数が1であることを確認
-      // await expect(rows).toHaveCount(1);
+      await expect(rows).toHaveCount(1);
 
-      // 最初の行のフィールドを確認 (各フィールドはクラス名や属性で識別)
+      // 最初の行のフィールドを確認
       const firstRow = rows.first();
 
       // Actionコンポーネントの6つのフィールドを確認
-      // 属性セレクタを使用してフィールドを特定
+      // data-field属性を使用してフィールドを特定
       const fields = [
-        firstRow.locator('[data-field="action"]'),
+        firstRow.locator('[data-field="hp"]'),
+        firstRow.locator('[data-field="prediction"]'),
         firstRow.locator('[data-field="charge"]'),
         firstRow.locator('[data-field="guard"]'),
-        firstRow.locator('[data-field="prediction"]'),
-        firstRow.locator('[data-field="hp"]'),
+        firstRow.locator('[data-field="action"]'),
         firstRow.locator('[data-field="note"]')
       ];
 

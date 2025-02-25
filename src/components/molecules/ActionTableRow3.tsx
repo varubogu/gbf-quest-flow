@@ -75,7 +75,7 @@ export const ActionTableRow3: React.FC<ActionTableRow3Props> = ({
           onChange={(value) => onCellEdit?.(column, value)}
           field={column}
           alignment={alignments[column]}
-          data-testid={`cell-${index}-${column}`}
+          data-testid={`cell-${column}-${index}`}
         />
       ))}
     </tr>
