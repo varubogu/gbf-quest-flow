@@ -51,7 +51,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
     index: number | null,
     field: keyof Weapon,
     value: string | WeaponSkillEffect
-  ) => {
+  ): void => {
     if (!flowData) return;
 
     let newWeaponData;
@@ -107,7 +107,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
     }
   };
 
-  const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string) => {
+  const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string): void => {
     if (!flowData || !updateFlowData) return;
 
     const newSkillEffects = {

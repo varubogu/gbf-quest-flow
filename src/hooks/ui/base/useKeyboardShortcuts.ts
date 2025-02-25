@@ -16,9 +16,9 @@ export const useKeyboardShortcuts = ({
   onExitEditMode,
   clearHistory,
   sourceId = null,
-}: Props) => {
+}: Props): void => {
   useEffect(() => {
-    const handleKeyDown = async (event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent): Promise<void> => {
       if (event.key === 'Escape') {
         await onExitEditMode();
         return;
@@ -36,6 +36,6 @@ export const useKeyboardShortcuts = ({
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return (): void => window.removeEventListener('keydown', handleKeyDown);
   }, [isEditMode, flowData, onExitEditMode, clearHistory, sourceId]);
 };

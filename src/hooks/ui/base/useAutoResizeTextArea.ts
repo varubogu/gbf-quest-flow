@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
  * @param minHeight - 最小の高さ（オプション、デフォルト: 'auto'）
  * @returns テキストエリアのref
  */
-export const useAutoResizeTextArea = (value: string, minHeight: string = 'auto') => {
+export const useAutoResizeTextArea = (value: string, minHeight: string = 'auto'): React.RefObject<HTMLTextAreaElement> => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {

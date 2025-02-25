@@ -30,7 +30,7 @@ describe('useTableSelection', () => {
       })
     );
 
-    act(() => {
+    act((): void => {
       result.current.selectRow(2);
     });
 
@@ -47,7 +47,7 @@ describe('useTableSelection', () => {
       })
     );
 
-    act(() => {
+    act((): void => {
       const selectResult = result.current.selectRow(2);
       expect(selectResult).toBe(false);
     });
@@ -65,7 +65,7 @@ describe('useTableSelection', () => {
       })
     );
 
-    act(() => {
+    act((): void => {
       const selectResult = result.current.selectRow(-1);
       expect(selectResult).toBe(false);
     });

@@ -2,9 +2,16 @@ import { renderHook } from '@testing-library/react/pure';
 import { useTableCellBaseStyle } from './useTableCellBaseStyle';
 import { describe, it, expect, vi } from 'vitest';
 
+
+interface SettingsStoreMockResult {
+  settings: {
+    tablePadding: number;
+  };
+}
+
 // モックの設定
 vi.mock('@/stores/settingsStore', () => ({
-  default: () => ({
+  default: (): SettingsStoreMockResult => ({
     settings: {
       tablePadding: 8,
     },

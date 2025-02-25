@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react';
 import type { RenderResult } from '@testing-library/react';
 import { TableHeader } from './TableHeader';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-
+import type { JSX } from 'react';
 // TableHeaderCellコンポーネントのモック
 vi.mock('@/components/molecules/TableHeaderCell', () => ({
-  default: ({ column, alignment }: { column: string; alignment: 'left' | 'center' | 'right' }) => (
+  default: ({ column, alignment }: { column: string; alignment: 'left' | 'center' | 'right' }): JSX.Element => (
     <th
       data-testid={`header-cell-${column}`}
       data-alignment={alignment}
@@ -16,10 +16,14 @@ vi.mock('@/components/molecules/TableHeaderCell', () => ({
   ),
 }));
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => ({
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => ({
       hpColumn: 'HP',
       triggerColumn: '予兆',
       ougiColumn: '奥義',

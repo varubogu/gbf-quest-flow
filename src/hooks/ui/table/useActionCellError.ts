@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useActionCellError = () => {
+interface UseActionCellErrorResult {
+  handlePasteError: (_error: unknown) => void;
+  handleValidationError: (_message: string) => void;
+}
+
+export const useActionCellError = (): UseActionCellErrorResult => {
   const { t } = useTranslation();
 
   const handlePasteError = useCallback(

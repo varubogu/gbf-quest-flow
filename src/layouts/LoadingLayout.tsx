@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function LoadingLayout() {
+export function LoadingLayout(): React.ReactElement {
   const { t } = useTranslation();
 
   return (

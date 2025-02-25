@@ -22,7 +22,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleSummonChange = (type: 'main' | 'friend' | 'other' | 'sub', index: number | null, field: keyof Summon, value: string) => {
+  const handleSummonChange = (type: 'main' | 'friend' | 'other' | 'sub', index: number | null, field: keyof Summon, value: string): void => {
     if (!flowData) return;
 
     let newSummonData;

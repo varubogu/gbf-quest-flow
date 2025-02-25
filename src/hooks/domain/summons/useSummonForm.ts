@@ -3,7 +3,11 @@ import useFlowStore from '@/stores/flowStore';
 import type { Summon } from '@/types/models';
 import { updateSummonField, updateSummonArrayField } from '@/utils/summons/calculations';
 
-export const useSummonForm = () => {
+export interface UseSummonFormResult {
+  handleSummonChange: (_type: 'main' | 'friend' | 'other' | 'sub', _index: number | null, _field: keyof Summon, _value: string) => void;
+}
+
+export const useSummonForm = (): UseSummonFormResult => {
   const { flowData, updateFlowData } = useFlowStore();
 
   const handleSummonChange = useCallback(

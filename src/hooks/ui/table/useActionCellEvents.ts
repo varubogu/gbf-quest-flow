@@ -5,7 +5,7 @@ import type { Settings } from '@/types/settings';
 import { useActionCellError } from './useActionCellError';
 import { parseTabSeparatedText, convertToActions } from '@/utils/tableDataParser';
 
-interface ActionCellEventProps {
+export interface ActionCellEventProps {
   content: string;
   value: string;
   isEditable: boolean;
@@ -16,6 +16,14 @@ interface ActionCellEventProps {
   setValue: (_value: string) => void;
   adjustTextareaHeight: () => void;
   settings: Settings;
+}
+
+export interface UseActionCellEventsResult {
+  handleClick: () => void;
+  handleBlur: () => void;
+  handleKeyDown: (_e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  handleChange: (_e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handlePaste: (_e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
 }
 
 export const useActionCellEvents = ({
@@ -29,7 +37,7 @@ export const useActionCellEvents = ({
   setValue,
   adjustTextareaHeight,
   settings: _settings,
-}: ActionCellEventProps) => {
+}: ActionCellEventProps): UseActionCellEventsResult => {
   const { handlePasteError, handleValidationError } = useActionCellError();
 
   const handleClick = useCallback(() => {

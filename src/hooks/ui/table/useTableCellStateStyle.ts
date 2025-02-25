@@ -8,7 +8,13 @@ interface StateStyleProps {
 
 type TextVariant = 'default' | 'dimmed' | 'muted';
 
-export const useTableCellStateStyle = () => {
+export interface UseTableCellStateStyleResult {
+  stateClasses: { current: string };
+  getStateClassName: (_props: Pick<StateStyleProps, 'isCurrentRow'>) => string;
+  getTextVariant: (_props: StateStyleProps) => TextVariant;
+}
+
+export const useTableCellStateStyle = (): UseTableCellStateStyleResult => {
   const stateClasses = useMemo(
     () => ({
       current: 'bg-accent',
@@ -16,7 +22,7 @@ export const useTableCellStateStyle = () => {
     []
   );
 
-  const getStateClassName = ({ isCurrentRow }: Pick<StateStyleProps, 'isCurrentRow'>) => {
+  const getStateClassName = ({ isCurrentRow }: Pick<StateStyleProps, 'isCurrentRow'>): string => {
     return cn(isCurrentRow && stateClasses.current);
   };
 

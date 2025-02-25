@@ -8,27 +8,28 @@ const mockOnResize = vi.fn();
 
 vi.mock('react-resizable-panels', () => {
   return {
-    Panel: ({ children, onResize }: { children: React.ReactNode; onResize?: (_size: number) => void }) => {
+    Panel: ({ children, onResize }: { children: React.ReactNode; onResize?: (_size: number) => void }): React.ReactElement => {
       if (onResize) {
         mockOnResize.mockImplementation(onResize);
         setTimeout(() => onResize(30), 0);
       }
       return <div>{children}</div>;
     },
-    PanelGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    PanelResizeHandle: () => <div data-testid="resize-handle" />,
+    PanelGroup: ({ children }: { children: React.ReactNode }): React.ReactElement => <div>{children}</div>,
+    PanelResizeHandle: (): React.ReactElement => <div data-testid="resize-handle" />,
     ImperativePanelHandle: vi.fn(),
   };
 });
 
 // モーダルコンポーネントのモック
 vi.mock('@/components/organisms/OrganizationModal', () => ({
-  OrganizationModal: ({ isOpen }: { isOpen: boolean }) =>
+  OrganizationModal: ({ isOpen }: { isOpen: boolean }): React.ReactElement | null =>
     isOpen ? <div>ジョブ、キャラ、アビリティ</div> : null,
 }));
 
 vi.mock('@/components/organisms/InfoModal', () => ({
-  InfoModal: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <div>その他の情報</div> : null),
+  InfoModal: ({ isOpen }: { isOpen: boolean }): React.ReactElement | null =>
+    isOpen ? <div>その他の情報</div> : null,
 }));
 
 const mockFlowData = {

@@ -44,11 +44,19 @@ const TEXT_ALIGNMENT = {
   RIGHT: 'text-right',
 } as const;
 
+export interface UseActionTableStylesResult {
+  gridClasses: string;
+  headerClasses: string;
+  getCellClasses: (_props: ActionTableCellPosition & { isHeader?: boolean }) => string;
+  controlBarClasses: string;
+  buttonGroupClasses: string;
+}
+
 export const useActionTableStyles = ({
   config,
   currentRow,
   isEditMode,
-}: UseActionTableStylesProps) => {
+}: UseActionTableStylesProps): UseActionTableStylesResult => {
   // グリッドレイアウトのクラスを生成
   const gridClasses = useMemo(() => {
     const columnWidths = Object.values(config.columns)
@@ -80,7 +88,7 @@ export const useActionTableStyles = ({
 
   // 行の背景色を計算するメモ化関数
   const getRowBackground = useMemo(() => {
-    return (rowIndex: number) => {
+    return (rowIndex: number): string => {
       const hpRowCount = Array.from({ length: rowIndex + 1 }).filter(
         (_, i) => config.columns.hp && i <= rowIndex
       ).length;
@@ -96,7 +104,7 @@ export const useActionTableStyles = ({
       rowIndex,
       column,
       isHeader = false,
-    }: ActionTableCellPosition & { isHeader?: boolean }) => {
+    }: ActionTableCellPosition & { isHeader?: boolean }): string => {
       const isCurrentRow = rowIndex === currentRow;
       const baseBackground = getRowBackground(rowIndex);
 

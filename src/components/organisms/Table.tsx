@@ -65,14 +65,14 @@ export const Table: React.FC<TableProps> = ({
     }
   }, [isEditMode, currentRow, onRowSelect]);
 
-  const handleRowClick = (index: number) => {
+  const handleRowClick = (index: number): void => {
     if (isEditMode) return;
     if (settings.actionTableClickType === 'single') {
       onRowSelect(index);
     }
   };
 
-  const handleRowDoubleClick = (index: number) => {
+  const handleRowDoubleClick = (index: number): void => {
     if (isEditMode) return;
     if (settings.actionTableClickType === 'double') {
       onRowSelect(index);
@@ -102,7 +102,7 @@ export const Table: React.FC<TableProps> = ({
           <TableHeader
             className={headerClasses}
             isEditMode={isEditMode}
-            onAddRow={onAddRow ?? (() => {})}
+            onAddRow={onAddRow ?? ((): void => {})}
           />
 
           <tbody>

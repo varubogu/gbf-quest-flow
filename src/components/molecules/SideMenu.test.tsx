@@ -3,7 +3,7 @@ import { SideMenu } from './SideMenu';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Flow } from '@/types/models';
 import { handleNewFlow } from '@/services/flowEventService';
-
+import type { FlowStore } from '@/stores/flowStore';
 // モックの作成
 vi.mock('@/services/flowEventService', () => ({
   handleNewFlow: vi.fn().mockResolvedValue(true),
@@ -42,13 +42,20 @@ vi.mock('@/utils/FileOperations', () => ({
   getDownloadFilename: vi.fn(),
 }));
 
+interface UseFlowStoreResult {
+  store: FlowStore;
+  mockSetIsEditMode: () => void;
+  mockLoadFlowFromFile: () => void;
+  mockCancelEdit: () => void;
+}
+
 // Zustandストアのモック
-const createMockStore  = () => {
+const createMockStore = (): UseFlowStoreResult => {
   const mockSetIsEditMode = vi.fn();
   const mockLoadFlowFromFile = vi.fn();
   const mockCancelEdit = vi.fn();
 
-  const store = {
+  const store: FlowStore = {
     flowData: null as Flow | null,
     originalData: null as Flow | null,
     isEditMode: false,
@@ -65,6 +72,7 @@ const createMockStore  = () => {
     clearHistory: vi.fn(),
     createNewFlow: vi.fn(),
     updateAction: vi.fn(),
+    setFlowData: vi.fn(),
   };
 
   return {

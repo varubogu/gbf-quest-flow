@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import { useTranslation } from 'react-i18next';
 
@@ -6,12 +6,12 @@ interface LoadFlowButtonProps {
   className?: string;
 }
 
-export const LoadFlowButton: React.FC<LoadFlowButtonProps> = ({ className }) => {
+export const LoadFlowButton: React.FC<LoadFlowButtonProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = React.useState(false);
   const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
 
-  const handleClick = async () => {
+  const handleClick = async (): Promise<void> => {
     try {
       setIsLoading(true);
       await loadFlowFromFile();

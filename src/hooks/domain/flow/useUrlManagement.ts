@@ -15,7 +15,7 @@ export function useUrlManagement(
   sourceId: string | null | undefined,
   initialMode: ViewMode,
   flowData: Flow | null
-) {
+): void {
   useEffect(() => {
     try {
       if ((history.state as HistoryState | null)?.isSaving) {

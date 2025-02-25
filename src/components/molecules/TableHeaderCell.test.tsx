@@ -14,10 +14,14 @@ vi.mock('@/config/actionTable', () => ({
   }
 }));
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         'hpColumn': 'HP',
         'actionColumn': 'アクション',

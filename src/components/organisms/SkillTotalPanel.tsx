@@ -20,7 +20,7 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
 
   if (!flowData || !skillTotalData) return null;
 
-  const handleSkillTotalChange = (field: keyof WeaponSkillTotal, value: string) => {
+  const handleSkillTotalChange = (field: keyof WeaponSkillTotal, value: string): void => {
     if (!flowData || !updateFlowData) return;
 
     const newSkillTotal = {

@@ -9,13 +9,21 @@ interface UseActionTableEventsProps {
   onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
 }
 
+export interface UseActionTableEventsResult {
+  handleRowClick: (_index: number) => void;
+  handleRowDoubleClick: (_index: number) => void;
+  handleCellEdit: (_rowIndex: number, _field: keyof Action, _value: string) => void;
+  handleCellPaste: (_event: ClipboardEvent, _rowIndex: number) => void;
+  handleKeyDown: (_event: KeyboardEvent, _rowIndex: number, _field: keyof Action) => void;
+}
+
 export const useActionTableEvents = ({
   config,
   isEditMode,
   onRowSelect,
   onCellEdit,
   onPasteRows,
-}: UseActionTableEventsProps) => {
+}: UseActionTableEventsProps): UseActionTableEventsResult => {
   // 行クリック時のハンドラー
   const handleRowClick = useCallback(
     (index: number) => {

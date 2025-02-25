@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
+import type { JSX } from 'react';
 
 // クリックタイプの型定義
 type ClickType = 'single' | 'double';
@@ -11,7 +12,7 @@ const CLICK_TYPES: { value: ClickType; translationKey: string }[] = [
   { value: 'double', translationKey: 'doubleClick' },
 ];
 
-export function ActionTableClickTypeSetting() {
+export function ActionTableClickTypeSetting(): JSX.Element {
   const { t } = useTranslation();
   const { settings, updateSettings } = useSettingsStore();
 
@@ -25,7 +26,7 @@ export function ActionTableClickTypeSetting() {
               name="actionTableClickType"
               value={value}
               checked={settings.actionTableClickType === value}
-              onChange={(e) => updateSettings({ actionTableClickType: e.target.value as ClickType })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ actionTableClickType: e.target.value as ClickType })}
               className="form-radio"
             />
             <span className="ml-2">{t(translationKey)}</span>

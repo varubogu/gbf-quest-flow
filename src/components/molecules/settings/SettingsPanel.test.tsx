@@ -2,14 +2,50 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { SettingsPanel } from './SettingsPanel';
 import { vi } from 'vitest';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
+
+interface SettingsMock {
+  language: string;
+  buttonAlignment: string;
+  tablePadding: number;
+  actionTableClickType: string;
+}
+
+interface SettingsStoreResult {
+  settings: SettingsMock;
+  updateSettings: () => void;
+}
+
+interface SettingsStoreMockResult {
+  default: () => SettingsStoreResult;
+}
+
+interface UseI18nMockResult {
+  useTranslation: () => UseTranslationResult;
+  default: () => SettingsStoreResult;
+}
+
+
 // モックの作成
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+vi.mock('react-i18next', (): UseI18nMockResult => ({
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
+  }),
+  default: () => ({
+    settings: {
+      language: '日本語',
+      buttonAlignment: '左',
+      tablePadding: 4,
+      actionTableClickType: 'single',
+    },
+    updateSettings: vi.fn(),
   }),
 }));
 
-vi.mock('@/stores/settingsStore', () => ({
+vi.mock('@/stores/settingsStore', (): SettingsStoreMockResult => ({
   default: () => ({
     settings: {
       language: '日本語',

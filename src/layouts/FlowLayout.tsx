@@ -30,7 +30,7 @@ export function FlowLayout({
   onTitleChange,
   onAlwaysChange,
   onExitEditMode,
-}: Props) {
+}: Props): React.ReactElement {
   const { t } = useTranslation();
   const [isOrganizationModalOpen, setIsOrganizationModalOpen] = React.useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = React.useState(false);

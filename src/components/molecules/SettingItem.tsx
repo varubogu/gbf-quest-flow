@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
+import type { JSX } from 'react';
 interface SettingItemProps {
   labelKey: string;
   children: React.ReactNode;
 }
 
-export function SettingItem({ labelKey, children }: SettingItemProps) {
+export function SettingItem({ labelKey, children }: SettingItemProps): JSX.Element {
   const { t } = useTranslation();
 
   return (

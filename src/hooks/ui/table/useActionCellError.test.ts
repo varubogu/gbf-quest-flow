@@ -2,10 +2,14 @@ import { renderHook } from '@testing-library/react/pure';
 import { useActionCellError } from './useActionCellError';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+interface UseTranslationResult {
+  t: (_key: string, _options?: { message?: string }) => string;
+}
+
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, options?: { message?: string }) => {
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string, options?: { message?: string }): string => {
       if (key === 'pasteError.specific' && options?.message) {
         return `貼り付け処理中にエラーが発生しました: ${options.message}`;
       }

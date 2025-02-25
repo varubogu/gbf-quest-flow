@@ -14,7 +14,7 @@ export function useHistoryManagement(
   setIsEditMode: (_isEdit: boolean) => void,
   setFlowData: (_data: Flow) => void,
   initialData: Flow | null
-) {
+): void {
   const handlePopState = useCallback(
     (event: PopStateEvent) => {
       try {
@@ -46,6 +46,6 @@ export function useHistoryManagement(
 
   useEffect(() => {
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    return (): void => window.removeEventListener('popstate', handlePopState);
   }, [handlePopState]);
 }

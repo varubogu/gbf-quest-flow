@@ -1,14 +1,14 @@
-import type { Flow, Action } from '@/types/models';
+import type { Flow, Action, Member, Summon, Weapon, Ability } from '@/types/models';
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 
-interface HistoryState {
+export interface HistoryState {
   past: Flow[];
   future: Flow[];
 }
 
-interface FlowStore {
+export interface FlowStore {
   flowData: Flow | null;
   originalData: Flow | null; // 編集前のデータを保持
   setFlowData: (_data: Flow | null) => void;
@@ -47,7 +47,7 @@ const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () 
 
 // 組織データを設定に合わせて調整する関数（既存データは保持）
 const adjustOrganizationData = (organization: Flow['organization']): Flow['organization'] => {
-  const emptyMember = () => ({
+  const emptyMember = (): Member => ({
     name: '',
     note: '',
     awaketype: '',
@@ -55,24 +55,24 @@ const adjustOrganizationData = (organization: Flow['organization']): Flow['organ
     limitBonus: '',
   });
 
-  const emptyWeapon = () => ({
+  const emptyWeapon = (): Weapon => ({
     name: '',
     note: '',
     additionalSkill: '',
   });
 
-  const emptySummon = () => ({
+  const emptySummon = (): Summon => ({
     name: '',
     note: '',
   });
 
-  const emptyAbility = () => ({
+  const emptyAbility = (): Ability => ({
     name: '',
     note: '',
   });
 
   // 設定値と実際のデータ数の大きい方を使用
-  const getTargetLength = (current: number, setting: number) => Math.max(current, setting);
+  const getTargetLength = (current: number, setting: number): number => Math.max(current, setting);
 
   return {
     ...organization,
@@ -135,9 +135,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   isEditMode: false,
   history: { past: [], future: [] },
 
-  setCurrentRow: (row: number) => set({ currentRow: row }),
+  setCurrentRow: (row: number): void => set({ currentRow: row }),
 
-  setIsEditMode: (isEdit: boolean) => {
+  setIsEditMode: (isEdit: boolean): void => {
     const { flowData } = get();
     if (isEdit && flowData) {
       // 編集モード開始時に現在のデータを保存
@@ -150,7 +150,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     set({ isEditMode: isEdit });
   },
 
-  createNewFlow: () => {
+  createNewFlow: (): void => {
     // 空のデータを作成
     const newData: Flow = {
       title: '新しいフロー',
@@ -266,7 +266,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  setFlowData: (data: Flow | null) => {
+  setFlowData: (data: Flow | null): void => {
     if (data === null) {
       set({ flowData: null, currentRow: 0 });
       return;
@@ -279,7 +279,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     set({ flowData: adjustedData, currentRow: 0 });
   },
 
-  updateFlowData: (updates: Partial<Flow>) => {
+  updateFlowData: (updates: Partial<Flow>): void => {
     try {
       const currentData = get().flowData;
       const { isEditMode } = get();
@@ -314,7 +314,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  pushToHistory: (data: Flow) => {
+  pushToHistory: (data: Flow): void => {
     const { history } = get();
 
     // 最後の履歴と同じデータは追加しない
@@ -333,7 +333,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     });
   },
 
-  undo: () => {
+  undo: (): void => {
     const { history, flowData, originalData } = get();
 
     if (!flowData) {
@@ -367,7 +367,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     });
   },
 
-  redo: () => {
+  redo: (): void => {
     const { history, flowData } = get();
 
     if (history.future.length === 0 || !flowData) {
@@ -383,14 +383,14 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         past: [...history.past, flowData],
         future: newFuture,
       },
-    });
+    } as FlowStore);
   },
 
-  clearHistory: () => {
+  clearHistory: (): void => {
     set({ history: { past: [], future: [] } });
   },
 
-  cancelEdit: () => {
+  cancelEdit: (): void => {
     const { originalData } = get();
     if (originalData) {
       set({
@@ -404,7 +404,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  loadFlowFromFile: async () => {
+  loadFlowFromFile: async (): Promise<void> => {
     try {
       const input = document.createElement('input');
       input.type = 'file';
@@ -423,7 +423,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
           { once: true }
         );
 
-        input.onchange = (e) => {
+        input.onchange = (e: Event): void => {
           const file = (e.target as HTMLInputElement).files?.[0];
           resolve(file || null);
         };
@@ -449,7 +449,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  updateAction: (index: number, updates: Partial<Action>) => {
+  updateAction: (index: number, updates: Partial<Action>): void => {
     try {
       const currentData = get().flowData;
       if (!currentData) return;

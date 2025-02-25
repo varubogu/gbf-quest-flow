@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
+import type { JSX } from 'react';
 
 // 言語設定の型定義
 type Language = '日本語' | 'English';
@@ -13,7 +14,7 @@ const LANGUAGES: { value: Language; translationKey: string }[] = [
   // 例: { value: '中文', translationKey: 'chinese' },
 ];
 
-export function LanguageSetting() {
+export function LanguageSetting(): JSX.Element {
   const { t } = useTranslation();
   const { settings, updateSettings } = useSettingsStore();
 
@@ -27,7 +28,7 @@ export function LanguageSetting() {
               name="language"
               value={value}
               checked={settings.language === value}
-              onChange={(e) => updateSettings({ language: e.target.value as Language })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ language: e.target.value as Language })}
               className="form-radio"
             />
             <span className="ml-2">{t(translationKey)}</span>

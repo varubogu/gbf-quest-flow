@@ -5,7 +5,14 @@ interface UseSheetAnimationProps {
   side: 'left' | 'right';
 }
 
-export const useSheetAnimation = ({ open, side }: UseSheetAnimationProps) => {
+export interface UseSheetAnimationResult {
+  isVisible: boolean;
+  animateIn: boolean;
+  overlayClasses: string;
+  sheetClasses: string;
+}
+
+export const useSheetAnimation = ({ open, side }: UseSheetAnimationProps): UseSheetAnimationResult => {
   const [isVisible, setIsVisible] = useState(open);
   const [animateIn, setAnimateIn] = useState(false);
 
@@ -13,11 +20,11 @@ export const useSheetAnimation = ({ open, side }: UseSheetAnimationProps) => {
     if (open) {
       setIsVisible(true);
       const timer = setTimeout(() => setAnimateIn(true), 20);
-      return () => clearTimeout(timer);
+      return (): void => clearTimeout(timer);
     } else {
       setAnimateIn(false);
       const timer = setTimeout(() => setIsVisible(false), 300);
-      return () => clearTimeout(timer);
+      return (): void => clearTimeout(timer);
     }
   }, [open]);
 

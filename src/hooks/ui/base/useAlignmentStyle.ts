@@ -2,7 +2,16 @@ import { useMemo } from 'react';
 
 type Alignment = 'left' | 'center' | 'right';
 
-export const useAlignmentStyle = () => {
+export interface UseAlignmentStyleResult {
+  alignmentClasses: {
+    left: string;
+    center: string;
+    right: string;
+  };
+  getAlignmentClass: (_alignment?: Alignment) => string;
+}
+
+export const useAlignmentStyle = (): UseAlignmentStyleResult => {
   const alignmentClasses = useMemo(
     () => ({
       left: 'text-left',
@@ -12,7 +21,7 @@ export const useAlignmentStyle = () => {
     []
   );
 
-  const getAlignmentClass = (alignment: Alignment = 'left') => alignmentClasses[alignment];
+  const getAlignmentClass = (alignment: Alignment = 'left'): string => alignmentClasses[alignment];
 
   return {
     alignmentClasses,

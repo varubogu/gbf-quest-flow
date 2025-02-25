@@ -31,7 +31,7 @@ export const useTableCellEvents = ({
   adjustTextareaHeight,
   settings: _settings,
   fieldOrder = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'],
-}: TableCellEventProps) => {
+}: TableCellEventProps): void => {
   const { handlePasteError, handleValidationError } = useTableCellError();
 
   const handleClick = useCallback(() => {

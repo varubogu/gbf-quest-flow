@@ -12,4 +12,5 @@ export type {
   JobAbility,
   JobEquipment,
   Job,
+  Ability,
 } from './models';

@@ -6,11 +6,16 @@ interface UseTableSelectionProps {
   onRowSelect?: ((_index: number) => void) | undefined;
 }
 
+interface UseTableSelectionResult {
+  currentRow: number;
+  selectRow: (_index: number) => boolean;
+}
+
 export const useTableSelection = ({
   totalRows,
   isEditMode,
   onRowSelect,
-}: UseTableSelectionProps) => {
+}: UseTableSelectionProps): UseTableSelectionResult => {
   const [currentRow, setCurrentRow] = useState<number>(-1);
 
   const selectRow = useCallback(

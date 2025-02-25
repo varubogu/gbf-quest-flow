@@ -4,7 +4,7 @@ import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
 import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
 import { loadSlugData } from '@/lib/functions';
 
-export function EmptyLayout() {
+export function EmptyLayout(): React.ReactElement {
   const { t } = useTranslation();
 
   // URLパラメータのチェック

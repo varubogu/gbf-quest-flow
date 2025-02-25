@@ -1,7 +1,12 @@
 import type { Weapon, WeaponSkillEffect } from '@/types/models';
 import useFlowStore from '@/stores/flowStore';
 
-export const useWeaponForm = () => {
+export interface UseWeaponFormResult {
+  handleWeaponChange: (_type: 'main' | 'other' | 'additional', _index: number | null, _field: keyof Weapon, _value: string | WeaponSkillEffect) => void;
+  handleSkillEffectChange: (_field: keyof WeaponSkillEffect, _value: string) => void;
+}
+
+export const useWeaponForm = (): UseWeaponFormResult => {
   const { flowData, updateFlowData } = useFlowStore();
 
   const handleWeaponChange = (
@@ -9,7 +14,7 @@ export const useWeaponForm = () => {
     index: number | null,
     field: keyof Weapon,
     value: string | WeaponSkillEffect
-  ) => {
+  ): void => {
     if (!flowData) return;
 
     const newWeapon = {
@@ -54,7 +59,7 @@ export const useWeaponForm = () => {
     });
   };
 
-  const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string) => {
+  const handleSkillEffectChange = (field: keyof WeaponSkillEffect, value: string): void => {
     if (!flowData || !updateFlowData) return;
 
     const newSkillEffects = {

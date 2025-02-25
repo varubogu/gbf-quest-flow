@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
+import type { JSX } from 'react';
 
 // ボタン配置の型定義
 type ButtonAlignment = '左' | '右';
@@ -11,7 +12,7 @@ const BUTTON_ALIGNMENTS: { value: ButtonAlignment; translationKey: string }[] = 
   { value: '右', translationKey: 'right' },
 ];
 
-export function ButtonAlignmentSetting() {
+export function ButtonAlignmentSetting(): JSX.Element {
   const { t } = useTranslation();
   const { settings, updateSettings } = useSettingsStore();
 
@@ -25,7 +26,7 @@ export function ButtonAlignmentSetting() {
               name="buttonAlignment"
               value={value}
               checked={settings.buttonAlignment === value}
-              onChange={(e) => updateSettings({ buttonAlignment: e.target.value as ButtonAlignment })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ buttonAlignment: e.target.value as ButtonAlignment })}
               className="form-radio"
             />
             <span className="ml-2">{t(translationKey)}</span>

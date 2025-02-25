@@ -8,10 +8,20 @@ vi.mock('@/stores/flowStore', () => ({
   default: vi.fn(),
 }));
 
+
+
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
+interface UseMockResult {
+  useTranslation: () => UseTranslationResult;
+}
+
 // i18nのモック
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+vi.mock('react-i18next', (): UseMockResult => ({
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
   }),
 }));
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -46,7 +46,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
     hasChanges,
   });
 
-  const handleMenuClick = async (id: string) => {
+  const handleMenuClick = async (id: string): Promise<void> => {
     switch (id) {
       case 'new':
         if (await handleNew()) {

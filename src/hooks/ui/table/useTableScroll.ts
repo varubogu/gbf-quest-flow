@@ -17,7 +17,7 @@ export const useTableScroll = ({
   data,
   onRowSelect,
   isEditMode,
-}: UseTableScrollProps) => {
+}: UseTableScrollProps): void => {
   const accumulatedDeltaRef = useRef(0);
 
   // ホイールスクロール制御
@@ -25,7 +25,7 @@ export const useTableScroll = ({
     const container = containerRef.current;
     if (!container || isEditMode) return;
 
-    const handleWheel = (e: WheelEvent) => {
+    const handleWheel = (e: WheelEvent): void => {
       const target = e.target as HTMLElement;
       if (!container.contains(target)) return;
 
@@ -60,7 +60,7 @@ export const useTableScroll = ({
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
+    return (): void => {
       container.removeEventListener('wheel', handleWheel);
     };
   }, [currentRow, data.length, onRowSelect, isEditMode, containerRef]);

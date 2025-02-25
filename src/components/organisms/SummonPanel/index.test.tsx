@@ -3,6 +3,10 @@ import { SummonPanel } from './index';
 import { describe, it, expect, vi } from 'vitest';
 import useFlowStore from '@/stores/flowStore';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // Zustandのモック
 vi.mock('@/stores/flowStore', () => ({
   default: vi.fn(),
@@ -10,8 +14,8 @@ vi.mock('@/stores/flowStore', () => ({
 
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
   }),
 }));
 

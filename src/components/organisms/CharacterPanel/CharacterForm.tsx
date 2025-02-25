@@ -13,6 +13,8 @@ interface CharacterFormProps {
   onMemberChange: (_position: 'front' | 'back', _index: number, _field: keyof Member, _value: string) => void;
 }
 
+type HandleChange = (_index: number, _field: keyof Member) => (_value: string) => void;
+
 export const CharacterForm: React.FC<CharacterFormProps> = memo(({
   position,
   members,
@@ -21,11 +23,11 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
 }) => {
   const { t } = useTranslation();
 
-  const handleChange = useCallback((index: number, field: keyof Member) => (value: string) => {
+  const handleChange: HandleChange = useCallback((index, field) => (value) => {
     onMemberChange(position, index, field, value);
   }, [position, onMemberChange]);
 
-  const handleAwakeTypeChange = useCallback((index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAwakeTypeChange = useCallback((index: number) => (e: React.ChangeEvent<HTMLInputElement>): void => {
     onMemberChange(position, index, 'awaketype', e.target.value);
   }, [position, onMemberChange]);
 

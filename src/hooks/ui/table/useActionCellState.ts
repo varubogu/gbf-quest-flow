@@ -5,10 +5,19 @@ interface ActionCellStateProps {
   onFocus?: () => void;
 }
 
-export const useActionCellState = ({ content, onFocus }: ActionCellStateProps) => {
+export interface UseActionCellStateResult {
+  isEditing: boolean;
+  setIsEditing: (_isEditing: boolean) => void;
+  value: string;
+  setValue: (_value: string) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  adjustTextareaHeight: () => void;
+}
+
+export const useActionCellState = ({ content, onFocus }: ActionCellStateProps): UseActionCellStateResult => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(content || '');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     setValue(content || '');

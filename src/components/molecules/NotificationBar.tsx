@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   duration?: number;
 }
 
-export function NotificationBar({ message, duration = 5000 }: Props) {
+export function NotificationBar({ message, duration = 5000 }: Props): JSX.Element | null {
   const [show, setShow] = useState(true);
   const { t } = useTranslation();
 
@@ -14,7 +14,7 @@ export function NotificationBar({ message, duration = 5000 }: Props) {
     const timer = setTimeout(() => {
       setShow(false);
     }, duration);
-    return () => clearTimeout(timer);
+    return (): void => clearTimeout(timer);
   }, [duration]);
 
   if (!show) return null;

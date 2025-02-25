@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { AppSettings } from '@/types/settings';
 import i18n from '@/i18n';
 
-interface SettingsStore {
+export interface SettingsStore {
   settings: AppSettings;
   updateSettings: (_newSettings: Partial<AppSettings>) => void;
 }
@@ -17,7 +17,7 @@ const useSettingsStore = create<SettingsStore>()(
         tablePadding: 8,
         actionTableClickType: 'double',
       },
-      updateSettings: (newSettings) => {
+      updateSettings: (newSettings: Partial<AppSettings>): void => {
         // 言語設定が変更された場合、i18nextの言語も変更
         if (newSettings.language) {
           const newLang = newSettings.language === '日本語' ? 'ja' : 'en';

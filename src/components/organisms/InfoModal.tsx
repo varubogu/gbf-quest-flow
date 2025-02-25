@@ -20,7 +20,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
 
   if (!flowData) return null;
 
-  const handleInfoChange = (field: string, value: string) => {
+  const handleInfoChange = (field: string, value: string): void => {
     if (!flowData) return;
     updateFlowData({
       [field]: value,

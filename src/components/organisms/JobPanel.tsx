@@ -80,7 +80,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleJobChange = (field: keyof Job, value: string) => {
+  const handleJobChange = (field: keyof Job, value: string): void => {
     if (!flowData) return;
     updateFlowData({
       organization: {
@@ -93,7 +93,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
     });
   };
 
-  const handleEquipmentChange = (field: keyof JobEquipment, value: string) => {
+  const handleEquipmentChange = (field: keyof JobEquipment, value: string): void => {
     if (!flowData) return;
     updateFlowData({
       organization: {
@@ -109,7 +109,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
     });
   };
 
-  const handleAbilityChange = (index: number, field: keyof JobAbility, value: string) => {
+  const handleAbilityChange = (index: number, field: keyof JobAbility, value: string): void => {
     if (!flowData) return;
     const newAbilities = [...flowData.organization.job.abilities];
     newAbilities[index] = {

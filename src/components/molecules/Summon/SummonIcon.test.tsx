@@ -2,10 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { SummonIcon } from './SummonIcon';
 import { describe, it, expect, vi } from 'vitest';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
   }),
 }));
 
@@ -13,7 +17,7 @@ describe('SummonIcon', () => {
   const defaultProps = {
     name: 'バハムート',
     isEditing: false,
-    onChange: () => {},
+    onChange: vi.fn(),
     'aria-label': 'summon.nameLabel',
   };
 

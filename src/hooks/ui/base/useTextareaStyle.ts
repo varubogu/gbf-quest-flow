@@ -8,7 +8,11 @@ interface TextareaStyleProps {
   className?: string;
 }
 
-export const useTextareaStyle = () => {
+export interface UseTextareaStyleResult {
+  getTextareaClassName: (_props: TextareaStyleProps) => string;
+}
+
+export const useTextareaStyle = (): UseTextareaStyleResult => {
   const baseClasses = useMemo(
     () => ({
       base: [
@@ -25,7 +29,7 @@ export const useTextareaStyle = () => {
     []
   );
 
-  const getTextareaClassName = ({ isHeader, alignment, className = '' }: TextareaStyleProps) => {
+  const getTextareaClassName = ({ isHeader, alignment, className = '' }: TextareaStyleProps): string => {
     return cn(
       baseClasses.base,
       baseClasses.alignment[alignment],

@@ -3,10 +3,14 @@ import { CharacterForm } from './CharacterForm';
 import { describe, it, expect, vi } from 'vitest';
 import type { Member } from '@/types/models';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
   }),
 }));
 
@@ -32,7 +36,7 @@ describe('CharacterForm', () => {
     position: 'front' as const,
     members: mockMembers,
     isEditing: false,
-    onMemberChange: () => {},
+    onMemberChange: vi.fn(),
   };
 
   it('表示モードで正しくレンダリングされる', () => {

@@ -18,7 +18,7 @@ interface Props {
   sourceId?: string | null;
 }
 
-function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props) {
+function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props): React.ReactElement {
   const [isLoading, setIsLoading] = React.useState(true);
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);
@@ -129,7 +129,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   return <FlowLayout {...flowLayoutProps} />;
 }
 
-function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Props) {
+function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Props): React.ReactElement {
   useEffect(() => {
     try {
       if (initialData) {

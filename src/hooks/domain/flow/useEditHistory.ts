@@ -1,10 +1,17 @@
 import { useCallback, useState } from 'react';
 import type { Flow } from '@/types/models';
 
+export interface UseEditHistoryResult {
+  editHistory: Flow[];
+  recordChange: (_newData: Flow) => void;
+  clearHistory: () => void;
+  hasChanges: boolean;
+}
+
 /**
  * 編集履歴を管理するカスタムフック
  */
-export function useEditHistory(_flowData: Flow | null) {
+export function useEditHistory(_flowData: Flow | null): UseEditHistoryResult {
   const [editHistory, setEditHistory] = useState<Flow[]>([]);
 
   // 変更を記録

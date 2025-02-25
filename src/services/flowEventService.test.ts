@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
 import type { Flow } from '@/types/models';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore, { type FlowStore } from '@/stores/flowStore';
 
 // flowOperationsのモック
 vi.mock('@/utils/flowOperations', () => ({
@@ -18,10 +18,40 @@ vi.mock('@/stores/flowStore', () => {
     originalData: {
       title: '元のフロー',
     },
+    flowData: {
+      title: 'テストフロー',
+      quest: 'テストクエスト',
+      author: 'テスト作者',
+      description: 'テスト説明',
+      updateDate: '2024-01-01',
+      note: 'テストノート',
+      organization: {
+        job: { name: '', note: '', equipment: { name: '', note: '' }, abilities: [] },
+        member: { front: [], back: [] },
+        weapon: { main: { name: '', note: '', additionalSkill: '' }, other: [], additional: [] },
+        weaponEffects: { taRate: '', hp: '', defense: '' },
+        summon: { main: { name: '', note: '' }, friend: { name: '', note: '' }, other: [], sub: [] },
+        totalEffects: { taRate: '', hp: '', defense: '' },
+      },
+      always: '',
+      flow: [],
+    },
+    currentRow: 0,
+    history: { past: [], future: [] },
+    updateFlowData: vi.fn(),
+    loadFlowFromFile: vi.fn(),
+    setCurrentRow: vi.fn(),
+    isEditMode: false,
+    clearHistory: vi.fn(),
+    cancelEdit: vi.fn(),
+    pushToHistory: vi.fn(),
+    undo: vi.fn(),
+    redo: vi.fn(),
+    updateAction: vi.fn(),
   };
   return {
     default: {
-      getState: () => store,
+      getState: (): FlowStore => store,
     },
   };
 });

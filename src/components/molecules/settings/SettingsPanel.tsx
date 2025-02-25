@@ -5,12 +5,13 @@ import { LanguageSetting } from './LanguageSetting';
 import { ButtonAlignmentSetting } from './ButtonAlignmentSetting';
 import { TablePaddingSetting } from './TablePaddingSetting';
 import { ActionTableClickTypeSetting } from './ActionTableClickTypeSetting';
+import type { JSX } from 'react';
 
 interface SettingsPanelProps {
   onBack: () => void;
 }
 
-export function SettingsPanel({ onBack }: SettingsPanelProps) {
+export function SettingsPanel({ onBack }: SettingsPanelProps): JSX.Element {
   const { t } = useTranslation();
 
   return (

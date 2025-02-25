@@ -10,7 +10,7 @@ const mockStore = {
 };
 
 vi.mock('@/stores/flowStore', () => ({
-  default: (selector: (_state: typeof mockStore) => unknown) => selector(mockStore),
+  default: (selector: (_state: typeof mockStore) => unknown): unknown => selector(mockStore),
 }));
 
 describe('useFlowDataModification', () => {

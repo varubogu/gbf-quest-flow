@@ -11,6 +11,14 @@ interface UseFlowDataModificationProps {
   hasChanges?: boolean;
 }
 
+export interface UseFlowDataModificationResult {
+  handleTitleChange: (_e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleAlwaysChange: (_e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleSave: () => Promise<boolean>;
+  handleCancel: () => Promise<boolean>;
+  handleNew: () => Promise<boolean>;
+}
+
 /**
  * フローデータの操作に関するフック
  * 各操作は以下の順序で処理を行う：
@@ -22,7 +30,7 @@ export const useFlowDataModification = ({
   flowData,
   recordChange,
   hasChanges = false,
-}: UseFlowDataModificationProps) => {
+}: UseFlowDataModificationProps): UseFlowDataModificationResult => {
   const { t } = useTranslation();
   const setFlowData = useFlowStore((state) => state.setFlowData);
 

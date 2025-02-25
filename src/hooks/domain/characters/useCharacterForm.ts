@@ -3,7 +3,11 @@ import useFlowStore from '@/stores/flowStore';
 import type { Member } from '@/types/models';
 import { updateMemberField } from '@/utils/characters/calculations';
 
-export const useCharacterForm = () => {
+interface UseCharacterFormResult {
+  handleMemberChange: (_position: 'front' | 'back', _index: number, _field: keyof Member, _value: string) => void;
+}
+
+export const useCharacterForm = (): UseCharacterFormResult => {
   const { flowData, updateFlowData } = useFlowStore();
 
   const handleMemberChange = useCallback(

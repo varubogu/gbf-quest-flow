@@ -2,9 +2,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ButtonAlignmentSetting } from './ButtonAlignmentSetting';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // モックの作成
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): UseTranslationResult => ({
     t: (key: string) => key,
   }),
 }));
@@ -17,8 +21,15 @@ const mockUseSettingsStore = vi.fn(() => ({
   updateSettings: mockUpdateSettings,
 }));
 
+interface UseSettingsStoreResult {
+  settings: {
+    buttonAlignment: string;
+  };
+  updateSettings: () => void;
+}
+
 vi.mock('@/stores/settingsStore', () => ({
-  default: () => mockUseSettingsStore(),
+  default: (): UseSettingsStoreResult => mockUseSettingsStore(),
 }));
 
 describe('ButtonAlignmentSetting', () => {

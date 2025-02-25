@@ -1,7 +1,8 @@
 import useSettingsStore from '@/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
+import type { JSX } from 'react';
 
-export function TablePaddingSetting() {
+export function TablePaddingSetting(): JSX.Element {
   const { settings, updateSettings } = useSettingsStore();
 
   return (

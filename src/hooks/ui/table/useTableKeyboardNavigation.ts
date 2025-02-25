@@ -13,11 +13,11 @@ export const useTableKeyboardNavigation = ({
   data,
   onRowSelect,
   isEditMode,
-}: UseTableKeyboardNavigationProps) => {
+}: UseTableKeyboardNavigationProps): void => {
   useEffect(() => {
     if (isEditMode) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
       if (e.key === 'ArrowUp' && currentRow > 0) {
         e.preventDefault();
         onRowSelect(currentRow - 1);
@@ -28,7 +28,7 @@ export const useTableKeyboardNavigation = ({
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
+    return (): void => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [onRowSelect, currentRow, data.length, isEditMode]);

@@ -2,11 +2,16 @@ import { render, screen } from '@testing-library/react';
 import { TableControls } from '@/components/molecules/TableControls';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
+import type { JSX } from 'react';
+
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
 
 // react-i18nextのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => {
       const translations = {
         moveUp: '上へ移動',
         moveDown: '下へ移動',
@@ -18,7 +23,7 @@ vi.mock('react-i18next', () => ({
 
 // IconButtonのモック
 vi.mock('../atoms/IconButton', () => ({
-  IconButton: ({ label, onClick, disabled }: { label: string, onClick: () => void, disabled: boolean }) => (
+  IconButton: ({ label, onClick, disabled }: { label: string, onClick: () => void, disabled: boolean }): JSX.Element => (
     <button
       aria-label={label}
       onClick={onClick}

@@ -12,10 +12,10 @@ interface ErrorState {
 const useErrorStore = create<ErrorState>((set) => ({
   error: null,
   isErrorDialogOpen: false,
-  setError: (error) => set({ error }),
-  setIsErrorDialogOpen: (isOpen) => set({ isErrorDialogOpen: isOpen }),
-  showError: (error) => set({ error, isErrorDialogOpen: true }),
-  clearError: () => set({ error: null, isErrorDialogOpen: false }),
+  setError: (error: Error | null): void => set({ error }),
+  setIsErrorDialogOpen: (isOpen: boolean): void => set({ isErrorDialogOpen: isOpen }),
+  showError: (error: Error): void => set({ error, isErrorDialogOpen: true }),
+  clearError: (): void => set({ error: null, isErrorDialogOpen: false }),
 }));
 
 export default useErrorStore;

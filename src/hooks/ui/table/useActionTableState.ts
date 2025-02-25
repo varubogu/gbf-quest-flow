@@ -16,7 +16,7 @@ export const useActionTableState = ({
   isEditMode = false,
   onDataChange,
   onRowSelect,
-}: UseActionTableStateProps) => {
+}: UseActionTableStateProps): UseActionTableStateProps => {
   const [editMode, setEditMode] = useState<boolean>(isEditMode);
 
   const {

@@ -7,7 +7,14 @@ interface UseTableDataProps {
   onDataChange?: ((_data: Action[]) => void) | undefined;
 }
 
-export const useTableData = ({ initialData, onDataChange }: UseTableDataProps) => {
+export interface UseTableDataResult {
+  data: Action[];
+  addRow: (_index: number) => boolean;
+  deleteRow: (_index: number) => boolean;
+  updateRow: (_index: number, _updatedRow: Partial<Action>) => boolean;
+}
+
+export const useTableData = ({ initialData, onDataChange }: UseTableDataProps): UseTableDataResult => {
   const [data, setData] = useState<Action[]>(initialData);
 
   const updateData = useCallback(

@@ -15,9 +15,14 @@ interface UseActionTableConfigProps {
   isEditMode: boolean;
 }
 
+export interface UseActionTableConfigResult {
+  headerClasses: string;
+  getRowClasses: (_props: { index: number; currentRow: number; baseBackground: string }) => string;
+}
+
 export const useActionTableConfig = ({
   isEditMode,
-}: UseActionTableConfigProps) => {
+}: UseActionTableConfigProps): UseActionTableConfigResult => {
   // グリッドレイアウトのクラスを生成
   const gridClasses = useMemo(() => {
     const editColumns = isEditMode
@@ -51,7 +56,7 @@ export const useActionTableConfig = ({
     index: number;
     currentRow: number;
     baseBackground: string;
-  }) => {
+  }): string => {
     return cn(
       gridClasses,
       'border-b',

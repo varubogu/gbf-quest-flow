@@ -9,7 +9,7 @@ export const ErrorDialog: React.FC = () => {
   const { flowData } = useFlowStore();
   const { error, isErrorDialogOpen, clearError } = useErrorStore();
 
-  const handleDownload = () => {
+  const handleDownload = (): void => {
     if (!flowData) return;
 
     const json = JSON.stringify(flowData, null, 2);

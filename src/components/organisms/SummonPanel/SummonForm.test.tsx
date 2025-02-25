@@ -3,16 +3,24 @@ import { SummonForm } from './SummonForm';
 import { describe, it, expect, vi } from 'vitest';
 import type { Summon } from '@/types/models';
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
   }),
 }));
 
+interface UseSummonFormResult {
+  handleSummonChange: (_type: 'main' | 'friend' | 'other' | 'sub', _index: number, _field: keyof Summon, _value: string) => void;
+}
+
 // useSummonFormのモック
 vi.mock('@/hooks/summons/useSummonForm', () => ({
-  useSummonForm: () => ({
+  useSummonForm: (): UseSummonFormResult => ({
     handleSummonChange: vi.fn(),
   }),
 }));

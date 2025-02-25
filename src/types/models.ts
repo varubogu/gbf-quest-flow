@@ -54,6 +54,7 @@ const weaponSchema = itemBaseSchema.extend({
 
 const summonSchema = itemBaseSchema.extend({});
 
+const abilitySchema = itemBaseSchema.extend({});
 // 編成情報のスキーマ
 const organizationSchema = z.object({
   job: jobSchema,
@@ -107,6 +108,7 @@ export type ItemBase = z.infer<typeof itemBaseSchema>;
 export type Member = z.infer<typeof memberSchema>;
 export type Weapon = z.infer<typeof weaponSchema>;
 export type Summon = z.infer<typeof summonSchema>;
+export type Ability = z.infer<typeof abilitySchema>;
 export type Organization = z.infer<typeof organizationSchema>;
 export type Action = z.infer<typeof actionSchema>;
 export type Flow = z.infer<typeof flowSchema>;
@@ -121,6 +123,7 @@ export {
   weaponSchema,
   summonSchema,
   organizationSchema,
+  abilitySchema,
   actionSchema,
   flowSchema,
   jobAbilitySchema,

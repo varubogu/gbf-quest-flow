@@ -22,9 +22,17 @@ vi.mock('i18next', () => ({
   },
 }));
 
+interface UseTranslationResult {
+  t: (_key: string) => string;
+  i18n: {
+    changeLanguage: (_language: string) => void;
+    language: string;
+  };
+}
+
 // react-i18nextのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): UseTranslationResult => ({
     t: (key: string) => key,
     i18n: {
       changeLanguage: vi.fn(),

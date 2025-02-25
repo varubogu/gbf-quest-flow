@@ -7,7 +7,23 @@ interface BaseStyleProps {
   className?: string;
 }
 
-export const useTableCellBaseStyle = () => {
+export interface UseTableCellBaseStyleResult {
+  baseClasses: {
+    border: string;
+    background: string;
+    header: string;
+    cursor: string;
+  };
+  getBaseClassName: (_props: BaseStyleProps) => string;
+  getBasePadding: () => {
+    paddingTop: string;
+    paddingBottom: string;
+    paddingLeft: string;
+    paddingRight: string;
+  };
+}
+
+export const useTableCellBaseStyle = (): UseTableCellBaseStyleResult => {
   const { settings } = useSettingsStore();
 
   const baseClasses = useMemo(
@@ -20,7 +36,7 @@ export const useTableCellBaseStyle = () => {
     []
   );
 
-  const getBaseClassName = ({ isHeader, className = '' }: BaseStyleProps) => {
+  const getBaseClassName = ({ isHeader, className = '' }: BaseStyleProps): string => {
     return cn(
       baseClasses.border,
       isHeader ? baseClasses.header : baseClasses.background,
@@ -29,7 +45,14 @@ export const useTableCellBaseStyle = () => {
     );
   };
 
-  const getBasePadding = () => ({
+  interface Padding {
+    paddingTop: string;
+    paddingBottom: string;
+    paddingLeft: string;
+    paddingRight: string;
+  }
+
+  const getBasePadding = (): Padding => ({
     paddingTop: `${settings.tablePadding}px`,
     paddingBottom: `${settings.tablePadding}px`,
     paddingLeft: `${Math.max(2, settings.tablePadding)}px`,
