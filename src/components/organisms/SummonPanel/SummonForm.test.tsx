@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { SummonForm } from './SummonForm';
 import { describe, it, expect, vi } from 'vitest';
 import type { Summon } from '@/types/types';
+import type { SummonType } from '@/types/models';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -15,7 +16,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 interface UseSummonFormResult {
-  handleSummonChange: (_type: 'main' | 'friend' | 'other' | 'sub', _index: number, _field: keyof Summon, _value: string) => void;
+  handleSummonChange: (_type: SummonType, _index: number, _field: keyof Summon, _value: string) => void;
 }
 
 // useSummonFormのモック

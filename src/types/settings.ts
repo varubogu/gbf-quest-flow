@@ -1,3 +1,5 @@
+import type { Language, Side, ClickType } from "@/types/types";
+
 export interface OrganizationSettings {
   job: {
     abilities: number;
@@ -20,13 +22,13 @@ export interface OrganizationSettings {
 }
 
 export interface AppSettings {
-  language: '日本語' | 'English';
-  buttonAlignment: '左' | '右';
+  language: Language;
+  buttonAlignment: Side;
   tablePadding: number; // 行動表の余白（px単位、デフォルト8px）
-  actionTableClickType: 'single' | 'double'; // 行動表の選択方法
+  actionTableClickType: ClickType; // 行動表の選択方法
 }
 
 export interface Settings {
-  actionTableClickType: 'single' | 'double';
+  actionTableClickType: ClickType;
   // 他の設定項目がある場合はここに追加
 }

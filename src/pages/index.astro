@@ -5,11 +5,12 @@
 
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BodyLayout from '@/layouts/BodyLayout';
+import type { ViewMode } from '@/types/types';
 
 const mode = Astro.url.searchParams.get('mode');
 
 // モードに応じて初期モードを設定
-let initialMode: 'view' | 'edit' | 'new' = 'view';
+let initialMode: ViewMode = 'view';
 if (mode === 'new') {
   initialMode = 'new';
 } else if (mode === 'edit') {

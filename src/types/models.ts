@@ -9,8 +9,11 @@ export type ActionTableColumn = keyof Action;
 // アクションテーブルの表示モード
 export type ActionTableMode = 'view' | 'edit';
 
+// 基本的な左右の位置を表す型
+export type Side = 'left' | 'right';
+
 // アクションテーブルのボタン位置
-export type ActionTableButtonPosition = 'left' | 'right';
+export type ActionTableButtonPosition = Side;
 
 // アクションテーブルの行選択イベントハンドラ
 export type ActionTableRowSelectHandler = (_index: number) => void;
@@ -34,8 +37,7 @@ export type ActionTableColumnConfig = {
 export type MenuView = 'menu' | 'options';
 export type ButtonVariant = 'default' | 'ghost';
 export type TextVariant = 'default' | 'muted' | 'dimmed';
-export type IconPosition = 'left' | 'right';
-export type Side = 'left' | 'right';
+export type IconPosition = Side;
 export type ClickType = 'single' | 'double';
 
 // データ構造関連の型定義

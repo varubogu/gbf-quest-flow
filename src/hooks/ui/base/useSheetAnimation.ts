@@ -1,8 +1,9 @@
+import type { Side } from '@/types/models';
 import { useState, useEffect } from 'react';
 
 interface UseSheetAnimationProps {
   open: boolean;
-  side: 'left' | 'right';
+  side: Side;
 }
 
 export interface UseSheetAnimationResult {

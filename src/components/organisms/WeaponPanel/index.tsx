@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Weapon, WeaponSkillEffect } from '@/types/models';
+import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
 import { WeaponIcon } from '@/components/molecules/Weapon/WeaponIcon';
@@ -47,7 +47,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
   if (!flowData || !weaponData) return null;
 
   const handleWeaponChange = (
-    type: 'main' | 'other' | 'additional',
+    type: WeaponType,
     index: number | null,
     field: keyof Weapon,
     value: string | WeaponSkillEffect

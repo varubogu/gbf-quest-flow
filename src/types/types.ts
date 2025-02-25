@@ -17,6 +17,7 @@ export type {
   Job,
   JobAbility,
   JobEquipment,
+  Language,
   Member,
   MenuView,
   Organization,

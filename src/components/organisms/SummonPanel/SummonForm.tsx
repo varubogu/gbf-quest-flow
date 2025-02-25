@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Summon } from '@/types/types';
+import type { Summon, SummonType } from '@/types/types';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
 import { SummonNote } from '@/components/molecules/Summon/SummonNote';
 import { useSummonForm } from '@/hooks/domain/summons/useSummonForm';
 
 interface SummonFormProps {
-  type: 'main' | 'friend' | 'other' | 'sub';
+  type: SummonType;
   summons: Summon[];
   isEditing: boolean;
 }

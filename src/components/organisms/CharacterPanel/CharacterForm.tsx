@@ -1,16 +1,16 @@
 import React, { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Member } from '@/types/models';
+import type { CharacterPosition, Member } from '@/types/models';
 import { CharacterIcon } from '@/components/molecules/Character/CharacterIcon';
 import { SkillDisplay } from '@/components/molecules/Character/SkillDisplay';
 import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
 import { textInputBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface CharacterFormProps {
-  position: 'front' | 'back';
+  position: CharacterPosition;
   members: Member[];
   isEditing: boolean;
-  onMemberChange: (_position: 'front' | 'back', _index: number, _field: keyof Member, _value: string) => void;
+  onMemberChange: (_position: CharacterPosition, _index: number, _field: keyof Member, _value: string) => void;
 }
 
 type HandleChange = (_index: number, _field: keyof Member) => (_value: string) => void;

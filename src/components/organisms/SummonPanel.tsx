@@ -1,6 +1,6 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Summon } from '@/types/types';
+import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
 import { SummonNote } from '@/components/molecules/Summon/SummonNote';
@@ -22,7 +22,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
 
   if (!flowData) return null;
 
-  const handleSummonChange = (type: 'main' | 'friend' | 'other' | 'sub', index: number | null, field: keyof Summon, value: string): void => {
+  const handleSummonChange = (type: SummonType, index: number | null, field: keyof Summon, value: string): void => {
     if (!flowData) return;
 
     let newSummonData;
