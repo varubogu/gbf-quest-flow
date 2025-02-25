@@ -11,10 +11,16 @@ vi.mock('@/services/flowEventService', () => ({
 
 vi.mock('react-i18next', () => ({
   // Trans and Translation components
-  Trans: ({ children }: { children: unknown }) => children,
-  Translation: ({ children }: { children: unknown }) => children,
+  Trans: ({ children }: { children: unknown }): unknown => children,
+  Translation: ({ children }: { children: unknown }): unknown => children,
   // hooks
-  useTranslation: () => ({
+  useTranslation: (): {
+    t: (_key: string) => string;
+    i18n: {
+      changeLanguage: () => void;
+      language: string;
+    };
+  } => ({
     t: (key: string) => key,
     i18n: {
       changeLanguage: vi.fn(),
@@ -30,14 +36,14 @@ vi.mock('react-i18next', () => ({
 
 // FileOperationsのモック
 vi.mock('@/utils/FileOperations', () => ({
-  shouldConfirmDiscard: () => true,
+  shouldConfirmDiscard: (): boolean => true,
   showNoDataAlert: vi.fn(),
   downloadFlow: vi.fn(),
   getDownloadFilename: vi.fn(),
 }));
 
 // Zustandストアのモック
-const createMockStore = () => {
+const createMockStore  = () => {
   const mockSetIsEditMode = vi.fn();
   const mockLoadFlowFromFile = vi.fn();
   const mockCancelEdit = vi.fn();

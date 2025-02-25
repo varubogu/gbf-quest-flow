@@ -12,6 +12,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/stores/flowStore';
+import type { JSX } from 'react';
 
 export interface MenuItem {
   id: string;
@@ -25,7 +26,7 @@ interface MenuItemsProps {
   isLoading?: boolean;
 }
 
-export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps) {
+export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state) => state.flowData);
   const isEditMode = useFlowStore((state) => state.isEditMode);

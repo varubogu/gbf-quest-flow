@@ -9,7 +9,7 @@ const actualCreate = zustand.create;
 // すべてのストアのリセット関数を保持する変数
 export const storeResetFns = new Set<() => void>();
 
-const createUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
+const createUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>): ZustandExportedTypes.StoreApi<T> => {
   const store = actualCreate(stateCreator);
   const initialState = store.getState();
   storeResetFns.add(() => {

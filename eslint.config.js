@@ -62,8 +62,8 @@ const config = [
       'react-hooks': /** @type {import('eslint').ESLint.Plugin} */ (reactHooksPlugin),
     },
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
@@ -79,7 +79,7 @@ const config = [
       'react/react-in-jsx-scope': 'off',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-      'no-case-declarations': 'off',
+      'no-case-declarations': 'warn',
       'no-undef': 'error',
       'no-unused-vars': ['error', {
         argsIgnorePattern: '^_',

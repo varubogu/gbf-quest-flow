@@ -18,6 +18,7 @@ import {
 } from '@/utils/FileOperations';
 import { useFlowDataModification } from '@/hooks/domain/flow/useFlowDataModification';
 import { useEditHistory } from '@/hooks/domain/flow/useEditHistory';
+import type { Flow } from '@/types/models';
 
 interface Props {
   onSave: () => void;
@@ -25,7 +26,7 @@ interface Props {
   onExitEditMode: () => void;
 }
 
-export function SideMenu({ onSave, onNew, onExitEditMode }: Props) {
+export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -72,19 +73,19 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props) {
         break;
 
       case 'download':
-        if (!flowData) {
+        { if (!flowData) {
           showNoDataAlert(t);
           break;
         }
 
-        const dataToDownload = isEditMode ? originalData : flowData;
+        const dataToDownload: Flow | null = isEditMode ? originalData : flowData;
         if (!dataToDownload) {
           showNoDataAlert(t);
           break;
         }
 
         await downloadFlow(dataToDownload, getDownloadFilename(dataToDownload));
-        break;
+        break; }
 
       case 'edit':
         if (isEditMode) {

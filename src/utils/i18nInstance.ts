@@ -15,13 +15,13 @@ export const getI18n = async (): Promise<i18n> => {
   return i18nInstance
 }
 
-export const getT = async () => {
+export const getT = async (): Promise<((_key: string, _options?: TOptions) => string)> => {
   const i18n = await getI18n()
   // @ts-ignore: i18nの型定義の問題を一時的に抑制
   return (key: string, options?: TOptions) => i18n.t(key, options)
 }
 
-export const getCurrentLang = async () => {
+export const getCurrentLang = async (): Promise<string> => {
   const i18n = await getI18n()
   return i18n.language
 }

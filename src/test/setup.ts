@@ -10,7 +10,7 @@ expect.extend(matchers);
 // コンソールエラーの抑制設定
 const originalConsoleError = console.error;
 beforeAll(() => {
-  console.error = (...args: unknown[]) => {
+  console.error = (...args: unknown[]): void => {
     const firstArg = args[0];
     if (
       typeof firstArg === 'string' &&

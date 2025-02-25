@@ -10,7 +10,7 @@ describe('SkillDisplay', () => {
   const defaultProps = {
     text: multilineText,
     isEditing: false,
-    onChange: () => {},
+    onChange: vi.fn(),
     'aria-label': 'スキル説明',
   };
 

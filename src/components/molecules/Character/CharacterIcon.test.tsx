@@ -6,7 +6,7 @@ describe('CharacterIcon', () => {
   const defaultProps = {
     name: 'グラン',
     isEditing: false,
-    onChange: () => {},
+    onChange: vi.fn(),
     'aria-label': 'キャラクター名',
   };
 

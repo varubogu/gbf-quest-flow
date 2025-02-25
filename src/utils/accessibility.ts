@@ -3,7 +3,7 @@
  * @param message 通知メッセージ
  * @param type 通知タイプ（'status' または 'alert'）
  */
-export function announceToScreenReader(message: string, type: 'status' | 'alert' = 'status') {
+export function announceToScreenReader(message: string, type: 'status' | 'alert' = 'status'): void {
   const element = document.createElement('div');
   element.setAttribute('role', type);
   element.setAttribute('aria-live', type === 'alert' ? 'assertive' : 'polite');
@@ -18,7 +18,7 @@ export function announceToScreenReader(message: string, type: 'status' | 'alert'
  * @param error エラーオブジェクト
  * @param context エラーが発生したコンテキスト
  */
-export function handleError(error: unknown, context: string) {
+export function handleError(error: unknown, context: string): void {
   console.error(`${context}:`, error);
   announceToScreenReader(`${context}にエラーが発生しました`, 'alert');
 }

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSheetAnimation } from '@/hooks/ui/base/useSheetAnimation';
 
@@ -42,11 +42,11 @@ export const SheetTrigger = ({
 }: {
   asChild?: boolean;
   children: React.ReactElement<React.HTMLAttributes<HTMLElement>>;
-}) => {
+}): JSX.Element => {
   const context = useContext(SheetContext);
   if (!context) throw new Error('SheetTrigger must be used within a Sheet');
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     context.setOpen(true);
   };
 
@@ -67,7 +67,7 @@ export const SheetContent = ({
 }: {
   side?: 'left' | 'right';
   children: React.ReactNode;
-}) => {
+}): JSX.Element | null => {
   const { t } = useTranslation();
   const context = useContext(SheetContext);
   if (!context) throw new Error('SheetContent must be used within a Sheet');
@@ -95,11 +95,11 @@ export const SheetContent = ({
 };
 
 // SheetHeader はコンテンツ上部のヘッダー部分
-export const SheetHeader = ({ children }: { children: React.ReactNode }) => {
+export const SheetHeader = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return <div className="border-b pb-2 mb-2">{children}</div>;
 };
 
 // SheetTitle はタイトル部分
-export const SheetTitle = ({ children }: { children: React.ReactNode }) => {
+export const SheetTitle = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return <h3 className="text-lg font-bold">{children}</h3>;
 };

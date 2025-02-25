@@ -8,10 +8,16 @@ import type { ReactNode } from 'react';
 // i18nのモック
 vi.mock('react-i18next', () => ({
   // Trans and Translation components
-  Trans: ({ children }: { children: unknown }) => children,
-  Translation: ({ children }: { children: unknown }) => children,
+  Trans: ({ children }: { children: unknown }): unknown => children,
+  Translation: ({ children }: { children: unknown }): unknown => children,
   // hooks
-  useTranslation: () => ({
+  useTranslation: (): {
+    t: (_key: string) => string;
+    i18n: {
+      changeLanguage: () => void;
+      language: string;
+    };
+  } => ({
     t: (key: string) => key,
     i18n: {
       changeLanguage: vi.fn(),
@@ -24,9 +30,9 @@ vi.mock('react-i18next', () => ({
     init: vi.fn(),
   },
   // HOCs
-  withTranslation: () => (Component: unknown) => Component,
+  withTranslation: () => (Component: unknown): unknown => Component,
   // Provider
-  I18nextProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
+  I18nextProvider: ({ children }: { children: ReactNode }): ReactNode => children,
 }));
 
 // i18nextのモック

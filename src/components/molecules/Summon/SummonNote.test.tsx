@@ -4,8 +4,18 @@ import { describe, it, expect, vi } from 'vitest';
 
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): {
+    t: (_key: string) => string;
+    i18n: {
+      changeLanguage: () => void;
+      language: string;
+    };
+  } => ({
     t: (key: string) => key,
+    i18n: {
+      changeLanguage: vi.fn(),
+      language: 'ja',
+    },
   }),
 }));
 
@@ -13,7 +23,7 @@ describe('SummonNote', () => {
   const defaultProps = {
     note: '主召喚石\n攻撃力60%UP',
     isEditing: false,
-    onChange: () => {},
+    onChange: vi.fn(),
     'aria-label': 'summon.noteLabel',
   };
 
