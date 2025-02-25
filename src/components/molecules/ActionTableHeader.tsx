@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
-import { ActionCell } from './ActionCell';
+import { TableCell } from './TableCell';
 import { useTranslation } from 'react-i18next';
 import { columnTranslationKeys } from '@/config/actionTable';
 import type { ActionTableColumn } from '@/types/models';
@@ -43,7 +43,7 @@ export const ActionTableHeader: React.FC<ActionTableHeaderProps> = ({
         </>
       )}
       {columns.map((column) => (
-        <ActionCell
+        <TableCell
           key={column}
           content={t(columnTranslationKeys[column]) as string}
           isHeader

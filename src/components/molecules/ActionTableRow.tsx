@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Plus, Minus } from 'lucide-react';
-import { ActionCell } from './ActionCell';
+import { TableCell } from './TableCell';
 import type { Action, ActionTableColumn } from '@/types/models';
 
 interface ActionTableRowProps {
@@ -67,7 +67,7 @@ export const ActionTableRow: React.FC<ActionTableRowProps> = ({
         </>
       )}
       {columns.map((column) => (
-        <ActionCell
+        <TableCell
           key={column}
           content={data[column]}
           isCurrentRow={isCurrentRow}

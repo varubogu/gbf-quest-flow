@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
 import type { ActionTableColumn } from '@/types/models';
-import ActionTableHeaderCell from './ActionTableHeaderCell';
+import TableHeaderCell from './TableHeaderCell';
 
 interface ActionTableHeader3Props {
   className: string;
@@ -43,7 +43,7 @@ export const ActionTableHeader3: React.FC<ActionTableHeader3Props> = ({
           </>
         )}
         {columns.map((column) => (
-          <ActionTableHeaderCell
+          <TableHeaderCell
             key={column}
             column={column}
             alignment={alignments[column]}

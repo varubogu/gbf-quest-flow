@@ -1,22 +1,23 @@
 import * as React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { TableCell } from './TableCell';
-import type { Action, ActionTableColumn } from '@/types/models';
 
-interface ActionTableRow3Props {
-  data: Action;
+interface TableRowProps<T extends Record<string, any>> {
+  data: T;
   index: number;
   isCurrentRow: boolean;
   isEditMode: boolean;
   className: string;
   onRowClick: () => void;
   onRowDoubleClick: () => void;
-  onCellEdit?: (_field: keyof Action, _value: string) => void;
+  onCellEdit?: (_field: keyof T, _value: string) => void;
   onDeleteRow?: () => void;
   onAddRow?: () => void;
+  columns: string[];
+  alignments: Record<string, 'left' | 'center' | 'right'>;
 }
 
-export const ActionTableRow3: React.FC<ActionTableRow3Props> = ({
+export function TableRow<T extends Record<string, any>>({
   data,
   index,
   isCurrentRow,
@@ -27,21 +28,13 @@ export const ActionTableRow3: React.FC<ActionTableRow3Props> = ({
   onCellEdit,
   onDeleteRow,
   onAddRow,
-}) => {
-  const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
-  const alignments: Record<ActionTableColumn, 'left' | 'center' | 'right'> = {
-    hp: 'right',
-    prediction: 'left',
-    charge: 'center',
-    guard: 'center',
-    action: 'left',
-    note: 'left',
-  };
-
+  columns,
+  alignments,
+}: TableRowProps<T>) {
   return (
     <tr
-      id={`action-row-${index}`}
-      data-testid={`action-row-${index}`}
+      id={`row-${index}`}
+      data-testid={`row-${index}`}
       className={className}
       onClick={onRowClick}
       onDoubleClick={onRowDoubleClick}
@@ -69,16 +62,16 @@ export const ActionTableRow3: React.FC<ActionTableRow3Props> = ({
       {columns.map((column) => (
         <TableCell
           key={column}
-          content={data[column] || ''}
+          content={data[column]?.toString() || ''}
           isCurrentRow={isCurrentRow}
           isEditable={isEditMode}
-          onChange={(value) => onCellEdit?.(column, value)}
+          onChange={(value) => onCellEdit?.(column as keyof T, value)}
           field={column}
-          alignment={alignments[column]}
+          alignment={alignments[column] || 'left'}
           data-testid={`cell-${column}-${index}`}
           as="td"
         />
       ))}
     </tr>
   );
-};
+}
