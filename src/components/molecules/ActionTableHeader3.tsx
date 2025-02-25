@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
-import { ActionCell3 } from './ActionCell3';
-import { useTranslation } from 'react-i18next';
-import { columnTranslationKeys } from '@/config/actionTable';
 import type { ActionTableColumn } from '@/types/models';
+import ActionTableHeaderCell from './ActionTableHeaderCell';
 
 interface ActionTableHeader3Props {
   className: string;
@@ -16,7 +14,6 @@ export const ActionTableHeader3: React.FC<ActionTableHeader3Props> = ({
   isEditMode,
   onAddRow,
 }) => {
-  const { t } = useTranslation();
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
   const alignments: Record<ActionTableColumn, 'left' | 'center' | 'right'> = {
     hp: 'right',
@@ -46,14 +43,11 @@ export const ActionTableHeader3: React.FC<ActionTableHeader3Props> = ({
           </>
         )}
         {columns.map((column) => (
-          <th
+          <ActionTableHeaderCell
             key={column}
-            className="border-b border-r border-gray-400 px-1 py-0.5"
-            style={{ textAlign: alignments[column] }}
-            data-field={column}
-          >
-            {t(columnTranslationKeys[column]) as string}
-          </th>
+            column={column}
+            alignment={alignments[column]}
+          />
         ))}
       </tr>
     </thead>
