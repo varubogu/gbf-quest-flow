@@ -42,6 +42,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={false}
           titleKey="skillEffects"
           values={mockValues}
@@ -65,6 +66,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={true}
           titleKey="skillEffects"
           values={mockValues}
@@ -91,6 +93,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={false}
           titleKey="skillEffects"
           values={defaultValues}
@@ -99,20 +102,58 @@ describe('SkillTable', () => {
       </I18nextProvider>
     );
 
-    // デフォルト値の各フィールドを個別に検証
-    const cells = screen.getAllByRole('cell');
-    const taRateCell = cells[1];
-    const hpCell = cells[3];
-    const defenseCell = cells[5];
+    const skillTable = screen.getByTestId('skill-table');
+    expect(skillTable).toBeInTheDocument();
 
-    expect(taRateCell).toHaveTextContent('');
-    expect(hpCell).toHaveTextContent('');
-    expect(defenseCell).toHaveTextContent('');
+    const tbodyList = skillTable.getElementsByTagName('tbody');
+    expect(tbodyList).toHaveLength(1);
 
-    // テーブルの構造が正しいことを確認
-    expect(screen.getByRole('table')).toBeDefined();
-    expect(screen.getAllByRole('row')).toHaveLength(4); // ヘッダー行 + 3つのデータ行
-    expect(screen.getAllByRole('columnheader')).toHaveLength(2); // スキル + 効果量
+    const tbody = tbodyList[0];
+    if (!tbody) {
+      throw new Error('tbodyが見つかりません');
+    }
+    const rows: HTMLTableRowElement[] = Array.from(tbody.getElementsByTagName('tr'));
+    if (!rows || rows.length === 0) {
+      throw new Error('rowsが見つかりません');
+    }
+    expect(rows).toHaveLength(3); // ヘッダー行 + 3つのデータ行
+
+    // 1行目 TA率
+    const row1 = rows.at(0);
+    if (!row1) {
+      throw new Error('row1が見つかりません');
+    }
+    const taRateNameCell = row1.getElementsByTagName('th')[0];
+    expect(taRateNameCell).toHaveTextContent('TA率');
+    const taRateValueCell = row1.getElementsByTagName('td')[0];
+    expect(taRateValueCell).toHaveTextContent(''); // 効果量の検証
+    const taRateBr = taRateValueCell?.getElementsByTagName('br');
+    expect(taRateBr).toHaveLength(0);
+
+    // 2行目 守護
+    const row2 = rows.at(1);
+    if (!row2) {
+      throw new Error('row2が見つかりません');
+    }
+    const hpNameCell = row2.getElementsByTagName('th')[0];
+    expect(hpNameCell).toHaveTextContent('守護');
+    const hpValueCell = row2.getElementsByTagName('td')[0];
+    expect(hpValueCell).toHaveTextContent('');
+    const hpBr = hpValueCell?.getElementsByTagName('br');
+    expect(hpBr).toHaveLength(0);
+
+    // 3行目 防御力
+    const row3 = rows.at(2);
+    if (!row3) {
+      throw new Error('row3が見つかりません');
+    }
+    const defenseNameCell = row3.getElementsByTagName('th')[0];
+    expect(defenseNameCell).toHaveTextContent('防御力');
+    const defenseValueCell = row3.getElementsByTagName('td')[0];
+    expect(defenseValueCell).toHaveTextContent('');
+    const defenseBr = defenseValueCell?.getElementsByTagName('br');
+    expect(defenseBr).toHaveLength(0);
+
   });
 
   it('改行を含むテキストが正しく表示される', () => {
@@ -125,6 +166,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={false}
           titleKey="skillEffects"
           values={valuesWithNewlines}
@@ -133,42 +175,64 @@ describe('SkillTable', () => {
       </I18nextProvider>
     );
 
-    // セルごとに改行を含むテキストを検証
-    const cells = screen.getAllByRole('cell');
-    expect(cells).toHaveLength(6); // ラベル3つ + 値3つ
+    const skillTable = screen.getByTestId('skill-table');
+    expect(skillTable).toBeInTheDocument();
 
-    // TA率のセル
-    const taRateCell = cells[1];
-    const taRateLines = taRateCell?.getElementsByTagName('br');
-    expect(taRateLines).toHaveLength(1); // 改行が1つ存在
-    expect(taRateCell?.textContent).toBe('50%60%');
+    const tbodyList = skillTable.getElementsByTagName('tbody');
+    expect(tbodyList).toHaveLength(1);
 
-    // HPのセル
-    const hpCell = cells[3];
-    const hpLines = hpCell?.getElementsByTagName('br');
-    expect(hpLines).toHaveLength(1);
-    expect(hpCell?.textContent).toBe('30004000');
+    const tbody = tbodyList[0];
+    if (!tbody) {
+      throw new Error('tbodyが見つかりません');
+    }
+    const rows: HTMLTableRowElement[] = Array.from(tbody.getElementsByTagName('tr'));
+    if (!rows || rows.length === 0) {
+      throw new Error('rowsが見つかりません');
+    }
+    expect(rows).toHaveLength(3); // ヘッダー行 + 3つのデータ行
 
-    // 防御力のセル
-    const defenseCell = cells[5];
-    const defenseLines = defenseCell?.getElementsByTagName('br');
-    expect(defenseLines).toHaveLength(1);
-    expect(defenseCell?.textContent).toBe('10%15%');
+    // 1行目 TA率
+    const row1 = rows.at(0);
+    if (!row1) {
+      throw new Error('row1が見つかりません');
+    }
+    const taRateNameCell = row1.getElementsByTagName('th')[0];
+    expect(taRateNameCell).toHaveTextContent('TA率');
+    const taRateValueCell = row1.getElementsByTagName('td')[0];
+    expect(taRateValueCell).toHaveTextContent('50%60%'); // 効果量の検証
+    const taRateBr = taRateValueCell?.getElementsByTagName('br');
+    expect(taRateBr).toHaveLength(1);
 
-    // 各セルに<br>要素が正しく配置されていることを確認
-    [taRateCell, hpCell, defenseCell].forEach((cell) => {
-      if (!cell) return;
-      const fragments = cell.childNodes;
-      expect(fragments).toHaveLength(3); // テキスト、br、テキストの3要素
-      const brElement = fragments[1] as ChildNode;
-      expect(brElement.nodeName).toBe('BR');
-    });
+    // 2行目 守護
+    const row2 = rows.at(1);
+    if (!row2) {
+      throw new Error('row2が見つかりません');
+    }
+    const hpNameCell = row2.getElementsByTagName('th')[0];
+    expect(hpNameCell).toHaveTextContent('守護');
+    const hpValueCell = row2.getElementsByTagName('td')[0];
+    expect(hpValueCell).toHaveTextContent('30004000');
+    const hpBr = hpValueCell?.getElementsByTagName('br');
+    expect(hpBr).toHaveLength(1);
+
+    // 3行目 防御力
+    const row3 = rows.at(2);
+    if (!row3) {
+      throw new Error('row3が見つかりません');
+    }
+    const defenseNameCell = row3.getElementsByTagName('th')[0];
+    expect(defenseNameCell).toHaveTextContent('防御力');
+    const defenseValueCell = row3.getElementsByTagName('td')[0];
+    expect(defenseValueCell).toHaveTextContent('10%15%');
+    const defenseBr = defenseValueCell?.getElementsByTagName('br');
+    expect(defenseBr).toHaveLength(1);
   });
 
   it('アクセシビリティ属性が正しく設定されている', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={true}
           titleKey="skillEffects"
           values={mockValues}
@@ -194,6 +258,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={false}
           titleKey="skillEffects"
           values={mockValues}
@@ -207,6 +272,7 @@ describe('SkillTable', () => {
     render(
       <I18nextProvider i18n={i18n}>
         <SkillTable
+          id="skill-table"
           isEditing={false}
           titleKey="totalAmount"
           values={mockValues}

@@ -34,6 +34,7 @@ const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onC
         {isEditing ? (
           <textarea
             id={`skill-${field}`}
+            data-testid={`skill-${field}`}
             ref={textareaRef}
             value={value}
             onChange={(e) => onChange(field, e.target.value)}
@@ -81,7 +82,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ id, isEditing, titleKey,
   return (
     <div className="mt-8">
       <h3 className="text-lg font-bold mb-4">{t(titleKey)}</h3>
-      <table id={id} className={tableBaseStyle}>
+      <table id={id} className={tableBaseStyle} data-testid={id}>
         <thead>
           <tr className={tableHeaderRowStyle}>
             <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles['1/4']}`}>
