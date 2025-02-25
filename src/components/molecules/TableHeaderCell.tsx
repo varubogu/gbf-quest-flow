@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { columnTranslationKeys } from '@/config/actionTable';
 import type { ActionTableColumn } from '@/types/models';
 
-interface TableHeaderCellProps {
+export interface TableHeaderCellProps {
   column: string;
   alignment: 'left' | 'center' | 'right';
   translationKey?: string;

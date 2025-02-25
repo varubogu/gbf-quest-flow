@@ -1,46 +1,42 @@
 import * as React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+import { IconButton } from '../atoms/IconButton';
 import { useTranslation } from 'react-i18next';
+import type { ActionTableButtonPosition } from '@/types/models';
 
 interface TableControlsProps {
+  buttonPosition: ActionTableButtonPosition;
+  currentRow: number;
+  totalRows: number;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  buttonPosition?: 'top' | 'bottom' | 'both';
-  className?: string;
 }
 
-export function TableControls({
+export const TableControls: React.FC<TableControlsProps> = ({
+  buttonPosition,
+  currentRow,
+  totalRows,
   onMoveUp,
   onMoveDown,
-  buttonPosition = 'both',
-  className = '',
-}: TableControlsProps) {
+}) => {
   const { t } = useTranslation();
-  const showTop = buttonPosition === 'top' || buttonPosition === 'both';
-  const showBottom = buttonPosition === 'bottom' || buttonPosition === 'both';
 
   return (
-    <div className={`flex flex-col items-center justify-center gap-2 p-2 ${className}`}>
-      {showTop && (
-        <button
+    <div className="flex justify-between items-center p-2 sticky top-0 bg-white z-20">
+      <div className={`flex gap-2 ${buttonPosition === 'right' ? 'ml-auto' : ''}`}>
+        <IconButton
+          icon={ChevronUp}
+          label={t('moveUp') as string}
           onClick={onMoveUp}
-          className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center"
-          title={t('action.moveUp')}
-          aria-label={t('action.moveUp')}
-        >
-          <ChevronUp className="w-5 h-5" />
-        </button>
-      )}
-      {showBottom && (
-        <button
+          disabled={currentRow <= 0}
+        />
+        <IconButton
+          icon={ChevronDown}
+          label={t('moveDown') as string}
           onClick={onMoveDown}
-          className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center"
-          title={t('action.moveDown')}
-          aria-label={t('action.moveDown')}
-        >
-          <ChevronDown className="w-5 h-5" />
-        </button>
-      )}
+          disabled={currentRow >= totalRows - 1}
+        />
+      </div>
     </div>
   );
-}
+};

@@ -1,176 +1,144 @@
 import * as React from 'react';
-import { useSettingsStore } from '../../stores/settingsStore';
-import { useTableKeyboardNavigation } from '../../hooks/useTableKeyboardNavigation';
-import { useTableScroll } from '../../hooks/useTableScroll';
-import { useActionTableConfig } from '../../hooks/useActionTableConfig';
-import { TableRow } from '../molecules/TableRow';
-import { TableHeader } from '../molecules/TableHeader';
-import { TableControls } from '../molecules/TableControls';
+import type { Action } from '@/types/models';
+import useSettingsStore from '@/stores/settingsStore';
+import { useTableKeyboardNavigation } from '@/hooks/ui/table/useTableKeyboardNavigation';
+import { useTableScroll } from '@/hooks/ui/table/useTableScroll';
+import { useActionTableConfig } from '@/hooks/ui/table/useActionTableConfig';
+import { TableControls } from '@/components/molecules/TableControls';
+import { TableHeader } from '@/components/molecules/TableHeader';
+import { TableRow } from '@/components/molecules/TableRow';
 
-export interface TableProps<T extends Record<string, any>> {
-  data: T[];
+interface TableProps {
+  data: Action[];
   currentRow: number;
-  onRowClick: (index: number) => void;
-  onRowDoubleClick: (index: number) => void;
-  onCellEdit?: (index: number, field: keyof T, value: string) => void;
-  onDeleteRow?: (index: number) => void;
-  onAddRow?: (index: number) => void;
-  onMoveRow?: (fromIndex: number, toIndex: number) => void;
+  buttonPosition?: 'left' | 'right';
+  onRowSelect: (_index: number) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   isEditMode?: boolean;
-  buttonPosition?: 'top' | 'bottom' | 'both';
-  columns: string[];
-  alignments?: Record<string, 'left' | 'center' | 'right'>;
-  translationKeys?: Record<string, string>;
-  renderRow?: (props: {
-    data: T;
-    index: number;
-    isCurrentRow: boolean;
-    isEditMode: boolean;
-    className: string;
-    onRowClick: () => void;
-    onRowDoubleClick: () => void;
-    onCellEdit?: (field: keyof T, value: string) => void;
-    onDeleteRow?: () => void;
-    onAddRow?: () => void;
-  }) => React.ReactNode;
+  onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
+  onDeleteRow?: (_index: number) => void;
+  onAddRow?: (_index: number) => void;
+  onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
 }
 
-export function Table<T extends Record<string, any>>({
+export const Table: React.FC<TableProps> = ({
   data,
   currentRow,
-  onRowClick,
-  onRowDoubleClick,
+  buttonPosition = 'left',
+  onRowSelect,
+  onMoveUp,
+  onMoveDown,
+  isEditMode = false,
   onCellEdit,
   onDeleteRow,
   onAddRow,
-  onMoveRow,
-  isEditMode = false,
-  buttonPosition = 'both',
-  columns,
-  alignments = {},
-  translationKeys = {},
-  renderRow,
-}: TableProps<T>) {
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  onPasteRows,
+}) => {
   const { settings } = useSettingsStore();
-  const { styles } = useActionTableConfig();
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const { handleKeyDown } = useTableKeyboardNavigation({
-    currentRow,
-    rowCount: data.length,
-    onRowChange: onRowClick,
-    onRowDoubleClick,
+  // 設定とスタイルの管理
+  const { headerClasses, getRowClasses } = useActionTableConfig({
     isEditMode,
   });
 
+  // キーボードナビゲーションの設定
+  useTableKeyboardNavigation({
+    currentRow,
+    data,
+    onRowSelect,
+    isEditMode,
+  });
+
+  // スクロール制御の設定
   useTableScroll({
     containerRef,
     currentRow,
+    data,
+    onRowSelect,
     isEditMode,
   });
 
+  // 編集モード終了時に最初の行を選択
   React.useEffect(() => {
-    if (!isEditMode && currentRow === -1 && data.length > 0) {
-      onRowClick(0);
+    if (!isEditMode && currentRow === -1) {
+      onRowSelect(0);
     }
-  }, [isEditMode, currentRow, data.length, onRowClick]);
+  }, [isEditMode, currentRow, onRowSelect]);
 
   const handleRowClick = (index: number) => {
-    if (settings.clickType === 'single' || isEditMode) {
-      onRowClick(index);
+    if (isEditMode) return;
+    if (settings.actionTableClickType === 'single') {
+      onRowSelect(index);
     }
   };
 
   const handleRowDoubleClick = (index: number) => {
-    if (settings.clickType === 'double' && !isEditMode) {
-      onRowDoubleClick(index);
-    }
-  };
-
-  const handleMoveUp = () => {
-    if (currentRow > 0 && onMoveRow) {
-      onMoveRow(currentRow, currentRow - 1);
-      onRowClick(currentRow - 1);
-    }
-  };
-
-  const handleMoveDown = () => {
-    if (currentRow < data.length - 1 && onMoveRow) {
-      onMoveRow(currentRow, currentRow + 1);
-      onRowClick(currentRow + 1);
+    if (isEditMode) return;
+    if (settings.actionTableClickType === 'double') {
+      onRowSelect(index);
     }
   };
 
   return (
     <div
-      className="flex flex-row w-full h-full"
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
       ref={containerRef}
+      id="flow-action-table"
+      className="flex flex-col h-full overflow-y-auto"
     >
-      {onMoveRow && (
-        <TableControls
-          onMoveUp={handleMoveUp}
-          onMoveDown={handleMoveDown}
-          buttonPosition={buttonPosition}
-          className="sticky left-0 z-10"
-        />
-      )}
-      <div className="flex-1 overflow-auto">
-        <table className="w-full border-collapse" style={styles.table}>
+        <div className="sticky top-0 z-10">
+          {!isEditMode && (
+            <TableControls
+              buttonPosition={buttonPosition}
+              currentRow={currentRow}
+              totalRows={data.length}
+              onMoveUp={onMoveUp}
+              onMoveDown={onMoveDown}
+            />
+        )}
+        </div>
+
+      <div>
+        <table className="w-full border-separate border-spacing-0">
           <TableHeader
-            columns={columns}
+            className={headerClasses}
             isEditMode={isEditMode}
-            alignments={alignments}
-            translationKeys={translationKeys}
+            onAddRow={onAddRow}
           />
+
           <tbody>
-            {data.map((item, index) => {
-              // 背景色の決定（hpが空でない行の数をカウント）
-              let count = 0;
+            {data.map((row, index) => {
+              // HPが空の場合、直前のHPが存在する行まで遡る
+              let currentIndex = index;
+              let hpRowCount = 0; // HPが入っている行数をカウント
               for (let i = 0; i <= index; i++) {
-                if (data[i].hp !== undefined && data[i].hp !== '') {
-                  count++;
+                if (data[i]?.hp?.trim()) {
+                  hpRowCount++;
                 }
               }
-              const bgColor = count % 2 === 0 ? 'bg-white' : 'bg-gray-50';
-              const isCurrentRowClass = index === currentRow ? 'bg-blue-100' : bgColor;
-              const className = `${isCurrentRowClass} hover:bg-blue-50`;
-
-              if (renderRow) {
-                return renderRow({
-                  data: item,
-                  index,
-                  isCurrentRow: index === currentRow,
-                  isEditMode,
-                  className,
-                  onRowClick: () => handleRowClick(index),
-                  onRowDoubleClick: () => handleRowDoubleClick(index),
-                  onCellEdit: onCellEdit
-                    ? (field, value) => onCellEdit(index, field, value)
-                    : undefined,
-                  onDeleteRow: onDeleteRow ? () => onDeleteRow(index) : undefined,
-                  onAddRow: onAddRow ? () => onAddRow(index) : undefined,
-                });
+              while (currentIndex > 0 && !data[currentIndex]?.hp?.trim()) {
+                currentIndex--;
               }
+              // HPが存在する行の番号を使用
+              const isEvenRow = hpRowCount % 2 === 1; // HPが入っている行数で判定
+
+              // 基本の背景色を決定
+              const baseBackground = isEvenRow ? 'bg-white' : 'bg-gray-300';
 
               return (
                 <TableRow
-                  key={index}
-                  data={item}
+                  key={`action-row-${index}`}
+                  data={row}
                   index={index}
                   isCurrentRow={index === currentRow}
                   isEditMode={isEditMode}
-                  className={className}
+                  className={getRowClasses({ index, currentRow, baseBackground })}
                   onRowClick={() => handleRowClick(index)}
                   onRowDoubleClick={() => handleRowDoubleClick(index)}
-                  onCellEdit={
-                    onCellEdit ? (field, value) => onCellEdit(index, field, value) : undefined
-                  }
-                  onDeleteRow={onDeleteRow ? () => onDeleteRow(index) : undefined}
-                  onAddRow={onAddRow ? () => onAddRow(index) : undefined}
-                  columns={columns}
-                  alignments={alignments}
+                  onCellEdit={(field, value) => onCellEdit?.(index, field, value)}
+                  onDeleteRow={() => onDeleteRow?.(index)}
+                  onAddRow={() => onAddRow?.(index)}
                 />
               );
             })}
@@ -179,4 +147,4 @@ export function Table<T extends Record<string, any>>({
       </div>
     </div>
   );
-}
+};

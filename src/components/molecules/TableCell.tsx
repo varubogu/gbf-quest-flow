@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '../atoms/Text';
+import type { Action } from '@/types/models';
 import useSettingsStore from '@/stores/settingsStore';
 import { useAlignmentStyle } from '@/hooks/ui/base/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/ui/table/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/hooks/ui/table/useTableCellStateStyle';
-import { useTableCellEvents } from '@/hooks/ui/table/useTableCellEvents';
-import { useTableCellState } from '@/hooks/ui/table/useTableCellState';
+import { useActionCellEvents } from '@/hooks/ui/table/useActionCellEvents';
+import { useActionCellState } from '@/hooks/ui/table/useActionCellState';
 import { useTextareaStyle } from '@/hooks/ui/base/useTextareaStyle';
 
 interface TableCellProps {
@@ -15,12 +16,11 @@ interface TableCellProps {
   isHeader?: boolean;
   isEditable?: boolean;
   onChange?: (_: string) => void;
-  onPasteRows?: (_: any[]) => void;
-  field?: string;
+  onPasteRows?: (_: Partial<Action>[]) => void;
+  field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;
   'data-testid'?: string;
-  as?: 'div' | 'td';
 }
 
 export const TableCell: React.FC<TableCellProps> = ({
@@ -31,10 +31,9 @@ export const TableCell: React.FC<TableCellProps> = ({
   onChange,
   onPasteRows,
   field,
-  alignment = 'left',
+  alignment = 'left' as const,
   className = '',
   'data-testid': dataTestId,
-  as = 'div',
 }) => {
   const { settings } = useSettingsStore();
   const { getAlignmentClass } = useAlignmentStyle();
@@ -49,7 +48,7 @@ export const TableCell: React.FC<TableCellProps> = ({
     setValue,
     textareaRef,
     adjustTextareaHeight,
-  } = useTableCellState({ content });
+  } = useActionCellState({ content });
 
   const {
     handleClick,
@@ -57,11 +56,11 @@ export const TableCell: React.FC<TableCellProps> = ({
     handleKeyDown,
     handleChange,
     handlePaste,
-  } = useTableCellEvents({
+  } = useActionCellEvents({
     content,
     value,
     isEditable,
-    field,
+    field: field as keyof Action,
     onChange,
     onPasteRows,
     setIsEditing,
@@ -70,37 +69,35 @@ export const TableCell: React.FC<TableCellProps> = ({
     settings,
   });
 
-  const commonProps = {
-    className: cn(
-      as === 'td' ? "border-b border-r border-gray-400 p-0.5" : "",
-      getBaseClassName({ isHeader, className }),
-      getStateClassName({ isCurrentRow }),
-      getAlignmentClass(alignment)
-    ),
-    style: getBasePadding(),
-    onClick: handleClick,
-    'data-testid': dataTestId,
-    'data-field': field,
-  };
-
-  const content_element = isEditing ? (
-    <textarea
-      ref={textareaRef}
-      value={value}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-      onPaste={handlePaste}
-      className={getTextareaClassName({ isHeader, alignment })}
-      rows={1}
-    />
-  ) : (
-    <Text variant={getTextVariant({ isCurrentRow, isHeader })}>
-      {content}
-    </Text>
+  return (
+    <td
+      className={cn(
+        "border-b border-r border-gray-400 p-0.5",
+        getBaseClassName({ isHeader, className }),
+        getStateClassName({ isCurrentRow }),
+        getAlignmentClass(alignment)
+      )}
+      style={getBasePadding()}
+      onClick={handleClick}
+      data-testid={dataTestId}
+      data-field={field}
+    >
+      {isEditing ? (
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          className={getTextareaClassName({ isHeader, alignment })}
+          rows={1}
+        />
+      ) : (
+        <Text variant={getTextVariant({ isCurrentRow, isHeader })}>
+          {content}
+        </Text>
+      )}
+    </td>
   );
-
-  return as === 'div'
-    ? <div {...commonProps}>{content_element}</div>
-    : <td {...commonProps}>{content_element}</td>;
 };

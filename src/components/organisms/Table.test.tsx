@@ -1,194 +1,144 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { Table } from './Table';
+import type { Action } from '@/types/models';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import '@testing-library/jest-dom';
 
-// 必要なモジュールのモック
-vi.mock('../../stores/settingsStore', () => ({
-  useSettingsStore: () => ({
-    settings: {
-      clickType: 'single',
-    },
-  }),
-}));
+// モックデータ
+const mockData: Action[] = [
+  { hp: '100%', prediction: '特殊技', charge: '', guard: '', action: 'アクション1', note: '' },
+  { hp: '90%', prediction: '通常攻撃', charge: '', guard: '', action: 'アクション2', note: '' },
+  { hp: '80%', prediction: '特殊技', charge: '', guard: '', action: 'アクション3', note: '' },
+];
 
-vi.mock('../../hooks/useTableKeyboardNavigation', () => ({
-  useTableKeyboardNavigation: () => ({
-    handleKeyDown: vi.fn(),
-  }),
-}));
-
-vi.mock('../../hooks/useTableScroll', () => ({
-  useTableScroll: vi.fn(),
-}));
-
-vi.mock('../../hooks/useActionTableConfig', () => ({
-  useActionTableConfig: () => ({
-    styles: {
-      table: {},
-    },
-  }),
-}));
-
-vi.mock('../molecules/TableRow', () => ({
-  TableRow: ({ data, index, isCurrentRow, onRowClick }: any) => (
-    <tr
-      data-testid={`table-row-${index}`}
-      data-is-current={isCurrentRow}
-      onClick={() => onRowClick()}
-    >
-      <td>{data.id}</td>
-      <td>{data.name}</td>
-    </tr>
-  ),
-}));
-
-vi.mock('../molecules/TableHeader', () => ({
-  TableHeader: ({ columns, isEditMode }: any) => (
-    <thead data-testid="table-header" data-columns={columns.join(',')} data-edit-mode={isEditMode}>
-      <tr>
-        {columns.map((col: string) => (
-          <th key={col}>{col}</th>
-        ))}
-      </tr>
-    </thead>
-  ),
-}));
-
-vi.mock('../molecules/TableControls', () => ({
-  TableControls: ({ onMoveUp, onMoveDown }: any) => (
-    <div data-testid="table-controls">
-      <button data-testid="move-up-btn" onClick={onMoveUp}>Up</button>
-      <button data-testid="move-down-btn" onClick={onMoveDown}>Down</button>
-    </div>
-  ),
-}));
-
-describe('Table', () => {
-  const mockData = [
-    { id: '1', name: 'Item 1', hp: '100' },
-    { id: '2', name: 'Item 2', hp: '200' },
-    { id: '3', name: 'Item 3', hp: '' },
-  ];
-
-  const defaultProps = {
-    data: mockData,
-    currentRow: 0,
-    onRowClick: vi.fn(),
-    onRowDoubleClick: vi.fn(),
-    onCellEdit: vi.fn(),
-    onDeleteRow: vi.fn(),
-    onAddRow: vi.fn(),
-    onMoveRow: vi.fn(),
-    columns: ['id', 'name', 'hp'],
-    alignments: { id: 'left', name: 'center', hp: 'right' },
-  };
+describe('ActionTable', () => {
+  const mockOnRowSelect = vi.fn();
+  const mockOnMoveUp = vi.fn();
+  const mockOnMoveDown = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // scrollToのモック化
+    Element.prototype.scrollTo = vi.fn();
   });
 
-  it('renders the table with header and rows', () => {
-    render(<Table {...defaultProps} />);
-
-    expect(screen.getByTestId('table-header')).toBeInTheDocument();
-    expect(screen.getByTestId('table-header')).toHaveAttribute('data-columns', 'id,name,hp');
-
-    expect(screen.getByTestId('table-row-0')).toBeInTheDocument();
-    expect(screen.getByTestId('table-row-1')).toBeInTheDocument();
-    expect(screen.getByTestId('table-row-2')).toBeInTheDocument();
-  });
-
-  it('renders table controls when onMoveRow is provided', () => {
-    render(<Table {...defaultProps} />);
-
-    expect(screen.getByTestId('table-controls')).toBeInTheDocument();
-  });
-
-  it('does not render table controls when onMoveRow is not provided', () => {
-    render(<Table {...defaultProps} onMoveRow={undefined} />);
-
-    expect(screen.queryByTestId('table-controls')).not.toBeInTheDocument();
-  });
-
-  it('calls onRowClick when a row is clicked', () => {
-    render(<Table {...defaultProps} />);
-
-    fireEvent.click(screen.getByTestId('table-row-1'));
-    expect(defaultProps.onRowClick).toHaveBeenCalledWith(1);
-  });
-
-  it('marks the current row correctly', () => {
-    render(<Table {...defaultProps} currentRow={1} />);
-
-    expect(screen.getByTestId('table-row-0')).toHaveAttribute('data-is-current', 'false');
-    expect(screen.getByTestId('table-row-1')).toHaveAttribute('data-is-current', 'true');
-    expect(screen.getByTestId('table-row-2')).toHaveAttribute('data-is-current', 'false');
-  });
-
-  it('passes edit mode to header and rows', () => {
-    render(<Table {...defaultProps} isEditMode={true} />);
-
-    expect(screen.getByTestId('table-header')).toHaveAttribute('data-edit-mode', 'true');
-  });
-
-  it('calls onMoveRow and updates currentRow when move up button is clicked', () => {
-    render(<Table {...defaultProps} currentRow={1} />);
-
-    fireEvent.click(screen.getByTestId('move-up-btn'));
-
-    expect(defaultProps.onMoveRow).toHaveBeenCalledWith(1, 0);
-    expect(defaultProps.onRowClick).toHaveBeenCalledWith(0);
-  });
-
-  it('calls onMoveRow and updates currentRow when move down button is clicked', () => {
-    render(<Table {...defaultProps} currentRow={1} />);
-
-    fireEvent.click(screen.getByTestId('move-down-btn'));
-
-    expect(defaultProps.onMoveRow).toHaveBeenCalledWith(1, 2);
-    expect(defaultProps.onRowClick).toHaveBeenCalledWith(2);
-  });
-
-  it('does not call onMoveRow when at the first row and move up is clicked', () => {
-    render(<Table {...defaultProps} currentRow={0} />);
-
-    fireEvent.click(screen.getByTestId('move-up-btn'));
-
-    expect(defaultProps.onMoveRow).not.toHaveBeenCalled();
-  });
-
-  it('does not call onMoveRow when at the last row and move down is clicked', () => {
-    render(<Table {...defaultProps} currentRow={2} />);
-
-    fireEvent.click(screen.getByTestId('move-down-btn'));
-
-    expect(defaultProps.onMoveRow).not.toHaveBeenCalled();
-  });
-
-  it('uses custom renderRow function when provided', () => {
-    const customRenderRow = vi.fn().mockImplementation(({ data, index }) => (
-      <tr data-testid={`custom-row-${index}`}>
-        <td>{data.id}</td>
-      </tr>
-    ));
-
-    render(<Table {...defaultProps} renderRow={customRenderRow} />);
-
-    expect(customRenderRow).toHaveBeenCalledTimes(3);
-    expect(screen.getByTestId('custom-row-0')).toBeInTheDocument();
-    expect(screen.getByTestId('custom-row-1')).toBeInTheDocument();
-    expect(screen.getByTestId('custom-row-2')).toBeInTheDocument();
-  });
-
-  it('selects first row when exiting edit mode with no row selected', () => {
-    const { rerender } = render(
-      <Table {...defaultProps} isEditMode={true} currentRow={-1} />
+  it('マウスホイールで上下に移動できる', () => {
+    const { container } = render(
+      <Table
+        data={mockData}
+        currentRow={1}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
     );
 
-    rerender(
-      <Table {...defaultProps} isEditMode={false} currentRow={-1} />
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
+
+    // 上にスクロール
+    fireEvent.wheel(tableContainer, { deltaY: -100, deltaMode: 1 });
+    expect(mockOnRowSelect).toHaveBeenCalledWith(0);
+
+    // 下にスクロール
+    fireEvent.wheel(tableContainer, { deltaY: 100, deltaMode: 1 });
+    expect(mockOnRowSelect).toHaveBeenCalledWith(2);
+  });
+
+  it('タッチパッドのスクロールは累積値に基づいて移動する', async () => {
+    const { container } = render(
+      <Table
+        data={mockData}
+        currentRow={1}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
     );
 
-    expect(defaultProps.onRowClick).toHaveBeenCalledWith(0);
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
+
+    // 閾値未満のスクロール
+    await act(async () => {
+      fireEvent.wheel(tableContainer, { deltaY: 10, deltaMode: 0 });
+    });
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+
+    // 閾値を超えるスクロール（複数回の累積）
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    expect(mockOnRowSelect).toHaveBeenCalledWith(2);
+  });
+
+  it('最初の行より上、最後の行より下にはスクロールできない', () => {
+    // 最初の行でのテスト
+    const { container: firstContainer } = render(
+      <Table
+        data={mockData}
+        currentRow={0}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
+
+    const firstTableContainer = firstContainer.querySelector(
+      '.flex.flex-col.h-full.overflow-y-auto'
+    );
+    if (!firstTableContainer) throw new Error('Table container not found');
+
+    // 最初の行より上にスクロールしようとする
+    fireEvent.wheel(firstTableContainer, { deltaY: -100, deltaMode: 1 });
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+
+    // 最後の行でのテスト
+    const { container: lastContainer } = render(
+      <Table
+        data={mockData}
+        currentRow={2}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
+
+    const lastTableContainer = lastContainer.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!lastTableContainer) throw new Error('Table container not found');
+
+    // 最後の行より下にスクロールしようとする
+    fireEvent.wheel(lastTableContainer, { deltaY: 100, deltaMode: 1 });
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+  });
+
+  it('編集モード中はスクロールが無効になる', () => {
+    const { container } = render(
+      <Table
+        data={mockData}
+        currentRow={1}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+        isEditMode={true}
+      />
+    );
+
+    const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
+    if (!tableContainer) throw new Error('Table container not found');
+
+    // マウスホイールでのスクロール
+    fireEvent.wheel(tableContainer, { deltaY: -100, deltaMode: 1 });
+    fireEvent.wheel(tableContainer, { deltaY: 100, deltaMode: 1 });
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+
+    // タッチパッドでのスクロール
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
 });

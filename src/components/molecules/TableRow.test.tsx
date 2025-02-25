@@ -1,16 +1,20 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
 import { TableRow } from './TableRow';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Lucide-reactのモック
-vi.mock('lucide-react', () => ({
-  Plus: () => <div data-testid="plus-icon">+</div>,
-  Minus: () => <div data-testid="minus-icon">-</div>,
-}));
+describe('ActionTableRow', () => {
+  const mockData = {
+    hp: '95',
+    prediction: 'テスト予兆（1億ダメージ）',
+    charge: '◯',
+    guard: '×',
+    action: 'テストアクション',
+    note: 'テストノート',
+  };
 
-describe('TableRow', () => {
   const defaultProps = {
-    data: { id: '1', name: 'Test Name', value: '100' },
+    data: mockData,
     index: 0,
     isCurrentRow: false,
     isEditMode: false,
@@ -20,93 +24,81 @@ describe('TableRow', () => {
     onCellEdit: vi.fn(),
     onDeleteRow: vi.fn(),
     onAddRow: vi.fn(),
-    columns: ['id', 'name', 'value'],
-    alignments: { id: 'left', name: 'center', value: 'right' },
   };
 
-  it('renders row with correct cells', () => {
-    render(<table><tbody><TableRow {...defaultProps} /></tbody></table>);
+  let rendered: RenderResult;
 
-    expect(screen.getByTestId('row-0')).toHaveClass('test-class');
-    expect(screen.getByTestId('cell-id-0')).toHaveTextContent('1');
-    expect(screen.getByTestId('cell-name-0')).toHaveTextContent('Test Name');
-    expect(screen.getByTestId('cell-value-0')).toHaveTextContent('100');
+  beforeEach(() => {
+    rendered = render(<TableRow {...defaultProps} />);
   });
 
-  it('calls onRowClick when row is clicked', () => {
-    render(<table><tbody><TableRow {...defaultProps} /></tbody></table>);
+  it('通常モードで正しく表示される', () => {
+    // 各セルの内容が表示されていることを確認
+    const hpCell = screen.getByTestId('cell-hp-0');
+    expect(hpCell).toHaveClass('text-right');
 
-    fireEvent.click(screen.getByTestId('row-0'));
+    const chargeCell = screen.getByTestId('cell-charge-0');
+    expect(chargeCell).toHaveClass('text-center');
+
+    expect(screen.getByText(mockData.hp)).toBeInTheDocument(); // HP
+    expect(screen.getByText(mockData.prediction)).toBeInTheDocument();
+    expect(screen.getByText(mockData.charge)).toBeInTheDocument();
+    expect(screen.getByText(mockData.guard)).toBeInTheDocument();
+    expect(screen.getByText(mockData.action)).toBeInTheDocument();
+    expect(screen.getByText(mockData.note)).toBeInTheDocument();
+
+    // 編集モードの要素が表示されていないことを確認
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('編集モードで追加・削除ボタンが表示される', () => {
+    rendered.rerender(<TableRow {...defaultProps} isEditMode={true} />);
+
+    // 追加・削除ボタンが表示されていることを確認
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(2);
+  });
+
+  it('クリックイベントが正しく発火する', () => {
+    const row = screen.getByTestId('action-row-0');
+    row.click();
     expect(defaultProps.onRowClick).toHaveBeenCalledTimes(1);
-  });
 
-  it('calls onRowDoubleClick when row is double clicked', () => {
-    render(<table><tbody><TableRow {...defaultProps} /></tbody></table>);
-
-    fireEvent.doubleClick(screen.getByTestId('row-0'));
+    const event = new MouseEvent('dblclick', {
+      bubbles: true,
+      cancelable: true,
+    });
+    row.dispatchEvent(event);
     expect(defaultProps.onRowDoubleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders delete and add buttons in edit mode', () => {
-    render(
-      <table>
-        <tbody>
-          <TableRow {...defaultProps} isEditMode={true} />
-        </tbody>
-      </table>
-    );
+  it('編集モードでボタンクリックイベントが正しく発火する', () => {
+    rendered.rerender(<TableRow {...defaultProps} isEditMode={true} />);
 
-    expect(screen.getByTestId('minus-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('plus-icon')).toBeInTheDocument();
-  });
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(2);
 
-  it('calls onDeleteRow when delete button is clicked', () => {
-    render(
-      <table>
-        <tbody>
-          <TableRow {...defaultProps} isEditMode={true} />
-        </tbody>
-      </table>
-    );
-
-    const deleteButton = screen.getByTestId('minus-icon').closest('button');
-    fireEvent.click(deleteButton!);
+    const [deleteButton, addButton]: [HTMLButtonElement, HTMLButtonElement] = buttons as [HTMLButtonElement, HTMLButtonElement];
+    deleteButton.click();
     expect(defaultProps.onDeleteRow).toHaveBeenCalledTimes(1);
-  });
 
-  it('calls onAddRow when add button is clicked', () => {
-    render(
-      <table>
-        <tbody>
-          <TableRow {...defaultProps} isEditMode={true} />
-        </tbody>
-      </table>
-    );
-
-    const addButton = screen.getByTestId('plus-icon').closest('button');
-    fireEvent.click(addButton!);
+    addButton.click();
     expect(defaultProps.onAddRow).toHaveBeenCalledTimes(1);
   });
 
-  it('handles null or undefined values in data', () => {
-    const props = {
-      ...defaultProps,
-      data: { id: '1', name: null, value: undefined },
-    };
-
-    render(<table><tbody><TableRow {...props} /></tbody></table>);
-
-    expect(screen.getByTestId('cell-id-0')).toHaveTextContent('1');
-    expect(screen.getByTestId('cell-name-0')).toHaveTextContent('');
-    expect(screen.getByTestId('cell-value-0')).toHaveTextContent('');
+  it('指定されたクラス名が適用される', () => {
+    const row = screen.getByTestId('action-row-0');
+    expect(row).toHaveClass('test-class');
   });
 
-  it('applies correct alignment to cells', () => {
-    render(<table><tbody><TableRow {...defaultProps} /></tbody></table>);
+  it('現在の行のスタイルが正しく適用される', () => {
+    // 通常の行
+    let row = screen.getByTestId('action-row-0');
+    expect(row).toHaveClass('test-class');
 
-    // TableCellコンポーネントにalignmentプロパティが正しく渡されていることを確認
-    // 実際のスタイルのテストはTableCellコンポーネントのテストで行う
-    const cells = screen.getAllByRole('cell');
-    expect(cells.length).toBe(3); // 編集モードでない場合は3つのセルのみ
+    // 現在の行
+    rendered.rerender(<TableRow {...defaultProps} isCurrentRow={true} />);
+    row = screen.getByTestId('action-row-0');
+    expect(row).toHaveClass('test-class');
   });
 });

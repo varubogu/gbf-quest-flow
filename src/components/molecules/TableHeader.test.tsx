@@ -1,74 +1,101 @@
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
 import { TableHeader } from './TableHeader';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // TableHeaderCellコンポーネントのモック
-vi.mock('./TableHeaderCell', () => ({
-  TableHeaderCell: ({ column, translationKey, alignment }: any) => (
-    <th data-testid={`header-cell-${column}`} data-translation-key={translationKey} data-alignment={alignment}>
+vi.mock('@/components/molecules/TableHeaderCell', () => ({
+  default: ({ column, alignment }: { column: string; alignment: 'left' | 'center' | 'right' }) => (
+    <th
+      data-testid={`header-cell-${column}`}
+      data-alignment={alignment}
+      className={`text-${alignment}`}
+    >
       {column}
     </th>
   ),
 }));
 
+// i18nのモック
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => ({
+      hpColumn: 'HP',
+      triggerColumn: '予兆',
+      ougiColumn: '奥義',
+      guardColumn: 'ガード',
+      actionColumn: 'アクション',
+      notesColumn: 'メモ',
+    }[key] || key),
+  }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
+}));
+
 describe('TableHeader', () => {
   const defaultProps = {
-    columns: ['id', 'name', 'value'],
+    className: 'test-header-class',
     isEditMode: false,
-    alignments: { id: 'left', name: 'center', value: 'right' },
+    onAddRow: vi.fn(),
   };
 
-  it('renders header with correct columns', () => {
-    render(<table><TableHeader {...defaultProps} /></table>);
+  let rendered: RenderResult;
 
-    expect(screen.getByTestId('header-cell-id')).toBeInTheDocument();
-    expect(screen.getByTestId('header-cell-name')).toBeInTheDocument();
-    expect(screen.getByTestId('header-cell-value')).toBeInTheDocument();
+  beforeEach(() => {
+    rendered = render(<table><TableHeader {...defaultProps} /></table>);
   });
 
-  it('passes correct translation keys to header cells', () => {
-    const translationKeys = { id: 'custom.id', name: 'custom.name' };
-    render(<table><TableHeader {...defaultProps} translationKeys={translationKeys} /></table>);
+  it('通常モードで正しくヘッダーが表示される', () => {
+    // 各カラムヘッダーが表示されていることを確認
+    expect(screen.getByTestId('header-cell-hp')).toBeInTheDocument();
+    expect(screen.getByTestId('header-cell-prediction')).toBeInTheDocument();
+    expect(screen.getByTestId('header-cell-charge')).toBeInTheDocument();
+    expect(screen.getByTestId('header-cell-guard')).toBeInTheDocument();
+    expect(screen.getByTestId('header-cell-action')).toBeInTheDocument();
+    expect(screen.getByTestId('header-cell-note')).toBeInTheDocument();
 
-    expect(screen.getByTestId('header-cell-id')).toHaveAttribute('data-translation-key', 'custom.id');
-    expect(screen.getByTestId('header-cell-name')).toHaveAttribute('data-translation-key', 'custom.name');
-    expect(screen.getByTestId('header-cell-value')).toHaveAttribute('data-translation-key', 'column.value');
+    // 編集モードの要素が表示されていないことを確認
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  it('passes correct alignments to header cells', () => {
-    render(<table><TableHeader {...defaultProps} /></table>);
+  it('編集モードで追加ボタンが表示される', () => {
+    rendered.rerender(<table><TableHeader {...defaultProps} isEditMode={true} /></table>);
 
-    expect(screen.getByTestId('header-cell-id')).toHaveAttribute('data-alignment', 'left');
-    expect(screen.getByTestId('header-cell-name')).toHaveAttribute('data-alignment', 'center');
-    expect(screen.getByTestId('header-cell-value')).toHaveAttribute('data-alignment', 'right');
+    // 追加ボタンが表示されていることを確認
+    const addButton = screen.getByRole('button');
+    expect(addButton).toBeInTheDocument();
   });
 
-  it('renders delete and add column headers in edit mode', () => {
-    render(<table><TableHeader {...defaultProps} isEditMode={true} /></table>);
+  it('追加ボタンクリックで正しくイベントが発火する', () => {
+    rendered.rerender(<table><TableHeader {...defaultProps} isEditMode={true} /></table>);
 
-    const headers = screen.getAllByRole('columnheader');
-    expect(headers.length).toBe(5); // 3 columns + delete + add
-    expect(headers[0]).toHaveTextContent('削除');
-    expect(headers[1]).toHaveTextContent('追加');
+    const addButton = screen.getByRole('button');
+    addButton.click();
+
+    // onAddRowが-1のインデックスで呼ばれることを確認
+    expect(defaultProps.onAddRow).toHaveBeenCalledWith(-1);
+    expect(defaultProps.onAddRow).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render delete and add column headers when not in edit mode', () => {
-    render(<table><TableHeader {...defaultProps} /></table>);
-
-    const headers = screen.getAllByRole('columnheader');
-    expect(headers.length).toBe(3); // Just the 3 columns
+  it('指定されたクラス名が適用される', () => {
+    // テーブルヘッダー行にクラス名が適用されていることを確認
+    const headerRow = screen.getByRole('row');
+    expect(headerRow).toHaveClass('test-header-class');
   });
 
-  it('uses default alignment when not specified', () => {
-    const props = {
-      ...defaultProps,
-      alignments: { id: 'left' }, // Only specify alignment for id
-    };
+  it('各カラムが正しい配置で表示される', () => {
+    // HPは右寄せ
+    const hpCell = screen.getByTestId('header-cell-hp');
+    expect(hpCell).toHaveAttribute('data-alignment', 'right');
 
-    render(<table><TableHeader {...props} /></table>);
+    // アクションは左寄せ
+    const actionCell = screen.getByTestId('header-cell-action');
+    expect(actionCell).toHaveAttribute('data-alignment', 'left');
 
-    expect(screen.getByTestId('header-cell-id')).toHaveAttribute('data-alignment', 'left');
-    expect(screen.getByTestId('header-cell-name')).toHaveAttribute('data-alignment', 'left'); // Default
-    expect(screen.getByTestId('header-cell-value')).toHaveAttribute('data-alignment', 'left'); // Default
+    // 奥義は中央寄せ
+    const chargeCell = screen.getByTestId('header-cell-charge');
+    expect(chargeCell).toHaveAttribute('data-alignment', 'center');
   });
 });

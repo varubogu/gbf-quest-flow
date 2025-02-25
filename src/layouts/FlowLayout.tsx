@@ -6,7 +6,7 @@ import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
 import { SideMenu } from '@/components/molecules/SideMenu';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
-import { ActionTableContainer3 as ActionTableContainer } from '@/components/organisms/ActionTableContainer3';
+import { TableContainer } from '@/components/organisms/TableContainer';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
 import { Button } from '@/components/atoms/Button';
@@ -126,7 +126,7 @@ export function FlowLayout({
             <PanelResizeHandle className="h-2 bg-gray-300 hover:bg-gray-400 transition-colors cursor-row-resize" />
             <Panel defaultSize={50} minSize={10}>
               <div className="h-full overflow-auto">
-                <ActionTableContainer data={flowData.flow} isEditMode={isEditMode} />
+                <TableContainer data={flowData.flow} isEditMode={isEditMode} />
               </div>
             </Panel>
           </PanelGroup>

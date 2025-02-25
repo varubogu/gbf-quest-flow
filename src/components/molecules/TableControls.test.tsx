@@ -1,93 +1,134 @@
+import { render, screen } from '@testing-library/react';
+import { TableControls } from '@/components/molecules/TableControls';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TableControls } from './TableControls';
-
-// Lucide-reactのモック
-vi.mock('lucide-react', () => ({
-  ChevronUp: () => <div data-testid="chevron-up">↑</div>,
-  ChevronDown: () => <div data-testid="chevron-down">↓</div>,
-}));
+import '@testing-library/jest-dom';
 
 // react-i18nextのモック
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
-      const translations: Record<string, string> = {
-        'action.moveUp': '上に移動',
-        'action.moveDown': '下に移動',
+      const translations = {
+        moveUp: '上へ移動',
+        moveDown: '下へ移動',
       };
       return translations[key] || key;
     },
   }),
 }));
 
+// IconButtonのモック
+vi.mock('../atoms/IconButton', () => ({
+  IconButton: ({ label, onClick, disabled }: any) => (
+    <button
+      aria-label={label}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {label}
+    </button>
+  ),
+}));
+
 describe('TableControls', () => {
-  const defaultProps = {
-    onMoveUp: vi.fn(),
-    onMoveDown: vi.fn(),
-  };
+  const mockOnMoveUp = vi.fn();
+  const mockOnMoveDown = vi.fn();
 
-  it('renders both buttons by default', () => {
-    render(<TableControls {...defaultProps} />);
+  it('正しくボタンが表示される', () => {
+    render(
+      <TableControls
+        buttonPosition="left"
+        currentRow={1}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
-    expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+    const upButton = screen.getByLabelText('上へ移動');
+    const downButton = screen.getByLabelText('下へ移動');
+
+    expect(upButton).toBeInTheDocument();
+    expect(downButton).toBeInTheDocument();
   });
 
-  it('calls onMoveUp when up button is clicked', () => {
-    render(<TableControls {...defaultProps} />);
+  it('最初の行ではUpボタンが無効になる', () => {
+    render(
+      <TableControls
+        buttonPosition="left"
+        currentRow={0}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    const upButton = screen.getByTestId('chevron-up').closest('button');
-    fireEvent.click(upButton!);
-    expect(defaultProps.onMoveUp).toHaveBeenCalledTimes(1);
+    const upButton = screen.getByLabelText('上へ移動');
+    expect(upButton).toBeDisabled();
   });
 
-  it('calls onMoveDown when down button is clicked', () => {
-    render(<TableControls {...defaultProps} />);
+  it('最後の行ではDownボタンが無効になる', () => {
+    render(
+      <TableControls
+        buttonPosition="left"
+        currentRow={2}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    const downButton = screen.getByTestId('chevron-down').closest('button');
-    fireEvent.click(downButton!);
-    expect(defaultProps.onMoveDown).toHaveBeenCalledTimes(1);
+    const downButton = screen.getByLabelText('下へ移動');
+    expect(downButton).toBeDisabled();
   });
 
-  it('only renders top button when buttonPosition is "top"', () => {
-    render(<TableControls {...defaultProps} buttonPosition="top" />);
+  it('ボタンクリックでイベントが発火する', () => {
+    render(
+      <TableControls
+        buttonPosition="left"
+        currentRow={1}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
-    expect(screen.queryByTestId('chevron-down')).not.toBeInTheDocument();
+    const upButton = screen.getByLabelText('上へ移動');
+    const downButton = screen.getByLabelText('下へ移動');
+
+    upButton.click();
+    expect(mockOnMoveUp).toHaveBeenCalledTimes(1);
+
+    downButton.click();
+    expect(mockOnMoveDown).toHaveBeenCalledTimes(1);
   });
 
-  it('only renders bottom button when buttonPosition is "bottom"', () => {
-    render(<TableControls {...defaultProps} buttonPosition="bottom" />);
+  it('ボタン位置が右側に設定される', () => {
+    const { container } = render(
+      <TableControls
+        buttonPosition="right"
+        currentRow={1}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    expect(screen.queryByTestId('chevron-up')).not.toBeInTheDocument();
-    expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
+    const buttonContainer = container.querySelector('.flex.gap-2');
+    expect(buttonContainer).toHaveClass('ml-auto');
   });
 
-  it('renders both buttons when buttonPosition is "both"', () => {
-    render(<TableControls {...defaultProps} buttonPosition="both" />);
+  it('ボタン位置が左側に設定される', () => {
+    const { container } = render(
+      <TableControls
+        buttonPosition="left"
+        currentRow={1}
+        totalRows={3}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
 
-    expect(screen.getByTestId('chevron-up')).toBeInTheDocument();
-    expect(screen.getByTestId('chevron-down')).toBeInTheDocument();
-  });
-
-  it('applies custom className', () => {
-    const { container } = render(<TableControls {...defaultProps} className="custom-class" />);
-
-    // コンテナの最初の子要素（divタグ）を取得
-    const controlsContainer = container.firstChild as HTMLElement;
-    expect(controlsContainer).toHaveClass('custom-class');
-  });
-
-  it('sets correct accessibility attributes', () => {
-    render(<TableControls {...defaultProps} />);
-
-    const upButton = screen.getByTestId('chevron-up').closest('button');
-    const downButton = screen.getByTestId('chevron-down').closest('button');
-
-    expect(upButton).toHaveAttribute('title', '上に移動');
-    expect(upButton).toHaveAttribute('aria-label', '上に移動');
-    expect(downButton).toHaveAttribute('title', '下に移動');
-    expect(downButton).toHaveAttribute('aria-label', '下に移動');
+    const buttonContainer = container.querySelector('.flex.gap-2');
+    expect(buttonContainer).not.toHaveClass('ml-auto');
   });
 });
