@@ -23,7 +23,7 @@ export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }
 
   return (
     <div className="overflow-x-auto">
-      <table className={tableBaseStyle} role="table" aria-label={t('characters') as string}>
+      <table id="character-table" className={tableBaseStyle} role="table" aria-label={t('characters') as string}>
         <thead>
           <tr className={tableHeaderRowStyle} role="row">
             <th

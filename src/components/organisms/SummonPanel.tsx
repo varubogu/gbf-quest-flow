@@ -98,7 +98,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
           <tbody>
             {/* メイン召喚石 */}
             <tr>
-              <td className={tableCellBaseStyle}>{t('summonMain')}</td>
+              <th className={tableCellBaseStyle}>{t('summonMain')}</th>
               <SummonIcon
                 name={flowData.organization.summon.main.name}
                 isEditing={isEditing}
@@ -114,7 +114,7 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             </tr>
             {/* フレンド召喚石 */}
             <tr>
-              <td className={tableCellBaseStyle}>{t('summonFriend')}</td>
+              <th className={tableCellBaseStyle}>{t('summonFriend')}</th>
               <SummonIcon
                 name={flowData.organization.summon.friend.name}
                 isEditing={isEditing}
@@ -132,12 +132,12 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             {flowData.organization.summon.other.map((summon, index) => (
               <tr key={`other-${index}`}>
                 {index === 0 && (
-                  <td
+                  <th
                     className={tableCellBaseStyle}
                     rowSpan={flowData.organization.summon.other.length}
                   >
                     {t('summonNormal')}
-                  </td>
+                  </th>
                 )}
                 <SummonIcon
                   name={summon.name}
@@ -157,12 +157,12 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
             {flowData.organization.summon.sub.map((summon, index) => (
               <tr key={`sub-${index}`}>
                 {index === 0 && (
-                  <td
+                  <th
                     className={tableCellBaseStyle}
                     rowSpan={flowData.organization.summon.sub.length}
                   >
                     {t('summonSub')}
-                  </td>
+                  </th>
                 )}
                 <SummonIcon
                   name={summon.name}

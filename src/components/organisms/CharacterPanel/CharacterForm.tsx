@@ -36,14 +36,14 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
       {members.map((char, index) => (
         <tr key={`${position}-${index}`} role="row">
           {index === 0 && (
-            <td
+            <th
               className={tableCellBaseStyle}
               rowSpan={members.length}
               role="cell"
               aria-label={t(position === 'front' ? 'characterFront' : 'characterBack') as string}
             >
               {t(position === 'front' ? 'characterFront' : 'characterBack') as string}
-            </td>
+            </th>
           )}
           <CharacterIcon
             name={char.name}

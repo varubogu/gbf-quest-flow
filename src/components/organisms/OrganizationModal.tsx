@@ -121,6 +121,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                             value={flowData.movie || ''}
                             onChange={(e) => updateFlowData({ movie: e.target.value })}
                             className="border p-2 w-full"
+                            aria-label={t('video') as string}
                           />
                         ) : (
                           flowData.movie && (
@@ -129,6 +130,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-500 hover:underline"
+                              aria-label={t('video') as string}
                             >
                               {flowData.movie}
                             </a>

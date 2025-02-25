@@ -29,9 +29,9 @@ const AbilityRow: React.FC<{
   return (
     <tr>
       {index === 0 && (
-        <td className={tableCellBaseStyle} rowSpan={totalAbilities}>
+        <th className={tableCellBaseStyle} rowSpan={totalAbilities}>
           {t('characterAbilities')}
-        </td>
+        </th>
       )}
       <td className={tableCellBaseStyle}>
         {isEditing ? (
@@ -147,7 +147,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
         <tbody>
           {/* ジョブ行 */}
           <tr>
-            <td className={tableCellBaseStyle}>{t('jobClass')}</td>
+            <th className={tableCellBaseStyle}>{t('jobClass')}</th>
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input
@@ -180,7 +180,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
           </tr>
           {/* 特殊装備行 */}
           <tr>
-            <td className={tableCellBaseStyle}>{t('jobMainHand')}</td>
+            <th className={tableCellBaseStyle}>{t('jobMainHand')}</th>
             <td className={tableCellBaseStyle}>
               {isEditing ? (
                 <input

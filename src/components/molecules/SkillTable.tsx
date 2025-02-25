@@ -27,9 +27,9 @@ const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onC
 
   return (
     <tr>
-      <td className={tableCellBaseStyle}>
+      <th className={tableCellBaseStyle}>
         <label htmlFor={`skill-${field}`}>{label}</label>
-      </td>
+      </th>
       <td className={tableCellBaseStyle}>
         {isEditing ? (
           <textarea
@@ -54,13 +54,14 @@ const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onC
 };
 
 interface SkillTableProps {
+  id: string;
   isEditing: boolean;
   titleKey: string;
   values: SkillValue;
   onChange: (_field: SkillField, _value: string) => void;
 }
 
-export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, values, onChange }) => {
+export const SkillTable: React.FC<SkillTableProps> = ({ id, isEditing, titleKey, values, onChange }) => {
   const { t } = useTranslation();
 
   if (!values) {
@@ -80,7 +81,7 @@ export const SkillTable: React.FC<SkillTableProps> = ({ isEditing, titleKey, val
   return (
     <div className="mt-8">
       <h3 className="text-lg font-bold mb-4">{t(titleKey)}</h3>
-      <table className={tableBaseStyle}>
+      <table id={id} className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
             <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles['1/4']}`}>

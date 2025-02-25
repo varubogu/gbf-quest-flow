@@ -126,7 +126,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
 
   return (
     <div id="weapon-panel" className="overflow-x-auto">
-      <table className={tableBaseStyle}>
+      <table id="weapon-table" className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>
             <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>
@@ -146,7 +146,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
         <tbody>
           {/* メイン武器 */}
           <tr>
-            <td className={tableCellBaseStyle}>{t('weaponMain')}</td>
+            <th className={tableCellBaseStyle}>{t('weaponMain')}</th>
             <WeaponIcon
               name={weaponData.main.name}
               isEditing={isEditing}
@@ -171,12 +171,12 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {weaponData.other.map((weapon, index) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <td
+                <th
                   className={tableCellBaseStyle}
                   rowSpan={weaponData.other.length}
                 >
                   {t('weaponNormal')}
-                </td>
+                </th>
               )}
               <WeaponIcon
                 name={weapon.name}
@@ -203,12 +203,12 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
           {weaponData.additional.map((weapon, index) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
-                <td
+                <th
                   className={tableCellBaseStyle}
                   rowSpan={weaponData.additional.length}
                 >
                   {t('weaponAdditional')}
-                </td>
+                </th>
               )}
               <WeaponIcon
                 name={weapon.name}
@@ -235,6 +235,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
 
       {/* スキル効果 */}
       <SkillTable
+        id="weapon-skill-table"
         isEditing={isEditing}
         titleKey="skillEffects"
         values={weaponData.effects}
