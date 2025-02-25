@@ -3,9 +3,10 @@ import type { RenderResult } from '@testing-library/react';
 import { TableHeader } from './TableHeader';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { JSX } from 'react';
+import type { TableAlignment } from '@/types/types';
 // TableHeaderCellコンポーネントのモック
 vi.mock('@/components/molecules/TableHeaderCell', () => ({
-  default: ({ column, alignment }: { column: string; alignment: 'left' | 'center' | 'right' }): JSX.Element => (
+  default: ({ column, alignment }: { column: string; alignment: TableAlignment }): JSX.Element => (
     <th
       data-testid={`header-cell-${column}`}
       data-alignment={alignment}

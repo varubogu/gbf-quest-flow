@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { columnTranslationKeys } from '@/config/actionTable';
+import type { TableAlignment } from '@/types/types';
 
 export interface TableHeaderCellProps {
   column: string;
-  alignment: 'left' | 'center' | 'right';
+  alignment: TableAlignment;
   translationKey?: string;
 }
 

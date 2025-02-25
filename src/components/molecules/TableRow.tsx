@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { TableCell } from './TableCell';
-import type { Action, ActionTableColumn } from '@/types/models';
+import type {
+  Action,
+  ActionTableColumn,
+  TableAlignment
+} from '@/types/types';
 
 interface TableRowProps {
   data: Action;
@@ -31,7 +35,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   onPasteRows,
 }) => {
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
-  const alignments: Record<ActionTableColumn, 'left' | 'center' | 'right'> = {
+  const alignments: Record<ActionTableColumn, TableAlignment> = {
     hp: 'right',
     prediction: 'left',
     charge: 'center',

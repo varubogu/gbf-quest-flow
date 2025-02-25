@@ -1,17 +1,26 @@
 import { useCallback } from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Summon } from '@/types/models';
+import type { Summon, SummonType } from '@/types/types';
 import { updateSummonField, updateSummonArrayField } from '@/utils/summons/calculations';
 
-export interface UseSummonFormResult {
-  handleSummonChange: (_type: 'main' | 'friend' | 'other' | 'sub', _index: number | null, _field: keyof Summon, _value: string) => void;
+interface UseSummonFormResult {
+  handleChange: (
+    _type: SummonType,
+    _index: number | null,
+    _field: keyof Summon,
+    _value: string
+  ) => void;
 }
 
 export const useSummonForm = (): UseSummonFormResult => {
   const { flowData, updateFlowData } = useFlowStore();
 
-  const handleSummonChange = useCallback(
-    (type: 'main' | 'friend' | 'other' | 'sub', index: number | null, field: keyof Summon, value: string) => {
+  const handleChange = useCallback(
+    (type: SummonType,
+      index: number | null,
+      field: keyof Summon,
+      value: string
+    ) => {
       if (!flowData) return;
 
       let newSummonData;
@@ -60,6 +69,6 @@ export const useSummonForm = (): UseSummonFormResult => {
   );
 
   return {
-    handleSummonChange,
+    handleChange,
   };
 };

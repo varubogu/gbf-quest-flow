@@ -1,9 +1,11 @@
+import type { AnnouncementType } from '@/types/types';
+
 /**
  * スクリーンリーダーに通知を送信する
  * @param message 通知メッセージ
  * @param type 通知タイプ（'status' または 'alert'）
  */
-export function announceToScreenReader(message: string, type: 'status' | 'alert' = 'status'): void {
+export function announceToScreenReader(message: string, type: AnnouncementType = 'status'): void {
   const element = document.createElement('div');
   element.setAttribute('role', type);
   element.setAttribute('aria-live', type === 'alert' ? 'assertive' : 'polite');

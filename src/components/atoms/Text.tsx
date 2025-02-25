@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { cn } from '@/utils/cn';
+import type { TextVariant } from '@/types/types';
+
 
 interface TextProps extends React.HTMLAttributes<HTMLPreElement> {
-  variant?: 'default' | 'muted' | 'dimmed';
+  variant?: TextVariant;
 }
 
 export const Text = React.forwardRef<HTMLPreElement, TextProps>(

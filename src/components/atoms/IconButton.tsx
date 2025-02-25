@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Button } from './Button';
 import { cn } from '@/utils/cn';
 import type { LucideIcon } from 'lucide-react';
+import type { ButtonVariant } from '@/types/types';
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: LucideIcon;
   label: string;
-  variant?: 'default' | 'ghost';
+  variant?: ButtonVariant;
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(

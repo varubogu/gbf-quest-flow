@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { SummonForm } from './SummonForm';
 import { describe, it, expect, vi } from 'vitest';
-import type { Summon } from '@/types/models';
+import type { Summon } from '@/types/types';
 
 interface UseTranslationResult {
   t: (_key: string) => string;

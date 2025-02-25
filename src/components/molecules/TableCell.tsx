@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '../atoms/Text';
-import type { Action } from '@/types/models';
+import type { Action, TableAlignment } from '@/types/types';
 import useSettingsStore from '@/stores/settingsStore';
 import { useAlignmentStyle } from '@/hooks/ui/base/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/ui/table/useTableCellBaseStyle';
@@ -18,7 +18,7 @@ interface TableCellProps {
   onChange?: (_: string) => void;
   onPasteRows?: ((_: Partial<Action>[]) => void) | undefined;
   field?: keyof Action;
-  alignment?: 'left' | 'center' | 'right';
+  alignment?: TableAlignment;
   className?: string;
   'data-testid'?: string;
 }

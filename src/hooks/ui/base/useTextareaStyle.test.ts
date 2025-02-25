@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react/pure';
 import { useTextareaStyle } from './useTextareaStyle';
 import { describe, it, expect } from 'vitest';
+import type { TableAlignment } from '@/types/types';
 
 describe('useTextareaStyle', () => {
   it('ヘッダーの場合、適切なクラスを返すこと', () => {
@@ -35,7 +36,7 @@ describe('useTextareaStyle', () => {
     Object.entries(alignments).forEach(([alignment, expected]) => {
       const className = result.current.getTextareaClassName({
         isHeader: false,
-        alignment: alignment as 'left' | 'center' | 'right',
+        alignment: alignment as TableAlignment,
       });
       expect(className).toBe(expected);
     });

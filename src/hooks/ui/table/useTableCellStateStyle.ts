@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import { cn } from '@/utils/cn';
+import type { TextVariant } from '@/types/types';
 
 interface StateStyleProps {
   isCurrentRow: boolean;
   isHeader: boolean;
 }
-
-type TextVariant = 'default' | 'dimmed' | 'muted';
 
 export interface UseTableCellStateStyleResult {
   stateClasses: { current: string };

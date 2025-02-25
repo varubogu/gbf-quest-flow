@@ -4,7 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 import useFlowStore from '@/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import type { Flow } from '@/types/models';
+import type { Flow } from '@/types/types';
 
 // モックデータ
 const mockFlowData: Flow = {

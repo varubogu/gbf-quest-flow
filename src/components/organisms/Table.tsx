@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Action } from '@/types/models';
+import type { Action } from '@/types/types';
 import useSettingsStore from '@/stores/settingsStore';
 import { useTableKeyboardNavigation } from '@/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/hooks/ui/table/useTableScroll';

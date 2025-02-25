@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { WeaponSkillTotal } from '@/types/models';
+import type { WeaponSkillTotal } from '@/types/types';
 import useFlowStore from '@/stores/flowStore';
 import { SkillTable } from '@/components/molecules/SkillTable';
 

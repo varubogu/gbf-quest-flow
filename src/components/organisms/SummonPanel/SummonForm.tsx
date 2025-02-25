@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Summon } from '@/types/models';
+import type { Summon } from '@/types/types';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
 import { SummonNote } from '@/components/molecules/Summon/SummonNote';
 import { useSummonForm } from '@/hooks/domain/summons/useSummonForm';
@@ -13,7 +13,7 @@ interface SummonFormProps {
 
 export const SummonForm = memo(({ type, summons, isEditing }: SummonFormProps) => {
   const { t } = useTranslation();
-  const { handleSummonChange } = useSummonForm();
+  const handleSummonChange = useSummonForm();
 
   return (
     <table role="table" aria-label={t(`summon.${type}Label`) as string}>

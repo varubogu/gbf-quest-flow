@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Table } from './Table';
-import type { Action } from '@/types/models';
+import type { Action } from '@/types/types';
 import useFlowStore from '@/stores/flowStore';
 import useSettingsStore from '@/stores/settingsStore';
 

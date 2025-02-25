@@ -2,7 +2,7 @@ import type {
   ActionTableColumnConfig,
   ActionTableStyleConfig,
   ActionTableConfig,
-} from '@/types/models';
+} from '@/types/types';
 
 // デフォルトのカラム設定
 export const defaultColumnConfig: ActionTableColumnConfig = {

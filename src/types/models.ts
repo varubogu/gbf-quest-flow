@@ -3,6 +3,54 @@ import { z } from 'astro:content';
 // 画面のモード
 export type ViewMode = 'unloaded' | 'view' | 'edit' | 'new';
 
+// アクションテーブルのカラム定義
+export type ActionTableColumn = keyof Action;
+
+// アクションテーブルの表示モード
+export type ActionTableMode = 'view' | 'edit';
+
+// アクションテーブルのボタン位置
+export type ActionTableButtonPosition = 'left' | 'right';
+
+// アクションテーブルの行選択イベントハンドラ
+export type ActionTableRowSelectHandler = (_index: number) => void;
+
+// アクションテーブルのセル編集イベントハンドラ
+export type ActionTableCellEditHandler = (
+  _rowIndex: number,
+  _field: ActionTableColumn,
+  _value: string
+) => void;
+
+// アクションテーブルのセルの表示位置
+export type TableAlignment = 'left' | 'center' | 'right';
+
+// アクションテーブルのカラム設定
+export type ActionTableColumnConfig = {
+  [_K in ActionTableColumn]: ActionTableCellConfig;
+};
+
+// UI関連の型定義
+export type MenuView = 'menu' | 'options';
+export type ButtonVariant = 'default' | 'ghost';
+export type TextVariant = 'default' | 'muted' | 'dimmed';
+export type IconPosition = 'left' | 'right';
+export type Side = 'left' | 'right';
+export type ClickType = 'single' | 'double';
+
+// データ構造関連の型定義
+export type WeaponType = 'main' | 'other' | 'additional';
+export type SummonType = 'main' | 'friend' | 'other' | 'sub';
+export type CharacterPosition = 'front' | 'back';
+
+// アクセシビリティ関連の型定義
+export type AnnouncementType = 'status' | 'alert';
+
+// 設定関連の型定義
+export type Language = '日本語' | 'English';
+export type ButtonAlignment = '左' | '右';
+
+
 // キャラクター/武器/召喚石の共通項目のスキーマ
 const itemBaseSchema = z.object({
   name: z.string(),
@@ -131,24 +179,6 @@ export {
   jobSchema,
 };
 
-// アクションテーブルのカラム定義
-export type ActionTableColumn = keyof Action;
-
-// アクションテーブルの表示モード
-export type ActionTableMode = 'view' | 'edit';
-
-// アクションテーブルのボタン位置
-export type ActionTableButtonPosition = 'left' | 'right';
-
-// アクションテーブルの行選択イベントハンドラ
-export type ActionTableRowSelectHandler = (_index: number) => void;
-
-// アクションテーブルのセル編集イベントハンドラ
-export type ActionTableCellEditHandler = (
-  _rowIndex: number,
-  _field: ActionTableColumn,
-  _value: string
-) => void;
 
 // アクションテーブルの行操作イベントハンドラ
 export interface ActionTableRowOperationHandlers {
@@ -183,21 +213,18 @@ export interface ActionTableCellPosition {
 
 // アクションテーブルのセルの表示設定
 export interface ActionTableCellConfig {
-  alignment: 'left' | 'center' | 'right';
+  alignment: TableAlignment;
   isEditable: boolean;
   isHeader: boolean;
   width: string;
 }
 
-// アクションテーブルのカラム設定
-export type ActionTableColumnConfig = {
-  [_K in ActionTableColumn]: ActionTableCellConfig;
-};
 
 // アクションテーブルの設定
 export interface ActionTableConfig {
   columns: ActionTableColumnConfig;
   styles: ActionTableStyleConfig;
   buttonPosition?: ActionTableButtonPosition;
-  clickType: 'single' | 'double';
+  clickType: ClickType;
 }
+

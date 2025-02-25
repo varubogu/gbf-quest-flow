@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-
-type Alignment = 'left' | 'center' | 'right';
+import type { TableAlignment } from '@/types/types';
 
 export interface UseAlignmentStyleResult {
   alignmentClasses: {
@@ -8,7 +7,7 @@ export interface UseAlignmentStyleResult {
     center: string;
     right: string;
   };
-  getAlignmentClass: (_alignment?: Alignment) => string;
+  getAlignmentClass: (_alignment?: TableAlignment) => string;
 }
 
 export const useAlignmentStyle = (): UseAlignmentStyleResult => {
@@ -21,7 +20,7 @@ export const useAlignmentStyle = (): UseAlignmentStyleResult => {
     []
   );
 
-  const getAlignmentClass = (alignment: Alignment = 'left'): string => alignmentClasses[alignment];
+  const getAlignmentClass = (alignment: TableAlignment = 'left'): string => alignmentClasses[alignment];
 
   return {
     alignmentClasses,

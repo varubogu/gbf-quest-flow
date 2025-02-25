@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
-import { SettingItem } from '../SettingItem';
+import { SettingItem } from '@/components/molecules/SettingItem';
 import type { JSX } from 'react';
-
-// クリックタイプの型定義
-type ClickType = 'single' | 'double';
+import type { ClickType } from '@/types/types';
 
 // クリックタイプ設定の配列
 const CLICK_TYPES: { value: ClickType; translationKey: string }[] = [

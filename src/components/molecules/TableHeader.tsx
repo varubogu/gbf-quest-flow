@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
-import type { ActionTableColumn } from '@/types/models';
+import type { ActionTableColumn, TableAlignment } from '@/types/types';
 import TableHeaderCell from '@/components/molecules/TableHeaderCell';
 
 interface TableHeaderProps {
@@ -15,7 +15,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   onAddRow,
 }) => {
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
-  const alignments: Record<ActionTableColumn, 'left' | 'center' | 'right'> = {
+  const alignments: Record<ActionTableColumn, TableAlignment> = {
     hp: 'right',
     prediction: 'left',
     charge: 'center',

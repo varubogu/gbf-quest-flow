@@ -1,6 +1,6 @@
 import React from 'react';
 import useFlowStore from '@/stores/flowStore';
-import type { Job, JobAbility, JobEquipment } from '@/types/models';
+import type { Job, JobAbility, JobEquipment } from '@/types/types';
 import {
   textInputBaseStyle,
   textareaBaseStyle,

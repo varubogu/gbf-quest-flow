@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { CharacterForm } from './CharacterForm';
 import { describe, it, expect, vi } from 'vitest';
-import type { Member } from '@/types/models';
+import type { Member } from '@/types/types';
 
 interface UseTranslationResult {
   t: (_key: string) => string;

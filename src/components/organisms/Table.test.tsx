@@ -1,6 +1,6 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { Table } from './Table';
-import type { Action } from '@/types/models';
+import type { Action } from '@/types/types';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 

@@ -2,9 +2,7 @@ import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
 import type { JSX } from 'react';
-
-// 言語設定の型定義
-type Language = '日本語' | 'English';
+import type { Language } from '@/types/types';
 
 // 言語設定の配列
 const LANGUAGES: { value: Language; translationKey: string }[] = [

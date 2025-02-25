@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import useSettingsStore from '@/stores/settingsStore';
-import { SettingItem } from '../SettingItem';
+import { SettingItem } from '@/components/molecules/SettingItem';
 import type { JSX } from 'react';
-
-// ボタン配置の型定義
-type ButtonAlignment = '左' | '右';
+import type { ButtonAlignment } from '@/types/types';
 
 // ボタン配置設定の配列
 const BUTTON_ALIGNMENTS: { value: ButtonAlignment; translationKey: string }[] = [

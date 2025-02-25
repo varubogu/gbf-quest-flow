@@ -18,7 +18,7 @@ import {
 } from '@/utils/FileOperations';
 import { useFlowDataModification } from '@/hooks/domain/flow/useFlowDataModification';
 import { useEditHistory } from '@/hooks/domain/flow/useEditHistory';
-import type { Flow } from '@/types/models';
+import type { Flow, MenuView } from '@/types/types';
 
 interface Props {
   onSave: () => void;
@@ -30,7 +30,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [menuView, setMenuView] = useState<'menu' | 'options'>('menu');
+  const [menuView, setMenuView] = useState<MenuView>('menu');
 
   const flowData = useFlowStore((state) => state.flowData);
   const originalData = useFlowStore((state) => state.originalData);
