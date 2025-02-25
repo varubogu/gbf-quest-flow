@@ -16,7 +16,7 @@ interface TableCellProps {
   isHeader?: boolean;
   isEditable?: boolean;
   onChange?: (_: string) => void;
-  onPasteRows?: (_: Partial<Action>[]) => void;
+  onPasteRows?: ((_: Partial<Action>[]) => void) | undefined;
   field?: keyof Action;
   alignment?: 'left' | 'center' | 'right';
   className?: string;

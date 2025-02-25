@@ -14,6 +14,7 @@ interface TableRowProps {
   onCellEdit?: (_field: keyof Action, _value: string) => void;
   onDeleteRow?: () => void;
   onAddRow?: () => void;
+  onPasteRows?: (_rows: Partial<Action>[]) => void;
 }
 
 export const TableRow: React.FC<TableRowProps> = ({
@@ -27,6 +28,7 @@ export const TableRow: React.FC<TableRowProps> = ({
   onCellEdit,
   onDeleteRow,
   onAddRow,
+  onPasteRows,
 }) => {
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
   const alignments: Record<ActionTableColumn, 'left' | 'center' | 'right'> = {
@@ -73,6 +75,7 @@ export const TableRow: React.FC<TableRowProps> = ({
           isCurrentRow={isCurrentRow}
           isEditable={isEditMode}
           onChange={(value) => onCellEdit?.(column, value)}
+          onPasteRows={onPasteRows}
           field={column}
           alignment={alignments[column]}
           data-testid={`cell-${column}-${index}`}

@@ -19,6 +19,7 @@ interface TableProps {
   onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
   onDeleteRow?: (_index: number) => void;
   onAddRow?: (_index: number) => void;
+  onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
 }
 
 export const Table: React.FC<TableProps> = ({
@@ -32,6 +33,7 @@ export const Table: React.FC<TableProps> = ({
   onCellEdit,
   onDeleteRow,
   onAddRow,
+  onPasteRows,
 }) => {
   const { settings } = useSettingsStore();
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -137,6 +139,7 @@ export const Table: React.FC<TableProps> = ({
                   onCellEdit={(field, value) => onCellEdit?.(index, field, value)}
                   onDeleteRow={() => onDeleteRow?.(index)}
                   onAddRow={() => onAddRow?.(index)}
+                  onPasteRows={(rows) => onPasteRows?.(index, rows)}
                 />
               );
             })}
