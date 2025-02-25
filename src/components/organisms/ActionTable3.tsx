@@ -87,62 +87,64 @@ export const ActionTable3: React.FC<ActionTableProps> = ({
       id="flow-action-table"
       className="flex flex-col h-full overflow-y-auto"
     >
-      {/* 上下移動ボタンは編集モード時は非表示 */}
-      {!isEditMode && (
-        <ActionTableControls3
-          buttonPosition={buttonPosition}
-          currentRow={currentRow}
-          totalRows={data.length}
-          onMoveUp={onMoveUp}
-          onMoveDown={onMoveDown}
-        />
-      )}
+        <div className="sticky top-0 z-10">
+          {!isEditMode && (
+            <ActionTableControls3
+              buttonPosition={buttonPosition}
+              currentRow={currentRow}
+              totalRows={data.length}
+              onMoveUp={onMoveUp}
+              onMoveDown={onMoveDown}
+            />
+        )}
+        </div>
 
-      {/* テーブル構造に変更 */}
-      <table className="w-full border-separate border-spacing-0">
-        <ActionTableHeader3
-          className={headerClasses}
-          isEditMode={isEditMode}
-          onAddRow={onAddRow}
-        />
+      <div>
+        <table className="w-full border-separate border-spacing-0">
+          <ActionTableHeader3
+            className={headerClasses}
+            isEditMode={isEditMode}
+            onAddRow={onAddRow}
+          />
 
-        <tbody>
-          {data.map((row, index) => {
-            // HPが空の場合、直前のHPが存在する行まで遡る
-            let currentIndex = index;
-            let hpRowCount = 0; // HPが入っている行数をカウント
-            for (let i = 0; i <= index; i++) {
-              if (data[i]?.hp?.trim()) {
-                hpRowCount++;
+          <tbody>
+            {data.map((row, index) => {
+              // HPが空の場合、直前のHPが存在する行まで遡る
+              let currentIndex = index;
+              let hpRowCount = 0; // HPが入っている行数をカウント
+              for (let i = 0; i <= index; i++) {
+                if (data[i]?.hp?.trim()) {
+                  hpRowCount++;
+                }
               }
-            }
-            while (currentIndex > 0 && !data[currentIndex]?.hp?.trim()) {
-              currentIndex--;
-            }
-            // HPが存在する行の番号を使用
-            const isEvenRow = hpRowCount % 2 === 1; // HPが入っている行数で判定
+              while (currentIndex > 0 && !data[currentIndex]?.hp?.trim()) {
+                currentIndex--;
+              }
+              // HPが存在する行の番号を使用
+              const isEvenRow = hpRowCount % 2 === 1; // HPが入っている行数で判定
 
-            // 基本の背景色を決定
-            const baseBackground = isEvenRow ? 'bg-white' : 'bg-gray-300';
+              // 基本の背景色を決定
+              const baseBackground = isEvenRow ? 'bg-white' : 'bg-gray-300';
 
-            return (
-              <ActionTableRow3
-                key={`action-row-${index}`}
-                data={row}
-                index={index}
-                isCurrentRow={index === currentRow}
-                isEditMode={isEditMode}
-                className={getRowClasses({ index, currentRow, baseBackground })}
-                onRowClick={() => handleRowClick(index)}
-                onRowDoubleClick={() => handleRowDoubleClick(index)}
-                onCellEdit={(field, value) => onCellEdit?.(index, field, value)}
-                onDeleteRow={() => onDeleteRow?.(index)}
-                onAddRow={() => onAddRow?.(index)}
-              />
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <ActionTableRow3
+                  key={`action-row-${index}`}
+                  data={row}
+                  index={index}
+                  isCurrentRow={index === currentRow}
+                  isEditMode={isEditMode}
+                  className={getRowClasses({ index, currentRow, baseBackground })}
+                  onRowClick={() => handleRowClick(index)}
+                  onRowDoubleClick={() => handleRowDoubleClick(index)}
+                  onCellEdit={(field, value) => onCellEdit?.(index, field, value)}
+                  onDeleteRow={() => onDeleteRow?.(index)}
+                  onAddRow={() => onAddRow?.(index)}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

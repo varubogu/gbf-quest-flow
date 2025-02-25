@@ -27,7 +27,6 @@ export const ActionTableHeader3: React.FC<ActionTableHeader3Props> = ({
     note: 'left',
   };
 
-  // 編集モードによってヘッダーの位置を変える
   const stickyClasses = isEditMode ? 'sticky top-0 z-10' : 'sticky top-12 z-10';
 
   return (
