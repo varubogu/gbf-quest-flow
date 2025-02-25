@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { columnTranslationKeys } from '@/config/actionTable';
-import type { ActionTableColumn } from '@/types/models';
 
 export interface TableHeaderCellProps {
   column: string;
@@ -18,11 +17,8 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
 
   // ActionTableColumnの場合はcolumnTranslationKeysを使用
   const isActionColumn = Object.keys(columnTranslationKeys).includes(column);
-  const displayText = translationKey
-    ? t(translationKey)
-    : isActionColumn
-      ? t(columnTranslationKeys[column as ActionTableColumn])
-      : column;
+  const translationKey2 = isActionColumn ? columnTranslationKeys[column as keyof typeof columnTranslationKeys] : undefined;
+  const displayText = t(translationKey ?? translationKey2 ?? column) as string;
 
   return (
     <th

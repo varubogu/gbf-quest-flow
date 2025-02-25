@@ -11,14 +11,14 @@ vi.mock('react-i18next', () => ({
         moveUp: '上へ移動',
         moveDown: '下へ移動',
       };
-      return translations[key] || key;
+      return translations[key as keyof typeof translations] || key;
     },
   }),
 }));
 
 // IconButtonのモック
 vi.mock('../atoms/IconButton', () => ({
-  IconButton: ({ label, onClick, disabled }: any) => (
+  IconButton: ({ label, onClick, disabled }: { label: string, onClick: () => void, disabled: boolean }) => (
     <button
       aria-label={label}
       onClick={onClick}

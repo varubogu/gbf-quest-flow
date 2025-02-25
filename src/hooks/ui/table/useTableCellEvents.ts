@@ -11,7 +11,7 @@ interface TableCellEventProps {
   isEditable: boolean;
   field?: string;
   onChange?: ((_: string) => void) | undefined;
-  onPasteRows?: ((_: any[]) => void) | undefined;
+  onPasteRows?: ((_: string[]) => void) | undefined;
   setIsEditing: (_isEditing: boolean) => void;
   setValue: (_value: string) => void;
   adjustTextareaHeight: () => void;
