@@ -18,7 +18,7 @@ export const createEmptyRow = (): Action => {
 /**
  * 解析したデータを指定されたフィールドを持つオブジェクトに変換する関数
  */
-export const convertToItems = <T extends Record<string, any>>(
+export const convertToItems = <T extends Record<string, unknown>>(
   rows: string[][],
   startField: string,
   fieldOrder: string[]
@@ -58,7 +58,7 @@ export const convertToItems = <T extends Record<string, any>>(
       if (fieldIndex < fieldOrder.length) {
         const field = fieldOrder[fieldIndex];
         if (field) {
-          (item as any)[field] = value.trim();
+          (item as unknown as Record<string, unknown>)[field] = value.trim();
         }
       }
     });
