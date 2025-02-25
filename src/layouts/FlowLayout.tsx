@@ -6,7 +6,7 @@ import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
 import { SideMenu } from '@/components/molecules/SideMenu';
 import { IconButton } from '@/components/atoms/IconButton';
 import { IconTextButton } from '@/components/atoms/IconTextButton';
-import { ActionTableContainer } from '@/components/organisms/ActionTableContainer';
+import { ActionTableContainer3 as ActionTableContainer } from '@/components/organisms/ActionTableContainer3';
 import { OrganizationModal } from '@/components/organisms/OrganizationModal';
 import { InfoModal } from '@/components/organisms/InfoModal';
 import { Button } from '@/components/atoms/Button';
