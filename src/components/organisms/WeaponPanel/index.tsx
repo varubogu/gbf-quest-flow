@@ -125,7 +125,7 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div id="weapon-panel" className="overflow-x-auto">
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>

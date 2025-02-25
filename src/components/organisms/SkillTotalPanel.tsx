@@ -38,7 +38,7 @@ export const SkillTotalPanel: React.FC<SkillTotalPanelProps> = ({ isEditing }) =
   };
 
   return (
-    <div>
+    <div id="skill-total-panel">
       <SkillTable
         isEditing={isEditing}
         titleKey="totalAmount"

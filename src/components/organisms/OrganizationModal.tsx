@@ -113,7 +113,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                   <HeadlessTab.Panel className="h-full overflow-auto">
                     <div className="p-4">
                       {/* 動画情報 */}
-                      <div>
+                      <div id="video-panel">
                         <h3 className="text-lg font-bold mb-4">{t('video')}</h3>
                         {isEditMode ? (
                           <input
@@ -139,9 +139,11 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                   </HeadlessTab.Panel>
 
                   <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div className="p-4">
+                    <div id="skill-total-tab-panel" className="p-4">
                       {/* スキル総合値情報 */}
-                      <SkillTotalPanel isEditing={isEditMode} />
+                      <div id="skill-total-panel-content">
+                        <SkillTotalPanel isEditing={isEditMode} />
+                      </div>
                     </div>
                   </HeadlessTab.Panel>
                 </HeadlessTab.Panels>

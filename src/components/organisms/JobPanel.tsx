@@ -131,7 +131,7 @@ export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div id="job-panel" className="overflow-x-auto">
       <table className={tableBaseStyle}>
         <thead>
           <tr className={tableHeaderRowStyle}>

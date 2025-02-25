@@ -85,100 +85,102 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className={tableBaseStyle}>
-        <thead>
-          <tr className={tableHeaderRowStyle}>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('summonCategory')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('summonName')}</th>
-            <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* メイン召喚石 */}
-          <tr>
-            <td className={tableCellBaseStyle}>{t('summonMain')}</td>
-            <SummonIcon
-              name={flowData.organization.summon.main.name}
-              isEditing={isEditing}
-              onChange={(value) => handleSummonChange('main', null, 'name', value)}
-              aria-label={t('summonName') as string}
-            />
-            <SummonNote
-              note={flowData.organization.summon.main.note}
-              isEditing={isEditing}
-              onChange={(value) => handleSummonChange('main', null, 'note', value)}
-              aria-label={t('overview') as string}
-            />
-          </tr>
-          {/* フレンド召喚石 */}
-          <tr>
-            <td className={tableCellBaseStyle}>{t('summonFriend')}</td>
-            <SummonIcon
-              name={flowData.organization.summon.friend.name}
-              isEditing={isEditing}
-              onChange={(value) => handleSummonChange('friend', null, 'name', value)}
-              aria-label={t('summonName') as string}
-            />
-            <SummonNote
-              note={flowData.organization.summon.friend.note}
-              isEditing={isEditing}
-              onChange={(value) => handleSummonChange('friend', null, 'note', value)}
-              aria-label={t('overview') as string}
-            />
-          </tr>
-          {/* その他の召喚石 */}
-          {flowData.organization.summon.other.map((summon, index) => (
-            <tr key={`other-${index}`}>
-              {index === 0 && (
-                <td
-                  className={tableCellBaseStyle}
-                  rowSpan={flowData.organization.summon.other.length}
-                >
-                  {t('summonNormal')}
-                </td>
-              )}
+    <div id="summon-panel">
+      <div className="overflow-x-auto">
+        <table id="flow-action-table" className={tableBaseStyle}>
+          <thead>
+            <tr className={tableHeaderRowStyle}>
+              <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.sm}`}>{t('summonCategory')}</th>
+              <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.md}`}>{t('summonName')}</th>
+              <th className={`${tableHeaderCellBaseStyle} ${tableWidthStyles.xl}`}>{t('overview')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* メイン召喚石 */}
+            <tr>
+              <td className={tableCellBaseStyle}>{t('summonMain')}</td>
               <SummonIcon
-                name={summon.name}
+                name={flowData.organization.summon.main.name}
                 isEditing={isEditing}
-                onChange={(value) => handleSummonChange('other', index, 'name', value)}
+                onChange={(value) => handleSummonChange('main', null, 'name', value)}
                 aria-label={t('summonName') as string}
               />
               <SummonNote
-                note={summon.note}
+                note={flowData.organization.summon.main.note}
                 isEditing={isEditing}
-                onChange={(value) => handleSummonChange('other', index, 'note', value)}
+                onChange={(value) => handleSummonChange('main', null, 'note', value)}
                 aria-label={t('overview') as string}
               />
             </tr>
-          ))}
-          {/* サブ召喚石 */}
-          {flowData.organization.summon.sub.map((summon, index) => (
-            <tr key={`sub-${index}`}>
-              {index === 0 && (
-                <td
-                  className={tableCellBaseStyle}
-                  rowSpan={flowData.organization.summon.sub.length}
-                >
-                  {t('summonSub')}
-                </td>
-              )}
+            {/* フレンド召喚石 */}
+            <tr>
+              <td className={tableCellBaseStyle}>{t('summonFriend')}</td>
               <SummonIcon
-                name={summon.name}
+                name={flowData.organization.summon.friend.name}
                 isEditing={isEditing}
-                onChange={(value) => handleSummonChange('sub', index, 'name', value)}
+                onChange={(value) => handleSummonChange('friend', null, 'name', value)}
                 aria-label={t('summonName') as string}
               />
               <SummonNote
-                note={summon.note}
+                note={flowData.organization.summon.friend.note}
                 isEditing={isEditing}
-                onChange={(value) => handleSummonChange('sub', index, 'note', value)}
+                onChange={(value) => handleSummonChange('friend', null, 'note', value)}
                 aria-label={t('overview') as string}
               />
             </tr>
-          ))}
-        </tbody>
-      </table>
+            {/* その他の召喚石 */}
+            {flowData.organization.summon.other.map((summon, index) => (
+              <tr key={`other-${index}`}>
+                {index === 0 && (
+                  <td
+                    className={tableCellBaseStyle}
+                    rowSpan={flowData.organization.summon.other.length}
+                  >
+                    {t('summonNormal')}
+                  </td>
+                )}
+                <SummonIcon
+                  name={summon.name}
+                  isEditing={isEditing}
+                  onChange={(value) => handleSummonChange('other', index, 'name', value)}
+                  aria-label={t('summonName') as string}
+                />
+                <SummonNote
+                  note={summon.note}
+                  isEditing={isEditing}
+                  onChange={(value) => handleSummonChange('other', index, 'note', value)}
+                  aria-label={t('overview') as string}
+                />
+              </tr>
+            ))}
+            {/* サブ召喚石 */}
+            {flowData.organization.summon.sub.map((summon, index) => (
+              <tr key={`sub-${index}`}>
+                {index === 0 && (
+                  <td
+                    className={tableCellBaseStyle}
+                    rowSpan={flowData.organization.summon.sub.length}
+                  >
+                    {t('summonSub')}
+                  </td>
+                )}
+                <SummonIcon
+                  name={summon.name}
+                  isEditing={isEditing}
+                  onChange={(value) => handleSummonChange('sub', index, 'name', value)}
+                  aria-label={t('summonName') as string}
+                />
+                <SummonNote
+                  note={summon.note}
+                  isEditing={isEditing}
+                  onChange={(value) => handleSummonChange('sub', index, 'note', value)}
+                  aria-label={t('overview') as string}
+                />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

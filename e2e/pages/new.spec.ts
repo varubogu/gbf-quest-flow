@@ -200,7 +200,11 @@ test.describe('新規作成画面', () => {
         await page.click('button:has-text("召喚石")'); // 召喚石ボタンをクリック
       });
 
-      test('召喚石が空で表示される', async ({ page }) => {
+      test('召喚石パネルが表示される', async ({ page }) => {
+        await expect(page.locator('#summon-panel')).toBeVisible();
+      });
+
+      test('召��石が空で表示さ��る', async ({ page }) => {
         const actionTable = page.locator('#flow-action-table');
         await expect(actionTable).toBeVisible();
         await expect(actionTable).toHaveText('');
@@ -212,10 +216,14 @@ test.describe('新規作成画面', () => {
         await page.click('button:has-text("動画")'); // 動画ボタンをクリック
       });
 
+      test('動画パネルが表示される', async ({ page }) => {
+        await expect(page.locator('#video-panel')).toBeVisible();
+      });
+
       test('動画が空で表示される', async ({ page }) => {
-        const actionTable = page.locator('#flow-action-table');
-        await expect(actionTable).toBeVisible();
-        await expect(actionTable).toHaveText('');
+        const moviePanel = page.locator('#movie-panel');
+        await expect(moviePanel).toBeVisible();
+        await expect(moviePanel).toHaveText('');
       });
     });
 
@@ -224,10 +232,14 @@ test.describe('新規作成画面', () => {
         await page.click('button:has-text("スキル総合値")'); // スキル総合値ボタンをクリック
       });
 
+      test('スキル総合値パネルが表示される', async ({ page }) => {
+        await expect(page.locator('#skill-total-panel')).toBeVisible();
+      });
+
       test('スキル総合値が空で表示される', async ({ page }) => {
-        const actionTable = page.locator('#flow-action-table');
-        await expect(actionTable).toBeVisible();
-        await expect(actionTable).toHaveText('');
+        const skillTotalPanel = page.locator('#skill-total-panel');
+        await expect(skillTotalPanel).toBeVisible();
+        await expect(skillTotalPanel).toHaveText('');
       });
     });
   });
