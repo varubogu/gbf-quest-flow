@@ -1,5 +1,6 @@
 import type { Flow } from '@/types/models';
 import { create } from 'zustand';
+import useFlowStore from './flowStore';
 
 export interface HistoryState {
   past: Flow[];
@@ -10,8 +11,15 @@ export interface HistoryStore {
   // 履歴管理用の状態と関数
   history: HistoryState;
   pushToHistory: (_data: Flow) => void;
-  undo: (_currentData: Flow, _originalData: Flow | null) => Flow | null;
-  redo: (_currentData: Flow) => Flow | null;
+
+  // 内部実装用のメソッド（詳細な制御が必要な場合に使用）
+  undoWithData: (_currentData: Flow, _originalData: Flow | null) => Flow | null;
+  redoWithData: (_currentData: Flow) => Flow | null;
+
+  // シンプルな外部向けインターフェース（引数なし）
+  undo: () => void;
+  redo: () => void;
+
   clearHistory: () => void;
   getHistoryState: () => HistoryState;
 }
@@ -45,7 +53,8 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     });
   },
 
-  undo: (currentData: Flow, originalData: Flow | null): Flow | null => {
+  // 元のundoメソッドをundoWithDataとしてリネーム
+  undoWithData: (currentData: Flow, originalData: Flow | null): Flow | null => {
     const { history } = get();
 
     // 履歴が空の場合は初期データに戻る
@@ -87,7 +96,26 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     return targetState ? structuredClone(targetState) : (previousState ? structuredClone(previousState) : null);
   },
 
-  redo: (currentData: Flow): Flow | null => {
+  // 引数なしの新しいundoメソッド
+  undo: (): void => {
+    const flowStore = useFlowStore.getState();
+    const { flowData, originalData } = flowStore;
+
+    if (!flowData) {
+      return;
+    }
+
+    // undoWithDataを使用して新しい状態を取得
+    const newData = get().undoWithData(flowData, originalData);
+
+    if (newData) {
+      // flowStoreの状態を更新
+      flowStore.setFlowData(newData);
+    }
+  },
+
+  // 元のredoメソッドをredoWithDataとしてリネーム
+  redoWithData: (currentData: Flow): Flow | null => {
     const { history } = get();
 
     if (history.future.length === 0) {
@@ -110,6 +138,24 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     });
 
     return structuredClone(next);
+  },
+
+  // 引数なしの新しいredoメソッド
+  redo: (): void => {
+    const flowStore = useFlowStore.getState();
+    const { flowData } = flowStore;
+
+    if (!flowData) {
+      return;
+    }
+
+    // redoWithDataを使用して新しい状態を取得
+    const newData = get().redoWithData(flowData);
+
+    if (newData) {
+      // flowStoreの状態を更新
+      flowStore.setFlowData(newData);
+    }
   },
 
   clearHistory: (): void => {

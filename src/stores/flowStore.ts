@@ -15,11 +15,17 @@ export interface FlowStore {
   setCurrentRow: (_row: number) => void;
   isEditMode: boolean;
   setIsEditMode: (_isEdit: boolean) => void;
-  // 履歴関連の関数 - 内部でhistoryStoreを使用
+
+  // 以下の履歴関連の関数は非推奨です - 代わりに直接historyStoreを使用してください
+  // @deprecated - historyStoreを直接使用してください
   pushToHistory: (_data: Flow) => void;
+  // @deprecated - historyStoreを直接使用してください
   undo: () => void;
+  // @deprecated - historyStoreを直接使用してください
   redo: () => void;
+  // @deprecated - historyStoreを直接使用してください
   clearHistory: () => void;
+
   // 編集キャンセル用の関数
   cancelEdit: () => void;
   updateAction: (_index: number, _updates: Partial<Action>) => void;
@@ -301,7 +307,8 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       // 編集モード中のみ履歴に追加（変更後のデータを保存）
       if (isEditMode) {
-        get().pushToHistory(structuredClone(newData));
+        // 非推奨のget().pushToHistoryを使用せず、直接historyStoreを使用
+        useHistoryStore.getState().pushToHistory(structuredClone(newData));
       }
     } catch (error) {
       useErrorStore
@@ -314,40 +321,22 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
   pushToHistory: (data: Flow): void => {
     // historyStoreに委譲
+    // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     useHistoryStore.getState().pushToHistory(data);
   },
 
   undo: (): void => {
-    const { flowData, originalData } = get();
-
-    if (!flowData) {
-      return;
-    }
-
-    // historyStoreのundoを使用
-    const newData = useHistoryStore.getState().undo(flowData, originalData);
-
-    if (newData) {
-      set({ flowData: newData });
-    }
+    // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
+    useHistoryStore.getState().undo();
   },
 
   redo: (): void => {
-    const { flowData } = get();
-
-    if (!flowData) {
-      return;
-    }
-
-    // historyStoreのredoを使用
-    const newData = useHistoryStore.getState().redo(flowData);
-
-    if (newData) {
-      set({ flowData: newData });
-    }
+    // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
+    useHistoryStore.getState().redo();
   },
 
   clearHistory: (): void => {
+    // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     // historyStoreに委譲
     useHistoryStore.getState().clearHistory();
   },
@@ -419,7 +408,12 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
       const newFlow = [...currentData.flow];
       newFlow[index] = {
-        ...newFlow[index],
+        hp: newFlow[index]?.hp || '',
+        prediction: newFlow[index]?.prediction || '',
+        charge: newFlow[index]?.charge || '',
+        guard: newFlow[index]?.guard || '',
+        action: newFlow[index]?.action || '',
+        note: newFlow[index]?.note || '',
         ...updates,
       };
 

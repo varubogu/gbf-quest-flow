@@ -148,7 +148,7 @@ describe('HistoryStore', () => {
     // });
   });
 
-  describe('undo', () => {
+  describe('undoWithData', () => {
     it('履歴がある場合、前の状態に戻る', async () => {
       const store = useHistoryStore.getState();
       const flow1 = createSampleFlow('Flow 1');
@@ -165,7 +165,7 @@ describe('HistoryStore', () => {
       });
 
       // アンドゥ実行
-      const result = store.undo(flow2, null);
+      const result = store.undoWithData(flow2, null);
 
       // 状態の更新を待つ
       await waitForState(() => {
@@ -190,7 +190,7 @@ describe('HistoryStore', () => {
       expect(initialState.past).toHaveLength(0);
 
       // アンドゥ実行
-      const result = store.undo(currentFlow, originalFlow);
+      const result = store.undoWithData(currentFlow, originalFlow);
 
       // 状態の更新を待つ
       await waitForState(() => {
@@ -214,14 +214,14 @@ describe('HistoryStore', () => {
       expect(initialState.past).toHaveLength(0);
 
       // アンドゥ実行
-      const result = store.undo(currentFlow, null);
+      const result = store.undoWithData(currentFlow, null);
 
       // nullが返ること
       expect(result).toBeNull();
     });
   });
 
-  describe('redo', () => {
+  describe('redoWithData', () => {
     it('未来履歴がある場合、次の状態に進む', async () => {
       const store = useHistoryStore.getState();
       const flow1 = createSampleFlow('Flow 1');
@@ -238,7 +238,7 @@ describe('HistoryStore', () => {
       });
 
       // アンドゥ実行
-      store.undo(flow2, null);
+      store.undoWithData(flow2, null);
 
       // アンドゥの状態更新を待つ
       await waitForState(() => {
@@ -247,7 +247,7 @@ describe('HistoryStore', () => {
       });
 
       // リドゥ実行
-      const result = store.redo(flow1);
+      const result = store.redoWithData(flow1);
 
       // リドゥの状態更新を待つ
       await waitForState(() => {
@@ -271,7 +271,7 @@ describe('HistoryStore', () => {
       expect(initialState.future).toHaveLength(0);
 
       // リドゥ実行
-      const result = store.redo(flow);
+      const result = store.redoWithData(flow);
 
       // nullが返ること
       expect(result).toBeNull();
