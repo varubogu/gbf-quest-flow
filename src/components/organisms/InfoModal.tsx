@@ -61,7 +61,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 <tbody>
                   <tr>
                     <td className="border p-2 bg-gray-50 w-1/3">{t('flowTitle')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-title" className="border p-2">
                       {isEditMode ? (
                         <input
                           type="text"
@@ -77,7 +77,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('quest')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-quest" className="border p-2">
                       {isEditMode ? (
                         <input
                           type="text"
@@ -93,7 +93,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('author')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-author" className="border p-2">
                       {isEditMode ? (
                         <input
                           type="text"
@@ -109,7 +109,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('overview')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-overview" className="border p-2">
                       {isEditMode ? (
                         <textarea
                           ref={descriptionRef}
@@ -130,7 +130,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('updateDate')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-update-date" className="border p-2">
                       {isEditMode ? (
                         <input
                           type="datetime-local"
@@ -146,7 +146,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('referenceVideoUrl')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-reference-video-url" className="border p-2">
                       {isEditMode ? (
                         <input
                           type="url"
@@ -171,7 +171,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
                   </tr>
                   <tr>
                     <td className="border p-2 bg-gray-50">{t('otherNotes')}</td>
-                    <td className="border p-2">
+                    <td data-testid="info-flow-other-notes" className="border p-2">
                       {isEditMode ? (
                         <textarea
                           ref={noteRef}

@@ -63,9 +63,10 @@ export function FlowLayout({
             className="ml-4 flex-1 text-lg font-medium bg-white border rounded px-2"
             aria-label={t('flowTitle') as string}
             id="flow-title-input"
+            data-testid="flow-title-input"
           />
         ) : (
-          <h1 className="ml-4 flex-1 text-lg font-medium">{flowData.title}</h1>
+          <h1 id="flow-title" className="ml-4 flex-1 text-lg font-medium" data-testid="flow-title">{flowData.title}</h1>
         )}
         <div className="flex gap-2">
           {isEditMode ? (
@@ -109,15 +110,21 @@ export function FlowLayout({
                   {isEditMode ? (
                     <textarea
                       id="flow-memo-input"
+                      aria-label={t('memo') as string}
                       value={flowData.always}
                       onChange={onAlwaysChange}
                       className="w-full h-full p-2 bg-white border rounded resize-none"
+                      data-testid="flow-memo-input"
                     />
                   ) : (
                     <pre
-                      id="flow-memo-input"
-                      className="whitespace-pre-wrap h-full">
-                        {flowData.always}
+                      id="flow-memo"
+                      aria-label={t('memo') as string}
+                      aria-readonly
+                      className="whitespace-pre-wrap h-full"
+                      data-testid="flow-memo"
+                    >
+                      {flowData.always}
                     </pre>
                   )}
                 </div>
