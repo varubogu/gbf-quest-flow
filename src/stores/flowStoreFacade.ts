@@ -1,8 +1,9 @@
 import type { Flow, Action } from '@/types/models';
-import type { FlowStore, BaseFlowStore } from '@/types/flowStore.types';
+import type { FlowStore, BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import useFlowStore from './flowStore';
 import useBaseFlowStore from './baseFlowStore';
+import useEditModeStore from './editModeStore';
 
 /**
  * フローストアのファサード
@@ -16,13 +17,15 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getOriginalStore = (): FlowStore => useFlowStore.getState();
   // 新しいbaseFlowStoreへの参照を取得するためのヘルパー関数
   const getBaseStore = (): BaseFlowStore => useBaseFlowStore.getState();
+  // 新しいeditModeStoreへの参照を取得するためのヘルパー関数
+  const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
 
   return {
     // 状態（プロパティ）- 元のflowStoreと同期
     get flowData(): Flow | null { return getOriginalStore().flowData; },
     get originalData(): Flow | null { return getOriginalStore().originalData; },
     get currentRow(): number { return getOriginalStore().currentRow; },
-    get isEditMode(): boolean { return getOriginalStore().isEditMode; },
+    get isEditMode(): boolean { return getEditModeStore().isEditMode; },
 
     // BaseFlowStore関連のメソッド - baseFlowStoreから取得
     getFlowData: (): Flow | null => getBaseStore().getFlowData(),
@@ -32,11 +35,11 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     updateAction: (index: number, updates: Partial<Action>): void =>
       getOriginalStore().updateAction(index, updates),
 
-    // EditModeStore関連のメソッド
-    getIsEditMode: (): boolean => getOriginalStore().getIsEditMode(),
-    setIsEditMode: (isEdit: boolean): void => getOriginalStore().setIsEditMode(isEdit),
-    cancelEdit: (): void => getOriginalStore().cancelEdit(),
-    createNewFlow: (): void => getOriginalStore().createNewFlow(),
+    // EditModeStore関連のメソッド - editModeStoreから取得
+    getIsEditMode: (): boolean => getEditModeStore().getIsEditMode(),
+    setIsEditMode: (isEdit: boolean): void => getEditModeStore().setIsEditMode(isEdit),
+    cancelEdit: (): void => getEditModeStore().cancelEdit(),
+    createNewFlow: (): void => getEditModeStore().createNewFlow(),
 
     // CursorStore関連のメソッド
     getCurrentRow: (): number => getOriginalStore().getCurrentRow(),
