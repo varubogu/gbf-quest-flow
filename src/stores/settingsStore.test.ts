@@ -20,7 +20,7 @@ describe('settingsStore', () => {
     act(() => {
       store.updateSettings({
         language: '日本語',
-        buttonAlignment: '右',
+        buttonAlignment: 'right',
         tablePadding: 8,
         actionTableClickType: 'double',
       });
@@ -34,7 +34,7 @@ describe('settingsStore', () => {
     const state = useSettingsStore.getState();
     expect(state.settings).toEqual({
       language: '日本語',
-      buttonAlignment: '右',
+      buttonAlignment: 'right',
       tablePadding: 8,
       actionTableClickType: 'double',
     });
@@ -43,10 +43,10 @@ describe('settingsStore', () => {
   it('設定を更新できること', () => {
     const store = useSettingsStore.getState();
     act(() => {
-      store.updateSettings({ buttonAlignment: '左' });
+      store.updateSettings({ buttonAlignment: 'left' });
     });
     const updatedState = useSettingsStore.getState();
-    expect(updatedState.settings.buttonAlignment).toBe('左');
+    expect(updatedState.settings.buttonAlignment).toBe('left');
     expect(updatedState.settings.language).toBe('日本語'); // 他の設定は変更されないこと
   });
 
@@ -181,7 +181,7 @@ describe('settingsStore', () => {
       act(() => {
         updateSettings({
           language: 'English',
-          buttonAlignment: '左',
+          buttonAlignment: 'left',
           tablePadding: 16,
           actionTableClickType: 'single',
         });
@@ -190,7 +190,7 @@ describe('settingsStore', () => {
       const newSettings = useSettingsStore.getState().settings;
       expect(newSettings).toEqual({
         language: 'English',
-        buttonAlignment: '左',
+        buttonAlignment: 'left',
         tablePadding: 16,
         actionTableClickType: 'single',
       });
