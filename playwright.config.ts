@@ -25,7 +25,7 @@ export default defineConfig({
   /* テストファイルのパターン */
   testMatch: '**/*.spec.ts',
   // テスト全体のタイムアウトを設定
-  timeout: 60000,
+  timeout: 30000,
   // リトライを設定
   // @ts-ignore
   retries: process.env.CI ? 2 : 0,
