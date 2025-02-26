@@ -7,6 +7,10 @@ export default defineConfig({
     navigationTimeout: 10000,
     // アクションのタイムアウトを設定
     actionTimeout: 10000,
+    screenshot: {
+      mode: 'on',
+      fullPage: true,
+    },
   },
   webServer: {
     command: 'bun run dev:e2e',
@@ -16,6 +20,7 @@ export default defineConfig({
     // サーバー起動のタイムアウトを設定
     timeout: 120000,
   },
+  outputDir: './test-results/screenshots',
   testDir: './e2e',
   /* テストファイルのパターン */
   testMatch: '**/*.spec.ts',
