@@ -1,107 +1,12 @@
-import type { Flow, Action, Member, Summon, Weapon, Ability } from '@/types/models';
+import type { Flow, Action } from '@/types/models';
 import type { FlowStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
+import useBaseFlowStore, { adjustOrganizationData } from './baseFlowStore';
 
-// データの個数を設定に合わせて調整する関数（不足分のみ追加）
-const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () => T): T[] => {
-  if (array.length < targetLength) {
-    // 不足分を追加
-    return [
-      ...array,
-      ...Array(targetLength - array.length)
-        .fill(null)
-        .map(createEmpty),
-    ];
-  }
-  // 既存のデータはそのまま保持
-  return array;
-};
-
-// 組織データを設定に合わせて調整する関数（既存データは保持）
-const adjustOrganizationData = (organization: Flow['organization']): Flow['organization'] => {
-  const emptyMember = (): Member => ({
-    name: '',
-    note: '',
-    awaketype: '',
-    accessories: '',
-    limitBonus: '',
-  });
-
-  const emptyWeapon = (): Weapon => ({
-    name: '',
-    note: '',
-    additionalSkill: '',
-  });
-
-  const emptySummon = (): Summon => ({
-    name: '',
-    note: '',
-  });
-
-  const emptyAbility = (): Ability => ({
-    name: '',
-    note: '',
-  });
-
-  // 設定値と実際のデータ数の大きい方を使用
-  const getTargetLength = (current: number, setting: number): number => Math.max(current, setting);
-
-  return {
-    ...organization,
-    job: {
-      ...organization.job,
-      abilities: adjustArrayLength(
-        organization.job.abilities,
-        getTargetLength(organization.job.abilities.length, organizationSettings.job.abilities),
-        emptyAbility
-      ),
-    },
-    member: {
-      front: adjustArrayLength(
-        organization.member.front,
-        getTargetLength(organization.member.front.length, organizationSettings.member.front),
-        emptyMember
-      ),
-      back: adjustArrayLength(
-        organization.member.back,
-        getTargetLength(organization.member.back.length, organizationSettings.member.back),
-        emptyMember
-      ),
-    },
-    weapon: {
-      ...organization.weapon,
-      other: adjustArrayLength(
-        organization.weapon.other,
-        getTargetLength(organization.weapon.other.length, organizationSettings.weapon.other),
-        emptyWeapon
-      ),
-      additional: adjustArrayLength(
-        organization.weapon.additional,
-        getTargetLength(
-          organization.weapon.additional.length,
-          organizationSettings.weapon.additional
-        ),
-        emptyWeapon
-      ),
-    },
-    summon: {
-      ...organization.summon,
-      other: adjustArrayLength(
-        organization.summon.other,
-        getTargetLength(organization.summon.other.length, organizationSettings.summon.other),
-        emptySummon
-      ),
-      sub: adjustArrayLength(
-        organization.summon.sub,
-        getTargetLength(organization.summon.sub.length, organizationSettings.summon.sub),
-        emptySummon
-      ),
-    },
-  };
-};
+// 注: adjustOrganizationData関数はbaseFlowStoreに移行し、そこからインポートして使用する
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
@@ -242,11 +147,16 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     if (!updatedState.flowData || !updatedState.isEditMode) {
       console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
     }
+
+    // baseFlowStoreも同期
+    useBaseFlowStore.getState().setFlowData(newData);
   },
 
   setFlowData: (data: Flow | null): void => {
     if (data === null) {
       set({ flowData: null, currentRow: 0 });
+      // baseFlowStoreも同期
+      useBaseFlowStore.getState().setFlowData(null);
       return;
     }
 
@@ -255,6 +165,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       organization: adjustOrganizationData(data.organization),
     };
     set({ flowData: adjustedData, currentRow: 0 });
+
+    // baseFlowStoreも同期
+    useBaseFlowStore.getState().setFlowData(adjustedData);
   },
 
   updateFlowData: (updates: Partial<Flow>): void => {
@@ -278,6 +191,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       set({
         flowData: newData,
       });
+
+      // baseFlowStoreも同期
+      useBaseFlowStore.getState().updateFlowData(updates);
 
       // 編集モード中のみ履歴に追加（変更後のデータを保存）
       if (isEditMode) {
@@ -323,6 +239,10 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         flowData: structuredClone(originalData),
         originalData: null,
       });
+
+      // baseFlowStoreも同期
+      useBaseFlowStore.getState().setFlowData(structuredClone(originalData));
+
       // 履歴をクリア
       useHistoryStore.getState().clearHistory();
       // 履歴を戻る（popstateイベントが発火してデータが復元される）
@@ -391,12 +311,22 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         ...updates,
       };
 
+      const newData = {
+        ...currentData,
+        flow: newFlow,
+      };
+
       set({
-        flowData: {
-          ...currentData,
-          flow: newFlow,
-        },
+        flowData: newData,
       });
+
+      // baseFlowStoreも同期
+      useBaseFlowStore.getState().updateAction(index, updates);
+
+      // 編集モード中のみ履歴に追加
+      if (get().isEditMode) {
+        useHistoryStore.getState().pushToHistory(structuredClone(newData));
+      }
     } catch (error) {
       useErrorStore
         .getState()
