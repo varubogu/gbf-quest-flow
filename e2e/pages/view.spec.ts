@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import sampleData from '../../src/content/flows/sample.json' assert { type: 'json' };
 import { expectMultiLineText } from '@/utils/tests/expectedFunction';
 
-test.describe('新規作成画面', () => {
+test.describe('行動表画面', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/sample'); // 新規作成画面に移動
@@ -51,7 +51,7 @@ test.describe('新規作成画面', () => {
     });
   });
 
-  test.describe('編成確認', async () => {
+  test.describe('編成確認画面', async () => {
     test.beforeEach(async ({ page }) => {
       await page.click('button:has-text("編成確認")'); // 編成確認ボタンをクリック
     });
@@ -418,7 +418,7 @@ test.describe('新規作成画面', () => {
     });
   });
 
-  test.describe('その他情報', async () => {
+  test.describe('その他情報画面', async () => {
     test.beforeEach(async ({ page }) => {
       await page.click('button[aria-label="その他の情報"]'); // その他情報ボタンをクリック
     });

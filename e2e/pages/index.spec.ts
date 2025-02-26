@@ -52,7 +52,7 @@ test.describe('初期ページ', () => {
       // ファイルを選択
       await fileChooser.setFiles(filePath);
 
-      // データが反映されるのを待つ
+      // データが反映されるのを待つ（タイトルが表示されたら反映されたとみなす）
       await expect(page.getByText('ルシゼロ火マナ')).toBeVisible();
     });
   });
