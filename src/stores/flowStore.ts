@@ -1,35 +1,9 @@
 import type { Flow, Action, Member, Summon, Weapon, Ability } from '@/types/models';
+import type { FlowStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
-
-export interface FlowStore {
-  flowData: Flow | null;
-  originalData: Flow | null; // 編集前のデータを保持
-  setFlowData: (_data: Flow | null) => void;
-  updateFlowData: (_update: Partial<Flow>) => void;
-  loadFlowFromFile: () => Promise<void>;
-  createNewFlow: () => void; // 新しいデータを作成する関数を追加
-  currentRow: number;
-  setCurrentRow: (_row: number) => void;
-  isEditMode: boolean;
-  setIsEditMode: (_isEdit: boolean) => void;
-
-  // 以下の履歴関連の関数は非推奨です - 代わりに直接historyStoreを使用してください
-  // @deprecated - historyStoreを直接使用してください
-  pushToHistory: (_data: Flow) => void;
-  // @deprecated - historyStoreを直接使用してください
-  undo: () => void;
-  // @deprecated - historyStoreを直接使用してください
-  redo: () => void;
-  // @deprecated - historyStoreを直接使用してください
-  clearHistory: () => void;
-
-  // 編集キャンセル用の関数
-  cancelEdit: () => void;
-  updateAction: (_index: number, _updates: Partial<Action>) => void;
-}
 
 // データの個数を設定に合わせて調整する関数（不足分のみ追加）
 const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () => T): T[] => {
@@ -429,6 +403,52 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         .showError(
           error instanceof Error ? error : new Error('アクションの更新中にエラーが発生しました')
         );
+    }
+  },
+
+  // 新たに追加されるゲッターメソッド
+  getFlowData: (): Flow | null => get().flowData,
+  getActionById: (index: number): Action | undefined => get().flowData?.flow[index],
+  getIsEditMode: (): boolean => get().isEditMode,
+  getCurrentRow: (): number => get().currentRow,
+
+  // saveFlowToFileメソッドを追加
+  saveFlowToFile: async (fileName?: string): Promise<void> => {
+    try {
+      const currentData = get().flowData;
+      if (!currentData) {
+        throw new Error('保存するデータがありません');
+      }
+
+      // JSONデータを生成
+      const jsonData = JSON.stringify(currentData, null, 2);
+
+      // Blobを作成
+      const blob = new Blob([jsonData], { type: 'application/json' });
+
+      // ダウンロードリンクを作成
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // ファイル名を設定（指定がない場合はフローのタイトルを使用）
+      const defaultFileName = `${currentData.title || 'flow'}.json`;
+      link.download = fileName || defaultFileName;
+
+      // リンクをクリックしてダウンロードを開始
+      document.body.appendChild(link);
+      link.click();
+
+      // クリーンアップ
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      useErrorStore
+        .getState()
+        .showError(
+          error instanceof Error ? error : new Error('ファイルの保存中にエラーが発生しました')
+        );
+      throw error;
     }
   },
 }));

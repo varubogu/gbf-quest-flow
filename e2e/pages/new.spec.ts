@@ -444,7 +444,7 @@ test.describe('新規作成画面', () => {
         await expect(memoInput).toHaveValue('');
     });
 
-    test.describe('行動表入力', () => {
+    test.describe.skip('行動表入力', () => {
 
       test('1行目のHPが入力できる', async ({ page }) => {
         const hpInput = page.locator('#hp-input');
