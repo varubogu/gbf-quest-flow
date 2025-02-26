@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../.astro/collections/flows.schema.json",
+    "$schema": "../../.astro/collections/flows.schema.json",
     "title": "ルシゼロ火マナ",
     "quest": "ダーク・ラプチャー・ゼロ",
     "author": "鈴木太郎",
