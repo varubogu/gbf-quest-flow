@@ -2,11 +2,7 @@ import type { Flow, Action, Member, Summon, Weapon, Ability } from '@/types/mode
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
-
-export interface HistoryState {
-  past: Flow[];
-  future: Flow[];
-}
+import useHistoryStore from './historyStore';
 
 export interface FlowStore {
   flowData: Flow | null;
@@ -19,8 +15,7 @@ export interface FlowStore {
   setCurrentRow: (_row: number) => void;
   isEditMode: boolean;
   setIsEditMode: (_isEdit: boolean) => void;
-  // 履歴管理用の状態と関数
-  history: HistoryState;
+  // 履歴関連の関数 - 内部でhistoryStoreを使用
   pushToHistory: (_data: Flow) => void;
   undo: () => void;
   redo: () => void;
@@ -133,7 +128,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   originalData: null,
   currentRow: 0,
   isEditMode: false,
-  history: { past: [], future: [] },
+  // history: { past: [], future: [] }, // 削除 - historyStoreに移行
 
   setCurrentRow: (row: number): void => set({ currentRow: row }),
 
@@ -144,8 +139,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       set({ originalData: structuredClone(flowData) });
     }
     if (!isEdit) {
-      // 編集モード終了時に履歴とoriginalDataをクリア
-      set({ history: { past: [], future: [] }, originalData: null });
+      // 編集モード終了時に履歴をクリア
+      useHistoryStore.getState().clearHistory();
+      set({ originalData: null });
     }
     set({ isEditMode: isEdit });
   },
@@ -249,6 +245,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     // 現在の状態を取得
     const currentState = get();
 
+    // historyStoreの履歴をクリア
+    useHistoryStore.getState().clearHistory();
+
     // 状態を更新（現在の状態を保持しつつ、必要な部分を更新）
     set({
       ...currentState,
@@ -256,7 +255,6 @@ const useFlowStore = create<FlowStore>((set, get) => ({
       originalData: currentState.flowData || null, // 現在のデータをoriginalDataとして保持
       currentRow: 0,
       isEditMode: true,
-      history: { past: [], future: [] },
     });
 
     // 更新後の状態を確認
@@ -315,79 +313,43 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   pushToHistory: (data: Flow): void => {
-    const { history } = get();
-
-    // 最後の履歴と同じデータは追加しない
-    if (
-      history.past.length > 0 &&
-      JSON.stringify(history.past[history.past.length - 1]) === JSON.stringify(data)
-    ) {
-      return;
-    }
-
-    set({
-      history: {
-        past: [...history.past, structuredClone(data)],
-        future: [], // 新しい変更時に未来履歴をクリア
-      },
-    });
+    // historyStoreに委譲
+    useHistoryStore.getState().pushToHistory(data);
   },
 
   undo: (): void => {
-    const { history, flowData, originalData } = get();
+    const { flowData, originalData } = get();
 
     if (!flowData) {
       return;
     }
 
-    // 履歴が空の場合は初期データに戻る
-    if (history.past.length === 0) {
-      if (originalData && JSON.stringify(flowData) !== JSON.stringify(originalData)) {
-        set({
-          flowData: structuredClone(originalData),
-          history: { past: [], future: [flowData, ...history.future] },
-        });
-      }
-      return;
+    // historyStoreのundoを使用
+    const newData = useHistoryStore.getState().undo(flowData, originalData);
+
+    if (newData) {
+      set({ flowData: newData });
     }
-
-    // 最後の履歴を取得してpop
-    const currentState = history.past[history.past.length - 1];
-    const newPast = history.past.slice(0, -1);
-
-    // 戻る先の状態を取得（pop後の最後の履歴、もしくは初期データ）
-    const targetState = newPast.length > 0 ? newPast[newPast.length - 1] : originalData;
-
-    set({
-      flowData: structuredClone(targetState || currentState),
-      history: {
-        past: newPast,
-        future: [currentState, ...history.future],
-      },
-    });
   },
 
   redo: (): void => {
-    const { history, flowData } = get();
+    const { flowData } = get();
 
-    if (history.future.length === 0 || !flowData) {
+    if (!flowData) {
       return;
     }
 
-    const next = history.future[0];
-    const newFuture = history.future.slice(1);
+    // historyStoreのredoを使用
+    const newData = useHistoryStore.getState().redo(flowData);
 
-    set({
-      flowData: structuredClone(next),
-      history: {
-        past: [...history.past, flowData],
-        future: newFuture,
-      },
-    } as FlowStore);
+    if (newData) {
+      set({ flowData: newData });
+    }
   },
 
   clearHistory: (): void => {
-    set({ history: { past: [], future: [] } });
+    // historyStoreに委譲
+    useHistoryStore.getState().clearHistory();
   },
 
   cancelEdit: (): void => {
@@ -397,8 +359,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
         isEditMode: false,
         flowData: structuredClone(originalData),
         originalData: null,
-        history: { past: [], future: [] },
       });
+      // 履歴をクリア
+      useHistoryStore.getState().clearHistory();
       // 履歴を戻る（popstateイベントが発火してデータが復元される）
       history.back();
     }
