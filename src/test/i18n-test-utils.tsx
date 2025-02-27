@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import type { RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';
 import { I18nextProvider } from 'react-i18next';
-import i18next from '@/i18n';
+import i18next from '@/lib/i18n';
 import type { ReactNode } from 'react';
 
 // i18nのモック

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AppSettings } from '@/types/settings';
-import i18n from '@/i18n';
+import i18n from '@/lib/i18n';
 
 export interface SettingsStore {
   settings: AppSettings;

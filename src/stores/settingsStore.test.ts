@@ -11,7 +11,7 @@ vi.mock('@/i18n', () => ({
 }));
 
 // モックされたi18nのインポート
-const i18n = vi.mocked(await import('@/i18n')).default;
+const i18n = vi.mocked(await import('@/lib/i18n')).default;
 
 describe('settingsStore', () => {
   beforeEach(() => {

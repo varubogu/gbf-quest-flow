@@ -1,4 +1,4 @@
-import initI18n from '@/i18n'
+import initI18n from '@/lib/i18n'
 import type { i18n, TOptions } from 'i18next'
 
 let i18nInstance: i18n | null = null
