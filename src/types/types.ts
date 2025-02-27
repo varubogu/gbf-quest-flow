@@ -10,6 +10,7 @@ export type {
   ActionTableCellEditHandler,
   AnnouncementType,
   ButtonVariant,
+  ButtonAlignment,
   ClickType,
   Flow,
   IconPosition,

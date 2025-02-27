@@ -37,7 +37,7 @@ vi.mock('react-i18next', (): UseI18nMockResult => ({
   default: () => ({
     settings: {
       language: '日本語',
-      buttonAlignment: '左',
+      buttonAlignment: 'left',
       tablePadding: 4,
       actionTableClickType: 'single',
     },
@@ -49,7 +49,7 @@ vi.mock('@/stores/settingsStore', (): SettingsStoreMockResult => ({
   default: () => ({
     settings: {
       language: '日本語',
-      buttonAlignment: '左',
+      buttonAlignment: 'left',
       tablePadding: 4,
       actionTableClickType: 'single',
     },

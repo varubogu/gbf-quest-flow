@@ -16,7 +16,7 @@ vi.mock('react-i18next', () => ({
 const mockUpdateSettings = vi.fn();
 const mockUseSettingsStore = vi.fn(() => ({
   settings: {
-    buttonAlignment: '左',
+    buttonAlignment: 'left',
   },
   updateSettings: mockUpdateSettings,
 }));
@@ -37,7 +37,7 @@ describe('ButtonAlignmentSetting', () => {
     vi.clearAllMocks();
     mockUseSettingsStore.mockImplementation(() => ({
       settings: {
-        buttonAlignment: '左',
+        buttonAlignment: 'left',
       },
       updateSettings: mockUpdateSettings,
     }));

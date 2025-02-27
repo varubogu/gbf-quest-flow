@@ -13,7 +13,7 @@ const useSettingsStore = create<SettingsStore>()(
     (set) => ({
       settings: {
         language: '日本語',
-        buttonAlignment: '右',
+        buttonAlignment: 'right',
         tablePadding: 8,
         actionTableClickType: 'double',
       },

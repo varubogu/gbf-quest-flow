@@ -50,7 +50,7 @@ export type AnnouncementType = 'status' | 'alert';
 
 // 設定関連の型定義
 export type Language = '日本語' | 'English';
-export type ButtonAlignment = '左' | '右';
+export type ButtonAlignment = 'left' | 'right';
 
 
 // キャラクター/武器/召喚石の共通項目のスキーマ

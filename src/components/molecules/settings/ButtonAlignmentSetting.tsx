@@ -6,13 +6,19 @@ import type { ButtonAlignment } from '@/types/types';
 
 // ボタン配置設定の配列
 const BUTTON_ALIGNMENTS: { value: ButtonAlignment; translationKey: string }[] = [
-  { value: '左', translationKey: 'left' },
-  { value: '右', translationKey: 'right' },
+  { value: 'left', translationKey: 'left' },
+  { value: 'right', translationKey: 'right' },
 ];
 
 export function ButtonAlignmentSetting(): JSX.Element {
   const { t } = useTranslation();
   const { settings, updateSettings } = useSettingsStore();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    updateSettings({
+      buttonAlignment: e.target.value as ButtonAlignment,
+    });
+  };
 
   return (
     <SettingItem labelKey="buttonAlignment">
@@ -24,7 +30,7 @@ export function ButtonAlignmentSetting(): JSX.Element {
               name="buttonAlignment"
               value={value}
               checked={settings.buttonAlignment === value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ buttonAlignment: e.target.value as ButtonAlignment })}
+              onChange={handleChange}
               className="form-radio"
             />
             <span className="ml-2">{t(translationKey)}</span>
