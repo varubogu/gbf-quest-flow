@@ -1,11 +1,11 @@
 import type { Flow, Action } from '@/types/models';
-import type { FlowStore, BaseFlowStore, EditModeStore, FileOperationStore, CursorStore } from '@/types/flowStore.types';
+import type { FlowStore, BaseFlowStore, EditModeStore, CursorStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
-import useFileOperationStore from './fileOperationStore';
 import useCursorStore from './cursorStore';
 import useHistoryFacade, { type HistoryFacade } from '@/core/stores/historyFacade';
+import { saveFlowToFile, loadFlowFromFile } from '../services/fileService';
 
 /**
  * フローストアのファサード
@@ -19,8 +19,6 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getBaseStore = (): BaseFlowStore => useBaseFlowStore.getState();
   // 新しいeditModeStoreへの参照を取得するためのヘルパー関数
   const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
-  // 新しいfileOperationStoreへの参照を取得するためのヘルパー関数
-  const getFileOperationStore = (): FileOperationStore => useFileOperationStore.getState();
   // 新しいhistoryFacadeへの参照を取得するためのヘルパー関数
   const getHistoryFacade = (): HistoryFacade => useHistoryFacade.getState();
   // 新しいcursorStoreへの参照を取得するためのヘルパー関数
@@ -51,10 +49,10 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     getCurrentRow: (): number => getCursorStore().getCurrentRow(),
     setCurrentRow: (row: number): void => getCursorStore().setCurrentRow(row),
 
-    // FileOperationStore関連のメソッド - fileOperationStoreから取得
-    loadFlowFromFile: async (): Promise<void> => await getFileOperationStore().loadFlowFromFile(),
+    // FileService関連のメソッド - FileServiceから取得
+    loadFlowFromFile: async (): Promise<void> => await loadFlowFromFile(),
     saveFlowToFile: async (fileName?: string): Promise<void> =>
-      await getFileOperationStore().saveFlowToFile(fileName),
+      await saveFlowToFile(fileName),
 
     // 非推奨の履歴関連メソッド - historyFacadeに委譲
     pushToHistory: (data: Flow): void => {

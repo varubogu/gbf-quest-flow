@@ -11,7 +11,6 @@ import useHistoryStore from './historyStore';
 import useHistoryFacade from './historyFacade';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
-import useFileOperationStore from './fileOperationStore';
 import useCursorStore from './cursorStore';
 import useFlowStoreFacade from './flowStoreFacade';
 import useSettingsStore from './settingsStore';
@@ -23,7 +22,6 @@ export {
   useHistoryFacade,
   useBaseFlowStore,
   useEditModeStore,  // 新規追加
-  useFileOperationStore, // 新規追加
   useCursorStore, // 新規追加
   useFlowStoreFacade,
   useSettingsStore,
