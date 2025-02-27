@@ -1,5 +1,5 @@
 import React, { type JSX } from 'react';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
 import { useTranslation } from 'react-i18next';
 
 interface LoadFlowButtonProps {
@@ -9,7 +9,7 @@ interface LoadFlowButtonProps {
 export const LoadFlowButton: React.FC<LoadFlowButtonProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = React.useState(false);
-  const loadFlowFromFile = useFlowStore((state) => state.loadFlowFromFile);
+  const loadFlowFromFile = useFlowStoreFacade((state) => state.loadFlowFromFile);
 
   const handleClick = async (): Promise<void> => {
     try {

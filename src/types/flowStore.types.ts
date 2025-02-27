@@ -21,12 +21,17 @@ export interface EditModeStore {
   createNewFlow: () => void;
 }
 
-
 // カーソル位置管理
 export interface CursorStore {
   currentRow: number;
   setCurrentRow: (_row: number) => void;
   getCurrentRow: () => number;
+}
+
+// ファイル操作関連
+export interface FileOperationMethods {
+  loadFlowFromFile: () => Promise<void>;
+  saveFlowToFile: (_fileName?: string) => Promise<void>;
 }
 
 // 非推奨の履歴関連機能（後方互換性のため残す）
@@ -46,4 +51,5 @@ export interface FlowStore extends
   BaseFlowStore,
   EditModeStore,
   CursorStore,
+  FileOperationMethods,
   DeprecatedHistoryMethods {}

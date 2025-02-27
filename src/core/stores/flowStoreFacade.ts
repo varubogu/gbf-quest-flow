@@ -5,7 +5,9 @@ import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useCursorStore from './cursorStore';
 import { pushToHistory, undo, redo, clearHistory } from '@/core/services/historyService';
-import { saveFlowToFile, loadFlowFromFile } from '../services/fileService';
+import { saveFlowToFile, loadFlowFromFile, newFlowData } from '../services/fileService';
+import { updateFlowData, updateAction } from '../services/flowService';
+import { setIsEditMode, cancelEdit } from '../services/editModeService';
 
 /**
  * フローストアのファサード
@@ -35,15 +37,29 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     getFlowData: (): Flow | null => getBaseStore().getFlowData(),
     getActionById: (index: number): Action | undefined => getBaseStore().getActionById(index),
     setFlowData: (data: Flow | null): void => getBaseStore().setFlowData(data),
-    updateFlowData: (updates: Partial<Flow>): void => getBaseStore().updateFlowData(updates),
-    updateAction: (index: number, updates: Partial<Action>): void =>
-      getBaseStore().updateAction(index, updates),
+    updateFlowData: (updates: Partial<Flow>): void => {
+      // flowServiceを使用
+      updateFlowData(updates, getEditModeStore().isEditMode);
+    },
+    updateAction: (index: number, updates: Partial<Action>): void => {
+      // flowServiceを使用
+      updateAction(index, updates, getEditModeStore().isEditMode);
+    },
 
-    // EditModeStore関連のメソッド - editModeStoreから取得
+    // EditModeStore関連のメソッド - editModeServiceを使用
     getIsEditMode: (): boolean => getEditModeStore().getIsEditMode(),
-    setIsEditMode: (isEdit: boolean): void => getEditModeStore().setIsEditMode(isEdit),
-    cancelEdit: (): void => getEditModeStore().cancelEdit(),
-    createNewFlow: (): void => getEditModeStore().createNewFlow(),
+    setIsEditMode: (isEdit: boolean): void => {
+      // editModeServiceを使用
+      setIsEditMode(isEdit);
+    },
+    cancelEdit: (): void => {
+      // editModeServiceを使用
+      cancelEdit();
+    },
+    createNewFlow: (): void => {
+      // fileServiceを使用
+      newFlowData();
+    },
 
     // CursorStore関連のメソッド - cursorStoreから取得
     getCurrentRow: (): number => getCursorStore().getCurrentRow(),
