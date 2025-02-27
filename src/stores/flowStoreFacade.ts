@@ -5,6 +5,7 @@ import useFlowStore from './flowStore';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useFileOperationStore from './fileOperationStore';
+import useHistoryFacade, { type HistoryFacade } from '@/stores/historyFacade';
 
 /**
  * フローストアのファサード
@@ -22,6 +23,8 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
   // 新しいfileOperationStoreへの参照を取得するためのヘルパー関数
   const getFileOperationStore = (): FileOperationStore => useFileOperationStore.getState();
+  // 新しいhistoryFacadeへの参照を取得するためのヘルパー関数
+  const getHistoryFacade = (): HistoryFacade => useHistoryFacade.getState();
 
   return {
     // 状態（プロパティ）- 元のflowStoreと同期
@@ -53,11 +56,23 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     saveFlowToFile: async (fileName?: string): Promise<void> =>
       await getFileOperationStore().saveFlowToFile(fileName),
 
-    // 非推奨の履歴関連メソッド - 元のflowStoreに委譲
-    pushToHistory: (data: Flow): void => getOriginalStore().pushToHistory(data),
-    undo: (): void => getOriginalStore().undo(),
-    redo: (): void => getOriginalStore().redo(),
-    clearHistory: (): void => getOriginalStore().clearHistory(),
+    // 非推奨の履歴関連メソッド - historyFacadeに委譲
+    pushToHistory: (data: Flow): void => {
+      console.warn('flowStoreFacade.pushToHistory() is deprecated. Use historyFacade instead.');
+      getHistoryFacade().pushToHistory(data);
+    },
+    undo: (): void => {
+      console.warn('flowStoreFacade.undo() is deprecated. Use historyFacade instead.');
+      getHistoryFacade().undo();
+    },
+    redo: (): void => {
+      console.warn('flowStoreFacade.redo() is deprecated. Use historyFacade instead.');
+      getHistoryFacade().redo();
+    },
+    clearHistory: (): void => {
+      console.warn('flowStoreFacade.clearHistory() is deprecated. Use historyFacade instead.');
+      getHistoryFacade().clearHistory();
+    },
   };
 });
 

@@ -1,6 +1,7 @@
 import type { Flow } from '@/types/models';
 import { create } from 'zustand';
-import useFlowStore from './flowStore';
+// useFlowStoreへの依存を削除
+// import useFlowStore from './flowStore';
 
 export interface HistoryState {
   past: Flow[];
@@ -17,7 +18,10 @@ export interface HistoryStore {
   redoWithData: (_currentData: Flow) => Flow | null;
 
   // シンプルな外部向けインターフェース（引数なし）
+  // 注：これらのメソッドはhistoryFacadeに移行される予定です
+  // @deprecated - useHistoryFacadeを使用してください
   undo: () => void;
+  // @deprecated - useHistoryFacadeを使用してください
   redo: () => void;
 
   clearHistory: () => void;
@@ -96,22 +100,10 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     return targetState ? structuredClone(targetState) : (previousState ? structuredClone(previousState) : null);
   },
 
-  // 引数なしの新しいundoメソッド
+  // 引数なしの旧undo（非推奨）- このメソッドは警告を表示する
   undo: (): void => {
-    const flowStore = useFlowStore.getState();
-    const { flowData, originalData } = flowStore;
-
-    if (!flowData) {
-      return;
-    }
-
-    // undoWithDataを使用して新しい状態を取得
-    const newData = get().undoWithData(flowData, originalData);
-
-    if (newData) {
-      // flowStoreの状態を更新
-      flowStore.setFlowData(newData);
-    }
+    console.warn('HistoryStore.undo() is deprecated. Use useHistoryFacade instead.');
+    // 何も処理を行わない
   },
 
   // 元のredoメソッドをredoWithDataとしてリネーム
@@ -140,22 +132,10 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     return structuredClone(next);
   },
 
-  // 引数なしの新しいredoメソッド
+  // 引数なしの旧redo（非推奨）- このメソッドは警告を表示する
   redo: (): void => {
-    const flowStore = useFlowStore.getState();
-    const { flowData } = flowStore;
-
-    if (!flowData) {
-      return;
-    }
-
-    // redoWithDataを使用して新しい状態を取得
-    const newData = get().redoWithData(flowData);
-
-    if (newData) {
-      // flowStoreの状態を更新
-      flowStore.setFlowData(newData);
-    }
+    console.warn('HistoryStore.redo() is deprecated. Use useHistoryFacade instead.');
+    // 何も処理を行わない
   },
 
   clearHistory: (): void => {

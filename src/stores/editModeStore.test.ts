@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useEditModeStore from './editModeStore';
 import useBaseFlowStore from './baseFlowStore';
-import useHistoryStore from './historyStore';
+import useHistoryFacade from './historyFacade';
 import type { Flow } from '@/types/models';
 import type { HistoryState } from './historyStore';
 
@@ -50,19 +50,18 @@ describe('EditModeStore', () => {
       getActionById: (): undefined => undefined,
     }));
 
-    // historyStoreのメソッドをスパイ
+    // historyFacadeのメソッドをスパイ
     const mockClearHistory = vi.fn();
     const emptyHistory: HistoryState = { past: [], future: [] };
 
-    vi.spyOn(useHistoryStore, 'getState').mockImplementation(() => ({
-      history: emptyHistory,
+    vi.spyOn(useHistoryFacade, 'getState').mockImplementation(() => ({
       clearHistory: mockClearHistory,
       pushToHistory: (): void => {},
       undo: (): void => {},
       redo: (): void => {},
-      undoWithData: (): null => null,
-      redoWithData: (): null => null,
       getHistoryState: (): HistoryState => emptyHistory,
+      canUndo: (): boolean => false,
+      canRedo: (): boolean => false,
     }));
 
     // グローバルhistoryオブジェクトをモック
@@ -104,7 +103,7 @@ describe('EditModeStore', () => {
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(false);
-      expect(useHistoryStore.getState().clearHistory).toHaveBeenCalled();
+      expect(useHistoryFacade.getState().clearHistory).toHaveBeenCalled();
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           originalData: null
@@ -136,11 +135,11 @@ describe('EditModeStore', () => {
       expect(useEditModeStore.getState().isEditMode).toBe(false);
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
-          flowData: expect.anything(),
+          flowData: expect.anything() as Flow,
           originalData: null
         })
       );
-      expect(useHistoryStore.getState().clearHistory).toHaveBeenCalled();
+      expect(useHistoryFacade.getState().clearHistory).toHaveBeenCalled();
       expect(history.back).toHaveBeenCalled();
     });
 
@@ -163,13 +162,13 @@ describe('EditModeStore', () => {
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(true);
-      expect(useHistoryStore.getState().clearHistory).toHaveBeenCalled();
+      expect(useHistoryFacade.getState().clearHistory).toHaveBeenCalled();
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           flowData: expect.objectContaining({
             title: '新しいフロー'
           }),
-          originalData: expect.anything()
+          originalData: expect.anything() as Flow,
         })
       );
     });
