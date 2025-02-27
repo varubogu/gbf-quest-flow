@@ -3,12 +3,12 @@ import { cn } from '@/lib/utils/cn';
 import { Text } from '../atoms/Text';
 import type { Action, TableAlignment } from '@/types/types';
 import useSettingsStore from '@/core/stores/settingsStore';
-import { useAlignmentStyle } from '@/hooks/ui/base/useAlignmentStyle';
-import { useTableCellBaseStyle } from '@/hooks/ui/table/useTableCellBaseStyle';
-import { useTableCellStateStyle } from '@/hooks/ui/table/useTableCellStateStyle';
-import { useActionCellEvents } from '@/hooks/ui/table/useActionCellEvents';
-import { useActionCellState } from '@/hooks/ui/table/useActionCellState';
-import { useTextareaStyle } from '@/hooks/ui/base/useTextareaStyle';
+import { useAlignmentStyle } from '@/core/hooks/ui/base/useAlignmentStyle';
+import { useTableCellBaseStyle } from '@/core/hooks/ui/table/useTableCellBaseStyle';
+import { useTableCellStateStyle } from '@/core/hooks/ui/table/useTableCellStateStyle';
+import { useActionCellEvents } from '@/core/hooks/ui/table/useActionCellEvents';
+import { useActionCellState } from '@/core/hooks/ui/table/useActionCellState';
+import { useTextareaStyle } from '@/core/hooks/ui/base/useTextareaStyle';
 
 interface TableCellProps {
   content: string;

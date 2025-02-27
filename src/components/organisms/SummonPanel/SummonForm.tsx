@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Summon, SummonType } from '@/types/types';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
 import { SummonNote } from '@/components/molecules/Summon/SummonNote';
-import { useSummonForm } from '@/hooks/domain/summons/useSummonForm';
+import { useSummonForm } from '@/core/hooks/domain/summons/useSummonForm';
 
 interface SummonFormProps {
   type: SummonType;

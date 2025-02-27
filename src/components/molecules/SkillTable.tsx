@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WeaponSkillEffect, WeaponSkillTotal } from '@/types/models';
-import { useAutoResizeTextArea } from '@/hooks/ui/base/useAutoResizeTextArea';
+import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import { textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import {
   tableBaseStyle,

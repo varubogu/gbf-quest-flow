@@ -13,7 +13,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
-import { useAutoResizeTextArea } from '@/hooks/ui/base/useAutoResizeTextArea';
+import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 
 // アビリティ行コンポーネント
 const AbilityRow: React.FC<{
