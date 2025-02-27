@@ -5,14 +5,12 @@ import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
 import useBaseFlowStore from './baseFlowStore';
-import { adjustOrganizationData } from './organizationUtils';
+import { adjustOrganizationData } from '../services/organizationService';
 
 /**
  * @deprecated このモジュールは非推奨です。代わりに flowStoreFacade を使用してください。
  * このモジュールは将来のバージョンで削除される予定です。
  */
-
-// 注: adjustOrganizationData関数はorganizationUtilsに移行し、そこからインポートして使用する
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,

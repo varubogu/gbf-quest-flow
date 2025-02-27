@@ -2,7 +2,7 @@ import type { Flow, Action } from '@/types/models';
 import type { BaseFlowStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import useErrorStore from './errorStore';
-import { adjustOrganizationData } from './organizationUtils';
+import { adjustOrganizationData } from '../services/organizationService';
 
 /**
  * フロー状態の基本的な読み取り・更新機能を提供するストア

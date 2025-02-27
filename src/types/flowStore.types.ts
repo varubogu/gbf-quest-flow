@@ -29,11 +29,6 @@ export interface CursorStore {
   getCurrentRow: () => number;
 }
 
-// 組織データ管理のユーティリティ関数の型
-export interface OrganizationUtils {
-  adjustOrganizationData: (_organization: Flow['organization']) => Flow['organization'];
-}
-
 // 非推奨の履歴関連機能（後方互換性のため残す）
 export interface DeprecatedHistoryMethods {
   // @deprecated - historyStoreを直接使用してください

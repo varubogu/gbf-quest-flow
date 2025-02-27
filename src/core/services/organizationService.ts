@@ -1,11 +1,8 @@
 import type { Flow, Member, Summon, Weapon, Ability } from '@/types/models';
-import type { OrganizationUtils } from '@/types/flowStore.types';
-import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 
 /**
  * データの個数を設定に合わせて調整する関数（不足分のみ追加）
- * baseFlowStoreから移行
  */
 const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () => T): T[] => {
   if (array.length < targetLength) {
@@ -23,7 +20,6 @@ const adjustArrayLength = <T>(array: T[], targetLength: number, createEmpty: () 
 
 /**
  * 組織データを設定に合わせて調整する関数（既存データは保持）
- * baseFlowStoreから移行
  */
 export const adjustOrganizationData = (organization: Flow['organization']): Flow['organization'] => {
   const emptyMember = (): Member => ({
@@ -106,12 +102,3 @@ export const adjustOrganizationData = (organization: Flow['organization']): Flow
     },
   };
 };
-
-/**
- * 組織データの管理ユーティリティを提供するストア
- */
-const useOrganizationUtils = create<OrganizationUtils>(() => ({
-  adjustOrganizationData,
-}));
-
-export default useOrganizationUtils;
