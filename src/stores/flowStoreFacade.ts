@@ -1,10 +1,10 @@
 import type { Flow, Action } from '@/types/models';
-import type { FlowStore, BaseFlowStore, EditModeStore, FileOperationStore } from '@/types/flowStore.types';
+import type { FlowStore, BaseFlowStore, EditModeStore, FileOperationStore, CursorStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
-import useFlowStore from './flowStore';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useFileOperationStore from './fileOperationStore';
+import useCursorStore from './cursorStore';
 import useHistoryFacade, { type HistoryFacade } from '@/stores/historyFacade';
 
 /**
@@ -15,8 +15,6 @@ import useHistoryFacade, { type HistoryFacade } from '@/stores/historyFacade';
  * コンポーネント側の変更を最小限に抑えることができます。
  */
 const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
-  // 元のflowStoreへの参照を取得するためのヘルパー関数
-  const getOriginalStore = (): FlowStore => useFlowStore.getState();
   // 新しいbaseFlowStoreへの参照を取得するためのヘルパー関数
   const getBaseStore = (): BaseFlowStore => useBaseFlowStore.getState();
   // 新しいeditModeStoreへの参照を取得するためのヘルパー関数
@@ -25,21 +23,23 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getFileOperationStore = (): FileOperationStore => useFileOperationStore.getState();
   // 新しいhistoryFacadeへの参照を取得するためのヘルパー関数
   const getHistoryFacade = (): HistoryFacade => useHistoryFacade.getState();
+  // 新しいcursorStoreへの参照を取得するためのヘルパー関数
+  const getCursorStore = (): CursorStore => useCursorStore.getState();
 
   return {
     // 状態（プロパティ）- 元のflowStoreと同期
-    get flowData(): Flow | null { return getOriginalStore().flowData; },
-    get originalData(): Flow | null { return getOriginalStore().originalData; },
-    get currentRow(): number { return getOriginalStore().currentRow; },
+    get flowData(): Flow | null { return getBaseStore().flowData; },
+    get originalData(): Flow | null { return getBaseStore().originalData; },
+    get currentRow(): number { return getCursorStore().currentRow; },
     get isEditMode(): boolean { return getEditModeStore().isEditMode; },
 
     // BaseFlowStore関連のメソッド - baseFlowStoreから取得
     getFlowData: (): Flow | null => getBaseStore().getFlowData(),
     getActionById: (index: number): Action | undefined => getBaseStore().getActionById(index),
-    setFlowData: (data: Flow | null): void => getOriginalStore().setFlowData(data),
-    updateFlowData: (updates: Partial<Flow>): void => getOriginalStore().updateFlowData(updates),
+    setFlowData: (data: Flow | null): void => getBaseStore().setFlowData(data),
+    updateFlowData: (updates: Partial<Flow>): void => getBaseStore().updateFlowData(updates),
     updateAction: (index: number, updates: Partial<Action>): void =>
-      getOriginalStore().updateAction(index, updates),
+      getBaseStore().updateAction(index, updates),
 
     // EditModeStore関連のメソッド - editModeStoreから取得
     getIsEditMode: (): boolean => getEditModeStore().getIsEditMode(),
@@ -47,9 +47,9 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     cancelEdit: (): void => getEditModeStore().cancelEdit(),
     createNewFlow: (): void => getEditModeStore().createNewFlow(),
 
-    // CursorStore関連のメソッド
-    getCurrentRow: (): number => getOriginalStore().getCurrentRow(),
-    setCurrentRow: (row: number): void => getOriginalStore().setCurrentRow(row),
+    // CursorStore関連のメソッド - cursorStoreから取得
+    getCurrentRow: (): number => getCursorStore().getCurrentRow(),
+    setCurrentRow: (row: number): void => getCursorStore().setCurrentRow(row),
 
     // FileOperationStore関連のメソッド - fileOperationStoreから取得
     loadFlowFromFile: async (): Promise<void> => await getFileOperationStore().loadFlowFromFile(),
