@@ -2,7 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { SideMenu } from './SideMenu';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Flow } from '@/types/types';
-import { handleNewFlow } from '@/services/flowEventService';
+import { handleNewFlow } from '@/core/facades/flowEventService';
 import type { FlowStore } from '@/stores/flowStore';
 // モックの作成
 vi.mock('@/services/flowEventService', () => ({

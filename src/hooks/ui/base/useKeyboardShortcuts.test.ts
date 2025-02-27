@@ -63,7 +63,7 @@ describe('useKeyboardShortcuts', () => {
       window.dispatchEvent(event);
     });
 
-    const { handleFlowSave } = await import('@/services/flowEventService');
+    const { handleFlowSave } = await import('@/core/facades/flowEventService');
     expect(handleFlowSave).toHaveBeenCalledWith(
       mockFlowData,
       mockProps.sourceId,
@@ -84,7 +84,7 @@ describe('useKeyboardShortcuts', () => {
       window.dispatchEvent(event);
     });
 
-    const { handleNewFlow } = await import('@/services/flowEventService');
+    const { handleNewFlow } = await import('@/core/facades/flowEventService');
     expect(handleNewFlow).toHaveBeenCalledWith(mockFlowData);
   });
 

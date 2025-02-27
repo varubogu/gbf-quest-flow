@@ -10,7 +10,7 @@ import { useHistoryManagement } from '@/hooks/domain/flow/useHistoryManagement';
 import { useEditHistory } from '@/hooks/domain/flow/useEditHistory';
 import { useKeyboardShortcuts } from '@/hooks/ui/base/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/hooks/domain/flow/useFlowDataModification';
-import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/services/flowEventService';
+import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
 
 interface Props {
   initialData?: Flow | null;

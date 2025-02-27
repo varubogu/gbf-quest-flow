@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { Flow } from '@/types/models';
-import { handleFlowSave, handleNewFlow } from '@/services/flowEventService';
+import { handleFlowSave, handleNewFlow } from '@/core/facades/flowEventService';
 
 interface Props {
   isEditMode: boolean;
