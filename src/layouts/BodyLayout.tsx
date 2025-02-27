@@ -4,7 +4,7 @@ import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
 import type { Flow, ViewMode } from '@/types/models';
-import { announceToScreenReader, handleError } from '@/utils/accessibility';
+import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 import { useUrlManagement } from '@/hooks/domain/flow/useUrlManagement';
 import { useHistoryManagement } from '@/hooks/domain/flow/useHistoryManagement';
 import { useEditHistory } from '@/hooks/domain/flow/useEditHistory';

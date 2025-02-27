@@ -1,7 +1,7 @@
 import type { Flow } from '@/types/models';
-import { saveFlow, updateNewFlowState } from '@/utils/flowOperations';
+import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
 import useFlowStore from '@/stores/flowStore';
-import { announceToScreenReader, handleError } from '@/utils/accessibility';
+import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
 /**
  * フローの保存処理を実行する

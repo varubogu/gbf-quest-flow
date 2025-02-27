@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import type { Flow } from '@/types/models';
-import { handleError } from '@/utils/accessibility';
+import { handleError } from '@/lib/utils/accessibility';
 import useFlowStore from '@/stores/flowStore';
 import { handleFlowSave, handleNewFlow, handleCancel } from '@/services/flowEventService';
 import { useTranslation } from 'react-i18next';

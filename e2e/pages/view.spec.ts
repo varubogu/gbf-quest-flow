@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import sampleData from '../../src/content/flows/sample.json' assert { type: 'json' };
-import { expectMultiLineText } from '@/utils/tests/expectedFunction';
+import { expectMultiLineText } from '@/lib/utils/tests/expectedFunction';
 
 test.describe('行動表画面', () => {
 

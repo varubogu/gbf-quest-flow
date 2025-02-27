@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { Flow, ViewMode } from '@/types/models';
-import { handleError } from '@/utils/accessibility';
+import { handleError } from '@/lib/utils/accessibility';
 
 interface HistoryState {
   isSaving: boolean;

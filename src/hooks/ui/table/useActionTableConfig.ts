@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { ActionTableButtonPosition } from '@/types/models';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 
 interface ActionTableColumnConfig {
   [key: string]: {

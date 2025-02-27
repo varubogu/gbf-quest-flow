@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import type { Action } from '@/types/models';
 import type { Settings } from '@/types/settings';
 import { useActionCellError } from './useActionCellError';
-import { parseTabSeparatedText, convertToActions } from '@/utils/tableDataParser';
+import { parseTabSeparatedText, convertToActions } from '@/lib/utils/tableDataParser';
 
 export interface ActionCellEventProps {
   content: string;

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import type { Settings } from '@/types/settings';
 import { useTableCellError } from './useTableCellError';
-import { parseTabSeparatedText } from '@/utils/tableDataParser';
-import { convertToItems } from '@/utils/tableDataUtils';
+import { parseTabSeparatedText } from '@/lib/utils/tableDataParser';
+import { convertToItems } from '@/lib/utils/tableDataUtils';
 
 interface TableCellEventProps {
   content: string;

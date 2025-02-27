@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import type { TextVariant } from '@/types/types';
 
 interface StateStyleProps {

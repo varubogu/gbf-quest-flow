@@ -4,7 +4,7 @@ import type {
   ActionTableColumn,
   ActionTableCellPosition,
 } from '@/types/models';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 
 interface UseActionTableStylesProps {
   config: ActionTableConfig;

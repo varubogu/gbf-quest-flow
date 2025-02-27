@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createButtonText } from '../utils/const';
-import { expectMultiLineText } from '@/utils/tests/expectedFunction';
+import { expectMultiLineText } from '@/lib/utils/tests/expectedFunction';
 
 test.describe('新規作成画面', () => {
   test.beforeEach(async ({ page }) => {

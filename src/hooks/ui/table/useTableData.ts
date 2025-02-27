@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { Action } from '@/types/models';
-import { createEmptyRow } from '@/utils/tableDataUtils';
+import { createEmptyRow } from '@/lib/utils/tableDataUtils';
 
 interface UseTableDataProps {
   initialData: Action[];

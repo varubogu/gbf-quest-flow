@@ -98,7 +98,7 @@ describe('flowEventService', () => {
 
   describe('handleFlowSave', () => {
     it('保存が成功したら履歴をクリアして編集モードを終了する', async () => {
-      const { saveFlow } = await import('@/utils/flowOperations');
+      const { saveFlow } = await import('@/lib/utils/flowOperations');
       const result = await handleFlowSave(mockFlowData, mockSourceId, mockClearHistory);
 
       expect(saveFlow).toHaveBeenCalledWith(mockFlowData, mockSourceId);
@@ -108,7 +108,7 @@ describe('flowEventService', () => {
     });
 
     it('保存が失敗したら履歴をクリアせず編集モードも変更しない', async () => {
-      const { saveFlow } = await import('@/utils/flowOperations');
+      const { saveFlow } = await import('@/lib/utils/flowOperations');
       vi.mocked(saveFlow).mockResolvedValueOnce(false);
 
       const result = await handleFlowSave(mockFlowData, mockSourceId, mockClearHistory);
@@ -122,7 +122,7 @@ describe('flowEventService', () => {
 
   describe('handleNewFlow', () => {
     it('新規フローを作成してURL状態を更新する', async () => {
-      const { updateNewFlowState } = await import('@/utils/flowOperations');
+      const { updateNewFlowState } = await import('@/lib/utils/flowOperations');
 
       handleNewFlow(mockFlowData);
 
@@ -131,7 +131,7 @@ describe('flowEventService', () => {
     });
 
     it('flowDataがnullでも処理を実行できる', async () => {
-      const { updateNewFlowState } = await import('@/utils/flowOperations');
+      const { updateNewFlowState } = await import('@/lib/utils/flowOperations');
 
       handleNewFlow(null);
 

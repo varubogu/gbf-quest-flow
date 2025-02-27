@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from './Button';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import type { LucideIcon } from 'lucide-react';
 import type { ButtonVariant, IconPosition } from '@/types/types';
 

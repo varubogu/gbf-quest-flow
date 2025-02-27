@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Member, CharacterPosition } from '@/types/types';
-import { updateMemberField } from '@/utils/characters/calculations';
+import { updateMemberField } from '@/lib/utils/characters/calculations';
 
 interface UseCharacterFormResult {
   handleMemberChange: (

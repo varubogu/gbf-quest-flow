@@ -1,5 +1,5 @@
 import type { Flow } from '@/types/models';
-import { announceToScreenReader, handleError } from '@/utils/accessibility';
+import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
 /**
  * フローデータを保存する

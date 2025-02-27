@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import useFlowStore from '@/stores/flowStore';
 import type { Summon, SummonType } from '@/types/types';
-import { updateSummonField, updateSummonArrayField } from '@/utils/summons/calculations';
+import { updateSummonField, updateSummonArrayField } from '@/lib/utils/summons/calculations';
 
 interface UseSummonFormResult {
   handleChange: (

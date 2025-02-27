@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import { Text } from '../atoms/Text';
 import type { Action, TableAlignment } from '@/types/types';
 import useSettingsStore from '@/stores/settingsStore';

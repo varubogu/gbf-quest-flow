@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { cn } from '@/utils/cn';
+import { cn } from '@/lib/utils/cn';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import type { TableAlignment } from '@/types/types';
 
