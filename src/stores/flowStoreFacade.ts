@@ -1,9 +1,10 @@
 import type { Flow, Action } from '@/types/models';
-import type { FlowStore, BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
+import type { FlowStore, BaseFlowStore, EditModeStore, FileOperationStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import useFlowStore from './flowStore';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
+import useFileOperationStore from './fileOperationStore';
 
 /**
  * フローストアのファサード
@@ -19,6 +20,8 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getBaseStore = (): BaseFlowStore => useBaseFlowStore.getState();
   // 新しいeditModeStoreへの参照を取得するためのヘルパー関数
   const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
+  // 新しいfileOperationStoreへの参照を取得するためのヘルパー関数
+  const getFileOperationStore = (): FileOperationStore => useFileOperationStore.getState();
 
   return {
     // 状態（プロパティ）- 元のflowStoreと同期
@@ -45,10 +48,10 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     getCurrentRow: (): number => getOriginalStore().getCurrentRow(),
     setCurrentRow: (row: number): void => getOriginalStore().setCurrentRow(row),
 
-    // FileOperationStore関連のメソッド
-    loadFlowFromFile: async (): Promise<void> => await getOriginalStore().loadFlowFromFile(),
+    // FileOperationStore関連のメソッド - fileOperationStoreから取得
+    loadFlowFromFile: async (): Promise<void> => await getFileOperationStore().loadFlowFromFile(),
     saveFlowToFile: async (fileName?: string): Promise<void> =>
-      await getOriginalStore().saveFlowToFile(fileName),
+      await getFileOperationStore().saveFlowToFile(fileName),
 
     // 非推奨の履歴関連メソッド - 元のflowStoreに委譲
     pushToHistory: (data: Flow): void => getOriginalStore().pushToHistory(data),
