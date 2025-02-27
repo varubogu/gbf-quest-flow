@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 /// <reference types="@testing-library/jest-dom" />
 import { beforeAll, afterEach, afterAll, vi, expect } from 'vitest';
-import { server } from '../mocks/server';
+import { server } from './mocks/server';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
 
