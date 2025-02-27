@@ -4,9 +4,10 @@ import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
-import useBaseFlowStore, { adjustOrganizationData } from './baseFlowStore';
+import useBaseFlowStore from './baseFlowStore';
+import { adjustOrganizationData } from './organizationUtils';
 
-// 注: adjustOrganizationData関数はbaseFlowStoreに移行し、そこからインポートして使用する
+// 注: adjustOrganizationData関数はorganizationUtilsに移行し、そこからインポートして使用する
 
 const useFlowStore = create<FlowStore>((set, get) => ({
   flowData: null,
