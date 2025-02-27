@@ -21,11 +21,6 @@ export interface EditModeStore {
   createNewFlow: () => void;
 }
 
-// ファイル操作関連
-export interface FileOperationStore {
-  loadFlowFromFile: () => Promise<void>;
-  saveFlowToFile: (_fileName?: string) => Promise<void>;
-}
 
 // カーソル位置管理
 export interface CursorStore {
@@ -55,6 +50,5 @@ export interface DeprecatedHistoryMethods {
 export interface FlowStore extends
   BaseFlowStore,
   EditModeStore,
-  FileOperationStore,
   CursorStore,
   DeprecatedHistoryMethods {}

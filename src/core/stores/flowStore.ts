@@ -287,7 +287,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに fileOperationStore.loadFlowFromFile を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに fileOService.loadFlowFromFile を使用してください。
    */
   loadFlowFromFile: async (): Promise<void> => {
     try {
@@ -399,7 +399,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   getCurrentRow: (): number => get().currentRow,
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに fileOperationStore.saveFlowToFile を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに fileOService.saveFlowToFile を使用してください。
    */
   saveFlowToFile: async (fileName?: string): Promise<void> => {
     try {

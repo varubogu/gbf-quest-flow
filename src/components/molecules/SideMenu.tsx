@@ -15,7 +15,7 @@ import {
   downloadFlow,
   getDownloadFilename,
   showNoDataAlert,
-} from '@/lib/utils/FileOperations';
+} from '@/core/facades/FileOperations';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import type { Flow, MenuView } from '@/types/types';
