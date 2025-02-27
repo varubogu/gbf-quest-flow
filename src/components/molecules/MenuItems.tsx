@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
 import type { JSX } from 'react';
 
 export interface MenuItem {
@@ -28,8 +28,8 @@ interface MenuItemsProps {
 
 export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state) => state.flowData);
-  const isEditMode = useFlowStore((state) => state.isEditMode);
+  const flowData = useFlowStoreFacade((state) => state.flowData);
+  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
 
   const menuItems: MenuItem[] = [
     { id: 'new', label: t('newData') as string, icon: FileText },
@@ -52,6 +52,8 @@ export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): J
     { id: 'options', label: t('options') as string, icon: Settings },
     { id: 'help', label: t('help') as string, icon: HelpCircle },
   ];
+
+  console.log('MenuItems: レンダリングします', 'メニュー項目数:', menuItems.length);
 
   return (
     <div className="mt-4 flex flex-col gap-2">

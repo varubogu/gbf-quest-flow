@@ -15,7 +15,7 @@ import type { Flow } from '@/types/models';
 interface Props {
   flowData: Flow;
   isEditMode: boolean;
-  onSave: () => void;
+  onSave: () => Promise<boolean>;
   onNew: () => void;
   onTitleChange: (_e: React.ChangeEvent<HTMLInputElement>) => void;
   onAlwaysChange: (_e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -50,6 +50,11 @@ export function FlowLayout({
     const targetSize = isMemoCollapsed ? lastMemoSize : 0;
     memoPanelRef.current.resize(targetSize);
   }, [isMemoCollapsed, lastMemoSize]);
+
+  // タイトルの変更を監視
+  React.useEffect(() => {
+    document.title = `${flowData.title || 'Untitled Flow'} - GBF Quest Flow`;
+  }, [flowData.title]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

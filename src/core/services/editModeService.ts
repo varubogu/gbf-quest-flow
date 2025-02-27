@@ -1,6 +1,7 @@
 import type { Flow } from '@/types/models';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { clearHistory } from './historyService';
 
 /**
@@ -26,6 +27,13 @@ function syncWithBaseFlowStore(data: Flow | null): void {
   useBaseFlowStore.getState().setFlowData(data);
 }
 
+// ロジック関数 - flowStoreとの同期処理（後方互換性のため）
+function syncWithFlowStore(data: Flow | null): void {
+  if (data) {
+    useFlowStore.getState().setFlowData(data);
+  }
+}
+
 // ロジック関数 - 編集キャンセル時の処理
 export function handleCancelEdit(originalData: Flow): { flowData: Flow; isEditMode: boolean; originalData: null } {
   // 編集をキャンセルして元のデータに戻す
@@ -33,6 +41,9 @@ export function handleCancelEdit(originalData: Flow): { flowData: Flow; isEditMo
 
   // baseFlowStoreも同期
   syncWithBaseFlowStore(clonedData);
+
+  // 旧flowStoreも同期（後方互換性のため）
+  syncWithFlowStore(clonedData);
 
   // 履歴をクリア
   clearHistory();
@@ -55,12 +66,18 @@ export function setIsEditMode(isEdit: boolean): void {
     // 編集モード開始時の処理
     const updates = handleEditModeStart(flowData);
     useBaseFlowStore.setState({ originalData: updates.originalData });
+
+    // 旧flowStoreも更新（後方互換性のため）
+    useFlowStore.getState().setIsEditMode(isEdit);
   }
 
   if (!isEdit) {
     // 編集モード終了時の処理
     handleEditModeEnd();
     useBaseFlowStore.setState({ originalData: null });
+
+    // 旧flowStoreも更新（後方互換性のため）
+    useFlowStore.getState().setIsEditMode(isEdit);
   }
 
   useEditModeStore.setState({ isEditMode: isEdit });
@@ -74,5 +91,8 @@ export function cancelEdit(): void {
     const updates = handleCancelEdit(originalData);
     useBaseFlowStore.setState({ flowData: updates.flowData, originalData: updates.originalData });
     useEditModeStore.setState({ isEditMode: updates.isEditMode });
+
+    // 旧flowStoreも更新（後方互換性のため）
+    useFlowStore.getState().cancelEdit();
   }
 }

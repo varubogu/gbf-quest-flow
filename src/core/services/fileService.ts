@@ -2,10 +2,16 @@ import organizationSettings from '@/content/settings/organization.json';
 import type { Flow } from '@/types/models';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import useHistoryStore from '../stores/historyStore';
 import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
 import useFlowStore from '../stores/flowStore';
+import { clearHistory } from './historyService';
+
+/**
+ * ファイル操作関連のサービス
+ *
+ * このサービスは、ファイルの読み込みや保存に関する機能を提供します。
+ */
 
 // エラーハンドリング関数を直接実装
 function handleError(error: unknown, defaultMessage: string): void {
@@ -17,43 +23,48 @@ function handleError(error: unknown, defaultMessage: string): void {
 }
 
 export async function newFlowData(): Promise<void> {
-  // 空のデータを作成
-  const newData: Flow = newEmptyData();
+  try {
+    // 新しいデータを作成
+    const newData = newEmptyData();
 
-  // 現在の状態を取得
-  const dataState = useBaseFlowStore.getState();
-  useBaseFlowStore.setState({
-    flowData: newData,
-    originalData: dataState.flowData || null, // 現在のデータをoriginalDataとして保持
-  });
+    // 履歴をクリア
+    clearHistory();
 
-  // 旧flowStoreも更新（後方互換性のため）
-  const oldDataState = useFlowStore.getState();
-  useFlowStore.setState({
-    flowData: newData,
-    originalData: oldDataState.flowData || null,
-    currentRow: 0,
-    isEditMode: true
-  });
+    // カーソル位置をリセット
+    useCursorStore.getState().setCurrentRow(0);
 
-  // historyStoreの履歴をクリア
-  useHistoryStore.getState().clearHistory();
+    // 編集モードを設定
+    useEditModeStore.setState({ isEditMode: true });
 
-  // 編集モードをオンにする
-  useEditModeStore.setState({
-    isEditMode: true,
-  });
+    // baseFlowStoreを更新
+    useBaseFlowStore.setState({
+      flowData: newData,
+      originalData: null, // 新規作成時はoriginalDataはnull
+    });
 
-  // 更新後の状態を確認
-  const updatedState = useBaseFlowStore.getState();
-  const editState = useEditModeStore.getState();
-  if (!updatedState.flowData || !editState.isEditMode) {
-    console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
+    // 旧flowStoreも更新（後方互換性のため）
+    useFlowStore.setState({
+      flowData: newData,
+      originalData: null,
+      currentRow: 0,
+      isEditMode: true
+    });
+
+    // 更新後の状態を確認
+    const updatedState = useBaseFlowStore.getState();
+    const editState = useEditModeStore.getState();
+    if (!updatedState.flowData || !editState.isEditMode) {
+      console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
+    }
+
+    console.log('新しいフローデータが作成されました:', newData);
+    console.log('baseFlowStoreが更新されました:', useBaseFlowStore.getState().flowData);
+    console.log('旧flowStoreも更新されました:', useFlowStore.getState().flowData);
+  } catch (error) {
+    console.error('新規フロー作成エラー:', error);
+    handleError(error, '新規フローの作成中にエラーが発生しました');
+    throw error;
   }
-
-  console.log('新しいフローデータが作成されました:', newData);
-  console.log('baseFlowStoreが更新されました:', useBaseFlowStore.getState().flowData);
-  console.log('旧flowStoreも更新されました:', useFlowStore.getState().flowData);
 }
 
 /**
@@ -61,36 +72,32 @@ export async function newFlowData(): Promise<void> {
  */
 export async function loadFlowFromFile(): Promise<void> {
   try {
-    // ファイル選択処理
+    // ファイル選択ダイアログを表示
     const file = await selectFile();
     if (!file) {
-      console.log('ファイルが選択されませんでした');
+      console.log('ファイル選択がキャンセルされました');
       return;
     }
 
-    console.log('ファイルが選択されました:', file.name);
-
-    // ファイル読み込み処理
+    // ファイルからJSONを読み込む
     const data = await readJsonFile(file);
-    console.log('ファイルからデータを読み込みました:', data);
-
-    // 編集モードをリセット（先に行う）
-    useEditModeStore.setState({
-      isEditMode: false
-    });
-
-    // カーソル位置をリセット
-    useCursorStore.setState({
-      currentRow: 0
-    });
+    if (!data) {
+      throw new Error('ファイルからデータを読み込めませんでした');
+    }
 
     // 履歴をクリア
-    useHistoryStore.getState().clearHistory();
+    clearHistory();
+
+    // カーソル位置をリセット
+    useCursorStore.getState().setCurrentRow(0);
+
+    // 編集モードをリセット
+    useEditModeStore.setState({ isEditMode: false });
 
     // baseFlowStoreを更新
     useBaseFlowStore.setState({
       flowData: data,
-      originalData: null
+      originalData: null,
     });
 
     // 旧flowStoreも更新（後方互換性のため）
@@ -101,24 +108,28 @@ export async function loadFlowFromFile(): Promise<void> {
       isEditMode: false
     });
 
-    console.log('ストアが更新されました:', useBaseFlowStore.getState().flowData);
-    console.log('旧ストアも更新されました:', useFlowStore.getState().flowData);
+    // 更新後の状態を確認
+    const updatedState = useBaseFlowStore.getState();
+    if (!updatedState.flowData) {
+      console.error('loadFlowFromFile: 状態の更新に失敗しました', updatedState);
+    }
 
-    // 強制的に状態変更を通知するため、少し遅延させて再度状態を更新
-    setTimeout(() => {
-      const currentData = useBaseFlowStore.getState().flowData;
-      if (currentData) {
-        useBaseFlowStore.setState({ flowData: { ...currentData } });
-        useFlowStore.setState({ flowData: { ...currentData } });
-        console.log('状態更新を再通知しました');
-      }
-    }, 100);
+    console.log('ファイルからフローデータを読み込みました:', data.title);
+    console.log('baseFlowStoreが更新されました:', useBaseFlowStore.getState().flowData);
+    console.log('旧flowStoreも更新されました:', useFlowStore.getState().flowData);
+
+    // URLを更新
+    history.pushState(
+      { isSaving: false, flowData: data },
+      '',
+      `${window.location.pathname}?mode=view`
+    );
   } catch (error) {
     console.error('ファイル読み込みエラー:', error);
     handleError(error, 'ファイルの読み込み中にエラーが発生しました');
     throw error;
   }
-};
+}
 
 /**
  * 現在のフローデータをJSONファイルとして保存

@@ -5,6 +5,8 @@ import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import { clearHistory } from '@/core/services/historyService';
 import useBaseFlowStore from './baseFlowStore';
+import useFlowStore from './flowStore';
+import useCursorStore from './cursorStore';
 
 /**
  * 編集モードの状態管理を行うストア
@@ -24,12 +26,18 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
       if (isEdit && flowData) {
         // 編集モード開始時に現在のデータをbaseFlowStoreのoriginalDataとして保存
         useBaseFlowStore.setState({ originalData: structuredClone(flowData) });
+
+        // 旧flowStoreも更新（後方互換性のため）
+        useFlowStore.getState().setIsEditMode(isEdit);
       }
 
       if (!isEdit) {
         // 編集モード終了時に履歴をクリア
         clearHistory();
         useBaseFlowStore.setState({ originalData: null });
+
+        // 旧flowStoreも更新（後方互換性のため）
+        useFlowStore.getState().setIsEditMode(isEdit);
       }
 
       set({ isEditMode: isEdit });
@@ -54,6 +62,9 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
           flowData: structuredClone(originalData),
           originalData: null
         });
+
+        // 旧flowStoreも更新（後方互換性のため）
+        useFlowStore.getState().cancelEdit();
 
         // 履歴をクリア
         clearHistory();
@@ -183,8 +194,13 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
         originalData: currentFlowData,
       });
 
+      // 旧flowStoreも更新（後方互換性のため）
+      useFlowStore.getState().createNewFlow();
+
       // カーソル位置をリセット
-      // ※注: cursorStoreが実装されたらここでcursorStoreを更新する
+      useCursorStore.setState({
+        currentRow: 0
+      });
 
     } catch (error) {
       useErrorStore

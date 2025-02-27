@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
 import useSettingsStore from '@/core/stores/settingsStore';
 import { undo, redo } from '@/core/facades/historyFacade';
 
@@ -14,8 +14,8 @@ export const TableContainer: React.FC<TableContainerProps> = ({
   isEditMode = false,
   data,
 }) => {
-  const { currentRow, setCurrentRow } = useFlowStore();
-  const { flowData, setFlowData } = useFlowStore();
+  const { currentRow, setCurrentRow } = useFlowStoreFacade();
+  const { flowData, setFlowData } = useFlowStoreFacade();
   const { settings } = useSettingsStore();
 
   // キーボードイベントのハンドラを追加

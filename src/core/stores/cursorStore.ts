@@ -1,5 +1,6 @@
 import type { CursorStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
+import useFlowStore from './flowStore';
 
 /**
  * カーソル位置管理用のストア
@@ -10,7 +11,12 @@ const useCursorStore = create<CursorStore>((set, get) => ({
   currentRow: 0,
 
   // メソッド
-  setCurrentRow: (row: number): void => set({ currentRow: row }),
+  setCurrentRow: (row: number): void => {
+    set({ currentRow: row });
+
+    // 旧flowStoreも更新（後方互換性のため）
+    useFlowStore.getState().setCurrentRow(row);
+  },
   getCurrentRow: (): number => get().currentRow,
 }));
 

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { Flow } from '@/types/models';
 import { handleError } from '@/lib/utils/accessibility';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
 import { handleFlowSave, handleNewFlow, handleCancel } from '@/core/facades/flowEventService';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,7 @@ export const useFlowDataModification = ({
   hasChanges = false,
 }: UseFlowDataModificationProps): UseFlowDataModificationResult => {
   const { t } = useTranslation();
-  const setFlowData = useFlowStore((state) => state.setFlowData);
+  const updateFlowData = useFlowStoreFacade((state) => state.updateFlowData);
 
   // データ変更のハンドラー
   const handleTitleChange = useCallback(
@@ -43,15 +43,15 @@ export const useFlowDataModification = ({
           ...flowData,
           title: e.target.value,
         };
-        // 1. データの更新
-        setFlowData(newData);
+        // 1. データの更新（両方のストアを更新）
+        updateFlowData({ title: e.target.value });
         // 2. 変更の記録
         recordChange(newData);
       } catch (error) {
         handleError(error, 'タイトル更新中');
       }
     },
-    [flowData, setFlowData, recordChange]
+    [flowData, updateFlowData, recordChange]
   );
 
   const handleAlwaysChange = useCallback(
@@ -62,15 +62,15 @@ export const useFlowDataModification = ({
           ...flowData,
           always: e.target.value,
         };
-        // 1. データの更新
-        setFlowData(newData);
+        // 1. データの更新（両方のストアを更新）
+        updateFlowData({ always: e.target.value });
         // 2. 変更の記録
         recordChange(newData);
       } catch (error) {
         handleError(error, '常時実行項目更新中');
       }
     },
-    [flowData, setFlowData, recordChange]
+    [flowData, updateFlowData, recordChange]
   );
 
   // 変更破棄の確認
