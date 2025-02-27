@@ -229,7 +229,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに historyFacade.pushToHistory を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに historyService.pushToHistory を使用してください。
    */
   pushToHistory: (data: Flow): void => {
     // historyStoreに委譲
@@ -238,7 +238,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに historyFacade.undo を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに historyService.undo を使用してください。
    */
   undo: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
@@ -246,7 +246,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに historyFacade.redo を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに historyService.redo を使用してください。
    */
   redo: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
@@ -254,7 +254,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   },
 
   /**
-   * @deprecated このメソッドは非推奨です。代わりに historyFacade.clearHistory を使用してください。
+   * @deprecated このメソッドは非推奨です。代わりに historyService.clearHistory を使用してください。
    */
   clearHistory: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください

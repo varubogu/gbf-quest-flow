@@ -3,7 +3,7 @@ import type { EditModeStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
-import useHistoryFacade from './historyFacade';
+import { clearHistory } from '@/core/services/historyService';
 import useBaseFlowStore from './baseFlowStore';
 
 /**
@@ -28,7 +28,7 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
 
       if (!isEdit) {
         // 編集モード終了時に履歴をクリア
-        useHistoryFacade.getState().clearHistory();
+        clearHistory();
         useBaseFlowStore.setState({ originalData: null });
       }
 
@@ -56,7 +56,7 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
         });
 
         // 履歴をクリア
-        useHistoryFacade.getState().clearHistory();
+        clearHistory();
 
         // 履歴を戻る（popstateイベントが発火してデータが復元される）
         history.back();
@@ -171,8 +171,8 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
       // 現在のデータをoriginalDataとして保持
       const currentFlowData = useBaseFlowStore.getState().getFlowData();
 
-      // historyFacadeの履歴をクリア
-      useHistoryFacade.getState().clearHistory();
+      // historyServiceの履歴をクリア
+      clearHistory();
 
       // 編集モードをオンにする
       set({ isEditMode: true });

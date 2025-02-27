@@ -8,21 +8,21 @@
 import useFlowStore from './flowStoreFacade';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
-import useHistoryFacade from './historyFacade';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useCursorStore from './cursorStore';
 import useFlowStoreFacade from './flowStoreFacade';
 import useSettingsStore from './settingsStore';
 
+
 export {
   useFlowStore,
   useErrorStore,
   useHistoryStore,
-  useHistoryFacade,
   useBaseFlowStore,
   useEditModeStore,  // 新規追加
   useCursorStore, // 新規追加
   useFlowStoreFacade,
   useSettingsStore,
+
 };

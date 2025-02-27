@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useCursorStore from './cursorStore';
-import useHistoryFacade, { type HistoryFacade } from '@/core/stores/historyFacade';
+import { pushToHistory, undo, redo, clearHistory } from '@/core/services/historyService';
 import { saveFlowToFile, loadFlowFromFile } from '../services/fileService';
 
 /**
@@ -19,8 +19,8 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
   const getBaseStore = (): BaseFlowStore => useBaseFlowStore.getState();
   // 新しいeditModeStoreへの参照を取得するためのヘルパー関数
   const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
-  // 新しいhistoryFacadeへの参照を取得するためのヘルパー関数
-  const getHistoryFacade = (): HistoryFacade => useHistoryFacade.getState();
+  // 新しいhistoryServiceへの参照を取得するためのヘルパー関数
+  const getHistoryService = () => ({ pushToHistory, undo, redo, clearHistory });
   // 新しいcursorStoreへの参照を取得するためのヘルパー関数
   const getCursorStore = (): CursorStore => useCursorStore.getState();
 
@@ -54,22 +54,22 @@ const useFlowStoreFacade = create<FlowStore>((_set, _get) => {
     saveFlowToFile: async (fileName?: string): Promise<void> =>
       await saveFlowToFile(fileName),
 
-    // 非推奨の履歴関連メソッド - historyFacadeに委譲
+    // 非推奨の履歴関連メソッド - historyServiceに委譲
     pushToHistory: (data: Flow): void => {
-      console.warn('flowStoreFacade.pushToHistory() is deprecated. Use historyFacade instead.');
-      getHistoryFacade().pushToHistory(data);
+      console.warn('flowStoreFacade.pushToHistory() is deprecated. Use historyService instead.');
+      getHistoryService().pushToHistory(data);
     },
     undo: (): void => {
-      console.warn('flowStoreFacade.undo() is deprecated. Use historyFacade instead.');
-      getHistoryFacade().undo();
+      console.warn('flowStoreFacade.undo() is deprecated. Use historyService instead.');
+      getHistoryService().undo();
     },
     redo: (): void => {
-      console.warn('flowStoreFacade.redo() is deprecated. Use historyFacade instead.');
-      getHistoryFacade().redo();
+      console.warn('flowStoreFacade.redo() is deprecated. Use historyService instead.');
+      getHistoryService().redo();
     },
     clearHistory: (): void => {
-      console.warn('flowStoreFacade.clearHistory() is deprecated. Use historyFacade instead.');
-      getHistoryFacade().clearHistory();
+      console.warn('flowStoreFacade.clearHistory() is deprecated. Use historyService instead.');
+      getHistoryService().clearHistory();
     },
   };
 });

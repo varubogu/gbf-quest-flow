@@ -230,3 +230,7 @@ export interface ActionTableConfig {
   clickType: ClickType;
 }
 
+export interface HistoryState {
+  past: Flow[];
+  future: Flow[];
+}

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import useFlowStore from './flowStore';
 import useHistoryStore from './historyStore';
-import useHistoryFacade from './historyFacade';
 import organizationSettings from '@/content/settings/organization.json';
 
 // 状態が更新されるのを待つヘルパー関数
@@ -47,7 +46,7 @@ describe('FlowStore', () => {
       });
 
       const updatedStore = useFlowStore.getState();
-      const historyState = useHistoryFacade.getState().getHistoryState();
+      const historyState = useHistoryStore.getState().getHistoryState();
 
       expect(updatedStore.flowData, 'createNewFlow後もflowDataがnullです').toBeTruthy();
       expect(updatedStore.isEditMode, '編集モードがtrueになっていません').toBe(true);
@@ -78,7 +77,7 @@ describe('FlowStore', () => {
       });
 
       const updatedStore = useFlowStore.getState();
-      const historyState = useHistoryFacade.getState().getHistoryState();
+      const historyState = useHistoryStore.getState().getHistoryState();
 
       expect(updatedStore.currentRow).toBe(0);
       expect(updatedStore.isEditMode, 'isEditModeがtrueになっていません').toBe(true);
@@ -122,7 +121,7 @@ describe('FlowStore', () => {
       });
 
       const finalState = useFlowStore.getState();
-      const historyState = useHistoryFacade.getState().getHistoryState();
+      const historyState = useHistoryStore.getState().getHistoryState();
       expect(finalState.isEditMode).toBe(false);
       expect(finalState.originalData).toBeNull();
       expect(historyState.past).toHaveLength(0);
@@ -180,7 +179,7 @@ describe('FlowStore', () => {
 
       await waitForState(() => {
         const state = useFlowStore.getState();
-        const historyState = useHistoryFacade.getState().getHistoryState();
+        const historyState = useHistoryStore.getState().getHistoryState();
         return state.flowData?.title === '変更後のタイトル' && historyState.past.length === 1;
       }, 15000);
 
@@ -188,12 +187,12 @@ describe('FlowStore', () => {
 
       await waitForState(() => {
         const state = useFlowStore.getState();
-        const historyState = useHistoryFacade.getState().getHistoryState();
+        const historyState = useHistoryStore.getState().getHistoryState();
         return state.flowData?.title === '変更前のタイトル' && historyState.future.length === 1;
       }, 15000);
 
       const stateAfterUndo = useFlowStore.getState();
-      const historyStateAfterUndo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterUndo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterUndo.flowData?.title).toBe('変更前のタイトル');
       expect(historyStateAfterUndo.past).toHaveLength(1);
       expect(historyStateAfterUndo.future).toHaveLength(1);
@@ -205,7 +204,7 @@ describe('FlowStore', () => {
       }, 15000);
 
       const stateAfterRedo = useFlowStore.getState();
-      const historyStateAfterRedo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterRedo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterRedo.flowData?.title).toBe('変更後のタイトル');
       expect(historyStateAfterRedo.past).toHaveLength(2);
       expect(historyStateAfterRedo.future).toHaveLength(0);
@@ -234,7 +233,7 @@ describe('FlowStore', () => {
       }
 
       const stateAfterUpdates = useFlowStore.getState();
-      const historyStateAfterUpdates = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterUpdates = useHistoryStore.getState().getHistoryState();
       expect(stateAfterUpdates.flowData?.title).toBe(titles[2]);
       expect(historyStateAfterUpdates.past).toHaveLength(3);
       expect(historyStateAfterUpdates.future).toHaveLength(0);
@@ -245,7 +244,7 @@ describe('FlowStore', () => {
       }, 15000);
 
       const stateAfterFirstUndo = useFlowStore.getState();
-      const historyStateAfterFirstUndo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterFirstUndo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterFirstUndo.flowData?.title).toBe(titles[1]);
       expect(historyStateAfterFirstUndo.past).toHaveLength(2);
       expect(historyStateAfterFirstUndo.future).toHaveLength(1);
@@ -256,7 +255,7 @@ describe('FlowStore', () => {
       }, 15000);
 
       const stateAfterSecondUndo = useFlowStore.getState();
-      const historyStateAfterSecondUndo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterSecondUndo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterSecondUndo.flowData?.title).toBe(titles[0]);
       expect(historyStateAfterSecondUndo.past).toHaveLength(1);
       expect(historyStateAfterSecondUndo.future).toHaveLength(2);
@@ -267,7 +266,7 @@ describe('FlowStore', () => {
       }, 15000);
 
       const stateAfterFirstRedo = useFlowStore.getState();
-      const historyStateAfterFirstRedo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterFirstRedo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterFirstRedo.flowData?.title).toBe(titles[1]);
       expect(historyStateAfterFirstRedo.past).toHaveLength(2);
       expect(historyStateAfterFirstRedo.future).toHaveLength(1);
@@ -278,7 +277,7 @@ describe('FlowStore', () => {
       }, 15000);
 
       const stateAfterSecondRedo = useFlowStore.getState();
-      const historyStateAfterSecondRedo = useHistoryFacade.getState().getHistoryState();
+      const historyStateAfterSecondRedo = useHistoryStore.getState().getHistoryState();
       expect(stateAfterSecondRedo.flowData?.title).toBe(titles[2]);
       expect(historyStateAfterSecondRedo.past).toHaveLength(3);
       expect(historyStateAfterSecondRedo.future).toHaveLength(0);

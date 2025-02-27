@@ -13,6 +13,7 @@ export type {
   ButtonAlignment,
   ClickType,
   Flow,
+  HistoryState,
   IconPosition,
   ItemBase,
   Job,
