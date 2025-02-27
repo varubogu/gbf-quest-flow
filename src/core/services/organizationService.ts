@@ -47,7 +47,8 @@ export const adjustOrganizationData = (organization: Flow['organization']): Flow
   });
 
   // 設定値と実際のデータ数の大きい方を使用
-  const getTargetLength = (current: number, setting: number): number => Math.max(current, setting);
+  const getTargetLength = (current: number, setting: number): number =>
+     Math.max(current, setting);
 
   return {
     ...organization,

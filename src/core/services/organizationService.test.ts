@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import useOrganizationUtils, { adjustOrganizationData } from './organizationUtils';
+import { describe, it, expect } from 'vitest';
 import organizationSettings from '@/content/settings/organization.json';
 import type { Flow, Member, Weapon, Summon, Ability } from '@/types/models';
-import { adjustOrganizationData as newAdjustOrganizationData } from './organizationService';
+import { adjustOrganizationData, adjustOrganizationData as newAdjustOrganizationData } from './organizationService';
 
-describe('OrganizationUtils', () => {
+describe('organizationService', () => {
   // 基本的なテスト用の組織データを作成
   const createEmptyOrganization = (): Flow['organization'] => ({
     job: {
