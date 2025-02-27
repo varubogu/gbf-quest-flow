@@ -2,14 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import useFileOperationStore from '@/stores/fileOperationStore';
 import useBaseFlowStore from '@/stores/baseFlowStore';
 import useErrorStore from '@/stores/errorStore';
-import type { BaseFlowStore } from '@/types/flowStore.types';
 
 // vi.mockを使用してモジュールをモックする
 vi.mock('@/stores/baseFlowStore', () => {
-  const mockGetFlowData = vi.fn().mockReturnValue({
+  const mockGetFlowData = vi.fn().mockImplementation(() => ({
     title: 'テストフロー',
     flow: [],
-  });
+  }));
   return {
     default: {
       getState: vi.fn().mockReturnValue({
@@ -95,9 +94,16 @@ describe('FileOperationStore', () => {
 
     it('データがない場合はエラーを表示する', async () => {
       // データがnullの場合をシミュレート
-      const baseFlowStore = useBaseFlowStore.getState() as BaseFlowStore;
-      // eslint-disable-next-line
-      baseFlowStore.getFlowData.mockReturnValue(null);
+      const mockGetFlowData = vi.fn().mockImplementation(() => null);
+      vi.spyOn(useBaseFlowStore, 'getState').mockImplementation(() => ({
+        getFlowData: mockGetFlowData,
+        setFlowData: vi.fn(),
+        originalData: null,
+        flowData: null,
+        updateFlowData: vi.fn(),
+        updateAction: vi.fn(),
+        getActionById: vi.fn(),
+      }));
 
       // 関数を実行して、例外が発生することを期待
       await expect(useFileOperationStore.getState().saveFlowToFile()).rejects.toThrow();

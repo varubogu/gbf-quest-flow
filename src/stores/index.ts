@@ -1,8 +1,11 @@
 // ステップ5：編集モード機能を移行しました
 // ステップ7：ファイル操作機能を移行しました
 // ステップ11：履歴管理機能との連携を改善しました
-// import useFlowStore from './flowStoreFacade'; // 将来的にはこちらに切り替える予定
-import useFlowStore from './flowStore';
+// ステップ13：flowStoreFacadeへの移行を完了しました
+
+// 以前のインポート
+// import useFlowStore from './flowStore';
+import useFlowStore from './flowStoreFacade';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
 import useHistoryFacade from './historyFacade';

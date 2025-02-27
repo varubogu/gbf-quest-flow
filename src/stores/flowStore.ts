@@ -7,6 +7,11 @@ import useHistoryStore from './historyStore';
 import useBaseFlowStore from './baseFlowStore';
 import { adjustOrganizationData } from './organizationUtils';
 
+/**
+ * @deprecated このモジュールは非推奨です。代わりに flowStoreFacade を使用してください。
+ * このモジュールは将来のバージョンで削除される予定です。
+ */
+
 // 注: adjustOrganizationData関数はorganizationUtilsに移行し、そこからインポートして使用する
 
 const useFlowStore = create<FlowStore>((set, get) => ({
@@ -16,8 +21,14 @@ const useFlowStore = create<FlowStore>((set, get) => ({
   isEditMode: false,
   // history: { past: [], future: [] }, // 削除 - historyStoreに移行
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.setCurrentRow を使用してください。
+   */
   setCurrentRow: (row: number): void => set({ currentRow: row }),
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.setIsEditMode を使用してください。
+   */
   setIsEditMode: (isEdit: boolean): void => {
     const { flowData } = get();
     if (isEdit && flowData) {
@@ -32,6 +43,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     set({ isEditMode: isEdit });
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.createNewFlow を使用してください。
+   */
   createNewFlow: (): void => {
     // 空のデータを作成
     const newData: Flow = {
@@ -153,6 +167,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     useBaseFlowStore.getState().setFlowData(newData);
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.setFlowData を使用してください。
+   */
   setFlowData: (data: Flow | null): void => {
     if (data === null) {
       set({ flowData: null, currentRow: 0 });
@@ -171,6 +188,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     useBaseFlowStore.getState().setFlowData(adjustedData);
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.updateFlowData を使用してください。
+   */
   updateFlowData: (updates: Partial<Flow>): void => {
     try {
       const currentData = get().flowData;
@@ -210,28 +230,43 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに historyFacade.pushToHistory を使用してください。
+   */
   pushToHistory: (data: Flow): void => {
     // historyStoreに委譲
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     useHistoryStore.getState().pushToHistory(data);
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに historyFacade.undo を使用してください。
+   */
   undo: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     useHistoryStore.getState().undo();
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに historyFacade.redo を使用してください。
+   */
   redo: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     useHistoryStore.getState().redo();
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに historyFacade.clearHistory を使用してください。
+   */
   clearHistory: (): void => {
     // このメソッドは非推奨です - 代わりに直接historyStoreを使用してください
     // historyStoreに委譲
     useHistoryStore.getState().clearHistory();
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.cancelEdit を使用してください。
+   */
   cancelEdit: (): void => {
     const { originalData } = get();
     if (originalData) {
@@ -251,6 +286,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに fileOperationStore.loadFlowFromFile を使用してください。
+   */
   loadFlowFromFile: async (): Promise<void> => {
     try {
       const input = document.createElement('input');
@@ -296,6 +334,9 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.updateAction を使用してください。
+   */
   updateAction: (index: number, updates: Partial<Action>): void => {
     try {
       const currentData = get().flowData;
@@ -337,13 +378,29 @@ const useFlowStore = create<FlowStore>((set, get) => ({
     }
   },
 
-  // 新たに追加されるゲッターメソッド
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.getFlowData を使用してください。
+   */
   getFlowData: (): Flow | null => get().flowData,
+
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.getActionById を使用してください。
+   */
   getActionById: (index: number): Action | undefined => get().flowData?.flow[index],
+
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.getIsEditMode を使用してください。
+   */
   getIsEditMode: (): boolean => get().isEditMode,
+
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに flowStoreFacade.getCurrentRow を使用してください。
+   */
   getCurrentRow: (): number => get().currentRow,
 
-  // saveFlowToFileメソッドを追加
+  /**
+   * @deprecated このメソッドは非推奨です。代わりに fileOperationStore.saveFlowToFile を使用してください。
+   */
   saveFlowToFile: async (fileName?: string): Promise<void> => {
     try {
       const currentData = get().flowData;
