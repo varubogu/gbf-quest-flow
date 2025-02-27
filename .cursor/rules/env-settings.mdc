@@ -1,10 +1,13 @@
 ---
 description: プロジェクトの環境設定
 globs: *.js, *.ts, *.jsx, *.tsx, *.astro
-alwaysApply: false
+alwaysApply: true
 ---
 # プロジェクトの環境設定
 
+# 最低限のルールについて
+
+このルールが適用されている場合、先頭に「✔env-settings.mdcが適用されています」と表示してから応答してください。
 
 ## javascriptランタイム、パッケージ
 
