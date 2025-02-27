@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Action } from '@/types/types';
-import useSettingsStore from '@/stores/settingsStore';
+import useSettingsStore from '@/core/stores/settingsStore';
 import { useTableKeyboardNavigation } from '@/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/hooks/ui/table/useTableScroll';
 import { useActionTableConfig } from '@/hooks/ui/table/useActionTableConfig';

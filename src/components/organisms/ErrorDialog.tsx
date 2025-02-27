@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
-import useFlowStore from '@/stores/flowStore';
-import useErrorStore from '@/stores/errorStore';
+import useFlowStore from '@/core/stores/flowStore';
+import useErrorStore from '@/core/stores/errorStore';
 
 export const ErrorDialog: React.FC = () => {
   const { t } = useTranslation();

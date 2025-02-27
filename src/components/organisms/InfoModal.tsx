@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/hooks/ui/base/useAutoResizeTextArea';

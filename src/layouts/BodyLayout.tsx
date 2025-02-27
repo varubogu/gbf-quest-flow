@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';

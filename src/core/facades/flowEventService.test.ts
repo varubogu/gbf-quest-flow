@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
 import type { Flow } from '@/types/models';
-import useFlowStore, { type FlowStore } from '@/stores/flowStore';
+import useFlowStore, { type FlowStore } from '@/core/stores/flowStore';
 
 // flowOperationsのモック
 vi.mock('@/utils/flowOperations', () => ({

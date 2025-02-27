@@ -1,5 +1,5 @@
 import React from 'react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Job, JobAbility, JobEquipment } from '@/types/types';
 import {
   textInputBaseStyle,

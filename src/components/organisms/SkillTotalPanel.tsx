@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import type { WeaponSkillTotal } from '@/types/types';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { SkillTable } from '@/components/molecules/SkillTable';
 
 interface SkillTotalPanelProps {

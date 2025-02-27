@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { SummonPanel } from './index';
 import { describe, it, expect, vi } from 'vitest';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 
 interface UseTranslationResult {
   t: (_key: string) => string;

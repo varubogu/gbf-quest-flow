@@ -1,5 +1,5 @@
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/types';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 
 export interface UseWeaponFormResult {
   handleChange: (

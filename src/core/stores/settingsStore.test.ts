@@ -3,7 +3,7 @@ import useSettingsStore from './settingsStore';
 import { act } from '@testing-library/react';
 
 // i18nのモック
-vi.mock('@/i18n', () => ({
+vi.mock('@/lib/i18n', () => ({
   default: {
     language: 'en', // 初期値をenに設定
     changeLanguage: vi.fn(),

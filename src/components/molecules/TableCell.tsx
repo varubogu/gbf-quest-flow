@@ -2,7 +2,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 import { Text } from '../atoms/Text';
 import type { Action, TableAlignment } from '@/types/types';
-import useSettingsStore from '@/stores/settingsStore';
+import useSettingsStore from '@/core/stores/settingsStore';
 import { useAlignmentStyle } from '@/hooks/ui/base/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/hooks/ui/table/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/hooks/ui/table/useTableCellStateStyle';

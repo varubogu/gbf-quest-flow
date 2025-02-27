@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import useSettingsStore from '@/stores/settingsStore';
+import useSettingsStore from '@/core/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
 import type { JSX } from 'react';
 import type { Language } from '@/types/types';

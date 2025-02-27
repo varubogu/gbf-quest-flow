@@ -36,7 +36,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // i18nextのモック
-vi.mock('@/i18n', () => ({
+vi.mock('@/lib/i18n', () => ({
   default: {
     use: () => ({
       use: () => ({

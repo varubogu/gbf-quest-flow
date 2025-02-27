@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import type { Flow } from '@/types/models';
-import type { HistoryState, HistoryStore } from '@/stores/historyStore';
-import useHistoryStore from '@/stores/historyStore';
-import useBaseFlowStore from '@/stores/baseFlowStore';
-import useEditModeStore from '@/stores/editModeStore';
+import type { HistoryState, HistoryStore } from '@/core/stores/historyStore';
+import useHistoryStore from '@/core/stores/historyStore';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
 import type { BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
 
 /**

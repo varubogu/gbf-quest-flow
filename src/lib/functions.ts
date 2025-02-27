@@ -1,4 +1,4 @@
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/models';
 
 export function setTitle(title: string): void {

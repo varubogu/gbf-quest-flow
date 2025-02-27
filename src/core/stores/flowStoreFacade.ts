@@ -5,7 +5,7 @@ import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useFileOperationStore from './fileOperationStore';
 import useCursorStore from './cursorStore';
-import useHistoryFacade, { type HistoryFacade } from '@/stores/historyFacade';
+import useHistoryFacade, { type HistoryFacade } from '@/core/stores/historyFacade';
 
 /**
  * フローストアのファサード

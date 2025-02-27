@@ -5,7 +5,7 @@ import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel/index';
 import { SkillTotalPanel } from './SkillTotalPanel';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { useTranslation } from 'react-i18next';
 
 interface OrganizationModalProps {

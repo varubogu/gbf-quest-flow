@@ -1,5 +1,5 @@
 import React from 'react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';

@@ -2,7 +2,7 @@ import { screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import BodyLayout from './BodyLayout';
 import type { Flow } from '@/types/models';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // グローバルなセットアップ

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Member, CharacterPosition } from '@/types/types';
 import { updateMemberField } from '@/lib/utils/characters/calculations';
 

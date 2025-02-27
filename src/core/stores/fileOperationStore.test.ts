@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useFileOperationStore from '@/stores/fileOperationStore';
-import useBaseFlowStore from '@/stores/baseFlowStore';
-import useErrorStore from '@/stores/errorStore';
+import useFileOperationStore from '@/core/stores/fileOperationStore';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useErrorStore from '@/core/stores/errorStore';
 
 // vi.mockを使用してモジュールをモックする
 vi.mock('@/stores/baseFlowStore', () => {

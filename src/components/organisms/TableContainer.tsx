@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useFlowStore from '@/stores/flowStore';
-import useSettingsStore from '@/stores/settingsStore';
-import useHistoryFacade from '@/stores/historyFacade';
+import useFlowStore from '@/core/stores/flowStore';
+import useSettingsStore from '@/core/stores/settingsStore';
+import useHistoryFacade from '@/core/stores/historyFacade';
 
 interface TableContainerProps {
   isEditMode?: boolean;

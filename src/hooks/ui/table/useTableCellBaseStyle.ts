@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { cn } from '@/lib/utils/cn';
-import useSettingsStore from '@/stores/settingsStore';
+import useSettingsStore from '@/core/stores/settingsStore';
 
 interface BaseStyleProps {
   isHeader: boolean;

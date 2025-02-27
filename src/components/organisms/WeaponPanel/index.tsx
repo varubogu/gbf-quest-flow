@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import useFlowStore from '@/stores/flowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
