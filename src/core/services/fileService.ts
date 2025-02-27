@@ -1,6 +1,39 @@
+import organizationSettings from '@/content/settings/organization.json';
 import type { Flow } from '@/types/models';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useErrorStore from '@/core/stores/errorStore';
+import useHistoryStore from '../stores/historyStore';
+import useEditModeStore from '../stores/editModeStore';
+
+export async function newFlowData(): Promise<void> {
+  // 空のデータを作成
+  const newData: Flow = newEmptyData();
+
+  // 現在の状態を取得
+  const dataState = useBaseFlowStore.getState();
+  useBaseFlowStore.setState({
+    flowData: newData,
+    originalData: dataState.flowData || null, // 現在のデータをoriginalDataとして保持
+  });
+
+  // historyStoreの履歴をクリア
+  useHistoryStore.getState().clearHistory();
+
+  // 編集モードをオンにする
+  useEditModeStore.setState({
+    isEditMode: true,
+  });
+
+  // 更新後の状態を確認
+  const updatedState = useBaseFlowStore.getState();
+  const editState = useEditModeStore.getState();
+  if (!updatedState.flowData || !editState.isEditMode) {
+    console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
+  }
+
+  // baseFlowStoreも同期
+  useBaseFlowStore.getState().setFlowData(newData);
+}
 
 /**
  * JSONファイルからフローデータを読み込む
@@ -111,3 +144,101 @@ function onFocus(input: HTMLInputElement, resolve: (_value: File | null) => void
   }, 300);
 }
 
+
+
+function newEmptyData(): Flow {
+  // 空のデータを作成
+  return {
+    title: '新しいフロー',
+    quest: '',
+    author: '',
+    description: '',
+    updateDate: new Date().toISOString(),
+    note: '',
+    organization: {
+      job: {
+        name: '',
+        note: '',
+        equipment: {
+          name: '',
+          note: '',
+        },
+        abilities: Array(organizationSettings.job.abilities)
+          .fill(null)
+          .map(() => ({ name: '', note: '' })),
+      },
+      member: {
+        front: Array(organizationSettings.member.front)
+          .fill(null)
+          .map(() => ({
+            name: '',
+            note: '',
+            awaketype: '',
+            accessories: '',
+            limitBonus: '',
+          })),
+        back: Array(organizationSettings.member.back)
+          .fill(null)
+          .map(() => ({
+            name: '',
+            note: '',
+            awaketype: '',
+            accessories: '',
+            limitBonus: '',
+          })),
+      },
+      weapon: {
+        main: {
+          name: '',
+          note: '',
+          additionalSkill: '',
+        },
+        other: Array(organizationSettings.weapon.other)
+          .fill(null)
+          .map(() => ({
+            name: '',
+            note: '',
+            additionalSkill: '',
+          })),
+        additional: Array(organizationSettings.weapon.additional)
+          .fill(null)
+          .map(() => ({
+            name: '',
+            note: '',
+            additionalSkill: '',
+          })),
+      },
+      weaponEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+      summon: {
+        main: { name: '', note: '' },
+        friend: { name: '', note: '' },
+        other: Array(organizationSettings.summon.other)
+          .fill(null)
+          .map(() => ({ name: '', note: '' })),
+        sub: Array(organizationSettings.summon.sub)
+          .fill(null)
+          .map(() => ({ name: '', note: '' })),
+      },
+      totalEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+    },
+    always: '',
+    flow: [
+      {
+        hp: '',
+        prediction: '',
+        charge: '',
+        guard: '',
+        action: '',
+        note: '',
+      },
+    ],
+  };
+}
