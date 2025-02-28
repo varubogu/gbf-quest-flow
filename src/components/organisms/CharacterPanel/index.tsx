@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import { useCharacterForm } from '@/core/hooks/domain/characters/useCharacterForm';
 import { CharacterForm } from './CharacterForm';
 import {
@@ -16,7 +16,7 @@ interface CharacterPanelProps {
 
 export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }) => {
   const { t } = useTranslation();
-  const flowData = useFlowStoreFacade((state) => state.flowData);
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
   const { handleMemberChange } = useCharacterForm();
 
   if (!flowData) return null;
