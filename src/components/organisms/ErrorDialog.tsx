@@ -3,25 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
+import { downloadFlow } from '@/core/facades/FileOperations';
 
 export const ErrorDialog: React.FC = () => {
   const { t } = useTranslation();
   const { flowData } = useFlowStore();
   const { error, isErrorDialogOpen, clearError } = useErrorStore();
 
-  const handleDownload = (): void => {
+  const handleDownload = async (): Promise<void> => {
     if (!flowData) return;
 
-    const json = JSON.stringify(flowData, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
     const filename = `${flowData.title}_backup_${new Date().toISOString()}.json`;
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
+    await downloadFlow(flowData, filename);
   };
 
   return (
