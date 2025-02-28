@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import { SummonForm } from './SummonForm';
 
 interface SummonPanelProps {
@@ -9,7 +9,7 @@ interface SummonPanelProps {
 
 export const SummonPanel = memo(({ isEditing }: SummonPanelProps) => {
   const { t } = useTranslation();
-  const { flowData } = useFlowStoreFacade();
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
 
   if (!flowData) return null;
 

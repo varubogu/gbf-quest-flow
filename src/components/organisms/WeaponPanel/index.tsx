@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
@@ -19,8 +19,8 @@ interface WeaponPanelProps {
 
 export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
   const { t } = useTranslation();
-  const flowData = useFlowStoreFacade((state) => state.flowData);
-  const updateFlowData = useFlowStoreFacade((state) => state.updateFlowData);
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const updateFlowData = useBaseFlowStoreFacade((state: any) => state.updateFlowData);
 
   // メモ化された武器データを作成
   const weaponData = useMemo(() => {
