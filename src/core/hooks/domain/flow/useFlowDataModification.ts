@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { Flow } from '@/types/models';
 import { handleError } from '@/lib/utils/accessibility';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import { handleFlowSave, handleNewFlow, handleCancel } from '@/core/facades/flowEventService';
 import { useTranslation } from 'react-i18next';
 
@@ -32,9 +32,9 @@ export const useFlowDataModification = ({
   hasChanges = false,
 }: UseFlowDataModificationProps): UseFlowDataModificationResult => {
   const { t } = useTranslation();
-  // 型アサーションを使用して型エラーを回避
+  // 型を明示的に指定して型エラーを回避
   const updateFlowData = (updates: Partial<Flow>): void => {
-    (useBaseFlowStoreFacade.getState() as any).updateFlowData(updates);
+    useBaseFlowStore.getState().updateFlowData(updates);
   };
 
   // データ変更のハンドラー

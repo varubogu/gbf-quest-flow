@@ -1,17 +1,9 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
 import useFlowStore from '@/core/stores/flowStore';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
-
-// BaseFlowStoreFacadeの型定義
-type BaseFlowStoreFacadeState = {
-  flowData: Flow | null;
-  originalData: Flow | null;
-  setFlowData: (_data: Flow | null) => void;
-  setIsEditMode: (_isEdit: boolean) => void;
-  createNewFlow: () => void;
-};
 
 /**
  * フローの保存処理を実行する
@@ -24,7 +16,7 @@ export const handleFlowSave = async (
   const success = await saveFlow(flowData, sourceId);
   if (success) {
     clearHistory();
-    (useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState).setIsEditMode(false);
+    useEditModeStore.getState().setIsEditMode(false);
     // 旧flowStoreも更新（後方互換性のため）
     useFlowStore.getState().setIsEditMode(false);
   }
@@ -35,7 +27,7 @@ export const handleFlowSave = async (
  * 新規フロー作成処理を実行する
  */
 export const handleNewFlow = (currentFlowData: Flow | null = null): void => {
-  (useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState).createNewFlow();
+  useEditModeStore.getState().createNewFlow();
   // 旧flowStoreも更新（後方互換性のため）- createNewFlowはfileServiceで両方更新されるため不要
   updateNewFlowState(currentFlowData);
 };
@@ -57,14 +49,13 @@ export const handleExitEditMode = async (
       }
     }
 
-    const store = useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState;
-    const originalData = store.originalData;
+    const originalData = useBaseFlowStore.getState().originalData;
     if (originalData) {
-      store.setFlowData(structuredClone(originalData));
+      useBaseFlowStore.getState().setFlowData(structuredClone(originalData));
       // 旧flowStoreも更新（後方互換性のため）
       useFlowStore.getState().setFlowData(structuredClone(originalData));
     }
-    store.setIsEditMode(false);
+    useEditModeStore.getState().setIsEditMode(false);
     // 旧flowStoreも更新（後方互換性のため）
     useFlowStore.getState().setIsEditMode(false);
     clearHistory();
