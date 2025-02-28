@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
-import type { Member, CharacterPosition } from '@/types/types';
+import type { Member } from '@/types/types';
+import type { CharacterPosition } from '@/types/models';
 import { updateMemberField } from '@/lib/utils/characters/calculations';
 
 interface UseCharacterFormResult {
