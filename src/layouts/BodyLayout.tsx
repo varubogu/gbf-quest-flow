@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo, useState, useRef } from 'react';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
@@ -23,11 +23,11 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   const initializedRef = useRef(false);
 
   // 各ストアから状態を取得
-  const flowData = useFlowStoreFacade((state) => state.flowData);
-  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
-  const setIsEditMode = useFlowStoreFacade((state) => state.setIsEditMode);
-  const setFlowData = useFlowStoreFacade((state) => state.setFlowData);
-  const createNewFlow = useFlowStoreFacade((state) => state.createNewFlow);
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const isEditMode = useBaseFlowStoreFacade((state: any) => state.isEditMode);
+  const setIsEditMode = useBaseFlowStoreFacade((state: any) => state.setIsEditMode);
+  const setFlowData = useBaseFlowStoreFacade((state: any) => state.setFlowData);
+  const createNewFlow = useBaseFlowStoreFacade((state: any) => state.createNewFlow);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
@@ -157,7 +157,7 @@ function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Prop
     try {
       if (!initializedRef.current && initialData) {
         console.log('BodyLayout: 初期データを設定します');
-        useFlowStoreFacade.getState().setFlowData(initialData);
+        useBaseFlowStoreFacade.getState().setFlowData(initialData);
       }
       setInitialized(true);
       initializedRef.current = true;
