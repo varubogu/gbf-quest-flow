@@ -134,20 +134,18 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
       <SheetTrigger asChild>
         <HamburgerMenu onClick={() => setIsOpen(true)} />
       </SheetTrigger>
-      <SheetContent side="left">
-        <div className="w-[300px] sm:w-[400px]">
-          <SheetHeader>
-            <SheetTitle>{menuView === 'menu' ? t('menu') : t('options')}</SheetTitle>
-          </SheetHeader>
-          {menuView === 'menu' ? (
-            <MenuItems
-              isLoading={isLoading}
-              onItemClick={handleMenuClick}
-            />
-          ) : (
-            <SettingsPanel onBack={() => setMenuView('menu')} />
-          )}
-        </div>
+      <SheetContent side="left" width="w-[300px] sm:w-[400px]">
+        <SheetHeader>
+          <SheetTitle>{menuView === 'menu' ? t('menu') : t('options')}</SheetTitle>
+        </SheetHeader>
+        {menuView === 'menu' ? (
+          <MenuItems
+            isLoading={isLoading}
+            onItemClick={handleMenuClick}
+          />
+        ) : (
+          <SettingsPanel onBack={() => setMenuView('menu')} />
+        )}
       </SheetContent>
     </Sheet>
   );
