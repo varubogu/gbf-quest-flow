@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import type { Summon, SummonType } from '@/types/types';
 import { updateSummonField, updateSummonArrayField } from '@/lib/utils/summons/calculations';
 
@@ -13,7 +13,8 @@ interface UseSummonFormResult {
 }
 
 export const useSummonForm = (): UseSummonFormResult => {
-  const { flowData, updateFlowData } = useFlowStoreFacade();
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const updateFlowData = useBaseFlowStoreFacade((state: any) => state.updateFlowData);
 
   const handleChange = useCallback(
     (type: SummonType,
