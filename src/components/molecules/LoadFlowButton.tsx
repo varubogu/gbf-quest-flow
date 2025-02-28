@@ -1,5 +1,5 @@
 import React, { type JSX, useState } from 'react';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import { useTranslation } from 'react-i18next';
 
 interface LoadFlowButtonProps {

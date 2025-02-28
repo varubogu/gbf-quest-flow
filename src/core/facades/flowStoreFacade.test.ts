@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import useFlowStoreFacade from './flowStoreFacade';
-import useCursorStore from './cursorStore';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useCursorStore from '@/core/stores/cursorStore';
 
 describe('flowStoreFacade - CursorStore連携', () => {
   // 各テストの前に初期状態をリセット

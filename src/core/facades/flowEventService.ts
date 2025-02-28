@@ -1,6 +1,6 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 

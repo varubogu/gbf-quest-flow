@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import type { JSX } from 'react';
 
 export interface MenuItem {

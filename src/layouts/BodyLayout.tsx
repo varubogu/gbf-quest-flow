@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo, useState, useRef } from 'react';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';

@@ -7,7 +7,7 @@ import {
   SheetTrigger,
 } from '@/components/molecules/Sheet';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
 import { SettingsPanel } from './SettingsPanel';

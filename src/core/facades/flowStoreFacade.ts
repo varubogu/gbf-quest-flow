@@ -1,13 +1,13 @@
 import type { Flow, Action } from '@/types/models';
 import type { FlowStore, BaseFlowStore, EditModeStore, CursorStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
-import useBaseFlowStore from './baseFlowStore';
-import useEditModeStore from './editModeStore';
-import useCursorStore from './cursorStore';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
+import useCursorStore from '@/core/stores/cursorStore';
 import { pushToHistory, undo, redo, clearHistory } from '@/core/services/historyService';
-import { saveFlowToFile, loadFlowFromFile, newFlowData } from '../services/fileService';
-import { updateFlowData, updateAction } from '../services/flowService';
-import { setIsEditMode, cancelEdit } from '../services/editModeService';
+import { saveFlowToFile, loadFlowFromFile, newFlowData } from '@/core/services/fileService';
+import { updateFlowData, updateAction } from '@/core/services/flowService';
+import { setIsEditMode, cancelEdit } from '@/core/services/editModeService';
 
 /**
  * フローストアのファサード

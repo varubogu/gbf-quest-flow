@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useFlowStoreFacade from '@/core/stores/flowStoreFacade';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import useSettingsStore from '@/core/stores/settingsStore';
 import { undo, redo } from '@/core/facades/historyFacade';
 
