@@ -5,7 +5,7 @@ import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel/index';
 import { SkillTotalPanel } from './SkillTotalPanel';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import { useTranslation } from 'react-i18next';
 
 interface OrganizationModalProps {
@@ -16,7 +16,9 @@ interface OrganizationModalProps {
 export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
-  const { flowData, isEditMode, updateFlowData } = useFlowStore();
+  const flowData = useFlowStoreFacade((state) => state.flowData);
+  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
+  const updateFlowData = useFlowStoreFacade((state) => state.updateFlowData);
 
   if (!flowData) return null;
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { cn } from '@/lib/utils/cn';
-import useSettingsStore from '@/core/stores/settingsStore';
+import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 
 interface BaseStyleProps {
   isHeader: boolean;
@@ -24,7 +24,7 @@ export interface UseTableCellBaseStyleResult {
 }
 
 export const useTableCellBaseStyle = (): UseTableCellBaseStyleResult => {
-  const { settings } = useSettingsStore();
+  const { settings } = useSettingsStoreFacade();
 
   const baseClasses = useMemo(
     () => ({

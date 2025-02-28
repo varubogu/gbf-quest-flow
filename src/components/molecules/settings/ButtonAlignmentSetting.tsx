@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import useSettingsStore from '@/core/stores/settingsStore';
+import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { SettingItem } from '@/components/molecules/SettingItem';
 import type { JSX } from 'react';
 import type { ButtonAlignment } from '@/types/types';
@@ -12,7 +12,7 @@ const BUTTON_ALIGNMENTS: { value: ButtonAlignment; translationKey: string }[] = 
 
 export function ButtonAlignmentSetting(): JSX.Element {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings, updateSettings } = useSettingsStoreFacade();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     updateSettings({

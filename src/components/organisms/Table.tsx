@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Action } from '@/types/types';
-import useSettingsStore from '@/core/stores/settingsStore';
+import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { useTableKeyboardNavigation } from '@/core/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/core/hooks/ui/table/useTableScroll';
 import { useActionTableConfig } from '@/core/hooks/ui/table/useActionTableConfig';
@@ -35,7 +35,7 @@ export const Table: React.FC<TableProps> = ({
   onAddRow,
   onPasteRows,
 }) => {
-  const { settings } = useSettingsStore();
+  const { settings } = useSettingsStoreFacade();
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   // 設定とスタイルの管理

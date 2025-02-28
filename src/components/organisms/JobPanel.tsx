@@ -1,5 +1,5 @@
 import React from 'react';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import type { Job, JobAbility, JobEquipment } from '@/types/types';
 import {
   textInputBaseStyle,
@@ -72,7 +72,8 @@ interface JobPanelProps {
 
 export const JobPanel: React.FC<JobPanelProps> = ({ isEditing }) => {
   const { t } = useTranslation();
-  const { flowData, updateFlowData } = useFlowStore();
+  const flowData = useFlowStoreFacade((state) => state.flowData);
+  const updateFlowData = useFlowStoreFacade((state) => state.updateFlowData);
 
   // テキストエリアの参照を作成
   const jobNoteRef = useAutoResizeTextArea(flowData?.organization.job.note ?? '');

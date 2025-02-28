@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import useSettingsStore from '@/core/stores/settingsStore';
+import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { SettingItem } from '@/components/molecules/SettingItem';
 import type { JSX } from 'react';
 import type { ClickType } from '@/types/types';
@@ -12,7 +12,7 @@ const CLICK_TYPES: { value: ClickType; translationKey: string }[] = [
 
 export function ActionTableClickTypeSetting(): JSX.Element {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings, updateSettings } = useSettingsStoreFacade();
 
   return (
     <SettingItem labelKey="actionTableClickType">

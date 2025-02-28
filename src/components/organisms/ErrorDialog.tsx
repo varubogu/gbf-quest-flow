@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
-import useFlowStore from '@/core/stores/flowStore';
+import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 
 export const ErrorDialog: React.FC = () => {
   const { t } = useTranslation();
-  const { flowData } = useFlowStore();
+  const flowData = useFlowStoreFacade((state) => state.flowData);
   const { error, isErrorDialogOpen, clearError } = useErrorStore();
 
   const handleDownload = async (): Promise<void> => {

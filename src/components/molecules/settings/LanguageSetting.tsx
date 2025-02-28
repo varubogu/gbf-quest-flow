@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import useSettingsStore from '@/core/stores/settingsStore';
+import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { SettingItem } from '../SettingItem';
 import type { JSX } from 'react';
 import type { Language } from '@/types/types';
@@ -14,7 +14,7 @@ const LANGUAGES: { value: Language; translationKey: string }[] = [
 
 export function LanguageSetting(): JSX.Element {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useSettingsStore();
+  const { settings, updateSettings } = useSettingsStoreFacade();
 
   return (
     <SettingItem labelKey="language">
