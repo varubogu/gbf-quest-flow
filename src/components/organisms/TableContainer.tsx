@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { undo, redo } from '@/core/facades/historyFacade';
 
@@ -14,9 +15,11 @@ export const TableContainer: React.FC<TableContainerProps> = ({
   isEditMode = false,
   data,
 }) => {
-  const { currentRow, setCurrentRow } = useFlowStoreFacade();
-  const { flowData, setFlowData } = useFlowStoreFacade();
-  const { settings } = useSettingsStoreFacade();
+  const currentRow = useCursorStoreFacade((state: any) => state.currentRow);
+  const setCurrentRow = useCursorStoreFacade((state: any) => state.setCurrentRow);
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const setFlowData = useBaseFlowStoreFacade((state: any) => state.setFlowData);
+  const settings = useSettingsStoreFacade((state: any) => state.settings);
 
   // キーボードイベントのハンドラを追加
   React.useEffect(() => {

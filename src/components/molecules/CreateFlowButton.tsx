@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { useTranslation } from 'react-i18next';
 
 interface CreateFlowButtonProps {
@@ -13,7 +13,7 @@ export const CreateFlowButton: React.FC<CreateFlowButtonProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
-  const createNewFlow = useFlowStoreFacade((state) => state.createNewFlow);
+  const createNewFlow = useEditModeStoreFacade((state) => state.createNewFlow);
 
   const handleClick = async () => {
     try {

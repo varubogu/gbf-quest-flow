@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import type { JSX } from 'react';
 
 export interface MenuItem {
@@ -28,8 +29,8 @@ interface MenuItemsProps {
 
 export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useFlowStoreFacade((state) => state.flowData);
-  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
+  const flowData = useBaseFlowStoreFacade((state) => state.flowData);
+  const isEditMode = useEditModeStoreFacade((state) => state.isEditMode);
 
   const menuItems: MenuItem[] = [
     { id: 'new', label: t('newData') as string, icon: FileText },

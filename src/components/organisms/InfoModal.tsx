@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
@@ -12,9 +13,9 @@ interface InfoModalProps {
 
 export const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const flowData = useFlowStoreFacade((state) => state.flowData);
-  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
-  const updateFlowData = useFlowStoreFacade((state) => state.updateFlowData);
+  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const isEditMode = useEditModeStoreFacade((state: any) => state.isEditMode);
+  const updateFlowData = useBaseFlowStoreFacade((state: any) => state.updateFlowData);
 
   // テキストエリアのref
   const descriptionRef = useAutoResizeTextArea(flowData?.description || '');

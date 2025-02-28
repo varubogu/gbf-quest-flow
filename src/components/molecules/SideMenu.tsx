@@ -7,7 +7,9 @@ import {
   SheetTrigger,
 } from '@/components/molecules/Sheet';
 import { useTranslation } from 'react-i18next';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
 import { SettingsPanel } from './SettingsPanel';
@@ -32,11 +34,11 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const [isOpen, setIsOpen] = useState(false);
   const [menuView, setMenuView] = useState<MenuView>('menu');
 
-  const flowData = useFlowStoreFacade((state) => state.flowData);
-  const originalData = useFlowStoreFacade((state) => state.originalData);
-  const loadFlowFromFile = useFlowStoreFacade((state) => state.loadFlowFromFile);
-  const isEditMode = useFlowStoreFacade((state) => state.isEditMode);
-  const setIsEditMode = useFlowStoreFacade((state) => state.setIsEditMode);
+  const flowData = useBaseFlowStoreFacade((state) => state.flowData);
+  const originalData = useBaseFlowStoreFacade((state) => state.originalData);
+  const loadFlowFromFile = useFileOperationsFacade((state) => state.loadFlowFromFile);
+  const isEditMode = useEditModeStoreFacade((state) => state.isEditMode);
+  const setIsEditMode = useEditModeStoreFacade((state) => state.setIsEditMode);
 
   const { hasChanges } = useEditHistory(flowData);
 
