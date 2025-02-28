@@ -42,10 +42,10 @@ const SkillRow: React.FC<SkillRowProps> = ({ field, label, value, isEditing, onC
             aria-label={label}
           />
         ) : (
-          value.split('\n').map((line, i) => (
+          value?.split('\n').map((line, i) => (
             <React.Fragment key={i}>
               {line}
-              {i < value.split('\n').length - 1 && <br />}
+              {i < value?.split('\n').length - 1 && <br />}
             </React.Fragment>
           ))
         )}
