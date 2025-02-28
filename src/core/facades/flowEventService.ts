@@ -1,8 +1,17 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
+
+// BaseFlowStoreFacadeの型定義
+type BaseFlowStoreFacadeState = {
+  flowData: Flow | null;
+  originalData: Flow | null;
+  setFlowData: (_data: Flow | null) => void;
+  setIsEditMode: (_isEdit: boolean) => void;
+  createNewFlow: () => void;
+};
 
 /**
  * フローの保存処理を実行する
@@ -15,7 +24,7 @@ export const handleFlowSave = async (
   const success = await saveFlow(flowData, sourceId);
   if (success) {
     clearHistory();
-    useFlowStoreFacade.getState().setIsEditMode(false);
+    (useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState).setIsEditMode(false);
     // 旧flowStoreも更新（後方互換性のため）
     useFlowStore.getState().setIsEditMode(false);
   }
@@ -26,7 +35,7 @@ export const handleFlowSave = async (
  * 新規フロー作成処理を実行する
  */
 export const handleNewFlow = (currentFlowData: Flow | null = null): void => {
-  useFlowStoreFacade.getState().createNewFlow();
+  (useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState).createNewFlow();
   // 旧flowStoreも更新（後方互換性のため）- createNewFlowはfileServiceで両方更新されるため不要
   updateNewFlowState(currentFlowData);
 };
@@ -48,7 +57,7 @@ export const handleExitEditMode = async (
       }
     }
 
-    const store = useFlowStoreFacade.getState();
+    const store = useBaseFlowStoreFacade.getState() as BaseFlowStoreFacadeState;
     const originalData = store.originalData;
     if (originalData) {
       store.setFlowData(structuredClone(originalData));

@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import { useTranslation } from 'react-i18next';
 
 interface CreateFlowButtonProps {
   className?: string;
-  onCreate?: () => void;
+  onClick?: () => void;
 }
 
 export const CreateFlowButton: React.FC<CreateFlowButtonProps> = ({
   className,
-  onCreate
+  onClick
 }) => {
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
-  const createNewFlow = useEditModeStoreFacade((state) => state.createNewFlow);
+  const createNewFlow = useBaseFlowStoreFacade((state: any) => state.createNewFlow);
 
   const handleClick = async () => {
     try {
@@ -26,8 +26,8 @@ export const CreateFlowButton: React.FC<CreateFlowButtonProps> = ({
       // 少し遅延させてローディング状態を解除
       setTimeout(() => {
         setIsCreating(false);
-        if (onCreate) {
-          onCreate();
+        if (onClick) {
+          onClick();
         }
       }, 500);
     } catch (error) {

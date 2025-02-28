@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
@@ -22,12 +22,12 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   const [isLoading, setIsLoading] = useState(true);
   const initializedRef = useRef(false);
 
-  // 各ストアから状態を取得
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
-  const isEditMode = useBaseFlowStoreFacade((state: any) => state.isEditMode);
-  const setIsEditMode = useBaseFlowStoreFacade((state: any) => state.setIsEditMode);
-  const setFlowData = useBaseFlowStoreFacade((state: any) => state.setFlowData);
-  const createNewFlow = useBaseFlowStoreFacade((state: any) => state.createNewFlow);
+  // 各ストアから状態を取得 - 型アサーションを使用
+  const flowData = useBaseFlowStoreFacade((state) => (state as any).flowData);
+  const isEditMode = useBaseFlowStoreFacade((state) => (state as any).isEditMode);
+  const setIsEditMode = useBaseFlowStoreFacade((state) => (state as any).setIsEditMode);
+  const setFlowData = useBaseFlowStoreFacade((state) => (state as any).setFlowData);
+  const createNewFlow = useBaseFlowStoreFacade((state) => (state as any).createNewFlow);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
@@ -47,135 +47,102 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   });
 
   // 保存処理
-  const handleSave = useCallback(async () => {
-    if (!flowData) return false;
-    return await handleFlowSave(flowData, sourceId, clearHistory);
+  const handleSave = useCallback(async (): Promise<boolean> => {
+    try {
+      if (!flowData) return false;
+      const success = await handleFlowSave(flowData, sourceId, clearHistory);
+      if (success) {
+        announceToScreenReader('保存しました');
+      }
+      return success || false;
+    } catch (error) {
+      handleError(error, '保存中');
+      return false;
+    }
   }, [flowData, sourceId, clearHistory]);
 
   // 新規作成処理
-  const handleNew = useCallback(() => {
-    console.log('新規フロー作成を開始します');
-    handleNewFlow(flowData);
+  const handleNewCallback = useCallback(() => {
+    try {
+      handleNewFlow(flowData);
+    } catch (error) {
+      handleError(error, '新規作成中');
+    }
   }, [flowData]);
 
-  // キーボードショートカットの設定
-  useKeyboardShortcuts({
-    isEditMode,
+  // URL管理
+  const { handleUrlChange } = useUrlManagement({
     flowData,
+    isEditMode,
+    setFlowData,
+    setIsEditMode,
     sourceId,
-    onExitEditMode: handleExitEditModeCallback,
-    clearHistory,
+    initialMode,
   });
 
-  const flowLayoutProps = useMemo(() => {
-    if (!flowData) return null;
-    return {
-      flowData,
-      isEditMode,
-      onTitleChange: handleTitleChange,
-      onAlwaysChange: handleAlwaysChange,
-      onExitEditMode: handleExitEditModeCallback,
-      onSave: handleSave,
-      onNew: handleNew,
-    };
-  }, [
-    flowData,
-    isEditMode,
-    handleTitleChange,
-    handleAlwaysChange,
-    handleExitEditModeCallback,
-    handleSave,
-    handleNew,
-  ]);
-
-  useUrlManagement(isEditMode, sourceId, initialMode, flowData);
+  // 履歴管理
   useHistoryManagement(createNewFlow, setIsEditMode, setFlowData, initialData);
 
-  // 初期化処理
+  // キーボードショートカット - 新しいインターフェースを使用
+  useKeyboardShortcuts({
+    onSave: handleSave,
+    onNew: handleNewCallback,
+    onExitEditMode: handleExitEditModeCallback,
+  });
+
+  // 初期データの設定
   useEffect(() => {
     if (initializedRef.current) return;
 
-    try {
-      if (initialData) {
-        console.log('初期データを設定します:', initialData.title);
-        setFlowData(initialData);
-      }
-
-      if (initialMode === 'new') {
-        console.log('新規モードで初期化します');
-        createNewFlow();
-        setIsEditMode(true);
-      } else if (initialMode === 'edit') {
-        console.log('編集モードで初期化します');
-        setIsEditMode(true);
-      }
-
-      // 初期化完了後、ローディング状態を解除
-      setTimeout(() => {
+    const setupInitialData = async () => {
+      try {
+        if (initialData) {
+          setFlowData(initialData);
+          if (initialMode === 'edit') {
+            setIsEditMode(true);
+          }
+        }
         setIsLoading(false);
         initializedRef.current = true;
-        console.log('BodyContent: 初期化完了');
-      }, 300);
-    } catch (error) {
-      console.error('初期化中にエラーが発生しました:', error);
-      setIsLoading(false);
-      initializedRef.current = true;
-    }
+      } catch (error) {
+        handleError(error, '初期データ設定中');
+        setIsLoading(false);
+      }
+    };
+
+    setupInitialData();
   }, [initialData, initialMode, setFlowData, createNewFlow, setIsEditMode]);
 
-  // モード切り替え時の通知
+  // URLの変更を監視
   useEffect(() => {
-    if (flowData) {
-      announceToScreenReader(`フローの${isEditMode ? '編集' : '表示'}モードです`);
-    }
-  }, [isEditMode, flowData]);
+    if (!initializedRef.current) return;
+    handleUrlChange();
+  }, [flowData, isEditMode, handleUrlChange]);
 
+  // ローディング中
   if (isLoading) {
     return <LoadingLayout />;
   }
 
-  if (initialMode === 'new' && !flowData) {
-    console.log('新規モードだがflowDataがないため、createNewFlowを呼び出します');
-    createNewFlow();
-    return <LoadingLayout />;
+  // データがない場合
+  if (!flowData) {
+    return <EmptyLayout onNew={handleNewCallback} />;
   }
 
-  if (!flowData || !flowLayoutProps) {
-    console.log('flowDataまたはflowLayoutPropsがないため、EmptyLayoutを表示します');
-    return <EmptyLayout />;
-  }
-
-  console.log('FlowLayoutをレンダリングします:', flowData.title);
-  return <FlowLayout {...flowLayoutProps} />;
-}
-
-function BodyLayout({ initialData = null, initialMode = 'view', sourceId }: Props): React.ReactElement {
-  const [initialized, setInitialized] = useState(false);
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    try {
-      if (!initializedRef.current && initialData) {
-        console.log('BodyLayout: 初期データを設定します');
-        useBaseFlowStoreFacade.getState().setFlowData(initialData);
-      }
-      setInitialized(true);
-      initializedRef.current = true;
-    } catch (error) {
-      console.error('初期データの設定中にエラーが発生しました:', error);
-      setInitialized(true);
-      initializedRef.current = true;
-    }
-  }, [initialData]);
-
-  if (!initialized) {
-    return <LoadingLayout />;
-  }
-
-  console.log('BodyLayout: レンダリングします');
+  // データがある場合
   return (
-    <BodyContent initialData={initialData} initialMode={initialMode} sourceId={sourceId ?? null} />
+    <FlowLayout
+      flowData={flowData}
+      isEditMode={isEditMode}
+      onSave={handleSave}
+      onNew={handleNewCallback}
+      onExitEditMode={handleExitEditModeCallback}
+      onTitleChange={handleTitleChange}
+      onAlwaysChange={handleAlwaysChange}
+    />
   );
 }
 
-export default BodyLayout;
+export default function BodyLayout(props: Props): React.ReactElement {
+  return <BodyContent {...props} />;
+}

@@ -64,9 +64,11 @@ export const SheetTrigger = ({
 export const SheetContent = ({
   side = 'left',
   children,
+  className = '',
 }: {
   side?: 'left' | 'right';
   children: React.ReactNode;
+  className?: string;
 }): JSX.Element | null => {
   const { t } = useTranslation();
   const context = useContext(SheetContext);
@@ -82,7 +84,7 @@ export const SheetContent = ({
   return (
     <div className="fixed inset-0 z-50">
       <div className={overlayClasses} onClick={() => context.setOpen(false)} />
-      <div className={sheetClasses}>
+      <div className={`${sheetClasses} ${className}`}>
         <div className="p-4">
           <button onClick={() => context.setOpen(false)} className="mb-4">
             {t('close')}
