@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { CharacterIcon } from './CharacterIcon';
 import { describe, it, expect, vi } from 'vitest';
+import { renderTableCell } from '@/test/table-test-utils';
 
 describe('CharacterIcon', () => {
   const defaultProps = {
@@ -11,7 +12,7 @@ describe('CharacterIcon', () => {
   };
 
   it('表示モードで正しくレンダリングされる', () => {
-    render(<CharacterIcon {...defaultProps} />);
+    renderTableCell(<CharacterIcon {...defaultProps} />);
     const cell = screen.getByRole('cell');
     const text = screen.getByRole('text');
 
@@ -21,7 +22,7 @@ describe('CharacterIcon', () => {
   });
 
   it('編集モードで正しくレンダリングされる', () => {
-    render(<CharacterIcon {...defaultProps} isEditing={true} />);
+    renderTableCell(<CharacterIcon {...defaultProps} isEditing={true} />);
     const input = screen.getByRole('textbox') as HTMLInputElement;
 
     expect(input).toBeInTheDocument();
@@ -31,7 +32,7 @@ describe('CharacterIcon', () => {
 
   it('入力値の変更が正しく処理される', () => {
     const handleChange = vi.fn();
-    render(<CharacterIcon {...defaultProps} isEditing={true} onChange={handleChange} />);
+    renderTableCell(<CharacterIcon {...defaultProps} isEditing={true} onChange={handleChange} />);
 
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'ジータ' } });
@@ -40,11 +41,19 @@ describe('CharacterIcon', () => {
   });
 
   it('メモ化されたコンポーネントが正しく再レンダリングされる', () => {
-    const { rerender } = render(<CharacterIcon {...defaultProps} />);
+    const { rerender } = renderTableCell(<CharacterIcon {...defaultProps} />);
     expect(screen.getByText('グラン')).toBeInTheDocument();
 
     // プロパティを変更して再レンダリング
-    rerender(<CharacterIcon {...defaultProps} name="ジータ" />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <CharacterIcon {...defaultProps} name="ジータ" />
+          </tr>
+        </tbody>
+      </table>
+    );
     expect(screen.getByText('ジータ')).toBeInTheDocument();
   });
 });

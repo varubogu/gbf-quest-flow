@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import type { RenderResult } from '@testing-library/react';
 import { TableRow } from './TableRow';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderTableRow } from '@/test/table-test-utils';
 
 describe('ActionTableRow', () => {
   const mockData = {
@@ -29,7 +30,7 @@ describe('ActionTableRow', () => {
   let rendered: RenderResult;
 
   beforeEach(() => {
-    rendered = render(<TableRow {...defaultProps} />);
+    rendered = renderTableRow(<TableRow {...defaultProps} />);
   });
 
   it('通常モードで正しく表示される', () => {
@@ -52,7 +53,13 @@ describe('ActionTableRow', () => {
   });
 
   it('編集モードで追加・削除ボタンが表示される', () => {
-    rendered.rerender(<TableRow {...defaultProps} isEditMode={true} />);
+    rendered.rerender(
+      <table>
+        <tbody>
+          <TableRow {...defaultProps} isEditMode={true} />
+        </tbody>
+      </table>
+    );
 
     // 追加・削除ボタンが表示されていることを確認
     const buttons = screen.getAllByRole('button');
@@ -73,7 +80,13 @@ describe('ActionTableRow', () => {
   });
 
   it('編集モードでボタンクリックイベントが正しく発火する', () => {
-    rendered.rerender(<TableRow {...defaultProps} isEditMode={true} />);
+    rendered.rerender(
+      <table>
+        <tbody>
+          <TableRow {...defaultProps} isEditMode={true} />
+        </tbody>
+      </table>
+    );
 
     const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(2);
@@ -97,7 +110,13 @@ describe('ActionTableRow', () => {
     expect(row).toHaveClass('test-class');
 
     // 現在の行
-    rendered.rerender(<TableRow {...defaultProps} isCurrentRow={true} />);
+    rendered.rerender(
+      <table>
+        <tbody>
+          <TableRow {...defaultProps} isCurrentRow={true} />
+        </tbody>
+      </table>
+    );
     row = screen.getByTestId('action-row-0');
     expect(row).toHaveClass('test-class');
   });

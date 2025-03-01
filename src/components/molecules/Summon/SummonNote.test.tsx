@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SummonNote } from './SummonNote';
 import { describe, it, expect, vi } from 'vitest';
+import { renderTableCell } from '@/test/table-test-utils';
 
 // i18nのモック
 vi.mock('react-i18next', () => ({
@@ -28,7 +29,7 @@ describe('SummonNote', () => {
   };
 
   it('表示モードで正しくレンダリングされる', () => {
-    render(<SummonNote {...defaultProps} />);
+    renderTableCell(<SummonNote {...defaultProps} />);
     const cell = screen.getByRole('cell');
     const text = screen.getByRole('text');
 
@@ -39,7 +40,7 @@ describe('SummonNote', () => {
   });
 
   it('編集モードで正しくレンダリングされる', () => {
-    render(<SummonNote {...defaultProps} isEditing={true} />);
+    renderTableCell(<SummonNote {...defaultProps} isEditing={true} />);
     const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 
     expect(textarea).toBeInTheDocument();
@@ -50,7 +51,7 @@ describe('SummonNote', () => {
 
   it('入力値の変更が正しく処理される', () => {
     const handleChange = vi.fn();
-    render(<SummonNote {...defaultProps} isEditing={true} onChange={handleChange} />);
+    renderTableCell(<SummonNote {...defaultProps} isEditing={true} onChange={handleChange} />);
 
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: '新しい効果' } });
@@ -59,11 +60,19 @@ describe('SummonNote', () => {
   });
 
   it('メモ化されたコンポーネントが正しく再レンダリングされる', () => {
-    const { rerender } = render(<SummonNote {...defaultProps} />);
+    const { rerender } = renderTableCell(<SummonNote {...defaultProps} />);
     const text = screen.getByRole('text');
     expect(text).toHaveTextContent('主召喚石');
 
-    rerender(<SummonNote {...defaultProps} note="新しい効果" />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <SummonNote {...defaultProps} note="新しい効果" />
+          </tr>
+        </tbody>
+      </table>
+    );
     expect(screen.getByRole('text')).toHaveTextContent('新しい効果');
   });
 });

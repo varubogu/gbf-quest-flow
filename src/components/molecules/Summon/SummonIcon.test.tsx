@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SummonIcon } from './SummonIcon';
 import { describe, it, expect, vi } from 'vitest';
+import { renderTableCell } from '@/test/table-test-utils';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -22,7 +23,7 @@ describe('SummonIcon', () => {
   };
 
   it('表示モードで正しくレンダリングされる', () => {
-    render(<SummonIcon {...defaultProps} />);
+    renderTableCell(<SummonIcon {...defaultProps} />);
     const cell = screen.getByRole('cell');
     const text = screen.getByRole('text');
 
@@ -32,7 +33,7 @@ describe('SummonIcon', () => {
   });
 
   it('編集モードで正しくレンダリングされる', () => {
-    render(<SummonIcon {...defaultProps} isEditing={true} />);
+    renderTableCell(<SummonIcon {...defaultProps} isEditing={true} />);
     const input = screen.getByRole('textbox') as HTMLInputElement;
 
     expect(input).toBeInTheDocument();
@@ -43,7 +44,7 @@ describe('SummonIcon', () => {
 
   it('入力値の変更が正しく処理される', () => {
     const handleChange = vi.fn();
-    render(<SummonIcon {...defaultProps} isEditing={true} onChange={handleChange} />);
+    renderTableCell(<SummonIcon {...defaultProps} isEditing={true} onChange={handleChange} />);
 
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'ルシフェル' } });
@@ -52,11 +53,19 @@ describe('SummonIcon', () => {
   });
 
   it('メモ化されたコンポーネントが正しく再レンダリングされる', () => {
-    const { rerender } = render(<SummonIcon {...defaultProps} />);
+    const { rerender } = renderTableCell(<SummonIcon {...defaultProps} />);
     const text = screen.getByRole('text');
     expect(text).toHaveTextContent('バハムート');
 
-    rerender(<SummonIcon {...defaultProps} name="ルシフェル" />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <SummonIcon {...defaultProps} name="ルシフェル" />
+          </tr>
+        </tbody>
+      </table>
+    );
     expect(screen.getByRole('text')).toHaveTextContent('ルシフェル');
   });
 });

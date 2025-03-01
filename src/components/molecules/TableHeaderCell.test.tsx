@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import TableHeaderCell from './TableHeaderCell';
 import { describe, it, expect, vi } from 'vitest';
+import { renderTableHeaderCell } from '@/test/table-test-utils';
 
 // columnTranslationKeysのモック
 vi.mock('@/config/actionTable', () => ({
@@ -35,36 +36,52 @@ vi.mock('react-i18next', () => ({
 
 describe('TableHeaderCell', () => {
   it('ActionTableColumnの場合、翻訳されたテキストが表示される', () => {
-    render(<TableHeaderCell column="action" alignment="left" />);
+    renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
     expect(screen.getByText('アクション')).toBeInTheDocument();
   });
 
   it('カスタム翻訳キーが指定された場合、その翻訳が表示される', () => {
-    render(<TableHeaderCell column="custom" alignment="left" translationKey="customKey" />);
+    renderTableHeaderCell(<TableHeaderCell column="custom" alignment="left" translationKey="customKey" />);
     expect(screen.getByText('カスタム値')).toBeInTheDocument();
   });
 
   it('翻訳キーがない場合、columnの値がそのまま表示される', () => {
-    render(<TableHeaderCell column="customColumn" alignment="left" />);
+    renderTableHeaderCell(<TableHeaderCell column="customColumn" alignment="left" />);
     expect(screen.getByText('customColumn')).toBeInTheDocument();
   });
 
   it('alignmentに応じてテキスト配置が設定される', () => {
-    const { rerender } = render(<TableHeaderCell column="action" alignment="left" />);
+    const { rerender } = renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
     let cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveStyle({ textAlign: 'left' });
 
-    rerender(<TableHeaderCell column="action" alignment="center" />);
+    rerender(
+      <table>
+        <thead>
+          <tr>
+            <TableHeaderCell column="action" alignment="center" />
+          </tr>
+        </thead>
+      </table>
+    );
     cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveStyle({ textAlign: 'center' });
 
-    rerender(<TableHeaderCell column="action" alignment="right" />);
+    rerender(
+      <table>
+        <thead>
+          <tr>
+            <TableHeaderCell column="action" alignment="right" />
+          </tr>
+        </thead>
+      </table>
+    );
     cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveStyle({ textAlign: 'right' });
   });
 
   it('data-field属性が設定される', () => {
-    render(<TableHeaderCell column="action" alignment="left" />);
+    renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
     const cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveAttribute('data-field', 'action');
   });

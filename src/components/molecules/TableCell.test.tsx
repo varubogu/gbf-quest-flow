@@ -1,7 +1,8 @@
-import { render, screen, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { TableCell } from './TableCell';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import { renderTableCell } from '@/test/table-test-utils';
 
 // Textコンポーネントのモック
 vi.mock('../atoms/Text', () => ({
@@ -26,14 +27,14 @@ describe('TableCell', () => {
   });
 
   it('通常モードで正しく表示される', () => {
-    render(<TableCell {...defaultProps} />);
+    renderTableCell(<TableCell {...defaultProps} />);
 
     expect(screen.getByText('テストコンテンツ')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('クリックで編集モードに入る', async () => {
-    render(<TableCell {...defaultProps} isEditable={true} />);
+    renderTableCell(<TableCell {...defaultProps} isEditable={true} />);
 
     // 要素の検索
     const cell = screen.getByTestId('text-component');
@@ -52,7 +53,7 @@ describe('TableCell', () => {
   });
 
   it('isEditingの状態に応じてpreタグとtextareaが切り替わる', async () => {
-    render(<TableCell {...defaultProps} isEditable={true} />);
+    renderTableCell(<TableCell {...defaultProps} isEditable={true} />);
 
     // 初期状態（編集モードではない）を確認
     expect(screen.getByTestId('text-component')).toBeInTheDocument();
@@ -119,7 +120,7 @@ describe('TableCell', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(<TableCell {...defaultProps} isEditable={true} onChange={onChange} />);
+    renderTableCell(<TableCell {...defaultProps} isEditable={true} onChange={onChange} />);
 
     // 対象のElement取得
     const cell = screen.getByTestId('text-component');
@@ -154,9 +155,7 @@ describe('TableCell', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    act(() => {
-      render(<TableCell {...defaultProps} isEditable={true} onChange={onChange} />);
-    });
+    renderTableCell(<TableCell {...defaultProps} isEditable={true} onChange={onChange} />);
 
     // 対象のElement取得
     const cell = screen.getByTestId('text-component');
@@ -188,37 +187,53 @@ describe('TableCell', () => {
   });
 
   it('異なる配置で正しくスタイルが適用される', async () => {
-    const { rerender } = render(<TableCell {...defaultProps} />);
+    const { rerender } = renderTableCell(<TableCell {...defaultProps} />);
 
     // 左寄せ
     let cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-left');
 
     // 中央寄せ
-    rerender(<TableCell {...defaultProps} alignment="center" />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <TableCell {...defaultProps} alignment="center" />
+          </tr>
+        </tbody>
+      </table>
+    );
     cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-center');
 
     // 右寄せ
-    rerender(<TableCell {...defaultProps} alignment="right" />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <TableCell {...defaultProps} alignment="right" />
+          </tr>
+        </tbody>
+      </table>
+    );
     cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-right');
   });
 
   it('ヘッダーセルとして表示される', () => {
-    render(<TableCell {...defaultProps} isHeader={true} />);
+    renderTableCell(<TableCell {...defaultProps} isHeader={true} />);
     const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('bg-green-300');
   });
 
   it('現在の行のセルとして表示される', () => {
-    render(<TableCell {...defaultProps} isCurrentRow={true} />);
+    renderTableCell(<TableCell {...defaultProps} isCurrentRow={true} />);
     const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('bg-accent');
   });
 
   it('tdとして表示される', () => {
-    render(<TableCell {...defaultProps}/>);
+    renderTableCell(<TableCell {...defaultProps}/>);
     const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toBeInTheDocument();
     expect(cell).toHaveClass('border-b border-r border-gray-400 p-0.5');

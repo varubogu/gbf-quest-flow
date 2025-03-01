@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SkillDisplay } from './SkillDisplay';
 import { describe, it, expect, vi } from 'vitest';
+import { renderTableCell } from '@/test/table-test-utils';
 
 describe('SkillDisplay', () => {
   const multilineText = `1行目
@@ -15,7 +16,7 @@ describe('SkillDisplay', () => {
   };
 
   it('表示モードで正しくレンダリングされる', () => {
-    const { container } = render(<SkillDisplay {...defaultProps} />);
+    const { container } = renderTableCell(<SkillDisplay {...defaultProps} />);
 
     const cell = screen.getByRole('cell');
     const text = screen.getByRole('text');
@@ -34,7 +35,7 @@ describe('SkillDisplay', () => {
   });
 
   it('編集モードで正しくレンダリングされる', () => {
-    render(<SkillDisplay {...defaultProps} isEditing={true} />);
+    renderTableCell(<SkillDisplay {...defaultProps} isEditing={true} />);
     const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
 
     expect(textarea).toBeInTheDocument();
@@ -44,7 +45,7 @@ describe('SkillDisplay', () => {
 
   it('入力値の変更が正しく処理される', () => {
     const handleChange = vi.fn();
-    render(<SkillDisplay {...defaultProps} isEditing={true} onChange={handleChange} />);
+    renderTableCell(<SkillDisplay {...defaultProps} isEditing={true} onChange={handleChange} />);
 
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: '新しいテスト' } });
@@ -53,12 +54,20 @@ describe('SkillDisplay', () => {
   });
 
   it('メモ化されたコンポーネントが正しく再レンダリングされる', () => {
-    const { rerender } = render(<SkillDisplay {...defaultProps} />);
+    const { rerender } = renderTableCell(<SkillDisplay {...defaultProps} />);
     const initialText = screen.getByRole('text');
     expect(initialText).toHaveTextContent('1行目');
 
     const newText = '新しいテキスト';
-    rerender(<SkillDisplay {...defaultProps} text={newText} />);
+    rerender(
+      <table>
+        <tbody>
+          <tr>
+            <SkillDisplay {...defaultProps} text={newText} />
+          </tr>
+        </tbody>
+      </table>
+    );
     const updatedText = screen.getByRole('text');
     expect(updatedText).toHaveTextContent(newText);
   });
