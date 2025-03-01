@@ -43,7 +43,7 @@ vi.mock('@/lib/i18n', () => ({
     }),
     language: 'ja',
     changeLanguage: vi.fn(),
-    t: (key: string) => key,
+    t: (key: string)  => key,
     exists: vi.fn(() => true),
     options: {
       fallbackLng: ['en'],
@@ -53,10 +53,10 @@ vi.mock('@/lib/i18n', () => ({
 }));
 
 // モック用のi18nextインスタンス
-const mockI18n = {
+const _mockI18n = {
   language: 'ja',
   changeLanguage: vi.fn(),
-  t: (key: string) => key,
+  t: (key: string): string => key,
   exists: vi.fn(() => true),
   options: {
     fallbackLng: ['en'],
