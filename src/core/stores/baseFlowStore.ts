@@ -19,6 +19,10 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
   // 更新用メソッド
   setFlowData: (data: Flow | null): void => {
     try {
+      if (!data) {
+        set({ flowData: null });
+        return;
+      }
       const adjustedData = {
         ...data,
         organization: adjustOrganizationData(data.organization),
