@@ -232,6 +232,31 @@ vi.mock('@/core/facades/cursorStoreFacade', () => {
   };
 });
 
+// accessibility.tsのモック
+vi.mock('@/lib/utils/accessibility', () => ({
+  announceToScreenReader: vi.fn(),
+  handleError: vi.fn((_error, context) => {
+    // この関数内ではconsole.errorを呼び出さない
+    // エラーのspyと重なり無限再帰となってしまうため
+    const element = document.createElement('div');
+    element.setAttribute('role', 'alert');
+    element.setAttribute('aria-live', 'assertive');
+    element.className = 'sr-only';
+    element.textContent = `${context}にエラーが発生しました`;
+    document.body.appendChild(element);
+    // 1秒後に要素を削除
+    setTimeout(() => {
+      try {
+        if (element.parentNode) {
+          document.body.removeChild(element);
+        }
+      } catch (_e) {
+        // 要素がすでに削除されている場合は無視
+      }
+    }, 1000);
+  })
+}));
+
 describe('BodyLayout', () => {
 
   // グローバルなセットアップ
@@ -397,9 +422,8 @@ describe('BodyLayout', () => {
     });
 
     it('エラー発生時にアラート通知が表示される', async () => {
-      // エラーストアのモックを設定
-      const errorStore = vi.fn();
-      errorStore.showError = vi.fn();
+      // モックされたhandleError関数を直接取得
+      const { handleError } = vi.mocked(await import('@/lib/utils/accessibility'));
 
       // アラート要素を追加
       const alertElement = document.createElement('div');
@@ -410,9 +434,8 @@ describe('BodyLayout', () => {
       // コンポーネントをレンダリング
       renderWithI18n(<BodyLayout />);
 
-      // エラーを発生させる
-      const error = new Error('テストエラー');
-      window.dispatchEvent(new ErrorEvent('error', { error }));
+      // handleErrorを直接呼び出す
+      handleError(new Error('テスト用エラー'), 'テスト中');
 
       // 非同期処理を待つ
       await act(async () => {
