@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { undo, redo } from '@/core/facades/historyFacade';
@@ -11,18 +12,19 @@ interface TableContainerProps {
   data?: Action[];
 }
 
-export const TableContainer: React.FC<TableContainerProps> = ({
+export function TableContainer({
   isEditMode = false,
   data,
-}) => {
+}: TableContainerProps): JSX.Element {
+  const { t } = useTranslation();
   const currentRow = useCursorStoreFacade((state: any) => state.currentRow);
   const setCurrentRow = useCursorStoreFacade((state: any) => state.setCurrentRow);
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
-  const setFlowData = useBaseFlowStoreFacade((state: any) => state.setFlowData);
+  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const setFlowData = useBaseFlowStore((state: any) => state.setFlowData);
   const settings = useSettingsStoreFacade((state: any) => state.settings);
 
   // キーボードイベントのハンドラを追加
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditMode) return;
 
     const handleKeyDown = (e: KeyboardEvent): void => {
@@ -200,4 +202,4 @@ export const TableContainer: React.FC<TableContainerProps> = ({
       onPasteRows={handlePasteRows}
     />
   );
-};
+}

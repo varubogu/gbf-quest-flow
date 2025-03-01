@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
@@ -17,10 +17,10 @@ interface WeaponPanelProps {
   isEditing: boolean;
 }
 
-export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
+export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
-  const updateFlowData = useBaseFlowStoreFacade((state: any) => state.updateFlowData);
+  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const updateFlowData = useBaseFlowStore((state: any) => state.updateFlowData);
 
   // メモ化された武器データを作成
   const weaponData = useMemo(() => {
@@ -243,4 +243,4 @@ export const WeaponPanel: React.FC<WeaponPanelProps> = ({ isEditing }) => {
       />
     </div>
   );
-};
+}

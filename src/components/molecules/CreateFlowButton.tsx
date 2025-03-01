@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useEditModeStore from '@/core/stores/editModeStore';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/atoms/Button';
+import { Plus } from 'lucide-react';
+import type { JSX } from 'react';
 
 interface CreateFlowButtonProps {
   className?: string;
   onClick?: () => void;
 }
 
-export const CreateFlowButton: React.FC<CreateFlowButtonProps> = ({
-  className,
-  onClick
-}) => {
+export function CreateFlowButton({ className, onClick }: CreateFlowButtonProps): JSX.Element {
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
-  const createNewFlow = useBaseFlowStoreFacade((state: any) => state.createNewFlow);
+  const createNewFlow = useEditModeStore((state: any) => state.createNewFlow);
 
   const handleClick = async () => {
     try {
@@ -46,4 +46,4 @@ export const CreateFlowButton: React.FC<CreateFlowButtonProps> = ({
       {isCreating ? t('creating') : t('newData')}
     </button>
   );
-};
+}

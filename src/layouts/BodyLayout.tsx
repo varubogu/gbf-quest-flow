@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
@@ -11,6 +12,7 @@ import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import { useKeyboardShortcuts } from '@/core/hooks/ui/base/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   initialData?: Flow | null;
@@ -21,13 +23,14 @@ interface Props {
 function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props): React.ReactElement {
   const [isLoading, setIsLoading] = useState(true);
   const initializedRef = useRef(false);
+  const { t } = useTranslation();
 
   // 各ストアから状態を取得 - 型アサーションを使用
-  const flowData = useBaseFlowStoreFacade((state) => (state as any).flowData);
-  const isEditMode = useBaseFlowStoreFacade((state) => (state as any).isEditMode);
-  const setIsEditMode = useBaseFlowStoreFacade((state) => (state as any).setIsEditMode);
-  const setFlowData = useBaseFlowStoreFacade((state) => (state as any).setFlowData);
-  const createNewFlow = useBaseFlowStoreFacade((state) => (state as any).createNewFlow);
+  const flowData = useBaseFlowStore((state) => (state as any).flowData);
+  const isEditMode = useEditModeStore((state) => (state as any).isEditMode);
+  const setIsEditMode = useEditModeStore((state) => (state as any).setIsEditMode);
+  const setFlowData = useBaseFlowStore((state) => (state as any).setFlowData);
+  const createNewFlow = useEditModeStore((state) => (state as any).createNewFlow);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 

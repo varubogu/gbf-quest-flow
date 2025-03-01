@@ -7,7 +7,8 @@ import {
   SheetTrigger,
 } from '@/components/molecules/Sheet';
 import { useTranslation } from 'react-i18next';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
 import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
@@ -34,11 +35,11 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const [menuView, setMenuView] = useState<MenuView>('menu');
 
   // 型アサーションを使用して型エラーを回避
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
-  const originalData = useBaseFlowStoreFacade((state: any) => state.originalData);
+  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const originalData = useBaseFlowStore((state: any) => state.originalData);
   const loadFlowFromFile = useFileOperationsFacade((state: any) => state.loadFlowFromFile);
-  const isEditMode = useBaseFlowStoreFacade((state: any) => state.isEditMode);
-  const setIsEditMode = useBaseFlowStoreFacade((state: any) => state.setIsEditMode);
+  const isEditMode = useEditModeStore((state: any) => state.isEditMode);
+  const setIsEditMode = useEditModeStore((state: any) => state.setIsEditMode);
 
   const { hasChanges } = useEditHistory(flowData);
 

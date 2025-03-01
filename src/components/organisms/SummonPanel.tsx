@@ -1,5 +1,5 @@
 import React from 'react';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
@@ -16,10 +16,10 @@ interface SummonPanelProps {
   isEditing: boolean;
 }
 
-export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
+export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
-  const updateFlowData = useBaseFlowStoreFacade((state: any) => state.updateFlowData);
+  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const updateFlowData = useBaseFlowStore((state: any) => state.updateFlowData);
 
   if (!flowData) return null;
 
@@ -184,4 +184,4 @@ export const SummonPanel: React.FC<SummonPanelProps> = ({ isEditing }) => {
       </div>
     </div>
   );
-};
+}

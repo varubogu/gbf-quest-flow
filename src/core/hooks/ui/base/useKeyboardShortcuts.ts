@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import type { Flow } from '@/types/models';
 import { handleFlowSave, handleNewFlow } from '@/core/facades/flowEventService';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
+import type { BaseFlowState } from '@/types/flowStore.types';
 
 // 従来のインターフェース
 interface Props {
@@ -28,8 +30,8 @@ interface BaseFlowState {
 // 新しいインターフェースを使用する実装
 export const useKeyboardShortcuts = (props: NewProps): void => {
   // BaseFlowStoreFacadeから状態を取得
-  const flowData = useBaseFlowStoreFacade((state: BaseFlowState) => state.flowData);
-  const isEditMode = useBaseFlowStoreFacade((state: BaseFlowState) => state.isEditMode);
+  const flowData = useBaseFlowStore((state: BaseFlowState) => state.flowData);
+  const isEditMode = useEditModeStore((state: BaseFlowState) => state.isEditMode);
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent): Promise<void> => {

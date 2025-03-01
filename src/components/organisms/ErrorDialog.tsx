@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
-import useBaseFlowStoreFacade from '@/core/facades/baseFlowStoreFacade';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 
-export const ErrorDialog: React.FC = () => {
+export function ErrorDialog(): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStoreFacade((state: any) => state.flowData);
+  const flowData = useBaseFlowStore((state: any) => state.flowData);
   const { error, isErrorDialogOpen, clearError } = useErrorStore();
 
   const handleDownload = async (): Promise<void> => {
@@ -53,4 +53,4 @@ export const ErrorDialog: React.FC = () => {
       </div>
     </Dialog>
   );
-};
+}
