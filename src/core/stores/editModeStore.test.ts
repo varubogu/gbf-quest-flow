@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useEditModeStore from './editModeStore';
 import useBaseFlowStore from './baseFlowStore';
 import {
-
+  clearHistory
 } from '@/core/services/historyService';
 import type { Flow } from '@/types/models';
 import type { HistoryState } from './historyStore';
@@ -32,7 +32,28 @@ const mockFlowData = {
   flow: [{ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' }],
 } as Flow;
 
-describe.skip('EditModeStore', () => {
+// historyServiceのモック
+vi.mock('@/core/services/historyService', () => {
+  const mockClearHistory = vi.fn();
+  const emptyHistory: HistoryState = { past: [], future: [] };
+
+  return {
+    clearHistory: mockClearHistory,
+    useHistoryService: {
+      getState: vi.fn(() => ({
+        clearHistory: mockClearHistory,
+        pushToHistory: vi.fn(),
+        undo: vi.fn(),
+        redo: vi.fn(),
+        getHistoryState: vi.fn(() => emptyHistory),
+        canUndo: vi.fn(() => false),
+        canRedo: vi.fn(() => false),
+      }))
+    }
+  };
+});
+
+describe('EditModeStore', () => {
   beforeEach(() => {
     // ストアの状態をリセット
     useEditModeStore.setState({ isEditMode: false });
@@ -46,24 +67,10 @@ describe.skip('EditModeStore', () => {
       getFlowData: (): Flow => mockFlowData,
       originalData: null,
       flowData: null,
-      setFlowData: (): void => {},
-      updateFlowData: (): void => {},
-      updateAction: (): void => {},
-      getActionById: (): undefined => undefined,
-    }));
-
-    // historyServiceのメソッドをスパイ
-    const mockClearHistory = vi.fn();
-    const emptyHistory: HistoryState = { past: [], future: [] };
-
-    vi.spyOn(useHistoryService, 'getState').mockImplementation(() => ({
-      clearHistory: mockClearHistory,
-      pushToHistory: (): void => {},
-      undo: (): void => {},
-      redo: (): void => {},
-      getHistoryState: (): HistoryState => emptyHistory,
-      canUndo: (): boolean => false,
-      canRedo: (): boolean => false,
+      setFlowData: vi.fn(),
+      updateFlowData: vi.fn(),
+      updateAction: vi.fn(),
+      getActionById: vi.fn(),
     }));
 
     // グローバルhistoryオブジェクトをモック
@@ -105,7 +112,7 @@ describe.skip('EditModeStore', () => {
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(false);
-      expect(useHistoryService.getState().clearHistory).toHaveBeenCalled();
+      expect(clearHistory).toHaveBeenCalled();
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           originalData: null
@@ -121,10 +128,10 @@ describe.skip('EditModeStore', () => {
         getFlowData: (): Flow => mockFlowData,
         originalData: mockFlowData,
         flowData: null,
-        setFlowData: (): void => {},
-        updateFlowData: (): void => {},
-        updateAction: (): void => {},
-        getActionById: (): undefined => undefined,
+        setFlowData: vi.fn(),
+        updateFlowData: vi.fn(),
+        updateAction: vi.fn(),
+        getActionById: vi.fn(),
       }));
 
       // 事前に編集モードをオンにする
@@ -137,11 +144,11 @@ describe.skip('EditModeStore', () => {
       expect(useEditModeStore.getState().isEditMode).toBe(false);
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
-          flowData: expect.anything() as Flow,
+          flowData: expect.anything(),
           originalData: null
         })
       );
-      expect(useHistoryService.getState().clearHistory).toHaveBeenCalled();
+      expect(clearHistory).toHaveBeenCalled();
       expect(history.back).toHaveBeenCalled();
     });
 
@@ -164,13 +171,13 @@ describe.skip('EditModeStore', () => {
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(true);
-      expect(useHistoryService.getState().clearHistory).toHaveBeenCalled();
+      expect(clearHistory).toHaveBeenCalled();
       expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           flowData: expect.objectContaining({
             title: '新しいフロー'
           }),
-          originalData: expect.anything() as Flow,
+          originalData: expect.anything(),
         })
       );
     });

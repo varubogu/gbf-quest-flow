@@ -51,6 +51,12 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+// window.scrollToのモック
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: vi.fn(),
+});
+
 // Zustandの状態更新を同期的に処理するためのセットアップ
 beforeAll(() => {
   vi.useFakeTimers();

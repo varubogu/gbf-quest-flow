@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react/pure';
+import { renderHook, act } from '@testing-library/react/pure';
 import { useActionCellState } from './useActionCellState';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -36,7 +36,10 @@ describe('useActionCellState', () => {
     const mockTextarea = document.createElement('textarea');
     result.current.textareaRef.current = mockTextarea;
 
-    result.current.setIsEditing(true);
+    // actでラップしてステート更新を同期的に処理
+    act(() => {
+      result.current.setIsEditing(true);
+    });
 
     // useEffectの実行を待つ
     await vi.waitFor(() => {
@@ -53,7 +56,10 @@ describe('useActionCellState', () => {
     mockTextarea.focus = mockFocus;
     result.current.textareaRef.current = mockTextarea;
 
-    result.current.setIsEditing(true);
+    // actでラップしてステート更新を同期的に処理
+    act(() => {
+      result.current.setIsEditing(true);
+    });
 
     // useEffectの実行を待つ
     await vi.waitFor(() => {
@@ -69,7 +75,10 @@ describe('useActionCellState', () => {
     Object.defineProperty(mockTextarea, 'scrollHeight', { value: 100 });
     result.current.textareaRef.current = mockTextarea;
 
-    result.current.adjustTextareaHeight();
+    // actでラップしてコールバック実行を同期的に処理
+    act(() => {
+      result.current.adjustTextareaHeight();
+    });
 
     // 一度autoに設定された後、scrollHeightに基づいて高さが設定されることを確認
     expect(mockTextarea.style.height).toBe('100px');

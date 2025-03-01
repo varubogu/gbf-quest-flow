@@ -3,6 +3,13 @@ import { TableCell } from './TableCell';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
+// Textコンポーネントのモック
+vi.mock('../atoms/Text', () => ({
+  Text: ({ children, variant }: { children: React.ReactNode; variant: string }) => (
+    <pre data-testid="text-component" data-variant={variant}>{children}</pre>
+  ),
+}));
+
 describe('TableCell', () => {
   const defaultProps = {
     content: 'テストコンテンツ',
@@ -29,7 +36,7 @@ describe('TableCell', () => {
     render(<TableCell {...defaultProps} isEditable={true} />);
 
     // 要素の検索
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+    const cell = screen.getByTestId('text-component');
     act(() => {
       cell.click();
     });
@@ -48,11 +55,11 @@ describe('TableCell', () => {
     render(<TableCell {...defaultProps} isEditable={true} />);
 
     // 初期状態（編集モードではない）を確認
-    expect(screen.getByText('テストコンテンツ', { selector: 'pre' })).toBeInTheDocument();
+    expect(screen.getByTestId('text-component')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 
     // クリックして編集モードに入る
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+    const cell = screen.getByTestId('text-component');
     act(() => {
       cell.click();
     });
@@ -63,7 +70,7 @@ describe('TableCell', () => {
     });
 
     // 編集モード時の状態を確認
-    expect(screen.queryByText('テストコンテンツ', { selector: 'pre' })).not.toBeInTheDocument();
+    expect(screen.queryByTestId('text-component')).not.toBeInTheDocument();
     const textarea = screen.getByRole('textbox');
     expect(textarea).toBeInTheDocument();
     expect(textarea).toHaveValue('テストコンテンツ');
@@ -79,7 +86,7 @@ describe('TableCell', () => {
     });
 
     // 編集モードが終了したことを確認
-    expect(screen.getByText('テストコンテンツ', { selector: 'pre' })).toBeInTheDocument();
+    expect(screen.getByTestId('text-component')).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
@@ -115,7 +122,7 @@ describe('TableCell', () => {
     render(<TableCell {...defaultProps} isEditable={true} onChange={onChange} />);
 
     // 対象のElement取得
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+    const cell = screen.getByTestId('text-component');
 
     // Elementクリック
     act(() => {
@@ -152,7 +159,7 @@ describe('TableCell', () => {
     });
 
     // 対象のElement取得
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' });
+    const cell = screen.getByTestId('text-component');
 
     // Elementクリック
     act(() => {
@@ -184,35 +191,35 @@ describe('TableCell', () => {
     const { rerender } = render(<TableCell {...defaultProps} />);
 
     // 左寄せ
-    let cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    let cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-left');
 
     // 中央寄せ
     rerender(<TableCell {...defaultProps} alignment="center" />);
-    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-center');
 
     // 右寄せ
     rerender(<TableCell {...defaultProps} alignment="right" />);
-    cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('text-right');
   });
 
   it('ヘッダーセルとして表示される', () => {
     render(<TableCell {...defaultProps} isHeader={true} />);
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('bg-green-300');
   });
 
   it('現在の行のセルとして表示される', () => {
     render(<TableCell {...defaultProps} isCurrentRow={true} />);
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toHaveClass('bg-accent');
   });
 
   it('tdとして表示される', () => {
     render(<TableCell {...defaultProps}/>);
-    const cell = screen.getByText('テストコンテンツ', { selector: 'pre' }).closest('td');
+    const cell = screen.getByTestId('text-component').closest('td');
     expect(cell).toBeInTheDocument();
     expect(cell).toHaveClass('border-b border-r border-gray-400 p-0.5');
   });
