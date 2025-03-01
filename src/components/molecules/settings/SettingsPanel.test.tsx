@@ -1,11 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SettingsPanel } from './SettingsPanel';
-import { vi } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
 }
-
 
 interface SettingsMock {
   language: string;
@@ -25,15 +24,44 @@ interface SettingsStoreMockResult {
 
 interface UseI18nMockResult {
   useTranslation: () => UseTranslationResult;
+  initReactI18next: {
+    type: string;
+    init: () => void;
+  };
   default: () => SettingsStoreResult;
 }
 
+const mockUpdateSettings = vi.fn();
+
+interface UseSettingsStoreResult {
+  settings: {
+    buttonAlignment: string;
+    language: string;
+    tablePadding: number;
+    actionTableClickType: string;
+  };
+  updateSettings: () => void;
+}
+
+const mockUseSettingsStore = vi.fn(() => ({
+  settings: {
+    language: '日本語',
+    buttonAlignment: 'left',
+    tablePadding: 4,
+    actionTableClickType: 'single',
+  },
+  updateSettings: mockUpdateSettings,
+}));
 
 // モックの作成
 vi.mock('react-i18next', (): UseI18nMockResult => ({
   useTranslation: (): UseTranslationResult => ({
     t: (key: string): string => key,
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
   default: () => ({
     settings: {
       language: '日本語',
@@ -45,7 +73,7 @@ vi.mock('react-i18next', (): UseI18nMockResult => ({
   }),
 }));
 
-vi.mock('@/stores/settingsStore', (): SettingsStoreMockResult => ({
+vi.mock('@/core/stores/settingsStore', (): SettingsStoreMockResult => ({
   default: () => ({
     settings: {
       language: '日本語',
@@ -55,6 +83,10 @@ vi.mock('@/stores/settingsStore', (): SettingsStoreMockResult => ({
     },
     updateSettings: vi.fn(),
   }),
+}));
+
+vi.mock('@/core/facades/settingsStoreFacade', () => ({
+  default: (): UseSettingsStoreResult => mockUseSettingsStore(),
 }));
 
 describe('SettingsPanel', () => {

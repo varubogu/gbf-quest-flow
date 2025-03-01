@@ -11,6 +11,10 @@ vi.mock('react-i18next', () => ({
   useTranslation: (): UseTranslationResult => ({
     t: (key: string) => key,
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  }
 }));
 
 const mockUpdateSettings = vi.fn();
@@ -28,7 +32,11 @@ interface UseSettingsStoreResult {
   updateSettings: () => void;
 }
 
-vi.mock('@/stores/settingsStore', () => ({
+vi.mock('@/core/stores/settingsStore', () => ({
+  default: (): UseSettingsStoreResult => mockUseSettingsStore(),
+}));
+
+vi.mock('@/core/facades/settingsStoreFacade', () => ({
   default: (): UseSettingsStoreResult => mockUseSettingsStore(),
 }));
 
@@ -67,7 +75,7 @@ describe('ButtonAlignmentSetting', () => {
     fireEvent.click(rightRadio);
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({
-      buttonAlignment: '右',
+      buttonAlignment: 'right',
     });
   });
 
@@ -75,7 +83,7 @@ describe('ButtonAlignmentSetting', () => {
     // 右寄せが選択された状態でモックを更新
     mockUseSettingsStore.mockImplementation(() => ({
       settings: {
-        buttonAlignment: '右',
+        buttonAlignment: 'right',
       },
       updateSettings: mockUpdateSettings,
     }));
