@@ -4,7 +4,6 @@ import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
-import useFlowStore from '../stores/flowStore';
 import { clearHistory } from './historyService';
 
 /**
@@ -42,14 +41,6 @@ export async function newFlowData(): Promise<void> {
       originalData: null, // 新規作成時はoriginalDataはnull
     });
 
-    // 旧flowStoreも更新（後方互換性のため）
-    useFlowStore.setState({
-      flowData: newData,
-      originalData: null,
-      currentRow: 0,
-      isEditMode: true
-    });
-
     // 更新後の状態を確認
     const updatedState = useBaseFlowStore.getState();
     const editState = useEditModeStore.getState();
@@ -59,7 +50,6 @@ export async function newFlowData(): Promise<void> {
 
     console.log('新しいフローデータが作成されました:', newData);
     console.log('baseFlowStoreが更新されました:', useBaseFlowStore.getState().flowData);
-    console.log('旧flowStoreも更新されました:', useFlowStore.getState().flowData);
   } catch (error) {
     console.error('新規フロー作成エラー:', error);
     handleError(error, '新規フローの作成中にエラーが発生しました');
@@ -100,14 +90,6 @@ export async function loadFlowFromFile(): Promise<void> {
       originalData: null,
     });
 
-    // 旧flowStoreも更新（後方互換性のため）
-    useFlowStore.setState({
-      flowData: data,
-      originalData: null,
-      currentRow: 0,
-      isEditMode: false
-    });
-
     // 更新後の状態を確認
     const updatedState = useBaseFlowStore.getState();
     if (!updatedState.flowData) {
@@ -116,7 +98,6 @@ export async function loadFlowFromFile(): Promise<void> {
 
     console.log('ファイルからフローデータを読み込みました:', data.title);
     console.log('baseFlowStoreが更新されました:', useBaseFlowStore.getState().flowData);
-    console.log('旧flowStoreも更新されました:', useFlowStore.getState().flowData);
 
     // URLを更新
     history.pushState(
@@ -140,11 +121,6 @@ export async function saveFlowToFile(fileName?: string): Promise<void> {
     // まずbaseFlowStoreからデータを取得
     let currentData = useBaseFlowStore.getState().getFlowData();
 
-    // baseFlowStoreにデータがない場合は旧flowStoreから取得
-    if (!currentData) {
-      currentData = useFlowStore.getState().flowData;
-      console.log('baseFlowStoreにデータがないため、旧flowStoreからデータを取得しました');
-    }
 
     if (!currentData) {
       throw new Error('保存するデータがありません');

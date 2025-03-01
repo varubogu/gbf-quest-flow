@@ -3,7 +3,6 @@ import type { HistoryState, HistoryStore } from '@/core/stores/historyStore';
 import useHistoryStore from '@/core/stores/historyStore';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import useFlowStore from '@/core/stores/flowStore';
 import type { BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
 
 /**
@@ -18,13 +17,6 @@ import type { BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
 const getHistoryStore = (): HistoryStore => useHistoryStore.getState();
 const getBaseFlowStore = (): BaseFlowStore => useBaseFlowStore.getState();
 const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
-
-// 旧ストアとの同期処理（後方互換性のため）
-function syncWithFlowStore(data: Flow | null): void {
-  if (data) {
-    useFlowStore.getState().setFlowData(data);
-  }
-}
 
 // 履歴状態の取得
 export const getHistoryState = (): HistoryState => getHistoryStore().getHistoryState();
@@ -54,9 +46,6 @@ export const undo = (): void => {
   if (newData) {
     // baseFlowStoreの状態を更新
     baseFlowStore.setFlowData(newData);
-
-    // 旧flowStoreも更新（後方互換性のため）
-    syncWithFlowStore(newData);
   }
 };
 
@@ -76,9 +65,6 @@ export const redo = (): void => {
   if (newData) {
     // baseFlowStoreの状態を更新
     baseFlowStore.setFlowData(newData);
-
-    // 旧flowStoreも更新（後方互換性のため）
-    syncWithFlowStore(newData);
   }
 };
 

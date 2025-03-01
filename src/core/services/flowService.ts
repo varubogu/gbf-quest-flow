@@ -1,6 +1,5 @@
 import type { Flow, Action } from '@/types/models';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
-import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { pushToHistory } from './historyService';
 
@@ -65,13 +64,6 @@ export function syncWithBaseFlowStore(data: Flow | null): void {
   useBaseFlowStore.getState().setFlowData(data);
 }
 
-// ロジック関数 - flowStoreとの同期処理（後方互換性のため）
-export function syncWithFlowStore(data: Flow | null): void {
-  if (data) {
-    useFlowStore.getState().setFlowData(data);
-  }
-}
-
 // フローデータの更新処理
 export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): void {
   try {
@@ -86,9 +78,6 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
 
     // 変更後のデータを設定
     useBaseFlowStore.getState().setFlowData(newData);
-
-    // 旧flowStoreも更新（後方互換性のため）
-    useFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加（変更後のデータを保存）
     if (isEditMode) {
@@ -110,9 +99,6 @@ export function updateAction(index: number, updates: Partial<Action>, isEditMode
 
     // 変更後のデータを設定
     useBaseFlowStore.getState().setFlowData(newData);
-
-    // 旧flowStoreも更新（後方互換性のため）
-    useFlowStore.getState().updateAction(index, updates);
 
     // 編集モード中のみ履歴に追加
     if (isEditMode) {

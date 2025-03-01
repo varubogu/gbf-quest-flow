@@ -2,7 +2,6 @@ import type { Flow, Action } from '@/types/models';
 import type { BaseFlowStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import useErrorStore from './errorStore';
-import useFlowStore from './flowStore';
 import { adjustOrganizationData } from '../services/organizationService';
 
 /**
@@ -20,21 +19,12 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
   // 更新用メソッド
   setFlowData: (data: Flow | null): void => {
     try {
-      if (data === null) {
-        set({ flowData: null });
-        // 旧flowStoreも更新（後方互換性のため）
-        useFlowStore.getState().setFlowData(null);
-        return;
-      }
-
       const adjustedData = {
         ...data,
         organization: adjustOrganizationData(data.organization),
       };
       set({ flowData: adjustedData });
 
-      // 旧flowStoreも更新（後方互換性のため）
-      useFlowStore.getState().setFlowData(adjustedData);
     } catch (error) {
       useErrorStore
         .getState()
@@ -64,9 +54,6 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
       set({
         flowData: newData,
       });
-
-      // 旧flowStoreも更新（後方互換性のため）
-      useFlowStore.getState().updateFlowData(updates);
 
       // 注：履歴への追加は、ファサードから元のflowStoreで行うため、ここでは行わない
     } catch (error) {
@@ -100,9 +87,6 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
           flow: newFlow,
         },
       });
-
-      // 旧flowStoreも更新（後方互換性のため）
-      useFlowStore.getState().updateAction(index, updates);
 
       // 注：履歴への追加は、ファサードから元のflowStoreで行うため、ここでは行わない
     } catch (error) {
