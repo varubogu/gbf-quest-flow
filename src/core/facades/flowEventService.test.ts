@@ -5,13 +5,36 @@ import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '../stores/editModeStore';
 
 // flowOperationsのモック
-vi.mock('@/utils/flowOperations', () => ({
+vi.mock('@/lib/utils/flowOperations', () => ({
   saveFlow: vi.fn().mockResolvedValue(true),
   updateNewFlowState: vi.fn(),
 }));
 
+// storeのモック
+vi.mock('@/core/stores/baseFlowStore', () => ({
+  default: {
+    getState: vi.fn().mockReturnValue({
+      setFlowData: vi.fn(),
+      originalData: { title: 'オリジナルデータ' }
+    })
+  }
+}));
+
+vi.mock('@/core/stores/editModeStore', () => ({
+  default: {
+    getState: vi.fn().mockReturnValue({
+      setIsEditMode: vi.fn(),
+      createNewFlow: vi.fn()
+    })
+  }
+}));
+
 // window.confirmのモック
 const mockConfirm = vi.spyOn(window, 'confirm');
+
+// URL.createObjectURLのモック
+globalThis.URL.createObjectURL = vi.fn();
+globalThis.URL.revokeObjectURL = vi.fn();
 
 describe('flowEventService', () => {
   const mockFlowData: Flow = {
@@ -53,6 +76,8 @@ describe('flowEventService', () => {
   describe('handleFlowSave', () => {
     it('保存が成功したら履歴をクリアして編集モードを終了する', async () => {
       const { saveFlow } = await import('@/lib/utils/flowOperations');
+      vi.mocked(saveFlow).mockResolvedValueOnce(true);
+
       const result = await handleFlowSave(mockFlowData, mockSourceId, mockClearHistory);
 
       expect(saveFlow).toHaveBeenCalledWith(mockFlowData, mockSourceId);
@@ -77,6 +102,7 @@ describe('flowEventService', () => {
   describe('handleNewFlow', () => {
     it('新規フローを作成してURL状態を更新する', async () => {
       const { updateNewFlowState } = await import('@/lib/utils/flowOperations');
+      vi.mocked(updateNewFlowState).mockImplementationOnce(() => {});
 
       handleNewFlow(mockFlowData);
 
@@ -86,6 +112,7 @@ describe('flowEventService', () => {
 
     it('flowDataがnullでも処理を実行できる', async () => {
       const { updateNewFlowState } = await import('@/lib/utils/flowOperations');
+      vi.mocked(updateNewFlowState).mockImplementationOnce(() => {});
 
       handleNewFlow(null);
 
