@@ -4,11 +4,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 
 // Zustandのモック
-vi.mock('@/stores/flowStore', () => ({
-  default: vi.fn(),
+vi.mock('@/core/stores/baseFlowStore');
+
+// useCharacterFormフックのモック
+vi.mock('@/core/hooks/domain/characters/useCharacterForm', () => ({
+  useCharacterForm: () => ({
+    handleMemberChange: vi.fn(),
+  }),
 }));
-
-
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -48,14 +51,55 @@ describe('CharacterPanel', () => {
           },
         ],
       },
+      weapon: {
+        main: { name: '', note: '', additionalSkill: '' },
+        other: [],
+        additional: [],
+      },
+      weaponEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+      totalEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+      summon: {
+        main: { name: '', note: '' },
+        friend: { name: '', note: '' },
+        other: [],
+        sub: [],
+      },
+      job: {
+        name: '',
+        note: '',
+        equipment: {
+          name: '',
+          note: '',
+        },
+        abilities: [],
+      },
     },
+    title: '',
+    quest: '',
+    author: '',
+    description: '',
+    updateDate: '',
+    note: '',
+    always: '',
+    flow: [],
   };
 
   beforeEach(() => {
-    (useBaseFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-      flowData: mockFlowData,
-      handleMemberChange: vi.fn(),
-    }));
+    // モックの実装を更新
+    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      if (selector) {
+        return selector({ flowData: mockFlowData, updateFlowData: vi.fn() });
+      }
+      return { flowData: mockFlowData, updateFlowData: vi.fn() };
+    });
   });
 
   it('正しくレンダリングされる', () => {
@@ -77,9 +121,12 @@ describe('CharacterPanel', () => {
   });
 
   it('flowDataがnullの場合は何もレンダリングしない', () => {
-    (useBaseFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
-      flowData: null,
-    }));
+    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      if (selector) {
+        return selector({ flowData: null, updateFlowData: vi.fn() });
+      }
+      return { flowData: null, updateFlowData: vi.fn() };
+    });
 
     const { container } = render(<CharacterPanel isEditing={false} />);
     expect(container.firstChild).toBeNull();

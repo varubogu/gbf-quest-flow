@@ -1,10 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
-import { I18nextProvider } from 'react-i18next';
-import i18n from '@/lib/i18n';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import type { Flow } from '@/types/types';
+
+interface UseTranslationResult {
+  t: (_key: string) => string;
+}
+
+// i18nのモック
+vi.mock('react-i18next', () => ({
+  useTranslation: (): UseTranslationResult => ({
+    t: (key: string): string => key,
+  }),
+}));
 
 // モックデータ
 const mockFlowData: Flow = {
@@ -76,50 +85,44 @@ const mockFlowData: Flow = {
   }
 };
 
-// Vitestでのモック設定
-vi.mock('@/stores/flowStore', () => ({
-  default: vi.fn(() => ({
-    flowData: mockFlowData,
-    updateFlowData: vi.fn(),
-  })),
-}));
+// モックの設定
+vi.mock('@/core/stores/baseFlowStore');
 
 describe('WeaponPanel', () => {
   beforeEach(() => {
-    vi.mocked(useBaseFlowStore).mockImplementation(() => ({
-      flowData: mockFlowData,
-      updateFlowData: vi.fn(),
-    }));
+    vi.clearAllMocks();
+    // モックの実装を更新
+    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      if (selector) {
+        return selector({ flowData: mockFlowData, updateFlowData: vi.fn() });
+      }
+      return { flowData: mockFlowData, updateFlowData: vi.fn() };
+    });
   });
 
   describe('単体テスト', () => {
     it('flowDataがnullの場合、nullを返す', () => {
-      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
-        flowData: null,
-        updateFlowData: vi.fn(),
-      }));
+      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+        if (selector) {
+          return selector({ flowData: null, updateFlowData: vi.fn() });
+        }
+        return { flowData: null, updateFlowData: vi.fn() };
+      });
 
-      const { container } = render(
-        <I18nextProvider i18n={i18n}>
-          <WeaponPanel isEditing={false} />
-        </I18nextProvider>
-      );
-
+      const { container } = render(<WeaponPanel isEditing={false} />);
       expect(container.firstChild).toBeNull();
     });
 
     it('updateFlowDataが正しく呼び出される', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
-        flowData: mockFlowData,
-        updateFlowData: mockUpdateFlowData,
-      }));
+      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+        if (selector) {
+          return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
+        }
+        return { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
+      });
 
-      render(
-        <I18nextProvider i18n={i18n}>
-          <WeaponPanel isEditing={true} />
-        </I18nextProvider>
-      );
+      render(<WeaponPanel isEditing={true} />);
 
       // メイン武器の名前を変更
       const input = screen.getByDisplayValue('テスト武器');
@@ -127,8 +130,7 @@ describe('WeaponPanel', () => {
 
       const expectedData = {
         organization: {
-          job: mockFlowData.organization.job,
-          member: mockFlowData.organization.member,
+          ...mockFlowData.organization,
           weapon: {
             ...mockFlowData.organization.weapon,
             main: {
@@ -136,9 +138,6 @@ describe('WeaponPanel', () => {
               name: '新しい武器名',
             },
           },
-          weaponEffects: mockFlowData.organization.weaponEffects,
-          totalEffects: mockFlowData.organization.totalEffects,
-          summon: mockFlowData.organization.summon,
         },
       };
 
@@ -148,11 +147,7 @@ describe('WeaponPanel', () => {
 
   describe('結合テスト', () => {
     it('表示モードで正しくデータが表示される', () => {
-      render(
-        <I18nextProvider i18n={i18n}>
-          <WeaponPanel isEditing={false} />
-        </I18nextProvider>
-      );
+      render(<WeaponPanel isEditing={false} />);
 
       // メイン武器の確認
       expect(screen.getByText('テスト武器')).toBeInTheDocument();
@@ -176,11 +171,7 @@ describe('WeaponPanel', () => {
     });
 
     it('編集モードで入力フィールドが表示される', () => {
-      render(
-        <I18nextProvider i18n={i18n}>
-          <WeaponPanel isEditing={true} />
-        </I18nextProvider>
-      );
+      render(<WeaponPanel isEditing={true} />);
 
       // メイン武器の入力フィールド確認
       expect(screen.getByDisplayValue('テスト武器')).toBeInTheDocument();
@@ -205,16 +196,14 @@ describe('WeaponPanel', () => {
 
     it('武器データの編集が正しく機能する', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
-        flowData: mockFlowData,
-        updateFlowData: mockUpdateFlowData,
-      }));
+      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+        if (selector) {
+          return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
+        }
+        return { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
+      });
 
-      render(
-        <I18nextProvider i18n={i18n}>
-          <WeaponPanel isEditing={true} />
-        </I18nextProvider>
-      );
+      render(<WeaponPanel isEditing={true} />);
 
       // メイン武器、その他武器、追加武器の編集をテスト
       const inputs = [

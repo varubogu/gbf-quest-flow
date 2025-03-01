@@ -43,43 +43,50 @@ vi.mock('react-i18next', () => ({
 }));
 
 const mockUpdateSettings = vi.fn();
-const mockUseSettingsStore = vi.fn(() => ({
+
+// 日本語設定のモック
+const mockUseSettingsStore = vi.fn().mockReturnValue({
   settings: {
     language: '日本語',
   },
   updateSettings: mockUpdateSettings,
-}));
+});
 
-const mockUseSettingsStoreEnglish = vi.fn(() => ({
+// 英語設定のモック
+const mockUseSettingsStoreEnglish = vi.fn().mockReturnValue({
   settings: {
     language: 'English',
   },
   updateSettings: mockUpdateSettings,
-}));
+});
 
 interface UseSettingsStoreResult {
   settings: {
     language: string;
   };
-  updateSettings: () => void;
+  updateSettings: (_settings: { language: string }) => void;
 }
 
+// settingsStoreのモック
 vi.mock('@/core/stores/settingsStore', () => ({
-  default: (): UseSettingsStoreResult => mockUseSettingsStore(),
+  default: () => mockUseSettingsStore(),
 }));
 
+// settingsStoreFacadeのモック
 vi.mock('@/core/facades/settingsStoreFacade', () => ({
-  default: (): UseSettingsStoreResult => mockUseSettingsStore(),
+  default: () => mockUseSettingsStore(),
 }));
-
 
 describe('LanguageSetting', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // テスト前にモックの状態をリセット
-    mockUseSettingsStore().settings = {
-      language: '日本語',
-    };
+    mockUseSettingsStore.mockReturnValue({
+      settings: {
+        language: '日本語',
+      },
+      updateSettings: mockUpdateSettings,
+    });
   });
 
   it('各言語オプションが表示されていることを確認', () => {
@@ -108,9 +115,13 @@ describe('LanguageSetting', () => {
   });
 
   it('英語（2番目の項目）が選択された状態でモックを更新し、初期表示のテスト', () => {
-    vi.mock('@/core/facades/settingsStoreFacade', () => ({
-      default: (): UseSettingsStoreResult => mockUseSettingsStoreEnglish(),
-    }));
+    // 英語設定のモックに切り替え
+    mockUseSettingsStore.mockReturnValue({
+      settings: {
+        language: 'English',
+      },
+      updateSettings: mockUpdateSettings,
+    });
 
     render(<LanguageSetting />);
     const japaneseRadio = screen.getByLabelText('japanese') as HTMLInputElement;
