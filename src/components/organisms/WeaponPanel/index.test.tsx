@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n';
-import useFlowStore from '@/core/stores/flowStore';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import type { Flow } from '@/types/types';
 
@@ -86,7 +86,7 @@ vi.mock('@/stores/flowStore', () => ({
 
 describe('WeaponPanel', () => {
   beforeEach(() => {
-    vi.mocked(useFlowStore).mockImplementation(() => ({
+    vi.mocked(useBaseFlowStore).mockImplementation(() => ({
       flowData: mockFlowData,
       updateFlowData: vi.fn(),
     }));
@@ -94,7 +94,7 @@ describe('WeaponPanel', () => {
 
   describe('単体テスト', () => {
     it('flowDataがnullの場合、nullを返す', () => {
-      vi.mocked(useFlowStore).mockImplementation(() => ({
+      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
         flowData: null,
         updateFlowData: vi.fn(),
       }));
@@ -110,7 +110,7 @@ describe('WeaponPanel', () => {
 
     it('updateFlowDataが正しく呼び出される', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useFlowStore).mockImplementation(() => ({
+      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
         flowData: mockFlowData,
         updateFlowData: mockUpdateFlowData,
       }));
@@ -205,7 +205,7 @@ describe('WeaponPanel', () => {
 
     it('武器データの編集が正しく機能する', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useFlowStore).mockImplementation(() => ({
+      vi.mocked(useBaseFlowStore).mockImplementation(() => ({
         flowData: mockFlowData,
         updateFlowData: mockUpdateFlowData,
       }));

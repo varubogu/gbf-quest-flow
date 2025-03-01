@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import useFlowStore from './flowStore';
+import useBaseFlowStore from '/baseFlowStore';
 import useHistoryStore from './historyStore';
 import organizationSettings from '@/content/settings/organization.json';
 

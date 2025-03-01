@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { CharacterPanel } from './index';
-import { describe, it, expect, vi } from 'vitest';
-import useFlowStore from '@/core/stores/flowStore';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
 
 // Zustandのモック
 vi.mock('@/stores/flowStore', () => ({
@@ -52,7 +52,7 @@ describe('CharacterPanel', () => {
   };
 
   beforeEach(() => {
-    (useFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+    (useBaseFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
       flowData: mockFlowData,
       handleMemberChange: vi.fn(),
     }));
@@ -77,7 +77,7 @@ describe('CharacterPanel', () => {
   });
 
   it('flowDataがnullの場合は何もレンダリングしない', () => {
-    (useFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
+    (useBaseFlowStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => ({
       flowData: null,
     }));
 
