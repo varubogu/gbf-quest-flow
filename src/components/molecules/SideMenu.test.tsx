@@ -195,11 +195,15 @@ describe('SideMenu', () => {
     expect(screen.getByLabelText('メニューを開く')).toBeInTheDocument();
   });
 
-  it('opens menu when hamburger button is clicked', () => {
+  it('opens menu when hamburger button is clicked', async () => {
     render(
       <SideMenu onSave={mockOnSave} onNew={mockOnNew} onExitEditMode={mockOnExitEditMode} />
     );
-    fireEvent.click(screen.getByLabelText('メニューを開く'));
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('メニューを開く'));
+    });
+
     expect(screen.getByText('menu')).toBeInTheDocument();
   });
 
@@ -207,8 +211,15 @@ describe('SideMenu', () => {
     render(
       <SideMenu onSave={mockOnSave} onNew={mockOnNew} onExitEditMode={mockOnExitEditMode} />
     );
-    fireEvent.click(screen.getByLabelText('メニューを開く'));
-    fireEvent.click(screen.getByText('options'));
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('メニューを開く'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('options'));
+    });
+
     expect(screen.getByText(/back/i)).toBeInTheDocument();
   });
 
@@ -228,8 +239,7 @@ describe('SideMenu', () => {
 
     // メニューを開く
     await act(async () => {
-      const menuButton = screen.getByLabelText('メニューを開く');
-      fireEvent.click(menuButton);
+      fireEvent.click(screen.getByLabelText('メニューを開く'));
     });
 
     // メニューが表示されるのを待つ
@@ -239,8 +249,7 @@ describe('SideMenu', () => {
 
     // 新規作成ボタンをクリック
     await act(async () => {
-      const newButton = screen.getByRole('button', { name: /newData/i });
-      fireEvent.click(newButton);
+      fireEvent.click(screen.getByRole('button', { name: /newData/i }));
     });
 
     // サービスの呼び出しを確認

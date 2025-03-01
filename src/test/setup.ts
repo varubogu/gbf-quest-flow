@@ -52,9 +52,17 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // window.scrollToのモック
+const scrollToMock = vi.fn().mockImplementation((x?: number, y?: number) => {
+  // スクロール位置を記録（必要に応じて）
+  document.documentElement.scrollTop = y || 0;
+  document.documentElement.scrollLeft = x || 0;
+  // スクロールイベントをディスパッチ
+  window.dispatchEvent(new Event('scroll'));
+});
+
 Object.defineProperty(window, 'scrollTo', {
   writable: true,
-  value: vi.fn(),
+  value: scrollToMock,
 });
 
 // Zustandの状態更新を同期的に処理するためのセットアップ
