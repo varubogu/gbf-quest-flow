@@ -16,7 +16,6 @@ const useCursorStoreFacade = create((set, get) => {
 
   // CursorStoreの変更を監視
   const unsubCursor = useCursorStore.subscribe((state) => {
-    console.log('CursorStoreFacade: CursorStoreの変更を検知しました', state.currentRow);
     set({
       currentRow: state.currentRow
     });

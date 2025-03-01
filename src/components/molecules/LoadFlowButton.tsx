@@ -18,7 +18,6 @@ export const LoadFlowButton: React.FC<LoadFlowButtonProps> = ({
   const handleClick = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      console.log('LoadFlowButton: ファイル読み込みボタンがクリックされました');
 
       await loadFlowFromFile();
 

@@ -52,7 +52,6 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const handleMenuClick = async (id: string): Promise<void> => {
     switch (id) {
       case 'new':
-        console.log('SideMenu: 新規フロー作成を開始します');
         if (await handleNew()) {
           onNew();
         }
@@ -66,7 +65,6 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
             if (cancelled) break;
           }
 
-          console.log('SideMenu: ファイル読み込みを開始します');
           setIsLoading(true);
           await loadFlowFromFile();
           setIsLoading(false);
@@ -95,20 +93,17 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
 
       case 'edit':
         if (isEditMode) {
-          console.log('SideMenu: フローの保存を開始します');
           const success = await handleSave();
           if (success) {
             onSave();
           }
         } else {
-          console.log('SideMenu: 編集モードを開始します');
           setIsEditMode(true);
         }
         setIsOpen(false);
         break;
 
       case 'cancel':
-        console.log('SideMenu: 編集をキャンセルします');
         if (await handleCancel()) {
           onExitEditMode();
         }
@@ -127,8 +122,6 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
         break;
     }
   };
-
-  console.log('SideMenu: レンダリングします', 'isEditMode:', isEditMode);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

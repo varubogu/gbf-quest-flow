@@ -21,7 +21,6 @@ const useBaseFlowStoreFacade = create((set, _get) => {
 
   // BaseFlowStoreの変更を監視
   const _unsubBaseFlow = useBaseFlowStore.subscribe((state) => {
-    console.log('BaseFlowStoreFacade: BaseFlowStoreの変更を検知しました', state.flowData?.title);
     set({
       flowData: state.flowData,
       originalData: state.originalData
@@ -30,7 +29,6 @@ const useBaseFlowStoreFacade = create((set, _get) => {
 
   // EditModeStoreの変更を監視
   const _unsubEditMode = useEditModeStore.subscribe((state) => {
-    console.log('BaseFlowStoreFacade: EditModeStoreの変更を検知しました', state.isEditMode);
     set({
       isEditMode: state.isEditMode
     });

@@ -17,7 +17,6 @@ const useSettingsStoreFacade = create((set, get) => {
 
   // SettingsStoreの変更を監視
   const unsubSettings = useSettingsStore.subscribe((state) => {
-    console.log('SettingsStoreFacade: SettingsStoreの変更を検知しました', state.settings);
     set({
       settings: state.settings
     });

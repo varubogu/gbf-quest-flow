@@ -54,8 +54,6 @@ export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): J
     { id: 'help', label: t('help') as string, icon: HelpCircle },
   ];
 
-  console.log('MenuItems: レンダリングします', 'メニュー項目数:', menuItems.length);
-
   return (
     <div className="mt-4 flex flex-col gap-2">
       {menuItems.map((item) => (

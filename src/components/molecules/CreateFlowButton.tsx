@@ -18,7 +18,6 @@ export function CreateFlowButton({ className, onClick }: CreateFlowButtonProps):
   const handleClick = async () => {
     try {
       setIsCreating(true);
-      console.log('CreateFlowButton: 新規フロー作成ボタンがクリックされました');
 
       // 新規フロー作成
       createNewFlow();
