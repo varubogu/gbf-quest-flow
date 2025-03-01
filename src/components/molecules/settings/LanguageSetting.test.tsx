@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageSetting } from './LanguageSetting';
-import useSettingsStore from '@/core/stores/settingsStore';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // i18nextのモック
@@ -45,19 +44,30 @@ vi.mock('react-i18next', () => ({
   },
 }));
 
-vi.mock('@/stores/settingsStore');
+// モックの状態を保持するオブジェクト
+const mockState = {
+  settings: {
+    language: '日本語',
+  },
+};
+
 const mockUpdateSettings = vi.fn();
+
+// settingsStoreFacadeのモック
+vi.mock('@/core/facades/settingsStoreFacade', () => ({
+  default: () => ({
+    settings: mockState.settings,
+    updateSettings: mockUpdateSettings,
+  }),
+}));
 
 describe('LanguageSetting', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // デフォルトのモック実装
-    vi.mocked(useSettingsStore).mockImplementation(() => ({
-      settings: {
-        language: '日本語',
-      },
-      updateSettings: mockUpdateSettings,
-    }));
+    // テスト前にモックの状態をリセット
+    mockState.settings = {
+      language: '日本語',
+    };
   });
 
   it('renders all language options', () => {
@@ -88,12 +98,9 @@ describe('LanguageSetting', () => {
 
   it('maintains correct checked state after language change', () => {
     // 英語が選択された状態でモックを更新
-    vi.mocked(useSettingsStore).mockImplementation(() => ({
-      settings: {
-        language: 'English',
-      },
-      updateSettings: mockUpdateSettings,
-    }));
+    mockState.settings = {
+      language: 'English',
+    };
 
     render(<LanguageSetting />);
     const japaneseRadio = screen.getByLabelText('japanese') as HTMLInputElement;
