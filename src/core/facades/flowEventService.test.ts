@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
-import type { Flow } from '@/types/models';
+import type { Flow } from '@/types/types';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '../stores/editModeStore';
 
