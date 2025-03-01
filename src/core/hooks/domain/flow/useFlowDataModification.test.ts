@@ -3,14 +3,30 @@ import { renderHook } from '@testing-library/react';
 import { useFlowDataModification } from './useFlowDataModification';
 import type { Flow } from '@/types/models';
 
-// FlowStoreのモック
-const mockSetFlowData = vi.fn();
-const mockStore = {
-  setFlowData: mockSetFlowData,
-};
+// モックの定義
+const mockUpdateFlowData = vi.fn();
 
-vi.mock('@/stores/flowStore', () => ({
-  default: (selector: (_state: typeof mockStore) => unknown): unknown => selector(mockStore),
+// BaseFlowStoreのモック
+vi.mock('@/core/stores/baseFlowStore', () => ({
+  default: {
+    getState: vi.fn(() => ({
+      updateFlowData: mockUpdateFlowData
+    }))
+  }
+}));
+
+// flowEventServiceのモック
+vi.mock('@/core/facades/flowEventService', () => ({
+  handleFlowSave: vi.fn().mockResolvedValue(true),
+  handleNewFlow: vi.fn(),
+  handleCancel: vi.fn().mockResolvedValue(true)
+}));
+
+// i18nのモック
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, fallback: string) => fallback
+  })
 }));
 
 describe('useFlowDataModification', () => {
@@ -63,13 +79,11 @@ describe('useFlowDataModification', () => {
 
     result.current.handleTitleChange(event);
 
-    const expectedData = {
+    expect(mockUpdateFlowData).toHaveBeenCalledWith({ title: newTitle });
+    expect(mockRecordChange).toHaveBeenCalledWith({
       ...mockFlowData,
       title: newTitle,
-    };
-
-    expect(mockSetFlowData).toHaveBeenCalledWith(expectedData);
-    expect(mockRecordChange).toHaveBeenCalledWith(expectedData);
+    });
   });
 
   it('常時実行項目を変更できること', () => {
@@ -87,13 +101,11 @@ describe('useFlowDataModification', () => {
 
     result.current.handleAlwaysChange(event);
 
-    const expectedData = {
+    expect(mockUpdateFlowData).toHaveBeenCalledWith({ always: newAlways });
+    expect(mockRecordChange).toHaveBeenCalledWith({
       ...mockFlowData,
       always: newAlways,
-    };
-
-    expect(mockSetFlowData).toHaveBeenCalledWith(expectedData);
-    expect(mockRecordChange).toHaveBeenCalledWith(expectedData);
+    });
   });
 
   it('flowDataがnullの場合、変更が実行されないこと', () => {
@@ -115,7 +127,60 @@ describe('useFlowDataModification', () => {
     result.current.handleTitleChange(titleEvent);
     result.current.handleAlwaysChange(alwaysEvent);
 
-    expect(mockSetFlowData).not.toHaveBeenCalled();
+    expect(mockUpdateFlowData).not.toHaveBeenCalled();
     expect(mockRecordChange).not.toHaveBeenCalled();
+  });
+
+  it('保存処理が実行できること', async () => {
+    const { result } = renderHook(() =>
+      useFlowDataModification({
+        flowData: mockFlowData,
+        recordChange: mockRecordChange,
+      })
+    );
+
+    const saveResult = await result.current.handleSave();
+
+    const { handleFlowSave } = await import('@/core/facades/flowEventService');
+    expect(handleFlowSave).toHaveBeenCalledWith(mockFlowData, null, expect.any(Function));
+    expect(saveResult).toBe(true);
+  });
+
+  it('新規作成処理が実行できること', async () => {
+    // window.confirmのモック
+    const originalConfirm = window.confirm;
+    window.confirm = vi.fn(() => true);
+
+    const { result } = renderHook(() =>
+      useFlowDataModification({
+        flowData: mockFlowData,
+        recordChange: mockRecordChange,
+      })
+    );
+
+    const newResult = await result.current.handleNew();
+
+    const { handleNewFlow } = await import('@/core/facades/flowEventService');
+    expect(handleNewFlow).toHaveBeenCalledWith(mockFlowData);
+    expect(newResult).toBe(true);
+
+    // モックを元に戻す
+    window.confirm = originalConfirm;
+  });
+
+  it('キャンセル処理が実行できること', async () => {
+    const { result } = renderHook(() =>
+      useFlowDataModification({
+        flowData: mockFlowData,
+        recordChange: mockRecordChange,
+        hasChanges: true,
+      })
+    );
+
+    const cancelResult = await result.current.handleCancel();
+
+    const { handleCancel } = await import('@/core/facades/flowEventService');
+    expect(handleCancel).toHaveBeenCalledWith(true, expect.any(Function));
+    expect(cancelResult).toBe(true);
   });
 });

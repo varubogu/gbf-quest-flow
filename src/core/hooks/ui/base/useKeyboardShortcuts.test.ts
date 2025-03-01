@@ -3,47 +3,56 @@ import { renderHook, act } from '@testing-library/react';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
 import type { Flow } from '@/types/models';
 
+// テスト用のモックデータ
+const mockFlowData: Flow = {
+  title: 'テストフロー',
+  quest: 'テストクエスト',
+  author: 'テスト作者',
+  description: 'テスト説明',
+  updateDate: '2024-01-01',
+  note: 'テストノート',
+  organization: {
+    job: { name: '', note: '', equipment: { name: '', note: '' }, abilities: [] },
+    member: { front: [], back: [] },
+    weapon: {
+      main: { name: '', note: '', additionalSkill: '' },
+      other: [],
+      additional: [],
+    },
+    weaponEffects: { taRate: '', hp: '', defense: '' },
+    summon: {
+      main: { name: '', note: '' },
+      friend: { name: '', note: '' },
+      other: [],
+      sub: [],
+    },
+    totalEffects: { taRate: '', hp: '', defense: '' },
+  },
+  always: '',
+  flow: [],
+};
+
 // flowEventServiceのモック
-vi.mock('@/services/flowEventService', () => ({
+vi.mock('@/core/facades/flowEventService', () => ({
   handleFlowSave: vi.fn().mockResolvedValue(true),
   handleNewFlow: vi.fn(),
 }));
 
-describe('useKeyboardShortcuts', () => {
-  const mockFlowData: Flow = {
-    title: 'テストフロー',
-    quest: 'テストクエスト',
-    author: 'テスト作者',
-    description: 'テスト説明',
-    updateDate: '2024-01-01',
-    note: 'テストノート',
-    organization: {
-      job: { name: '', note: '', equipment: { name: '', note: '' }, abilities: [] },
-      member: { front: [], back: [] },
-      weapon: {
-        main: { name: '', note: '', additionalSkill: '' },
-        other: [],
-        additional: [],
-      },
-      weaponEffects: { taRate: '', hp: '', defense: '' },
-      summon: {
-        main: { name: '', note: '' },
-        friend: { name: '', note: '' },
-        other: [],
-        sub: [],
-      },
-      totalEffects: { taRate: '', hp: '', defense: '' },
-    },
-    always: '',
-    flow: [],
-  };
+// BaseFlowStoreとEditModeStoreのモック
+vi.mock('@/core/stores/baseFlowStore', () => ({
+  default: vi.fn((selector) => selector({ flowData: mockFlowData })),
+}));
 
+vi.mock('@/core/stores/editModeStore', () => ({
+  default: vi.fn((selector) => selector({ isEditMode: true })),
+}));
+
+describe('useKeyboardShortcuts', () => {
+  // 新しいインターフェースに合わせたモックプロップス
   const mockProps = {
-    isEditMode: true,
-    flowData: mockFlowData,
+    onSave: vi.fn().mockResolvedValue(true),
+    onNew: vi.fn(),
     onExitEditMode: vi.fn().mockResolvedValue(undefined),
-    clearHistory: vi.fn(),
-    sourceId: 'test-id',
   };
 
   beforeEach(() => {
@@ -63,12 +72,7 @@ describe('useKeyboardShortcuts', () => {
       window.dispatchEvent(event);
     });
 
-    const { handleFlowSave } = await import('@/core/facades/flowEventService');
-    expect(handleFlowSave).toHaveBeenCalledWith(
-      mockFlowData,
-      mockProps.sourceId,
-      mockProps.clearHistory
-    );
+    expect(mockProps.onSave).toHaveBeenCalled();
   });
 
   it('Ctrl + Nで新規作成処理が実行される', async () => {
@@ -84,8 +88,7 @@ describe('useKeyboardShortcuts', () => {
       window.dispatchEvent(event);
     });
 
-    const { handleNewFlow } = await import('@/core/facades/flowEventService');
-    expect(handleNewFlow).toHaveBeenCalledWith(mockFlowData);
+    expect(mockProps.onNew).toHaveBeenCalled();
   });
 
   it('Escapeで編集モード終了処理が実行される', async () => {
