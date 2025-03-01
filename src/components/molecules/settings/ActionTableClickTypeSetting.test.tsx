@@ -11,12 +11,16 @@ vi.mock('react-i18next', () => ({
   useTranslation: (): UseTranslationResult => ({
     t: (key: string) => key,
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  }
 }));
 
 const mockUpdateSettings = vi.fn();
 const mockUseSettingsStore = vi.fn(() => ({
   settings: {
-    actionTableClickType: 'single',
+    actionTableClickType: 'double',
   },
   updateSettings: mockUpdateSettings,
 }));
@@ -28,7 +32,7 @@ interface UseSettingsStoreResult {
   updateSettings: () => void;
 }
 
-vi.mock('@/stores/settingsStore', () => ({
+vi.mock('@/core/facades/settingsStoreFacade', () => ({
   default: (): UseSettingsStoreResult => mockUseSettingsStore(),
 }));
 
@@ -37,7 +41,7 @@ describe('ActionTableClickTypeSetting', () => {
     vi.clearAllMocks();
     mockUseSettingsStore.mockImplementation(() => ({
       settings: {
-        actionTableClickType: 'single',
+        actionTableClickType: 'double',
       },
       updateSettings: mockUpdateSettings,
     }));
@@ -56,24 +60,24 @@ describe('ActionTableClickTypeSetting', () => {
     const singleClickRadio = screen.getByLabelText('singleClick') as HTMLInputElement;
     const doubleClickRadio = screen.getByLabelText('doubleClick') as HTMLInputElement;
 
-    expect(singleClickRadio.checked).toBe(true);
-    expect(doubleClickRadio.checked).toBe(false);
+    expect(singleClickRadio.checked).toBe(false);
+    expect(doubleClickRadio.checked).toBe(true);
   });
 
   it('calls updateSettings when click type is changed', () => {
     render(<ActionTableClickTypeSetting />);
-    fireEvent.click(screen.getByLabelText('doubleClick'));
+    fireEvent.click(screen.getByLabelText('singleClick'));
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({
-      actionTableClickType: 'double',
+      actionTableClickType: 'single',
     });
   });
 
   it('maintains correct checked state after click type change', () => {
-    // ダブルクリックが選択された状態でモックを更新
+    // シングルクリックが選択された状態でモックを更新
     mockUseSettingsStore.mockImplementation(() => ({
       settings: {
-        actionTableClickType: 'double',
+        actionTableClickType: 'single',
       },
       updateSettings: mockUpdateSettings,
     }));
@@ -82,7 +86,7 @@ describe('ActionTableClickTypeSetting', () => {
     const singleClickRadio = screen.getByLabelText('singleClick') as HTMLInputElement;
     const doubleClickRadio = screen.getByLabelText('doubleClick') as HTMLInputElement;
 
-    expect(singleClickRadio.checked).toBe(false);
-    expect(doubleClickRadio.checked).toBe(true);
+    expect(singleClickRadio.checked).toBe(true);
+    expect(doubleClickRadio.checked).toBe(false);
   });
 });
