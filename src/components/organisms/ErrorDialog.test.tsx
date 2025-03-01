@@ -5,6 +5,8 @@ import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 import type { Flow } from '@/types/models';
+import type { AppError } from '@/types/error.types';
+import { ErrorSeverity, ErrorType } from '@/types/error.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -24,7 +26,8 @@ vi.mock('react-i18next', () => ({
 
 // @headlessui/reactのモックを修正
 vi.mock('@headlessui/react', () => {
-  const Dialog = ({ children, open, onClose }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Dialog = ({ children, open, onClose }: { children: React.ReactNode; open: boolean; onClose: () => void }) => {
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -33,13 +36,13 @@ vi.mock('@headlessui/react', () => {
     );
   };
 
-  Dialog.Panel = ({ children, className }) => (
+  Dialog.Panel = ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="dialog-panel" className={className}>
       {children}
     </div>
   );
 
-  Dialog.Title = ({ children, className }) => (
+  Dialog.Title = ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <h2 data-testid="dialog-title" className={className}>
       {children}
     </h2>
@@ -56,7 +59,14 @@ vi.mock('@/core/facades/FileOperations', () => ({
 
 describe('ErrorDialog', () => {
   // テスト用のモックデータ
-  const mockError = new Error('テストエラー');
+  const mockError: AppError = {
+    message: 'テストエラー',
+    type: ErrorType.VALIDATION,
+    severity: ErrorSeverity.ERROR,
+    timestamp: new Date(),
+    details: { test: 'テスト詳細' },
+    recoverable: false
+  };
   const mockFlowData: Flow = {
     title: 'テストフロー',
     quest: 'テストクエスト',
@@ -75,7 +85,8 @@ describe('ErrorDialog', () => {
     vi.clearAllMocks();
 
     // useBaseFlowStoreのモック
-    (useBaseFlowStore as any).mockImplementation((selector) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useBaseFlowStore as any).mockImplementation((selector: (state: any) => any) =>
       selector({ flowData: mockFlowData })
     );
 
@@ -98,7 +109,8 @@ describe('ErrorDialog', () => {
     it('エラーメッセージが表示されること', () => {
       render(<ErrorDialog />);
 
-      expect(screen.getByText('テストエラー')).toBeInTheDocument();
+      // フォーマットされたエラーメッセージを検索
+      expect(screen.getByText(/\[ERROR\] テストエラー/)).toBeInTheDocument();
     });
 
     it('不明なエラーの場合、デフォルトメッセージが表示されること', () => {
@@ -155,7 +167,8 @@ describe('ErrorDialog', () => {
   describe('結合テスト', () => {
     it('flowDataがない場合、バックアップダウンロードボタンが表示されないこと', () => {
       // flowDataをnullに設定
-      (useBaseFlowStore as any).mockImplementation((selector) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (useBaseFlowStore as any).mockImplementation((selector: (state: any) => any) =>
         selector({ flowData: null })
       );
 
