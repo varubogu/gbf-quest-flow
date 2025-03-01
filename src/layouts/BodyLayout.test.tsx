@@ -31,6 +31,10 @@ const mockFlowData = (): Flow => ({
   flow: [],
 });
 
+interface StoreMock {
+  getState: () => unknown;
+}
+
 // OrganizationModalをモック
 vi.mock('@/components/organisms/OrganizationModal', () => ({
   OrganizationModal: (): JSX.Element => <div data-testid="mock-organization-modal">Mock Organization Modal</div>
@@ -69,7 +73,7 @@ vi.mock('@/core/stores/baseFlowStore', () => {
     originalData: null
   };
 
-  const useBaseFlowStoreMock = vi.fn((selector) => selector(state));
+  const useBaseFlowStoreMock: StoreMock = vi.fn((selector) => selector(state));
   useBaseFlowStoreMock.getState = vi.fn(() => state);
 
   return {
@@ -78,7 +82,14 @@ vi.mock('@/core/stores/baseFlowStore', () => {
 });
 
 vi.mock('@/core/stores/editModeStore', () => {
-  const state = {
+
+  interface EditModeStoreState {
+    isEditMode: boolean;
+    setIsEditMode: (_isEditMode: boolean) => void;
+    createNewFlow: () => void;
+  }
+
+  const state: EditModeStoreState = {
     isEditMode: false,
     setIsEditMode: vi.fn(),
     createNewFlow: vi.fn()
@@ -205,12 +216,15 @@ vi.mock('@/core/facades/cursorStoreFacade', () => ({
 
 // TableContainerで使用されるuseCursorStoreFacadeをモック
 vi.mock('@/core/facades/cursorStoreFacade', () => {
-  const state = {
+  interface State {
+    currentRow: number | null;
+    setCurrentRow: (_row: number | null) => void;
+  }
+  const state: State = {
     currentRow: null,
     setCurrentRow: mockSetCurrentRow
   };
-
-  const useCursorStoreFacadeMock = vi.fn((selector) => selector(state));
+  const useCursorStoreFacadeMock = vi.fn((selector: (_state: State) => unknown) => selector(state));
   useCursorStoreFacadeMock.getState = vi.fn(() => state);
 
   return {
