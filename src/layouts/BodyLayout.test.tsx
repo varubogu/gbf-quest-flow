@@ -2,7 +2,8 @@ import { screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import BodyLayout from './BodyLayout';
 import type { Flow } from '@/types/models';
-import useFlowStore from '@/core/stores/flowStore';
+import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useEditModeStore from '@/core/stores/editModeStore';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // グローバルなセットアップ
@@ -108,9 +109,9 @@ const mockInitialData = {
 
 describe('BodyLayout', () => {
   beforeEach(() => {
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = null;
-    store.isEditMode = false;
+    useEditModeStore.getState().setIsEditMode(false);
   });
 
   it('初期ロード時にEmptyLayoutが表示される', () => {
@@ -127,23 +128,24 @@ describe('BodyLayout', () => {
 
   it('初期データが渡された場合、ストアに設定される', () => {
     renderWithI18n(<BodyLayout initialData={mockInitialData} />);
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     expect(store.setFlowData).toHaveBeenCalledWith(mockInitialData);
   });
 
   it('新規作成モードで起動した場合、createNewFlowが呼ばれる', () => {
     renderWithI18n(<BodyLayout initialMode="new" />);
-    const store = useFlowStore.getState();
+    const store = useEditModeStore.getState();
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
 
   it('編集モードで起動した場合、isEditModeがtrueに設定される', () => {
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = mockInitialData;
+    const editStore = useEditModeStore.getState();
 
     renderWithI18n(<BodyLayout initialMode="edit" />);
-    expect(store.setIsEditMode).toHaveBeenCalledWith(true);
+    expect(editStore.setIsEditMode).toHaveBeenCalledWith(true);
   });
 
   it('popstateイベントで新規作成ページに遷移した場合、createNewFlowが呼ばれる', () => {
@@ -159,7 +161,7 @@ describe('BodyLayout', () => {
     });
 
     window.dispatchEvent(new PopStateEvent('popstate'));
-    const store = useFlowStore.getState();
+    const store = useEditModeStore.getState();
     expect(store.createNewFlow).toHaveBeenCalled();
     expect(store.setIsEditMode).toHaveBeenCalledWith(true);
   });
@@ -172,10 +174,11 @@ describe('BodyLayout', () => {
       throw new Error('テストエラー');
     });
 
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
+    const editStore = useEditModeStore.getState();
     store.setFlowData = mockSetFlowData; // モックを先に設定
     store.flowData = { ...mockInitialData }; // 新しいオブジェクトとしてコピー
-    store.isEditMode = true; // 最初から編集モードに設定
+    editStore.setIsEditMode(true); // 最初から編集モードに設定
 
     // 2. コンポーネントのレンダリング
     renderWithI18n(<BodyLayout initialData={mockInitialData} initialMode="edit" />);
@@ -230,16 +233,18 @@ describe('BodyLayout', () => {
 
 describe('アクセシビリティ機能', () => {
   beforeEach(() => {
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = mockInitialData;
-    store.isEditMode = false;
+    const editStore = useEditModeStore.getState();
+    editStore.setIsEditMode(false);
   });
 
   it('編集モードへの切り替え時にスクリーンリーダー通知が表示される', async () => {
     // 1. 初期セットアップ
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = mockInitialData;
-    store.isEditMode = false;
+    const editStore = useEditModeStore.getState();
+    editStore.setIsEditMode(false);
 
     const { rerender } = renderWithI18n(<BodyLayout initialData={mockInitialData} />);
 
@@ -264,8 +269,7 @@ describe('アクセシビリティ機能', () => {
     // 3. 編集モードに切り替え
     await act(async () => {
       // ストアの状態を更新
-      store.setIsEditMode(true);
-      store.isEditMode = true;
+      editStore.setIsEditMode(true);
 
       // 再レンダリング
       rerender(<BodyLayout initialData={mockInitialData} />);
@@ -290,16 +294,16 @@ describe('アクセシビリティ機能', () => {
 
   it('表示モードへの切り替え時にスクリーンリーダー通知が表示される', async () => {
     // 1. 初期セットアップ
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = mockInitialData;
-    store.isEditMode = false;
+    const editStore = useEditModeStore.getState();
+    editStore.setIsEditMode(false);
 
     const { rerender } = renderWithI18n(<BodyLayout initialData={mockInitialData} />);
 
     // 2. 編集モードに切り替え
     await act(async () => {
-      store.setIsEditMode(true);
-      store.isEditMode = true;
+      editStore.setIsEditMode(true);
       rerender(<BodyLayout initialData={mockInitialData} />);
       await Promise.resolve();
       vi.advanceTimersByTime(10);
@@ -319,8 +323,7 @@ describe('アクセシビリティ機能', () => {
 
     // 3. 表示モードに切り替え
     await act(async () => {
-      store.setIsEditMode(false);
-      store.isEditMode = false;
+      editStore.setIsEditMode(false);
       rerender(<BodyLayout initialData={mockInitialData} />);
       await Promise.resolve();
       vi.advanceTimersByTime(10);
@@ -349,9 +352,10 @@ describe('キーボードショートカット', () => {
     originalCreateObjectURL = URL.createObjectURL;
     originalRevokeObjectURL = URL.revokeObjectURL;
 
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = mockInitialData;
-    store.isEditMode = true;
+    const editStore = useEditModeStore.getState();
+    editStore.setIsEditMode(true);
 
     // clickイベントのデフォルト動作を防ぐ
     vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
@@ -365,9 +369,10 @@ describe('キーボードショートカット', () => {
 
   it('Ctrl+Sで保存が実行される', async () => {
     // 1. 初期セットアップ
-    const store = useFlowStore.getState();
+    const store = useBaseFlowStore.getState();
     store.flowData = { ...mockInitialData };
-    store.isEditMode = true;
+    const editStore = useEditModeStore.getState();
+    editStore.setIsEditMode(true);
 
     // Blobのモック
     const mockBlob = new Blob(['{}'], { type: 'application/json' });
@@ -460,7 +465,7 @@ describe('キーボードショートカット', () => {
 
   it('Ctrl+Nで新規作成が実行される', async () => {
     renderWithI18n(<BodyLayout initialData={mockInitialData} />);
-    const store = useFlowStore.getState();
+    const editStore = useEditModeStore.getState();
 
     // 新規作成ショートカットを発火
     await act(async () => {
@@ -475,12 +480,12 @@ describe('キーボードショートカット', () => {
     });
 
     // createNewFlowの呼び出しを確認
-    expect(store.createNewFlow).toHaveBeenCalled();
+    expect(editStore.createNewFlow).toHaveBeenCalled();
   });
 
   it('Escapeで編集モードが終了する', async () => {
     renderWithI18n(<BodyLayout initialData={mockInitialData} />);
-    const store = useFlowStore.getState();
+    const editStore = useEditModeStore.getState();
 
     // Escapeキーを発火
     await act(async () => {
@@ -494,6 +499,6 @@ describe('キーボードショートカット', () => {
     });
 
     // 編集モードの変更を確認
-    expect(store.setIsEditMode).toHaveBeenCalledWith(false);
+    expect(editStore.setIsEditMode).toHaveBeenCalledWith(false);
   });
 });
