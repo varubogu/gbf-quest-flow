@@ -8,8 +8,8 @@ import {
 import useHistoryStore from '@/core/stores/historyStore';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import { type Flow } from '@/types/models';
-import { vi } from 'vitest';
+import { type Flow } from '@/types/types';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 
 // モック化
 vi.mock('@/core/stores/historyStore', () => ({
@@ -71,7 +71,7 @@ describe('History Service', () => {
     vi.clearAllMocks();
 
     // デフォルトのモック実装
-    (useHistoryStore.getState as jest.Mock).mockReturnValue({
+    (useHistoryStore.getState as Mock).mockReturnValue({
       getHistoryState: vi.fn().mockReturnValue({ past: [], present: null, future: [] }),
       pushToHistory: vi.fn(),
       undoWithData: vi.fn(),
@@ -79,13 +79,13 @@ describe('History Service', () => {
       clearHistory: vi.fn()
     });
 
-    (useBaseFlowStore.getState as jest.Mock).mockReturnValue({
+    (useBaseFlowStore.getState as Mock).mockReturnValue({
       getFlowData: vi.fn(),
       setFlowData: vi.fn(),
       originalData: null
     });
 
-    (useEditModeStore.getState as jest.Mock).mockReturnValue({
+    (useEditModeStore.getState as Mock).mockReturnValue({
       isEditMode: true
     });
   });
@@ -103,7 +103,7 @@ describe('History Service', () => {
     it('編集モードでない時は履歴に追加されない', () => {
       const flow1 = mockData();
 
-      (useEditModeStore.getState as jest.Mock).mockReturnValue({
+      (useEditModeStore.getState as Mock).mockReturnValue({
         isEditMode: false
       });
 
@@ -127,9 +127,9 @@ describe('History Service', () => {
       const historyStore = useHistoryStore.getState();
 
       // 現在のデータを設定
-      (baseFlowStore.getFlowData as jest.Mock).mockReturnValue(flow2);
+      (baseFlowStore.getFlowData as Mock).mockReturnValue(flow2);
       // undoWithDataの戻り値を設定
-      (historyStore.undoWithData as jest.Mock).mockReturnValue(flow1);
+      (historyStore.undoWithData as Mock).mockReturnValue(flow1);
 
       undo();
 
@@ -141,9 +141,9 @@ describe('History Service', () => {
       const historyStore = useHistoryStore.getState();
 
       // 現在のデータを設定
-      (baseFlowStore.getFlowData as jest.Mock).mockReturnValue(flow1);
+      (baseFlowStore.getFlowData as Mock).mockReturnValue(flow1);
       // redoWithDataの戻り値を設定
-      (historyStore.redoWithData as jest.Mock).mockReturnValue(flow2);
+      (historyStore.redoWithData as Mock).mockReturnValue(flow2);
 
       redo();
 
@@ -157,7 +157,7 @@ describe('History Service', () => {
     });
 
     it('過去の履歴がある場合はtrueを返す', () => {
-      (useHistoryStore.getState as jest.Mock).mockReturnValue({
+      (useHistoryStore.getState as Mock).mockReturnValue({
         getHistoryState: vi.fn().mockReturnValue({ past: ['something'], present: null, future: [] })
       });
 
@@ -171,7 +171,7 @@ describe('History Service', () => {
     });
 
     it('未来の履歴がある場合はtrueを返す', () => {
-      (useHistoryStore.getState as jest.Mock).mockReturnValue({
+      (useHistoryStore.getState as Mock).mockReturnValue({
         getHistoryState: vi.fn().mockReturnValue({ past: [], present: null, future: ['something'] })
       });
 
