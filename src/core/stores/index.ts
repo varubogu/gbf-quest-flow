@@ -5,25 +5,20 @@
 
 // 以前のインポート
 // import useFlowStore from './flowStore';
-import useFlowStore from '../facades/flowStoreFacade';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
 import useBaseFlowStore from './baseFlowStore';
 import useEditModeStore from './editModeStore';
 import useCursorStore from './cursorStore';
-// @deprecated src/facades/flowStoreFacadeを直接使用しています。
-import useFlowStoreFacade from '@/core/facades/flowStoreFacade';
 import useSettingsStore from './settingsStore';
 
 
 export {
-  useFlowStore,
   useErrorStore,
   useHistoryStore,
   useBaseFlowStore,
   useEditModeStore,  // 新規追加
   useCursorStore, // 新規追加
-  useFlowStoreFacade,
   useSettingsStore,
 
 };
