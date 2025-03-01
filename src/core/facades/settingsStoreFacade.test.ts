@@ -27,7 +27,10 @@ vi.mock('@/core/stores/settingsStore', () => {
 
 // zustandのcreateをモック
 vi.mock('zustand', () => ({
-  create: (fn: any) => {
+  create: (fn: (
+    _set: (_state: Record<string, unknown>) => void,
+    _get: () => Record<string, unknown>
+  ) => Record<string, unknown>) => {
     const store = fn(() => {}, () => ({}));
     return {
       getState: vi.fn(() => store),
@@ -40,6 +43,12 @@ vi.mock('zustand', () => ({
 import useSettingsStoreFacade from './settingsStoreFacade';
 import useSettingsStore from '@/core/stores/settingsStore';
 
+// ファサードの型を定義
+interface SettingsStoreFacade {
+  settings: AppSettings;
+  updateSettings: (_newSettings: Partial<AppSettings>) => void;
+}
+
 describe('settingsStoreFacade', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -49,7 +58,7 @@ describe('settingsStoreFacade', () => {
   });
 
   it('should initialize with settings from settingsStore', () => {
-    const facade = useSettingsStoreFacade.getState();
+    const facade = useSettingsStoreFacade.getState() as SettingsStoreFacade;
     expect(facade.settings).toEqual({
       language: '日本語',
       buttonAlignment: 'right',
@@ -59,10 +68,10 @@ describe('settingsStoreFacade', () => {
   });
 
   it('should call updateSettings on the original store', () => {
-    const facade = useSettingsStoreFacade.getState();
+    const facade = useSettingsStoreFacade.getState() as SettingsStoreFacade;
     const mockUpdateSettings = useSettingsStore.getState().updateSettings;
 
-    const newSettings = { language: 'English' };
+    const newSettings: Partial<AppSettings> = { language: '日本語' };
     facade.updateSettings(newSettings);
 
     expect(mockUpdateSettings).toHaveBeenCalledWith(newSettings);
