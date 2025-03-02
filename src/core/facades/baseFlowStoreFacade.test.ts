@@ -3,6 +3,7 @@ import useBaseFlowStoreFacade from './baseFlowStoreFacade';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import * as fileService from '@/core/services/fileService';
+import * as flowService from '@/core/services/flowService';
 import type { Flow, Action } from '@/types/models';
 
 // モックの設定
@@ -48,6 +49,13 @@ vi.mock('@/core/stores/editModeStore', () => {
 vi.mock('@/core/services/fileService', () => {
   return {
     newFlowData: vi.fn()
+  };
+});
+
+vi.mock('@/core/services/flowService', () => {
+  return {
+    updateFlowData: vi.fn(),
+    updateAction: vi.fn()
   };
 });
 
@@ -132,11 +140,14 @@ describe('baseFlowStoreFacade', () => {
     });
 
     describe('updateFlowData', () => {
-      it('baseFlowStoreのupdateFlowDataを呼び出す', () => {
+      it('flowServiceのupdateFlowDataを呼び出す', () => {
         // モックの設定
         const updateFlowDataMock = vi.fn();
-        (useBaseFlowStore.getState as any).mockReturnValue({
-          updateFlowData: updateFlowDataMock
+        (flowService.updateFlowData as any) = updateFlowDataMock;
+
+        // EditModeStoreのモック
+        (useEditModeStore.getState as any).mockReturnValue({
+          isEditMode: true
         });
 
         // テスト実行
@@ -144,16 +155,19 @@ describe('baseFlowStoreFacade', () => {
         useBaseFlowStoreFacade.getState().updateFlowData(updates);
 
         // 検証
-        expect(updateFlowDataMock).toHaveBeenCalledWith(updates);
+        expect(updateFlowDataMock).toHaveBeenCalledWith(updates, true);
       });
     });
 
     describe('updateAction', () => {
-      it('baseFlowStoreのupdateActionを呼び出す', () => {
+      it('flowServiceのupdateActionを呼び出す', () => {
         // モックの設定
         const updateActionMock = vi.fn();
-        (useBaseFlowStore.getState as any).mockReturnValue({
-          updateAction: updateActionMock
+        (flowService.updateAction as any) = updateActionMock;
+
+        // EditModeStoreのモック
+        (useEditModeStore.getState as any).mockReturnValue({
+          isEditMode: false
         });
 
         // テスト実行
@@ -161,7 +175,7 @@ describe('baseFlowStoreFacade', () => {
         useBaseFlowStoreFacade.getState().updateAction(0, updates);
 
         // 検証
-        expect(updateActionMock).toHaveBeenCalledWith(0, updates);
+        expect(updateActionMock).toHaveBeenCalledWith(0, updates, false);
       });
     });
 

@@ -7,6 +7,7 @@ import { pushToHistory } from './historyService';
  * フローデータ操作関連のサービス
  *
  * このサービスは、フローデータの更新や操作に関する機能を提供します。
+ * baseFlowStoreの状態更新ロジックもこのサービスに集約されています。
  */
 
 // ロジック関数 - データ更新時の共通処理
@@ -61,7 +62,21 @@ export function handleError(error: unknown, defaultMessage: string): void {
 
 // ロジック関数 - baseFlowStoreとの同期処理
 export function syncWithBaseFlowStore(data: Flow | null): void {
-  useBaseFlowStore.getState().setFlowData(data);
+  try {
+    useBaseFlowStore.getState().setFlowData(data);
+  } catch (error) {
+    handleError(error, 'ベースフローストアとの同期中にエラーが発生しました');
+  }
+}
+
+// 内部関数 - baseFlowStoreの状態を更新（_updateStateを使用）
+function updateBaseFlowStoreState(newData: Flow): void {
+  try {
+    // 新しい内部メソッドを使用して状態を更新
+    useBaseFlowStore.getState()._updateState(newData);
+  } catch (error) {
+    handleError(error, 'ベースフローストアの状態更新中にエラーが発生しました');
+  }
 }
 
 // フローデータの更新処理
@@ -76,8 +91,8 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
     // 更新が必要ない場合は処理を終了
     if (!shouldUpdate) return;
 
-    // 変更後のデータを設定
-    useBaseFlowStore.getState().setFlowData(newData);
+    // 変更後のデータを設定（内部メソッドを使用）
+    updateBaseFlowStoreState(newData);
 
     // 編集モード中のみ履歴に追加（変更後のデータを保存）
     if (isEditMode) {
@@ -97,8 +112,8 @@ export function updateAction(index: number, updates: Partial<Action>, isEditMode
     // アクション更新処理
     const newData = updateFlowWithAction(currentData, index, updates);
 
-    // 変更後のデータを設定
-    useBaseFlowStore.getState().setFlowData(newData);
+    // 変更後のデータを設定（内部メソッドを使用）
+    updateBaseFlowStoreState(newData);
 
     // 編集モード中のみ履歴に追加
     if (isEditMode) {

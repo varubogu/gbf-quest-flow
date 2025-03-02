@@ -3,6 +3,7 @@ import type { Flow, Action } from '@/types/models';
 import useBaseFlowStore from '@/core/stores/baseFlowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { newFlowData } from '@/core/services/fileService';
+import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateAction } from '@/core/services/flowService';
 
 /**
  * ベースフローストアのファサード
@@ -10,6 +11,8 @@ import { newFlowData } from '@/core/services/fileService';
  * このファサードは、ベースフローストアにアクセスするための統一されたインターフェースを提供します。
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
+ *
+ * 注: 更新ロジックはflowServiceに委譲されています。
  */
 const useBaseFlowStoreFacade = create((set, _get) => {
   // 初期状態を設定
@@ -38,12 +41,22 @@ const useBaseFlowStoreFacade = create((set, _get) => {
     // 状態（プロパティ）- BaseFlowStoreとEditModeStoreから初期化
     ...initialState,
 
-    // BaseFlowStore関連のメソッド
+    // BaseFlowStore関連のメソッド - 読み取り系
     getFlowData: (): Flow | null => useBaseFlowStore.getState().getFlowData(),
     getActionById: (index: number): Action | undefined => useBaseFlowStore.getState().getActionById(index),
+
+    // BaseFlowStore関連のメソッド - 更新系（flowServiceに委譲）
     setFlowData: (data: Flow | null): void => useBaseFlowStore.getState().setFlowData(data),
-    updateFlowData: (updates: Partial<Flow>): void => useBaseFlowStore.getState().updateFlowData(updates),
-    updateAction: (index: number, updates: Partial<Action>): void => useBaseFlowStore.getState().updateAction(index, updates),
+    updateFlowData: (updates: Partial<Flow>): void => {
+      // 現在の編集モードを取得して更新
+      const isEditMode = useEditModeStore.getState().isEditMode;
+      serviceUpdateFlowData(updates, isEditMode);
+    },
+    updateAction: (index: number, updates: Partial<Action>): void => {
+      // 現在の編集モードを取得して更新
+      const isEditMode = useEditModeStore.getState().isEditMode;
+      serviceUpdateAction(index, updates, isEditMode);
+    },
 
     // EditModeStore関連のメソッド
     setIsEditMode: (isEdit: boolean): void => {
