@@ -6,15 +6,15 @@ import { newFlowData } from '@/core/services/fileService';
 import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateAction } from '@/core/services/flowService';
 
 /**
- * ベースフローストアのファサード
+ * フローストアのファサード
  *
- * このファサードは、ベースフローストアにアクセスするための統一されたインターフェースを提供します。
+ * このファサードは、フローストアにアクセスするための統一されたインターフェースを提供します。
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
  *
  * 注: 更新ロジックはflowServiceに委譲されています。
  */
-const useBaseFlowStoreFacade = create((set, _get) => {
+const useFlowFacade = create((set, _get) => {
   // 初期状態を設定
   const initialState = {
     flowData: useFlowStore.getState().flowData,
@@ -71,4 +71,4 @@ const useBaseFlowStoreFacade = create((set, _get) => {
   };
 });
 
-export default useBaseFlowStoreFacade;
+export default useFlowFacade;

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useBaseFlowStoreFacade from './baseFlowStoreFacade';
+import useFlowFacade from './flowFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import * as fileService from '@/core/services/fileService';
@@ -59,7 +59,7 @@ vi.mock('@/core/services/flowService', () => {
   };
 });
 
-describe('baseFlowStoreFacade', () => {
+describe('flowFacade', () => {
   // テスト用のモックデータ
   const mockFlow: Flow = {
     title: 'テストフロー',
@@ -98,7 +98,7 @@ describe('baseFlowStoreFacade', () => {
         });
 
         // テスト実行
-        const result = useBaseFlowStoreFacade.getState().getFlowData();
+        const result = useFlowFacade.getState().getFlowData();
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -115,7 +115,7 @@ describe('baseFlowStoreFacade', () => {
         });
 
         // テスト実行
-        const result = useBaseFlowStoreFacade.getState().getActionById(0);
+        const result = useFlowFacade.getState().getActionById(0);
 
         // 検証
         expect(getActionByIdMock).toHaveBeenCalledWith(0);
@@ -132,7 +132,7 @@ describe('baseFlowStoreFacade', () => {
         });
 
         // テスト実行
-        useBaseFlowStoreFacade.getState().setFlowData(mockFlow);
+        useFlowFacade.getState().setFlowData(mockFlow);
 
         // 検証
         expect(setFlowDataMock).toHaveBeenCalledWith(mockFlow);
@@ -152,7 +152,7 @@ describe('baseFlowStoreFacade', () => {
 
         // テスト実行
         const updates = { title: '更新後のタイトル' };
-        useBaseFlowStoreFacade.getState().updateFlowData(updates);
+        useFlowFacade.getState().updateFlowData(updates);
 
         // 検証
         expect(updateFlowDataMock).toHaveBeenCalledWith(updates, true);
@@ -172,7 +172,7 @@ describe('baseFlowStoreFacade', () => {
 
         // テスト実行
         const updates = { note: '更新後のノート' };
-        useBaseFlowStoreFacade.getState().updateAction(0, updates);
+        useFlowFacade.getState().updateAction(0, updates);
 
         // 検証
         expect(updateActionMock).toHaveBeenCalledWith(0, updates, false);
@@ -188,7 +188,7 @@ describe('baseFlowStoreFacade', () => {
         });
 
         // テスト実行
-        useBaseFlowStoreFacade.getState().setIsEditMode(true);
+        useFlowFacade.getState().setIsEditMode(true);
 
         // 検証
         expect(setIsEditModeMock).toHaveBeenCalledWith(true);
@@ -201,7 +201,7 @@ describe('baseFlowStoreFacade', () => {
         const newFlowDataMock = fileService.newFlowData as jest.Mock;
 
         // テスト実行
-        useBaseFlowStoreFacade.getState().createNewFlow();
+        useFlowFacade.getState().createNewFlow();
 
         // 検証
         expect(newFlowDataMock).toHaveBeenCalled();

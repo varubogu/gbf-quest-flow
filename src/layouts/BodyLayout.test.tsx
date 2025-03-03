@@ -192,7 +192,7 @@ vi.mock('@/core/facades/editModeStoreFacade', () => ({
   }
 }));
 
-vi.mock('@/core/facades/baseFlowStoreFacade', () => ({
+vi.mock('@/core/facades/flowStoreFacade', () => ({
   default: {
     getState: vi.fn(() => ({
       flowData: null,
