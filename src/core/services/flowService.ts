@@ -1,7 +1,7 @@
 import type { Flow, Action } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import { pushToHistory } from './historyService';
+import { pushToHistory, clearHistory } from '@/core/services/historyService';
 
 /**
  * フローデータ操作関連のサービス
@@ -60,17 +60,25 @@ export function handleError(error: unknown, defaultMessage: string): void {
     );
 }
 
-// ロジック関数 - flowStoreとの同期処理
-export function syncWithFlowStore(data: Flow | null): void {
-  try {
-    useFlowStore.getState().setFlowData(data);
-  } catch (error) {
-    handleError(error, 'ベースフローストアとの同期中にエラーが発生しました');
-  }
+/**
+ * フローデータの設定
+ *
+ * データ読み込みなど別なデータに切り替える際に使用します。
+ * 編集履歴はリセットされます。
+ * @param data フローデータ
+ */
+export function setFlowData(data: Flow | null): void {
+  clearHistory();
+  useFlowStore.getState().setFlowData(data);
 }
 
-// フローデータの更新処理
-export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): void {
+/**
+ * フローデータの更新処理
+ *
+ * 編集内容は編集履歴に追加されます。
+ * @param updates 更新内容（部分更新）
+ */
+export function updateFlowData(updates: Partial<Flow>): void {
   try {
     const currentData = useFlowStore.getState().getFlowData();
     if (!currentData) return;
@@ -85,16 +93,20 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
     useFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加（変更後のデータを保存）
-    if (isEditMode) {
-      pushToHistory(newData);
-    }
+    pushToHistory(newData);
   } catch (error) {
     handleError(error, 'データの更新中にエラーが発生しました');
   }
 }
 
-// アクションの更新処理
-export function updateAction(index: number, updates: Partial<Action>, isEditMode: boolean): void {
+/**
+ * アクションの更新処理
+ *
+ * 編集内容は編集履歴に追加されます。
+ * @param index アクションのインデックス
+ * @param updates 更新内容（部分更新）
+ */
+export function updateAction(index: number, updates: Partial<Action>): void {
   try {
     const currentData = useFlowStore.getState().getFlowData();
     if (!currentData) return;
@@ -105,10 +117,7 @@ export function updateAction(index: number, updates: Partial<Action>, isEditMode
     // 変更後のデータを設定（内部メソッドを使用）
     useFlowStore.getState().setFlowData(newData);
 
-    // 編集モード中のみ履歴に追加
-    if (isEditMode) {
-      pushToHistory(newData);
-    }
+    pushToHistory(newData);
   } catch (error) {
     handleError(error, 'アクションの更新中にエラーが発生しました');
   }

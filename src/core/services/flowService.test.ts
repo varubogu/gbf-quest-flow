@@ -4,14 +4,14 @@ import {
   mergeActionWithUpdates,
   updateFlowWithAction,
   handleError,
-  syncWithFlowStore,
   updateFlowData,
-  updateAction
+  updateAction,
+  setFlowData
 } from './flowService';
 import type { Flow, Action } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import * as historyService from './historyService';
+import * as historyService from '@/core/services/historyService';
 
 // モックの設定
 vi.mock('@/core/stores/flowStore', () => {
@@ -44,7 +44,8 @@ vi.mock('@/core/stores/errorStore', () => {
 
 vi.mock('./historyService', () => {
   return {
-    pushToHistory: vi.fn()
+    pushToHistory: vi.fn(),
+    clearHistory: vi.fn()
   };
 });
 
@@ -247,7 +248,7 @@ describe('flowService', () => {
           characters: []
         } as Flow;
 
-        syncWithFlowStore(mockFlow);
+        setFlowData(mockFlow);
 
         expect(setFlowDataMock).toHaveBeenCalledWith(mockFlow);
       });
@@ -256,7 +257,7 @@ describe('flowService', () => {
 
   describe('結合テスト', () => {
     describe('updateFlowData', () => {
-      it('フローデータを更新し、編集モード中は履歴に追加する', () => {
+      it('フローデータを更新し、編集履歴に追加する', () => {
         // モックの設定
         const getFlowDataMock = vi.fn().mockReturnValue({
           title: 'テストフロー',
@@ -292,7 +293,7 @@ describe('flowService', () => {
         } as Flow;
 
         const updates = { title: '更新後のタイトル' };
-        updateFlowData(updates, true);
+        updateFlowData(updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -306,52 +307,6 @@ describe('flowService', () => {
         });
       });
 
-      it('編集モードでない場合は履歴に追加しない', () => {
-        // モックの設定
-        const getFlowDataMock = vi.fn().mockReturnValue({
-          title: 'テストフロー',
-          quest: 'テストクエスト',
-          author: 'テスト作者',
-          flow: [],
-          organization: null,
-          weapons: [],
-          jobs: [],
-          summons: [],
-          characters: []
-        });
-        const setFlowDataMock = vi.fn();
-
-        (useFlowStore.getState as any).mockReturnValue({
-          getFlowData: getFlowDataMock,
-          setFlowData: setFlowDataMock
-        });
-
-        const pushToHistoryMock = historyService.pushToHistory as Mock;
-
-        // テスト実行
-        const mockFlow = {
-          title: 'テストフロー',
-          quest: 'テストクエスト',
-          author: 'テスト作者',
-          flow: [],
-          organization: null,
-          weapons: [],
-          jobs: [],
-          summons: [],
-          characters: []
-        } as Flow;
-
-        const updates = { title: '更新後のタイトル' };
-        updateFlowData(updates, false);
-
-        // 検証
-        expect(getFlowDataMock).toHaveBeenCalled();
-        expect(setFlowDataMock).toHaveBeenCalledWith({
-          ...mockFlow,
-          title: '更新後のタイトル'
-        });
-        expect(pushToHistoryMock).not.toHaveBeenCalled();
-      });
 
       it('データに変更がない場合は何もしない', () => {
         // モックの設定
@@ -375,7 +330,7 @@ describe('flowService', () => {
 
         // テスト実行
         const updates = { title: 'テストフロー' }; // 変更なし
-        updateFlowData(updates, true);
+        updateFlowData(updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -399,7 +354,7 @@ describe('flowService', () => {
 
         // テスト実行
         const updates = { title: '更新後のタイトル' };
-        updateFlowData(updates, true);
+        updateFlowData(updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -408,7 +363,7 @@ describe('flowService', () => {
     });
 
     describe('updateAction', () => {
-      it('指定されたインデックスのアクションを更新し、編集モード中は履歴に追加する', () => {
+      it('指定されたインデックスのアクションを更新し、編集履歴に追加する', () => {
         // モックの設定
         const mockFlow = {
           title: 'テストフロー',
@@ -443,7 +398,7 @@ describe('flowService', () => {
 
         // テスト実行
         const updates = { note: '更新後のノート' };
-        updateAction(0, updates, true);
+        updateAction(0, updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -451,48 +406,7 @@ describe('flowService', () => {
         expect(pushToHistoryMock).toHaveBeenCalled();
       });
 
-      it('編集モードでない場合は履歴に追加しない', () => {
-        // モックの設定
-        const mockFlow = {
-          title: 'テストフロー',
-          quest: 'テストクエスト',
-          author: 'テスト作者',
-          flow: [
-            {
-              hp: '100%',
-              prediction: 'テスト予測',
-              charge: '100%',
-              guard: 'なし',
-              action: 'テストアクション',
-              note: 'テストノート'
-            }
-          ],
-          organization: null,
-          weapons: [],
-          jobs: [],
-          summons: [],
-          characters: []
-        } as Flow;
 
-        const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-        const setFlowDataMock = vi.fn();
-
-        (useFlowStore.getState as any).mockReturnValue({
-          getFlowData: getFlowDataMock,
-          setFlowData: setFlowDataMock
-        });
-
-        const pushToHistoryMock = historyService.pushToHistory as Mock;
-
-        // テスト実行
-        const updates = { note: '更新後のノート' };
-        updateAction(0, updates, false);
-
-        // 検証
-        expect(getFlowDataMock).toHaveBeenCalled();
-        expect(setFlowDataMock).toHaveBeenCalled();
-        expect(pushToHistoryMock).not.toHaveBeenCalled();
-      });
 
       it('エラーが発生した場合はエラーストアに通知する', () => {
         // モックの設定
@@ -511,7 +425,7 @@ describe('flowService', () => {
 
         // テスト実行
         const updates = { note: '更新後のノート' };
-        updateAction(0, updates, true);
+        updateAction(0, updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();

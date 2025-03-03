@@ -32,15 +32,13 @@ const useFlowFacade = create((_set, _get) => {
 
     // FlowStore関連のメソッド - 更新系（flowServiceに委譲）
     setFlowData: (data: Flow | null): void => useFlowStore.getState().setFlowData(data),
+
     updateFlowData: (updates: Partial<Flow>): void => {
-      // 現在の編集モードを取得して更新
-      const isEditMode = useEditModeStore.getState().isEditMode;
-      serviceUpdateFlowData(updates, isEditMode);
+      serviceUpdateFlowData(updates);
     },
+
     updateAction: (index: number, updates: Partial<Action>): void => {
-      // 現在の編集モードを取得して更新
-      const isEditMode = useEditModeStore.getState().isEditMode;
-      serviceUpdateAction(index, updates, isEditMode);
+      serviceUpdateAction(index, updates);
     },
 
     // EditModeStore関連のメソッド

@@ -155,7 +155,7 @@ describe('flowFacade', () => {
         useFlowFacade.getState().updateFlowData(updates);
 
         // 検証
-        expect(updateFlowDataMock).toHaveBeenCalledWith(updates, true);
+        expect(updateFlowDataMock).toHaveBeenCalledWith(updates);
       });
     });
 
@@ -175,7 +175,7 @@ describe('flowFacade', () => {
         useFlowFacade.getState().updateAction(0, updates);
 
         // 検証
-        expect(updateActionMock).toHaveBeenCalledWith(0, updates, false);
+        expect(updateActionMock).toHaveBeenCalledWith(0, updates);
       });
     });
 
