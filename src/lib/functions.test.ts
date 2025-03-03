@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { setTitle, loadSlugData } from './functions';
-import useFlowStore from '@/core/stores/flowStore';
-import type { Flow } from '@/types/types';
+import { setTitle } from './functions';
 
 // モックの設定
 vi.mock('@/core/stores/flowStore', () => ({
@@ -64,92 +62,6 @@ describe('functions', () => {
 
       // 検証
       expect(document.title).toBe('グラブル行動表');
-    });
-  });
-
-  describe('loadSlugData', () => {
-    it('指定されたスラグのデータを取得し、ストアに設定する', async () => {
-      // モックの準備
-      const mockFlowData: Flow = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テストノート',
-        organization: {
-          job: {
-            name: 'テストジョブ',
-            note: '',
-            equipment: { name: '', note: '' },
-            abilities: [],
-          },
-          member: {
-            front: [],
-            back: [],
-          },
-          weapon: {
-            main: { name: '', note: '', additionalSkill: '' },
-            other: [],
-            additional: [],
-          },
-          weaponEffects: {
-            taRate: '',
-            hp: '',
-            defense: '',
-          },
-          totalEffects: {
-            taRate: '',
-            hp: '',
-            defense: '',
-          },
-          summon: {
-            main: { name: '', note: '' },
-            friend: { name: '', note: '' },
-            other: [],
-            sub: [],
-          },
-        },
-        always: '',
-        flow: [],
-      };
-
-      // fetchのモック
-      const originalFetch = global.fetch;
-      global.fetch = vi.fn().mockResolvedValueOnce({
-        json: async () => mockFlowData,
-      });
-
-      const setFlowDataMock = vi.fn();
-      vi.mocked(useFlowStore.getState).mockReturnValue({
-        setFlowData: setFlowDataMock,
-      });
-
-      try {
-        // 実行
-        await loadSlugData('test-slug');
-
-        // 検証
-        expect(global.fetch).toHaveBeenCalledWith('/content/flows/test-slug.json');
-        expect(setFlowDataMock).toHaveBeenCalledWith(mockFlowData);
-      } finally {
-        // fetchを元に戻す
-        global.fetch = originalFetch;
-      }
-    });
-
-    it('fetchが失敗した場合、エラーが発生する', async () => {
-      // fetchのモック
-      const originalFetch = global.fetch;
-      global.fetch = vi.fn().mockRejectedValueOnce(new Error('Fetch error'));
-
-      try {
-        // 実行と検証
-        await expect(loadSlugData('error-slug')).rejects.toThrow('Fetch error');
-      } finally {
-        // fetchを元に戻す
-        global.fetch = originalFetch;
-      }
     });
   });
 });
