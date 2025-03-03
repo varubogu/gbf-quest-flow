@@ -29,17 +29,6 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
   editEnd: (): void => {
     set({ isEditMode: false });
   },
-
-  // 以下のメソッドはfacadeとserviceに移行したため、型定義のみ残す
-  setIsEditMode: () => {
-    console.warn('setIsEditMode: このメソッドは廃止されました。editModeStoreFacadeを使用してください。');
-  },
-  cancelEdit: () => {
-    console.warn('cancelEdit: このメソッドは廃止されました。editModeStoreFacadeを使用してください。');
-  },
-  createNewFlow: () => {
-    console.warn('createNewFlow: このメソッドは廃止されました。editModeStoreFacadeを使用してください。');
-  }
 }));
 
 export default useEditModeStore;

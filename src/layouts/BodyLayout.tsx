@@ -13,6 +13,7 @@ import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import { useKeyboardShortcuts } from '@/core/hooks/ui/base/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
+import * as flowFacade from '@/core/facades/flowFacade';
 
 interface Props {
   initialData?: Flow | null;
@@ -24,12 +25,11 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   const [isLoading, setIsLoading] = useState(true);
   const initializedRef = useRef(false);
 
-  // 各ストアから状態を取得 - 型アサーションを使用
-  const flowData = useFlowStore((state) => (state as any).flowData);
-  const isEditMode = useEditModeStore((state) => (state as any).isEditMode);
-  const setIsEditMode = useEditModeStoreFacade((state) => (state as any).setIsEditMode);
-  const setFlowData = useFlowStore((state) => (state as any).setFlowData);
-  const createNewFlow = useEditModeStoreFacade((state) => (state as any).createNewFlow);
+  // 各ストアから状態を取得
+  const flowData = useFlowStore((state) => state.flowData as Flow | null);
+  const isEditMode = useEditModeStore((state) => state.isEditMode as boolean);
+  const setIsEditMode = useEditModeStoreFacade((state) => state.setIsEditMode as (isEditMode: boolean) => void);
+  const createNewFlow = useEditModeStoreFacade((state) => state.createNewFlow as () => void);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 
@@ -76,14 +76,14 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   const { handleUrlChange } = useUrlManagement({
     flowData,
     isEditMode,
-    setFlowData,
+    setFlowData: flowFacade.setFlowData,
     setIsEditMode,
     sourceId,
     initialMode,
   });
 
   // 履歴管理
-  useHistoryManagement(createNewFlow, setIsEditMode, setFlowData, initialData);
+  useHistoryManagement(createNewFlow, setIsEditMode, flowFacade.setFlowData, initialData);
 
   // キーボードショートカット - 新しいインターフェースを使用
   useKeyboardShortcuts({
@@ -99,9 +99,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
     const setupInitialData = async () => {
       try {
         if (initialData) {
-          setFlowData(initialData);
+          flowFacade.setFlowData(initialData);
           if (initialMode === 'edit') {
-            setIsEditMode(true);
+            flowFacade.setIsEditMode(true);
           }
         }
         setIsLoading(false);
@@ -113,7 +113,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
     };
 
     setupInitialData();
-  }, [initialData, initialMode, setFlowData, createNewFlow, setIsEditMode]);
+  }, [initialData, initialMode]);
 
   // URLの変更を監視
   useEffect(() => {
