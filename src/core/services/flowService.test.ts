@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { Mock } from 'vitest';
+import type { Flow, Action } from '@/types/models';
 import {
   handleDataUpdate,
   mergeActionWithUpdates,
@@ -8,10 +10,10 @@ import {
   updateAction,
   setFlowData
 } from './flowService';
-import type { Flow, Action } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import * as historyService from '@/core/services/historyService';
+import { errorFacade } from '@/core/facades/errorFacade';
 
 // モックの設定
 vi.mock('@/core/stores/flowStore', () => {
@@ -49,6 +51,14 @@ vi.mock('./historyService', () => {
   };
 });
 
+// errorFacadeのモック
+vi.mock('@/core/facades/errorFacade', () => ({
+  errorFacade: {
+    showValidationError: vi.fn(),
+    showUnknownError: vi.fn()
+  }
+}));
+
 describe('flowService', () => {
   // テスト用のデータ
   const mockAction: Action = {
@@ -76,6 +86,10 @@ describe('flowService', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   describe('単体テスト', () => {
     describe('handleDataUpdate', () => {
       it('現在のデータと更新内容を正しくマージする', () => {
@@ -83,8 +97,12 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -109,8 +127,12 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -174,11 +196,15 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [
             { hp: '100%', action: 'アクション1', note: 'ノート1', prediction: '', charge: '', guard: '' },
             { hp: '80%', action: 'アクション2', note: 'ノート2', prediction: '', charge: '', guard: '' }
           ],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -204,28 +230,18 @@ describe('flowService', () => {
 
     describe('handleError', () => {
       it('Errorオブジェクトをそのまま渡す', () => {
-        const showErrorMock = vi.fn();
-        (useErrorStore.getState as any).mockReturnValue({
-          showError: showErrorMock
-        });
-
         const error = new Error('テストエラー');
         handleError(error, 'デフォルトメッセージ');
 
-        expect(showErrorMock).toHaveBeenCalledWith(error);
+        expect(errorFacade.showUnknownError).toHaveBeenCalledWith(error);
       });
 
       it('Errorでないオブジェクトの場合はデフォルトメッセージでErrorを作成する', () => {
-        const showErrorMock = vi.fn();
-        (useErrorStore.getState as any).mockReturnValue({
-          showError: showErrorMock
-        });
-
         const error = { message: 'エラーメッセージ' };
         const defaultMessage = 'デフォルトメッセージ';
         handleError(error, defaultMessage);
 
-        expect(showErrorMock).toHaveBeenCalledWith(new Error(defaultMessage));
+        expect(errorFacade.showValidationError).toHaveBeenCalledWith(defaultMessage);
       });
     });
 
@@ -240,8 +256,12 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -263,8 +283,12 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -284,8 +308,12 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -306,7 +334,6 @@ describe('flowService', () => {
           title: '更新後のタイトル'
         });
       });
-
 
       it('データに変更がない場合は何もしない', () => {
         // モックの設定
@@ -347,18 +374,13 @@ describe('flowService', () => {
           getFlowData: getFlowDataMock
         });
 
-        const showErrorMock = vi.fn();
-        (useErrorStore.getState as any).mockReturnValue({
-          showError: showErrorMock
-        });
-
         // テスト実行
         const updates = { title: '更新後のタイトル' };
         updateFlowData(updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(showErrorMock).toHaveBeenCalled();
+        expect(errorFacade.showUnknownError).toHaveBeenCalled();
       });
     });
 
@@ -369,6 +391,10 @@ describe('flowService', () => {
           title: 'テストフロー',
           quest: 'テストクエスト',
           author: 'テスト作者',
+          description: 'テスト説明',
+          updateDate: '2023-01-01',
+          note: 'テスト備考',
+          always: 'テスト常時効果',
           flow: [
             {
               hp: '100%',
@@ -379,7 +405,7 @@ describe('flowService', () => {
               note: 'テストノート'
             }
           ],
-          organization: null,
+          organization: {} as any,
           weapons: [],
           jobs: [],
           summons: [],
@@ -406,8 +432,6 @@ describe('flowService', () => {
         expect(pushToHistoryMock).toHaveBeenCalled();
       });
 
-
-
       it('エラーが発生した場合はエラーストアに通知する', () => {
         // モックの設定
         const getFlowDataMock = vi.fn().mockImplementation(() => {
@@ -418,18 +442,13 @@ describe('flowService', () => {
           getFlowData: getFlowDataMock
         });
 
-        const showErrorMock = vi.fn();
-        (useErrorStore.getState as any).mockReturnValue({
-          showError: showErrorMock
-        });
-
         // テスト実行
         const updates = { note: '更新後のノート' };
         updateAction(0, updates);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(showErrorMock).toHaveBeenCalled();
+        expect(errorFacade.showUnknownError).toHaveBeenCalled();
       });
     });
   });

@@ -1,6 +1,14 @@
 import type { AppError } from '@/types/error.types';
-import { errorFactory } from '@/core/services/errorService';
-import useErrorStore from '@/core/stores/errorStore';
+import {
+  displayValidationError,
+  displayNetworkError,
+  displayFileOperationError,
+  displayUnknownError,
+  displayCustomError,
+  clearErrorDisplay,
+  executeErrorRecoveryAction,
+  handleWithTryCatch
+} from '@/core/services/errorService';
 
 /**
  * エラーハンドリングファサード
@@ -13,8 +21,7 @@ export const errorFacade = {
    * @param details 追加の詳細情報
    */
   showValidationError: (message: string, details?: Record<string, unknown>): void => {
-    const error = errorFactory.createValidationError(message, details);
-    useErrorStore.getState().showError(error);
+    displayValidationError(message, details);
   },
 
   /**
@@ -23,8 +30,7 @@ export const errorFacade = {
    * @param details 追加の詳細情報
    */
   showNetworkError: (originalError: Error, details?: Record<string, unknown>): void => {
-    const error = errorFactory.createNetworkError(originalError, details);
-    useErrorStore.getState().showError(error);
+    displayNetworkError(originalError, details);
   },
 
   /**
@@ -38,11 +44,7 @@ export const errorFacade = {
     details?: Record<string, unknown>,
     recoveryAction?: () => Promise<void>
   ): void => {
-    const error = errorFactory.createFileOperationError(originalError, details);
-    if (recoveryAction) {
-      error.recoveryAction = recoveryAction;
-    }
-    useErrorStore.getState().showError(error);
+    displayFileOperationError(originalError, details, recoveryAction);
   },
 
   /**
@@ -50,8 +52,7 @@ export const errorFacade = {
    * @param originalError 元のエラー
    */
   showUnknownError: (originalError: Error): void => {
-    const error = errorFactory.createUnknownError(originalError);
-    useErrorStore.getState().showError(error);
+    displayUnknownError(originalError);
   },
 
   /**
@@ -59,21 +60,21 @@ export const errorFacade = {
    * @param error カスタムエラー
    */
   showCustomError: (error: AppError): void => {
-    useErrorStore.getState().showError(error);
+    displayCustomError(error);
   },
 
   /**
    * エラーをクリアします
    */
   clearError: (): void => {
-    useErrorStore.getState().clearError();
+    clearErrorDisplay();
   },
 
   /**
    * リカバリーアクションを実行します
    */
   executeRecoveryAction: async (): Promise<void> => {
-    await useErrorStore.getState().executeRecoveryAction();
+    await executeErrorRecoveryAction();
   },
 
   /**
@@ -86,20 +87,6 @@ export const errorFacade = {
     fn: () => Promise<T>,
     errorHandler?: (_error: Error) => void
   ): Promise<T | undefined> => {
-    try {
-      return await fn();
-    } catch (error) {
-      if (error instanceof Error) {
-        if (errorHandler) {
-          errorHandler(error);
-        } else {
-          errorFacade.showUnknownError(error);
-        }
-      } else {
-        const unknownError = new Error('不明なエラーが発生しました');
-        errorFacade.showUnknownError(unknownError);
-      }
-      return undefined;
-    }
+    return handleWithTryCatch(fn, errorHandler);
   }
 };

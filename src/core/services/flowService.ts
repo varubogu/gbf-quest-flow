@@ -1,7 +1,7 @@
 import type { Flow, Action } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
-import useErrorStore from '@/core/stores/errorStore';
 import { pushToHistory, clearHistory } from '@/core/services/historyService';
+import { errorFacade } from '@/core/facades/errorFacade';
 
 /**
  * フローデータ操作関連のサービス
@@ -53,11 +53,11 @@ export function updateFlowWithAction(currentData: Flow, index: number, updates: 
 
 // ロジック関数 - エラーハンドリング
 export function handleError(error: unknown, defaultMessage: string): void {
-  useErrorStore
-    .getState()
-    .showError(
-      error instanceof Error ? error : new Error(defaultMessage)
-    );
+  if (error instanceof Error) {
+    errorFacade.showUnknownError(error);
+  } else {
+    errorFacade.showValidationError(defaultMessage);
+  }
 }
 
 /**

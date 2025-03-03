@@ -1,10 +1,10 @@
 import organizationSettings from '@/content/settings/organization.json';
 import type { Flow } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
-import useErrorStore from '@/core/stores/errorStore';
 import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
 import { clearHistory } from './historyService';
+import { errorFacade } from '@/core/facades/errorFacade';
 
 /**
  * ファイル操作関連のサービス
@@ -14,11 +14,11 @@ import { clearHistory } from './historyService';
 
 // エラーハンドリング関数を直接実装
 function handleError(error: unknown, defaultMessage: string): void {
-  useErrorStore
-    .getState()
-    .showError(
-      error instanceof Error ? error : new Error(defaultMessage)
-    );
+  if (error instanceof Error) {
+    errorFacade.showUnknownError(error);
+  } else {
+    errorFacade.showValidationError(defaultMessage);
+  }
 }
 
 export async function newFlowData(): Promise<void> {
