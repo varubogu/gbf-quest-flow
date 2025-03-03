@@ -4,6 +4,7 @@ import type { Member } from '@/types/types';
 import type { CharacterPosition } from '@/types/models';
 import { updateMemberField } from '@/lib/utils/characters/calculations';
 import type { FlowStore } from '@/types/flowStore.types';
+import useFlowFacade from '@/core/facades/flowFacade';
 
 interface UseCharacterFormResult {
   handleMemberChange: (
@@ -16,7 +17,7 @@ interface UseCharacterFormResult {
 
 export const useCharacterForm = (): UseCharacterFormResult => {
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
-  const updateFlowData = useFlowStore((state: FlowStore) => state.updateFlowData);
+  const { updateFlowData } = useFlowFacade();
 
   const handleMemberChange = useCallback(
     (position: CharacterPosition,

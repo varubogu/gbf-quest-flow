@@ -5,6 +5,19 @@ import useEditModeStore from '@/core/stores/editModeStore';
 import { newFlowData } from '@/core/services/fileService';
 import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateAction } from '@/core/services/flowService';
 
+export interface IFlowFacade {
+  flowData: Flow | null;
+  originalData: Flow | null;
+  isEditMode: boolean;
+  getFlowData: () => Flow | null;
+  getActionById: (_index: number) => Action | undefined;
+  setFlowData: (_data: Flow | null) => void;
+  updateFlowData: (_updates: Partial<Flow>) => void;
+  updateAction: (_index: number, _updates: Partial<Action>) => void;
+  setIsEditMode: (_isEdit: boolean) => void;
+  createNewFlow: () => void;
+}
+
 /**
  * フローストアのファサード
  *
@@ -14,7 +27,7 @@ import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateA
  *
  * 注: 更新ロジックはflowServiceに委譲されています。
  */
-const useFlowFacade = create((_set, _get) => {
+const useFlowFacade = create<IFlowFacade>((_set, _get) => {
   // 初期状態を設定
   const initialState = {
     flowData: useFlowStore.getState().flowData,

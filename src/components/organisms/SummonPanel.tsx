@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 import useFlowStore from '@/core/stores/flowStore';
 import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
+import useFlowFacade from '@/core/facades/flowFacade';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -19,7 +20,7 @@ interface SummonPanelProps {
 export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const updateFlowData = useFlowStore((state: any) => state.updateFlowData);
+  const { updateFlowData } = useFlowFacade();
 
   if (!flowData) return null;
 

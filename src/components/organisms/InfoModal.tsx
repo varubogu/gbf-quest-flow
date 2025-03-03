@@ -5,6 +5,7 @@ import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
+import useFlowFacade from '@/core/facades/flowFacade';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -17,7 +18,7 @@ export function InfoModal({ isOpen, onClose, isEditing }: InfoModalProps): JSX.E
   const flowData = useFlowStore((state: any) => state.flowData);
   const isEditMode = useEditModeStoreFacade((state: any) => state.isEditMode);
   const [formData, setFormData] = useState({ ...flowData });
-  const updateFlowData = useFlowStore((state: any) => state.updateFlowData);
+  const { updateFlowData } = useFlowFacade();
 
   // テキストエリアのref
   const descriptionRef = useAutoResizeTextArea(flowData?.description || '');

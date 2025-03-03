@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type JSX } from 'react';
 import useFlowStore from '@/core/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
+import useFlowFacade from '@/core/facades/flowFacade';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -20,7 +21,7 @@ interface WeaponPanelProps {
 export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const updateFlowData = useFlowStore((state: any) => state.updateFlowData);
+  const { updateFlowData } = useFlowFacade();
 
   // メモ化された武器データを作成
   const weaponData = useMemo(() => {

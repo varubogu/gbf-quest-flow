@@ -3,6 +3,7 @@ import type { WeaponSkillTotal } from '@/types/types';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import { SkillTable } from '@/components/molecules/SkillTable';
+import useFlowFacade from '@/core/facades/flowFacade';
 
 interface SkillTotalPanelProps {
   isEditing: boolean;
@@ -11,7 +12,7 @@ interface SkillTotalPanelProps {
 export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const updateFlowData = useFlowStore((state: any) => state.updateFlowData);
+  const { updateFlowData } = useFlowFacade();
 
   // メモ化されたスキル総合値データを作成
   const skillTotalData = useMemo(() => {
