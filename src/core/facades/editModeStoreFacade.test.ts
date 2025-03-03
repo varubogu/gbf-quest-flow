@@ -1,26 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import useEditModeStoreFacade from './editModeStoreFacade';
 import useEditModeStore from '@/core/stores/editModeStore';
+import * as editModeService from '@/core/services/editModeService';
+import type { EditModeStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('@/core/stores/editModeStore', () => {
-  const getIsEditModeMock = vi.fn();
-  const setIsEditModeMock = vi.fn();
-  const cancelEditMock = vi.fn();
-  const createNewFlowMock = vi.fn();
-
   return {
     default: {
       getState: vi.fn(() => ({
-        getIsEditMode: getIsEditModeMock,
-        setIsEditMode: setIsEditModeMock,
-        cancelEdit: cancelEditMock,
-        createNewFlow: createNewFlowMock,
+        getIsEditMode: vi.fn().mockReturnValue(true),
         isEditMode: false
       })),
       setState: vi.fn(),
       subscribe: vi.fn(() => vi.fn()) // unsubscribe関数を返す
     }
+  };
+});
+
+// editModeServiceのモック
+vi.mock('@/core/services/editModeService', () => {
+  return {
+    setIsEditMode: vi.fn(),
+    cancelEdit: vi.fn(),
+    createNewFlow: vi.fn()
   };
 });
 
@@ -34,9 +37,9 @@ describe('editModeStoreFacade', () => {
       it('editModeStoreのgetIsEditModeを呼び出す', () => {
         // モックの設定
         const getIsEditModeMock = vi.fn().mockReturnValue(true);
-        (useEditModeStore.getState as any).mockReturnValue({
+        (useEditModeStore.getState as unknown as () => EditModeStore) = vi.fn(() => ({
           getIsEditMode: getIsEditModeMock
-        });
+        } as unknown as EditModeStore));
 
         // テスト実行
         const result = useEditModeStoreFacade.getState().getIsEditMode();
@@ -48,50 +51,35 @@ describe('editModeStoreFacade', () => {
     });
 
     describe('setIsEditMode', () => {
-      it('editModeStoreのsetIsEditModeを呼び出す', () => {
-        // モックの設定
-        const setIsEditModeMock = vi.fn();
-        (useEditModeStore.getState as any).mockReturnValue({
-          setIsEditMode: setIsEditModeMock
-        });
-
+      it('editModeServiceのsetIsEditModeを呼び出す', () => {
         // テスト実行
-        useEditModeStoreFacade.getState().setIsEditMode(true);
+        const facade = useEditModeStoreFacade.getState();
+        (facade as unknown as { setIsEditMode: (_isEdit: boolean) => void }).setIsEditMode(true);
 
         // 検証
-        expect(setIsEditModeMock).toHaveBeenCalledWith(true);
+        expect(editModeService.setIsEditMode).toHaveBeenCalledWith(true);
       });
     });
 
     describe('cancelEdit', () => {
-      it('editModeStoreのcancelEditを呼び出す', () => {
-        // モックの設定
-        const cancelEditMock = vi.fn();
-        (useEditModeStore.getState as any).mockReturnValue({
-          cancelEdit: cancelEditMock
-        });
-
+      it('editModeServiceのcancelEditを呼び出す', () => {
         // テスト実行
-        useEditModeStoreFacade.getState().cancelEdit();
+        const facade = useEditModeStoreFacade.getState();
+        (facade as unknown as { cancelEdit: () => void }).cancelEdit();
 
         // 検証
-        expect(cancelEditMock).toHaveBeenCalled();
+        expect(editModeService.cancelEdit).toHaveBeenCalled();
       });
     });
 
     describe('createNewFlow', () => {
-      it('editModeStoreのcreateNewFlowを呼び出す', () => {
-        // モックの設定
-        const createNewFlowMock = vi.fn();
-        (useEditModeStore.getState as any).mockReturnValue({
-          createNewFlow: createNewFlowMock
-        });
-
+      it('editModeServiceのcreateNewFlowを呼び出す', () => {
         // テスト実行
-        useEditModeStoreFacade.getState().createNewFlow();
+        const facade = useEditModeStoreFacade.getState();
+        (facade as unknown as { createNewFlow: () => void }).createNewFlow();
 
         // 検証
-        expect(createNewFlowMock).toHaveBeenCalled();
+        expect(editModeService.createNewFlow).toHaveBeenCalled();
       });
     });
   });

@@ -1,23 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Mock, MockedFunction } from 'vitest';
 import { setFlowData, updateFlowData, updateAction, setIsEditMode, createNewFlow } from './flowFacade';
-import useEditModeStore from '@/core/stores/editModeStore';
+import * as editModeService from '@/core/services/editModeService';
 import * as fileService from '@/core/services/fileService';
 import * as flowService from '@/core/services/flowService';
 import type { Flow } from '@/types/models';
 
-vi.mock('@/core/stores/editModeStore', () => {
-  const setIsEditModeMock = vi.fn();
-
+vi.mock('@/core/services/editModeService', () => {
   return {
-    default: {
-      getState: vi.fn(() => ({
-        setIsEditMode: setIsEditModeMock,
-        isEditMode: false
-      })),
-      setState: vi.fn(),
-      subscribe: vi.fn(() => vi.fn()) // unsubscribe関数を返す
-    }
+    setIsEditMode: vi.fn()
   };
 });
 
@@ -109,12 +100,10 @@ describe('flowFacade', () => {
     });
 
     describe('setIsEditMode', () => {
-      it('editModeStoreのsetIsEditModeを呼び出す', () => {
+      it('editModeServiceのsetIsEditModeを呼び出す', () => {
         // モックの設定
         const setIsEditModeMock = vi.fn();
-        (useEditModeStore.getState as any).mockReturnValue({
-          setIsEditMode: setIsEditModeMock
-        });
+        (editModeService.setIsEditMode as MockedFunction<typeof editModeService.setIsEditMode>) = setIsEditModeMock;
 
         // テスト実行
         setIsEditMode(true);
