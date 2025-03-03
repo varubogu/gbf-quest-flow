@@ -14,7 +14,7 @@ import {
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
-import useFlowFacade from '@/core/facades/flowFacade';
+import { updateFlowData} from '@/core/facades/flowFacade';
 
 // アビリティ行コンポーネント
 const AbilityRow: React.FC<{
@@ -74,7 +74,6 @@ interface JobPanelProps {
 export function JobPanel({ isEditing }: JobPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const { updateFlowData } = useFlowFacade();
 
   // テキストエリアの参照を作成
   const jobNoteRef = useAutoResizeTextArea(flowData?.organization.job.note ?? '');

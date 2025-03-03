@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { SkillTotalPanel } from './SkillTotalPanel';
-import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/models';
 import type { WeaponSkillTotal } from '@/types/types';
 
@@ -19,7 +18,7 @@ vi.mock('react-i18next', () => ({
 
 // SkillTableコンポーネントのモック
 vi.mock('@/components/molecules/SkillTable', () => ({
-  SkillTable: ({ id, isEditing, titleKey, values, onChange }) => (
+  SkillTable: ({ id, isEditing, titleKey, values, onChange }: any) => (
     <div data-testid="skill-table" id={id}>
       <div data-testid="skill-table-title">{titleKey}</div>
       <div data-testid="skill-table-editing">{isEditing ? 'true' : 'false'}</div>
@@ -40,59 +39,63 @@ vi.mock('@/components/molecules/SkillTable', () => ({
   ),
 }));
 
-vi.mock('@/core/stores/flowStore');
+// テスト用のモックデータ
+const mockSkillTotal: WeaponSkillTotal = {
+  taRate: '10%',
+  hp: '200%',
+  defense: '50%',
+};
+
+const mockFlowData: Flow = {
+  title: 'テストフロー',
+  quest: 'テストクエスト',
+  author: 'テスト作者',
+  description: 'テスト説明',
+  updateDate: '2023-01-01',
+  note: 'テストノート',
+  organization: {
+    job: {
+      name: 'テストジョブ',
+      note: 'テストジョブの説明',
+      equipment: { name: 'テスト装備', note: 'テスト装備の説明' },
+      abilities: [],
+    },
+    member: { front: [], back: [] },
+    weapon: {
+      main: { name: '', note: '', additionalSkill: '' },
+      other: [],
+      additional: [],
+    },
+    weaponEffects: { taRate: '', hp: '', defense: '' },
+    summon: {
+      main: { name: '', note: '' },
+      friend: { name: '', note: '' },
+      other: [],
+      sub: [],
+    },
+    totalEffects: mockSkillTotal,
+  },
+  always: '',
+  flow: [],
+};
+
+// flowStoreのモック
+let currentFlowData: Flow | null = mockFlowData;
+vi.mock('@/core/stores/flowStore', () => ({
+  __esModule: true,
+  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+}));
+
+// flowFacadeのモック
+const updateFlowDataMock = vi.fn();
+vi.mock('@/core/facades/flowFacade', () => ({
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
+}));
 
 describe('SkillTotalPanel', () => {
-  // テスト用のモックデータ
-  const mockSkillTotal: WeaponSkillTotal = {
-    taRate: '10%',
-    hp: '200%',
-    defense: '50%',
-  };
-
-  const mockFlowData: Flow = {
-    title: 'テストフロー',
-    quest: 'テストクエスト',
-    author: 'テスト作者',
-    description: 'テスト説明',
-    updateDate: '2023-01-01',
-    note: 'テストノート',
-    organization: {
-      job: {
-        name: 'テストジョブ',
-        note: 'テストジョブの説明',
-        equipment: { name: 'テスト装備', note: 'テスト装備の説明' },
-        abilities: [],
-      },
-      member: { front: [], back: [] },
-      weapon: {
-        main: { name: '', note: '', additionalSkill: '' },
-        other: [],
-        additional: [],
-      },
-      weaponEffects: { taRate: '', hp: '', defense: '' },
-      summon: {
-        main: { name: '', note: '' },
-        friend: { name: '', note: '' },
-        other: [],
-        sub: [],
-      },
-      totalEffects: mockSkillTotal,
-    },
-    always: '',
-    flow: [],
-  };
-
-  const mockUpdateFlowData = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // useFlowStoreのモック
-    (useFlowStore as any).mockImplementation((selector: Function) => {
-      const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
-      return selector(state);
-    });
+    currentFlowData = mockFlowData;
   });
 
   describe('単体テスト', () => {
@@ -124,10 +127,7 @@ describe('SkillTotalPanel', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as any).mockImplementation((selector: Function) => {
-        const state = { flowData: null, updateFlowData: mockUpdateFlowData };
-        return selector(state);
-      });
+      currentFlowData = null;
 
       const { container } = render(<SkillTotalPanel isEditing={false} />);
 
@@ -145,8 +145,8 @@ describe('SkillTotalPanel', () => {
       changeButton.click();
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledTimes(1);
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledTimes(1);
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           totalEffects: {

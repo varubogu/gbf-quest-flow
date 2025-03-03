@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoModal } from './InfoModal';
-import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import type { Flow } from '@/types/models';
 
@@ -26,7 +25,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@headlessui/react', () => {
-  const Dialog = ({ children, open, onClose }) => {
+  const Dialog = ({ children, open, onClose }: any) => {
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -35,7 +34,7 @@ vi.mock('@headlessui/react', () => {
     );
   };
 
-  Dialog.Panel = ({ children, className, id, role, 'aria-labelledby': ariaLabelledby }) => (
+  Dialog.Panel = ({ children, className, id, role, 'aria-labelledby': ariaLabelledby }: any) => (
     <div
       data-testid="dialog-panel"
       className={className}
@@ -47,7 +46,7 @@ vi.mock('@headlessui/react', () => {
     </div>
   );
 
-  Dialog.Title = ({ children, className, id }) => (
+  Dialog.Title = ({ children, className, id }: any) => (
     <h2 data-testid="dialog-title" className={className} id={id}>
       {children}
     </h2>
@@ -56,76 +55,68 @@ vi.mock('@headlessui/react', () => {
   return { Dialog };
 });
 
-vi.mock('@/core/stores/flowStore');
-vi.mock('@/core/facades/editModeStoreFacade');
 vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
   useAutoResizeTextArea: () => ({ current: null }),
 }));
 
+// テスト用のモックデータ
+const mockFlowData: Flow = {
+  title: 'テストフロー',
+  quest: 'テストクエスト',
+  author: 'テスト作者',
+  description: 'テスト概要\n複数行あり',
+  updateDate: '2023-01-01T12:00',
+  movie: 'https://example.com/video',
+  note: 'テストメモ\n複数行あり',
+  organization: {} as any,
+  always: 'テスト常時効果',
+  flow: [],
+};
+
+const mockOnClose = vi.fn();
+
+// flowStoreのモック
+let currentFlowData: Flow | null = mockFlowData;
+vi.mock('@/core/stores/flowStore', () => ({
+  __esModule: true,
+  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+}));
+
+// flowFacadeのモック
+const updateFlowDataMock = vi.fn();
+vi.mock('@/core/facades/flowFacade', () => ({
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
+}));
+
+vi.mock('@/core/facades/editModeStoreFacade');
+
 describe('InfoModal', () => {
-  // テスト用のモックデータ
-  const mockFlowData: Flow = {
-    title: 'テストフロー',
-    quest: 'テストクエスト',
-    author: 'テスト作者',
-    description: 'テスト概要\n複数行あり',
-    updateDate: '2023-01-01T12:00',
-    movie: 'https://example.com/video',
-    note: 'テストメモ\n複数行あり',
-    organization: {} as any,
-    always: 'テスト常時効果',
-    flow: [],
-  };
-
-  const mockUpdateFlowData = vi.fn();
-  const mockOnClose = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
+    currentFlowData = mockFlowData;
 
-    // useFlowStoreのモック
-    (useFlowStore as any).mockImplementation((selector) => {
-      if (selector.name === 'flowDataSelector') {
-        return mockFlowData;
-      } else if (typeof selector === 'function') {
-        const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
-        return selector(state);
-      }
-      return mockUpdateFlowData;
-    });
+    // 編集モードでない状態
+    (useEditModeStoreFacade as any).mockImplementation((selector) =>
+      selector({ isEditMode: false })
+    );
   });
 
   describe('単体テスト', () => {
     it('モーダルが表示されること', () => {
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={false} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       expect(screen.getByTestId('dialog')).toBeInTheDocument();
       expect(screen.getByTestId('dialog-title')).toHaveTextContent('フロー情報');
     });
 
     it('モーダルが閉じられていること', () => {
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      render(<InfoModal isOpen={false} onClose={mockOnClose} isEditing={false} />);
+      render(<InfoModal isOpen={false} onClose={mockOnClose} />);
 
       expect(screen.queryByTestId('dialog')).not.toBeInTheDocument();
     });
 
     it('閉じるボタンをクリックするとonClose関数が呼ばれること', () => {
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={false} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       const closeButton = screen.getByLabelText('閉じる');
       expect(closeButton).toBeInTheDocument();
@@ -140,12 +131,7 @@ describe('InfoModal', () => {
       // onClose関数が呼び出されることだけを確認します
       // 実際のコンポーネントでは、オーバーレイのonClickイベントでonClose関数が呼ばれます
 
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={false} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       // onClose関数が存在することを確認
       expect(mockOnClose).toBeDefined();
@@ -154,12 +140,7 @@ describe('InfoModal', () => {
 
   describe('結合テスト', () => {
     it('閲覧モードでフロー情報が表示されること', () => {
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={false} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       // 各フィールドの値が表示されていることを確認
       expect(screen.getByTestId('info-flow-title')).toHaveTextContent('テストフロー');
@@ -180,7 +161,7 @@ describe('InfoModal', () => {
         selector({ isEditMode: true })
       );
 
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={true} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       // 各入力フィールドが表示されていることを確認
       expect(screen.getByLabelText('タイトル')).toBeInTheDocument();
@@ -207,14 +188,14 @@ describe('InfoModal', () => {
         selector({ isEditMode: true })
       );
 
-      render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={true} />);
+      render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       // タイトルフィールドを変更
       const titleInput = screen.getByLabelText('タイトル');
       fireEvent.change(titleInput, { target: { value: '新しいタイトル' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         title: '新しいタイトル',
       });
 
@@ -223,29 +204,16 @@ describe('InfoModal', () => {
       fireEvent.change(questInput, { target: { value: '新しいクエスト' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         quest: '新しいクエスト',
       });
     });
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as any).mockImplementation((selector) => {
-        if (selector.name === 'flowDataSelector') {
-          return null;
-        } else if (typeof selector === 'function') {
-          const state = { flowData: null, updateFlowData: mockUpdateFlowData };
-          return selector(state);
-        }
-        return mockUpdateFlowData;
-      });
+      currentFlowData = null;
 
-      // 編集モードでない状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
-        selector({ isEditMode: false })
-      );
-
-      const { container } = render(<InfoModal isOpen={true} onClose={mockOnClose} isEditing={false} />);
+      const { container } = render(<InfoModal isOpen={true} onClose={mockOnClose} />);
 
       // 何も表示されないことを確認
       expect(container.firstChild).toBeNull();

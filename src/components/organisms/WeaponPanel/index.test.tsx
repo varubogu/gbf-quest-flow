@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
-import useFlowStore from '@/core/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import type { Action, Flow } from '@/types/types';
+import type { Flow } from '@/types/types';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -13,6 +12,12 @@ vi.mock('react-i18next', () => ({
   useTranslation: (): UseTranslationResult => ({
     t: (key: string): string => key,
   }),
+}));
+
+// flowFacadeのモック
+const updateFlowDataMock = vi.fn();
+vi.mock('@/core/facades/flowFacade', () => ({
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
 }));
 
 // モックデータ
@@ -85,79 +90,29 @@ const mockFlowData: Flow = {
   }
 };
 
-// モックの設定
-vi.mock('@/core/stores/flowStore');
+// flowStoreのモック
+let currentFlowData: Flow | null = mockFlowData;
+vi.mock('@/core/stores/flowStore', () => ({
+  __esModule: true,
+  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+}));
+
 
 describe('WeaponPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // モックの実装を更新
-    vi.mocked(useFlowStore).mockImplementation((selector) => {
-      if (selector) {
-        return selector({
-          flowData: mockFlowData,
-          originalData: null,
-          getFlowData: function (): Flow | null {
-            throw new Error('Function not implemented.');
-          },
-          getActionById: function (_index: number): Action | undefined {
-            throw new Error('Function not implemented.');
-          },
-          setFlowData: function (_data: Flow | null): void {
-            throw new Error('Function not implemented.');
-          }
-        });
-      }
-      return { flowData: mockFlowData };
-    });
+    currentFlowData = mockFlowData;
   });
 
   describe('単体テスト', () => {
     it('flowDataがnullの場合、nullを返す', () => {
-      vi.mocked(useFlowStore).mockImplementation((selector) => {
-        if (selector) {
-          return selector({
-            flowData: null,
-            originalData: null,
-            getFlowData: function (): Flow | null {
-              throw new Error('Function not implemented.');
-            },
-            getActionById: function (_index: number): Action | undefined {
-              throw new Error('Function not implemented.');
-            },
-            setFlowData: function (_data: Flow | null): void {
-              throw new Error('Function not implemented.');
-            }
-          });
-        }
-        return { flowData: null };
-      });
-
+      // flowDataがnullの場合のモックを一時的に設定
+      currentFlowData = null;
       const { container } = render(<WeaponPanel isEditing={false} />);
       expect(container.firstChild).toBeNull();
     });
 
     it('updateFlowDataが正しく呼び出される', () => {
-      const mockUpdateFlowData = vi.fn();
-      vi.mocked(useFlowStore).mockImplementation((selector) => {
-        if (selector) {
-          return selector({
-            flowData: mockFlowData,
-            originalData: null,
-            getFlowData: function (): Flow | null {
-              throw new Error('Function not implemented.');
-            },
-            getActionById: function (_index: number): Action | undefined {
-              throw new Error('Function not implemented.');
-            },
-            setFlowData: function (_data: Flow | null): void {
-              throw new Error('Function not implemented.');
-            }
-          });
-        }
-        return { flowData: mockFlowData };
-      });
-
       render(<WeaponPanel isEditing={true} />);
 
       // メイン武器の名前を変更
@@ -177,7 +132,7 @@ describe('WeaponPanel', () => {
         },
       };
 
-      expect(mockUpdateFlowData).toHaveBeenCalledWith(expectedData);
+      expect(updateFlowDataMock).toHaveBeenCalledWith(expectedData);
     });
   });
 
@@ -231,26 +186,6 @@ describe('WeaponPanel', () => {
     });
 
     it('武器データの編集が正しく機能する', () => {
-      const mockUpdateFlowData = vi.fn();
-      vi.mocked(useFlowStore).mockImplementation((selector) => {
-        if (selector) {
-          return selector({
-            flowData: mockFlowData,
-            originalData: null,
-            getFlowData: function (): Flow | null {
-              throw new Error('Function not implemented.');
-            },
-            getActionById: function (_index: number): Action | undefined {
-              throw new Error('Function not implemented.');
-            },
-            setFlowData: function (_data: Flow | null): void {
-              throw new Error('Function not implemented.');
-            }
-          });
-        }
-        return { flowData: mockFlowData };
-      });
-
       render(<WeaponPanel isEditing={true} />);
 
       // メイン武器、その他武器、追加武器の編集をテスト
@@ -269,7 +204,7 @@ describe('WeaponPanel', () => {
       const skillInput = screen.getByDisplayValue('50%');
       fireEvent.change(skillInput, { target: { value: '60%' } });
 
-      expect(mockUpdateFlowData).toHaveBeenCalled();
+      expect(updateFlowDataMock).toHaveBeenCalled();
     });
   });
 });

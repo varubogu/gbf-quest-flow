@@ -12,7 +12,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
-import useFlowFacade from '@/core/facades/flowFacade';
+import { updateFlowData } from '@/core/facades/flowFacade';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -21,7 +21,6 @@ interface WeaponPanelProps {
 export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const { updateFlowData } = useFlowFacade();
 
   // メモ化された武器データを作成
   const weaponData = useMemo(() => {

@@ -11,7 +11,7 @@ import {
   tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
-import useFlowFacade from '@/core/facades/flowFacade';
+import { updateFlowData } from '@/core/facades/flowFacade';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -20,7 +20,6 @@ interface SummonPanelProps {
 export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
   const { t } = useTranslation();
   const flowData = useFlowStore((state: any) => state.flowData);
-  const { updateFlowData } = useFlowFacade();
 
   if (!flowData) return null;
 

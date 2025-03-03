@@ -12,7 +12,6 @@ import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import { useKeyboardShortcuts } from '@/core/hooks/ui/base/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
-import { useTranslation } from 'react-i18next';
 
 interface Props {
   initialData?: Flow | null;
@@ -23,7 +22,6 @@ interface Props {
 function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props): React.ReactElement {
   const [isLoading, setIsLoading] = useState(true);
   const initializedRef = useRef(false);
-  const { t } = useTranslation();
 
   // 各ストアから状態を取得 - 型アサーションを使用
   const flowData = useFlowStore((state) => (state as any).flowData);

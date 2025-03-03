@@ -3,16 +3,9 @@ import { renderHook } from '@testing-library/react';
 import { useFlowDataModification } from './useFlowDataModification';
 import type { Flow } from '@/types/models';
 
-// モックの定義
-const mockUpdateFlowData = vi.fn();
-
 // FlowStoreのモック
-vi.mock('@/core/stores/flowStore', () => ({
-  default: {
-    getState: vi.fn(() => ({
-      updateFlowData: mockUpdateFlowData
-    }))
-  }
+vi.mock('@/core/facades/flowFacade', () => ({
+  updateFlowData: vi.fn()
 }));
 
 // flowEventServiceのモック
@@ -25,9 +18,14 @@ vi.mock('@/core/facades/flowEventService', () => ({
 // i18nのモック
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, fallback: string) => fallback
+    t: (_key: string, fallback: string): string => fallback
   })
 }));
+
+// モック関数の参照を取得
+const mockUpdateFlowData = vi.mocked(
+  (await import('@/core/facades/flowFacade')).updateFlowData
+);
 
 describe('useFlowDataModification', () => {
   const mockFlowData: Flow = {

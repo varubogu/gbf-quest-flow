@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { Flow } from '@/types/models';
 import { handleError } from '@/lib/utils/accessibility';
-import useFlowFacade from '@/core/facades/flowFacade';
+import { updateFlowData } from '@/core/facades/flowFacade';
 import { handleFlowSave, handleNewFlow, handleCancel } from '@/core/facades/flowEventService';
 import { useTranslation } from 'react-i18next';
 
@@ -32,8 +32,6 @@ export const useFlowDataModification = ({
   hasChanges = false,
 }: UseFlowDataModificationProps): UseFlowDataModificationResult => {
   const { t } = useTranslation();
-
-  const { updateFlowData } = useFlowFacade();
 
   // データ変更のハンドラー
   const handleTitleChange = useCallback(

@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { JobPanel } from './JobPanel';
-import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/models';
 import type { Job, JobAbility, JobEquipment } from '@/types/types';
 
@@ -26,65 +25,69 @@ vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
   useAutoResizeTextArea: () => ({ current: null }),
 }));
 
-vi.mock('@/core/stores/flowStore');
+// テスト用のモックデータ
+const mockAbilities: JobAbility[] = [
+  { name: 'アビリティ1', note: 'アビリティ1の説明' },
+  { name: 'アビリティ2', note: 'アビリティ2の説明\n複数行あり' },
+];
+
+const mockEquipment: JobEquipment = {
+  name: 'テスト装備',
+  note: 'テスト装備の説明',
+};
+
+const mockJob: Job = {
+  name: 'テストジョブ',
+  note: 'テストジョブの説明',
+  equipment: mockEquipment,
+  abilities: mockAbilities,
+};
+
+const mockFlowData: Flow = {
+  title: 'テストフロー',
+  quest: 'テストクエスト',
+  author: 'テスト作者',
+  description: 'テスト説明',
+  updateDate: '2023-01-01',
+  note: 'テストノート',
+  organization: {
+    job: mockJob,
+    member: { front: [], back: [] },
+    weapon: {
+      main: { name: '', note: '', additionalSkill: '' },
+      other: [],
+      additional: [],
+    },
+    weaponEffects: { taRate: '', hp: '', defense: '' },
+    summon: {
+      main: { name: '', note: '' },
+      friend: { name: '', note: '' },
+      other: [],
+      sub: [],
+    },
+    totalEffects: { taRate: '', hp: '', defense: '' },
+  },
+  always: '',
+  flow: [],
+};
+
+// flowStoreのモック
+let currentFlowData: Flow | null = mockFlowData;
+vi.mock('@/core/stores/flowStore', () => ({
+  __esModule: true,
+  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+}));
+
+// flowFacadeのモック
+const updateFlowDataMock = vi.fn();
+vi.mock('@/core/facades/flowFacade', () => ({
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
+}));
 
 describe('JobPanel', () => {
-  // テスト用のモックデータ
-  const mockAbilities: JobAbility[] = [
-    { name: 'アビリティ1', note: 'アビリティ1の説明' },
-    { name: 'アビリティ2', note: 'アビリティ2の説明\n複数行あり' },
-  ];
-
-  const mockEquipment: JobEquipment = {
-    name: 'テスト装備',
-    note: 'テスト装備の説明',
-  };
-
-  const mockJob: Job = {
-    name: 'テストジョブ',
-    note: 'テストジョブの説明',
-    equipment: mockEquipment,
-    abilities: mockAbilities,
-  };
-
-  const mockFlowData: Flow = {
-    title: 'テストフロー',
-    quest: 'テストクエスト',
-    author: 'テスト作者',
-    description: 'テスト説明',
-    updateDate: '2023-01-01',
-    note: 'テストノート',
-    organization: {
-      job: mockJob,
-      member: { front: [], back: [] },
-      weapon: {
-        main: { name: '', note: '', additionalSkill: '' },
-        other: [],
-        additional: [],
-      },
-      weaponEffects: { taRate: '', hp: '', defense: '' },
-      summon: {
-        main: { name: '', note: '' },
-        friend: { name: '', note: '' },
-        other: [],
-        sub: [],
-      },
-      totalEffects: { taRate: '', hp: '', defense: '' },
-    },
-    always: '',
-    flow: [],
-  };
-
-  const mockUpdateFlowData = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // useFlowStoreのモック
-    (useFlowStore as any).mockImplementation((selector: Function) => {
-      const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
-      return selector(state);
-    });
+    currentFlowData = mockFlowData;
   });
 
   describe('単体テスト', () => {
@@ -116,10 +119,7 @@ describe('JobPanel', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as any).mockImplementation((selector: Function) => {
-        const state = { flowData: null, updateFlowData: mockUpdateFlowData };
-        return selector(state);
-      });
+      currentFlowData = null;
 
       const { container } = render(<JobPanel isEditing={false} />);
 
@@ -140,7 +140,7 @@ describe('JobPanel', () => {
       fireEvent.change(jobNameInput, { target: { value: '新しいジョブ' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           job: {
@@ -162,7 +162,7 @@ describe('JobPanel', () => {
       fireEvent.change(jobNoteTextarea, { target: { value: '新しいジョブの説明' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           job: {
@@ -184,7 +184,7 @@ describe('JobPanel', () => {
       fireEvent.change(equipmentNameInput, { target: { value: '新しい装備' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           job: {
@@ -209,7 +209,7 @@ describe('JobPanel', () => {
       fireEvent.change(abilityNameInput, { target: { value: '新しいアビリティ' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           job: {
@@ -237,7 +237,7 @@ describe('JobPanel', () => {
       fireEvent.change(abilityNoteTextarea, { target: { value: '新しいアビリティの説明' } });
 
       // updateFlowData関数が呼ばれたことを確認
-      expect(mockUpdateFlowData).toHaveBeenCalledWith({
+      expect(updateFlowDataMock).toHaveBeenCalledWith({
         organization: {
           ...mockFlowData.organization,
           job: {

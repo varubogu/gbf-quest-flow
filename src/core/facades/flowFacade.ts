@@ -1,6 +1,4 @@
-import { create } from 'zustand';
 import type { Flow, Action } from '@/types/models';
-import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { newFlowData } from '@/core/services/fileService';
 import {
@@ -10,11 +8,6 @@ import {
 } from '@/core/services/flowService';
 
 export interface IFlowFacade {
-  flowData: Flow | null;
-  originalData: Flow | null;
-  isEditMode: boolean;
-  getFlowData: () => Flow | null;
-  getActionById: (_index: number) => Action | undefined;
   setFlowData: (_data: Flow | null) => void;
   updateFlowData: (_updates: Partial<Flow>) => void;
   updateAction: (_index: number, _updates: Partial<Action>) => void;
@@ -31,39 +24,25 @@ export interface IFlowFacade {
  *
  * 注: 更新ロジックはflowServiceに委譲されています。
  */
-const useFlowFacade = create<IFlowFacade>((_set, _get) => {
+export function setFlowData(data: Flow | null): void {
+  serviceSetFlowData(data);
+}
 
-  return {
-    flowData: useFlowStore.getState().flowData,
-    originalData: useFlowStore.getState().originalData,
-    isEditMode: useEditModeStore.getState().isEditMode,
+export function updateFlowData(updates: Partial<Flow>): void {
+  serviceUpdateFlowData(updates);
+}
 
-    // FlowStore関連のメソッド - 読み取り系
-    getFlowData: (): Flow | null => useFlowStore.getState().getFlowData(),
-    getActionById: (index: number): Action | undefined => useFlowStore.getState().getActionById(index),
+export function updateAction(index: number, updates: Partial<Action>): void {
+  serviceUpdateAction(index, updates);
+}
 
-    // FlowStore関連のメソッド - 更新系（flowServiceに委譲）
-    setFlowData: (data: Flow | null): void => serviceSetFlowData(data),
+  // EditModeStore関連のメソッド
+export function setIsEditMode(isEdit: boolean): void {
+  useEditModeStore.getState().setIsEditMode(isEdit);
+}
 
-    updateFlowData: (updates: Partial<Flow>): void => {
-      serviceUpdateFlowData(updates);
-    },
-
-    updateAction: (index: number, updates: Partial<Action>): void => {
-      serviceUpdateAction(index, updates);
-    },
-
-    // EditModeStore関連のメソッド
-    setIsEditMode: (isEdit: boolean): void => {
-      useEditModeStore.getState().setIsEditMode(isEdit);
-    },
-
-    // FileService関連のメソッド
-    createNewFlow: (): void => {
-      // fileServiceを使用して新規フローを作成
-      newFlowData();
-    },
-  };
-});
-
-export default useFlowFacade;
+  // FileService関連のメソッド
+export function createNewFlow(): void {
+  // fileServiceを使用して新規フローを作成
+  newFlowData();
+}
