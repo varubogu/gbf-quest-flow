@@ -8,7 +8,6 @@ export interface FlowStore {
   getFlowData: () => Flow | null;
   getActionById: (_index: number) => Action | undefined;
   setFlowData: (_data: Flow | null) => void;
-  updateFlowData: (_updates: Partial<Flow>) => void;
 }
 
 // 編集モード管理

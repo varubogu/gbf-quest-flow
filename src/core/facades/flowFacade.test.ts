@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { MockedFunction } from 'vitest';
 import useFlowFacade from './flowFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
@@ -55,7 +56,8 @@ vi.mock('@/core/services/fileService', () => {
 vi.mock('@/core/services/flowService', () => {
   return {
     updateFlowData: vi.fn(),
-    updateAction: vi.fn()
+    updateAction: vi.fn(),
+    setFlowData: vi.fn()
   };
 });
 
@@ -82,7 +84,7 @@ describe('flowFacade', () => {
     ]
   };
 
-  const mockAction: Action = mockFlow.flow[0];
+  const mockAction: Action = mockFlow.flow[0]!;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -124,12 +126,10 @@ describe('flowFacade', () => {
     });
 
     describe('setFlowData', () => {
-      it('flowStoreのsetFlowDataを呼び出す', () => {
+      it('flowServiceのsetFlowDataを呼び出す', () => {
         // モックの設定
         const setFlowDataMock = vi.fn();
-        (useFlowStore.getState as any).mockReturnValue({
-          setFlowData: setFlowDataMock
-        });
+        (flowService.setFlowData as MockedFunction<typeof flowService.setFlowData>) = setFlowDataMock;
 
         // テスト実行
         useFlowFacade.getState().setFlowData(mockFlow);
@@ -143,12 +143,7 @@ describe('flowFacade', () => {
       it('flowServiceのupdateFlowDataを呼び出す', () => {
         // モックの設定
         const updateFlowDataMock = vi.fn();
-        (flowService.updateFlowData as any) = updateFlowDataMock;
-
-        // EditModeStoreのモック
-        (useEditModeStore.getState as any).mockReturnValue({
-          isEditMode: true
-        });
+        (flowService.updateFlowData as MockedFunction<typeof flowService.updateFlowData>) = updateFlowDataMock;
 
         // テスト実行
         const updates = { title: '更新後のタイトル' };
@@ -163,12 +158,7 @@ describe('flowFacade', () => {
       it('flowServiceのupdateActionを呼び出す', () => {
         // モックの設定
         const updateActionMock = vi.fn();
-        (flowService.updateAction as any) = updateActionMock;
-
-        // EditModeStoreのモック
-        (useEditModeStore.getState as any).mockReturnValue({
-          isEditMode: false
-        });
+        (flowService.updateAction as MockedFunction<typeof flowService.updateAction>) = updateActionMock;
 
         // テスト実行
         const updates = { note: '更新後のノート' };

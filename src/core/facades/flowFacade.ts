@@ -3,7 +3,11 @@ import type { Flow, Action } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { newFlowData } from '@/core/services/fileService';
-import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateAction } from '@/core/services/flowService';
+import {
+  setFlowData as serviceSetFlowData,
+  updateFlowData as serviceUpdateFlowData,
+  updateAction as serviceUpdateAction,
+} from '@/core/services/flowService';
 
 export interface IFlowFacade {
   flowData: Flow | null;
@@ -28,23 +32,18 @@ export interface IFlowFacade {
  * 注: 更新ロジックはflowServiceに委譲されています。
  */
 const useFlowFacade = create<IFlowFacade>((_set, _get) => {
-  // 初期状態を設定
-  const initialState = {
+
+  return {
     flowData: useFlowStore.getState().flowData,
     originalData: useFlowStore.getState().originalData,
     isEditMode: useEditModeStore.getState().isEditMode,
-  };
-
-  return {
-    // 状態（プロパティ）- FlowStoreとEditModeStoreから初期化
-    ...initialState,
 
     // FlowStore関連のメソッド - 読み取り系
     getFlowData: (): Flow | null => useFlowStore.getState().getFlowData(),
     getActionById: (index: number): Action | undefined => useFlowStore.getState().getActionById(index),
 
     // FlowStore関連のメソッド - 更新系（flowServiceに委譲）
-    setFlowData: (data: Flow | null): void => useFlowStore.getState().setFlowData(data),
+    setFlowData: (data: Flow | null): void => serviceSetFlowData(data),
 
     updateFlowData: (updates: Partial<Flow>): void => {
       serviceUpdateFlowData(updates);

@@ -68,7 +68,6 @@ describe('EditModeStore', () => {
       originalData: null,
       flowData: null,
       setFlowData: vi.fn(),
-      updateFlowData: vi.fn(),
       getActionById: vi.fn(),
     }));
 
@@ -128,7 +127,6 @@ describe('EditModeStore', () => {
         originalData: mockFlowData,
         flowData: null,
         setFlowData: vi.fn(),
-        updateFlowData: vi.fn(),
         getActionById: vi.fn(),
       }));
 

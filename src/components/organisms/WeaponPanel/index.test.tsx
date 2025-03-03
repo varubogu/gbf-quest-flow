@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
 import useFlowStore from '@/core/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import type { Flow } from '@/types/types';
+import type { Action, Flow } from '@/types/types';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -94,9 +94,21 @@ describe('WeaponPanel', () => {
     // モックの実装を更新
     vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
-        return selector({ flowData: mockFlowData });
+        return selector({
+          flowData: mockFlowData,
+          originalData: null,
+          getFlowData: function (): Flow | null {
+            throw new Error('Function not implemented.');
+          },
+          getActionById: function (_index: number): Action | undefined {
+            throw new Error('Function not implemented.');
+          },
+          setFlowData: function (_data: Flow | null): void {
+            throw new Error('Function not implemented.');
+          }
+        });
       }
-      return { flowData: mockFlowData, updateFlowData: vi.fn() };
+      return { flowData: mockFlowData };
     });
   });
 
@@ -104,9 +116,21 @@ describe('WeaponPanel', () => {
     it('flowDataがnullの場合、nullを返す', () => {
       vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
-          return selector({ flowData: null });
+          return selector({
+            flowData: null,
+            originalData: null,
+            getFlowData: function (): Flow | null {
+              throw new Error('Function not implemented.');
+            },
+            getActionById: function (_index: number): Action | undefined {
+              throw new Error('Function not implemented.');
+            },
+            setFlowData: function (_data: Flow | null): void {
+              throw new Error('Function not implemented.');
+            }
+          });
         }
-        return { flowData: null, updateFlowData: vi.fn() };
+        return { flowData: null };
       });
 
       const { container } = render(<WeaponPanel isEditing={false} />);
@@ -117,9 +141,21 @@ describe('WeaponPanel', () => {
       const mockUpdateFlowData = vi.fn();
       vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
-          return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
+          return selector({
+            flowData: mockFlowData,
+            originalData: null,
+            getFlowData: function (): Flow | null {
+              throw new Error('Function not implemented.');
+            },
+            getActionById: function (_index: number): Action | undefined {
+              throw new Error('Function not implemented.');
+            },
+            setFlowData: function (_data: Flow | null): void {
+              throw new Error('Function not implemented.');
+            }
+          });
         }
-        return { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
+        return { flowData: mockFlowData };
       });
 
       render(<WeaponPanel isEditing={true} />);
@@ -198,9 +234,21 @@ describe('WeaponPanel', () => {
       const mockUpdateFlowData = vi.fn();
       vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
-          return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
+          return selector({
+            flowData: mockFlowData,
+            originalData: null,
+            getFlowData: function (): Flow | null {
+              throw new Error('Function not implemented.');
+            },
+            getActionById: function (_index: number): Action | undefined {
+              throw new Error('Function not implemented.');
+            },
+            setFlowData: function (_data: Flow | null): void {
+              throw new Error('Function not implemented.');
+            }
+          });
         }
-        return { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
+        return { flowData: mockFlowData };
       });
 
       render(<WeaponPanel isEditing={true} />);

@@ -31,14 +31,6 @@ const useFlowStore = create<FlowStore>((set, get) => ({
 
     set({ flowData: adjustedData });
   },
-  // 以下のメソッドはファサードパターンとの互換性のために残しますが、
-  // 内部実装はflowServiceに委譲します
-  updateFlowData: (updates: Partial<Flow>): void => {
-    // 注: 実際の実装はflowServiceで行われ、このメソッドは互換性のために残されています
-    // flowServiceのupdateFlowDataメソッドをファサードから呼び出すことを推奨します
-    const { updateFlowData } = require('../services/flowService');
-    updateFlowData(updates, false);
-  },
 }));
 
 export default useFlowStore;

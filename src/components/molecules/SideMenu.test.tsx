@@ -15,7 +15,6 @@ interface FlowStore {
   currentRow: number;
   history: { past: unknown[]; future: unknown[] };
   setCurrentRow: (_row: number) => void;
-  updateFlowData: (_data: Flow) => void;
   pushToHistory: () => void;
   undo: () => void;
   redo: () => void;
@@ -147,7 +146,6 @@ const createMockStore = (): UseFlowStoreResult => {
     currentRow: 0,
     history: { past: [], future: [] },
     setCurrentRow: vi.fn(),
-    updateFlowData: vi.fn(),
     pushToHistory: vi.fn(),
     undo: vi.fn(),
     redo: vi.fn(),
