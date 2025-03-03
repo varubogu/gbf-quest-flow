@@ -2,12 +2,38 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { CreateFlowButton } from './CreateFlowButton';
 import useEditModeStore from '@/core/stores/editModeStore';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // モック
-vi.mock('@/core/stores/editModeStore', () => ({
-  default: vi.fn(),
-}));
+vi.mock('@/core/stores/editModeStore', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockFn: any = vi.fn((selector) => selector({
+    isEditMode: false,
+    createNewFlow: vi.fn()
+  }));
+  mockFn.getState = vi.fn().mockReturnValue({
+    isEditMode: false,
+    createNewFlow: vi.fn()
+  });
+  mockFn.subscribe = vi.fn();
+  mockFn.setState = vi.fn();
+  return {
+    default: mockFn,
+  };
+});
+
+// useEditModeStoreFacadeのモック
+vi.mock('@/core/facades/editModeStoreFacade', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockFn: any = vi.fn((selector) => selector({
+    isEditMode: false,
+    createNewFlow: vi.fn()
+  }));
+  return {
+    default: mockFn,
+  };
+});
 
 describe('CreateFlowButton', () => {
   const mockCreateNewFlow = vi.fn();
@@ -16,9 +42,12 @@ describe('CreateFlowButton', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // useEditModeStoreのモック実装
-    (useEditModeStore as any).mockImplementation((selector) =>
-      selector({ createNewFlow: mockCreateNewFlow })
+    // useEditModeStoreFacadeのモック実装を更新
+    (useEditModeStoreFacade as any).mockImplementation((selector) =>
+      selector({
+        isEditMode: false,
+        createNewFlow: mockCreateNewFlow
+      })
     );
   });
 

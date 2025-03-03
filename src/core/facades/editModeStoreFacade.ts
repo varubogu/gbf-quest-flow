@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import useEditModeStore from '@/core/stores/editModeStore';
-import { startEditMode, cancelEditMode, createNewFlow } from '@/core/services/editModeService';
+import {
+   getIsEditMode as getIsEditModeFromStore,
+   startEditMode,
+   cancelEditMode,
+   createNewFlow
+} from '@/core/services/editModeService';
 
 /**
  * 編集モードストアのファサード
@@ -27,10 +32,8 @@ const useEditModeStoreFacade = create((set, _get) => {
     // 状態（プロパティ）- EditModeStoreから初期化
     ...initialState,
 
-    // 読み取り専用メソッド - EditModeStoreから直接取得
-    getIsEditMode: (): boolean => useEditModeStore.getState().getIsEditMode(),
+    getIsEditMode: (): boolean => getIsEditModeFromStore(),
 
-    // 更新系メソッド - editModeServiceを経由して呼び出す
     setIsEditMode: (isEdit: boolean): void => startEditMode(isEdit),
     cancelEdit: (): void => cancelEditMode(),
     createNewFlow: (): void => createNewFlow(),

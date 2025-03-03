@@ -19,13 +19,13 @@ const getFlowStore = (): FlowStore => useFlowStore.getState();
 const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
 
 // 履歴状態の取得
-export const getHistoryState = (): HistoryState => getHistoryStore().getHistoryState();
+export const getHistoryState = (): HistoryState => getHistoryStore().getState();
 
 // 履歴への追加
 export const pushToHistory = (data: Flow): void => {
   // 編集モード中のみ履歴に追加する
   if (getEditModeStore().isEditMode) {
-    getHistoryStore().pushToHistory(structuredClone(data));
+    getHistoryStore().push(structuredClone(data));
   }
 };
 
@@ -40,12 +40,31 @@ export const undo = (): void => {
     return;
   }
 
-  // historyStoreのundoWithDataを使用して新しい状態を取得
-  const newData = historyStore.undoWithData(currentData, originalData);
+  // 履歴がある場合はhistoryStoreのundoを使用
+  if (historyStore.getState().past.length > 0) {
+    const previousData = historyStore.undo();
+    if (previousData) {
+      flowStore.setFlowData(previousData);
+    }
+    return;
+  }
 
-  if (newData) {
-    // flowStoreの状態を更新
-    flowStore.setFlowData(newData);
+  // 履歴がない場合でもオリジナルデータがあれば、そこに戻る
+  if (originalData && JSON.stringify(currentData) !== JSON.stringify(originalData)) {
+    // 現在のデータを未来履歴に追加
+    const history = historyStore.getState();
+    const newFuture = [structuredClone(currentData), ...history.future];
+
+    // 履歴を更新
+    useHistoryStore.setState({
+      history: {
+        past: [],
+        future: newFuture
+      }
+    });
+
+    // オリジナルデータに戻す
+    flowStore.setFlowData(structuredClone(originalData));
   }
 };
 
@@ -59,28 +78,28 @@ export const redo = (): void => {
     return;
   }
 
-  // historyStoreのredoWithDataを使用して新しい状態を取得
-  const newData = historyStore.redoWithData(currentData);
+  // historyStoreのredoを使用して新しい状態を取得
+  const nextData = historyStore.redo();
 
-  if (newData) {
+  if (nextData) {
     // flowStoreの状態を更新
-    flowStore.setFlowData(newData);
+    flowStore.setFlowData(nextData);
   }
 };
 
 // 履歴のクリア
 export const clearHistory = (): void => {
-  getHistoryStore().clearHistory();
+  getHistoryStore().clear();
 };
 
 // 取り消し可能かどうか
 export const canUndo = (): boolean => {
-  const historyState = getHistoryStore().getHistoryState();
+  const historyState = getHistoryStore().getState();
   return historyState.past.length > 0 || (getFlowStore().originalData !== null);
 };
 
 // やり直し可能かどうか
 export const canRedo = (): boolean => {
-  const historyState = getHistoryStore().getHistoryState();
+  const historyState = getHistoryStore().getState();
   return historyState.future.length > 0;
 };

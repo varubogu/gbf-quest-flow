@@ -14,7 +14,8 @@ import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 // モック化
 vi.mock('@/core/stores/historyStore', () => ({
   default: {
-    getState: vi.fn()
+    getState: vi.fn(),
+    setState: vi.fn()
   }
 }));
 
@@ -72,11 +73,11 @@ describe('History Service', () => {
 
     // デフォルトのモック実装
     (useHistoryStore.getState as Mock).mockReturnValue({
-      getHistoryState: vi.fn().mockReturnValue({ past: [], present: null, future: [] }),
-      pushToHistory: vi.fn(),
-      undoWithData: vi.fn(),
-      redoWithData: vi.fn(),
-      clearHistory: vi.fn()
+      getState: vi.fn().mockReturnValue({ past: [], future: [] }),
+      push: vi.fn(),
+      undo: vi.fn(),
+      redo: vi.fn(),
+      clear: vi.fn()
     });
 
     (useFlowStore.getState as Mock).mockReturnValue({
@@ -97,7 +98,7 @@ describe('History Service', () => {
 
       pushToHistory(flow1);
 
-      expect(historyStore.pushToHistory).toHaveBeenCalledWith(flow1);
+      expect(historyStore.push).toHaveBeenCalledWith(flow1);
     });
 
     it('編集モードでない時は履歴に追加されない', () => {
@@ -111,7 +112,7 @@ describe('History Service', () => {
 
       pushToHistory(flow1);
 
-      expect(historyStore.pushToHistory).not.toHaveBeenCalled();
+      expect(historyStore.push).not.toHaveBeenCalled();
     });
   });
 
@@ -122,18 +123,49 @@ describe('History Service', () => {
     const flow2 = mockData();
     flow2.title = 'Test Flow 2';
 
-    it('undoが正しく動作する', () => {
+    it('undoが正しく動作する - 履歴がある場合', () => {
       const flowStore = useFlowStore.getState();
       const historyStore = useHistoryStore.getState();
 
+      // 履歴があることを設定
+      (historyStore.getState as Mock).mockReturnValue({ past: ['something'], future: [] });
+
       // 現在のデータを設定
       (flowStore.getFlowData as Mock).mockReturnValue(flow2);
-      // undoWithDataの戻り値を設定
-      (historyStore.undoWithData as Mock).mockReturnValue(flow1);
+
+      // undoの戻り値を設定
+      (historyStore.undo as Mock).mockReturnValue(flow1);
 
       undo();
 
+      expect(historyStore.undo).toHaveBeenCalled();
       expect(flowStore.setFlowData).toHaveBeenCalledWith(flow1);
+    });
+
+    it('undoが正しく動作する - 履歴がなくオリジナルデータがある場合', () => {
+      const flowStore = useFlowStore.getState();
+      const historyStore = useHistoryStore.getState();
+
+      // 履歴がないことを設定
+      (historyStore.getState as Mock).mockReturnValue({ past: [], future: [] });
+
+      // 現在のデータとオリジナルデータを設定
+      const currentFlow = flow2;
+      const originalFlow = flow1;
+      (flowStore.getFlowData as Mock).mockReturnValue(currentFlow);
+      (flowStore.originalData as any) = originalFlow;
+
+      undo();
+
+      // useHistoryStore.setStateが呼ばれることを確認
+      expect(useHistoryStore.setState).toHaveBeenCalledWith({
+        history: {
+          past: [],
+          future: expect.arrayContaining([expect.anything()])
+        }
+      });
+
+      expect(flowStore.setFlowData).toHaveBeenCalled();
     });
 
     it('redoが正しく動作する', () => {
@@ -142,23 +174,45 @@ describe('History Service', () => {
 
       // 現在のデータを設定
       (flowStore.getFlowData as Mock).mockReturnValue(flow1);
-      // redoWithDataの戻り値を設定
-      (historyStore.redoWithData as Mock).mockReturnValue(flow2);
+
+      // redoの戻り値を設定
+      (historyStore.redo as Mock).mockReturnValue(flow2);
 
       redo();
 
+      expect(historyStore.redo).toHaveBeenCalled();
       expect(flowStore.setFlowData).toHaveBeenCalledWith(flow2);
     });
   });
 
   describe('canUndo', () => {
     it('過去の履歴がない場合はfalseを返す', () => {
+      (useHistoryStore.getState as Mock).mockReturnValue({
+        getState: vi.fn().mockReturnValue({ past: [], future: [] })
+      });
+
+      (useFlowStore.getState as Mock).mockReturnValue({
+        originalData: null
+      });
+
       expect(canUndo()).toBe(false);
     });
 
     it('過去の履歴がある場合はtrueを返す', () => {
       (useHistoryStore.getState as Mock).mockReturnValue({
-        getHistoryState: vi.fn().mockReturnValue({ past: ['something'], present: null, future: [] })
+        getState: vi.fn().mockReturnValue({ past: ['something'], future: [] })
+      });
+
+      expect(canUndo()).toBe(true);
+    });
+
+    it('過去の履歴がなくてもオリジナルデータがある場合はtrueを返す', () => {
+      (useHistoryStore.getState as Mock).mockReturnValue({
+        getState: vi.fn().mockReturnValue({ past: [], future: [] })
+      });
+
+      (useFlowStore.getState as Mock).mockReturnValue({
+        originalData: mockData()
       });
 
       expect(canUndo()).toBe(true);
@@ -167,12 +221,16 @@ describe('History Service', () => {
 
   describe('canRedo', () => {
     it('未来の履歴がない場合はfalseを返す', () => {
+      (useHistoryStore.getState as Mock).mockReturnValue({
+        getState: vi.fn().mockReturnValue({ past: [], future: [] })
+      });
+
       expect(canRedo()).toBe(false);
     });
 
     it('未来の履歴がある場合はtrueを返す', () => {
       (useHistoryStore.getState as Mock).mockReturnValue({
-        getHistoryState: vi.fn().mockReturnValue({ past: [], present: null, future: ['something'] })
+        getState: vi.fn().mockReturnValue({ past: [], future: ['something'] })
       });
 
       expect(canRedo()).toBe(true);

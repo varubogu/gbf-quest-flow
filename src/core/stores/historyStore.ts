@@ -1,7 +1,5 @@
 import type { Flow } from '@/types/models';
 import { create } from 'zustand';
-// useFlowStoreへの依存を削除
-// import useFlowStore from './flowStore';
 
 export interface HistoryState {
   past: Flow[];
@@ -9,33 +7,30 @@ export interface HistoryState {
 }
 
 export interface HistoryStore {
-  // 履歴管理用の状態と関数
+  // 履歴管理用の状態
   history: HistoryState;
-  pushToHistory: (_data: Flow) => void;
 
-  // 内部実装用のメソッド（詳細な制御が必要な場合に使用）
-  undoWithData: (_currentData: Flow, _originalData: Flow | null) => Flow | null;
-  redoWithData: (_currentData: Flow) => Flow | null;
-
-  // シンプルな外部向けインターフェース（引数なし）
-  // 注：これらのメソッドはhistoryFacadeに移行される予定です
-  // @deprecated - useHistoryFacadeを使用してください
-  undo: () => void;
-  // @deprecated - useHistoryFacadeを使用してください
-  redo: () => void;
-
-  clearHistory: () => void;
-  getHistoryState: () => HistoryState;
+  // 基本的な操作
+  push: (_data: Flow) => void;
+  undo: () => Flow | null;
+  redo: () => Flow | null;
+  clear: () => void;
+  getState: () => HistoryState;
 }
+
+// 深いコピーを行うヘルパー関数
+const deepCopy = <T>(obj: T): T => {
+  return JSON.parse(JSON.stringify(obj)) as T;
+};
 
 const useHistoryStore = create<HistoryStore>((set, get) => ({
   history: { past: [], future: [] },
 
-  getHistoryState: (): HistoryState => {
+  getState: (): HistoryState => {
     return get().history;
   },
 
-  pushToHistory: (data: Flow): void => {
+  push: (data: Flow): void => {
     const { history } = get();
 
     // 最後の履歴と同じデータは追加しない
@@ -47,7 +42,8 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     }
 
     // 深いコピーを使用して新しい配列を作成
-    const newPast = [...history.past, structuredClone(data)];
+    const dataCopy = deepCopy(data);
+    const newPast = [...history.past, dataCopy];
 
     set({
       history: {
@@ -57,25 +53,11 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     });
   },
 
-  // 元のundoメソッドをundoWithDataとしてリネーム
-  undoWithData: (currentData: Flow, originalData: Flow | null): Flow | null => {
+  undo: (): Flow | null => {
     const { history } = get();
 
-    // 履歴が空の場合は初期データに戻る
+    // 履歴が空の場合はnullを返す
     if (history.past.length === 0) {
-      if (originalData && JSON.stringify(currentData) !== JSON.stringify(originalData)) {
-        // 新しいオブジェクトを作成して状態を更新
-        const newFuture = [currentData, ...history.future];
-
-        set({
-          history: {
-            past: [],
-            future: newFuture
-          },
-        });
-
-        return structuredClone(originalData);
-      }
       return null;
     }
 
@@ -83,11 +65,8 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     const previousState = history.past[history.past.length - 1];
     const newPast = history.past.slice(0, -1);
 
-    // 戻る先の状態を取得（pop後の最後の履歴、もしくは初期データ）
-    const targetState = newPast.length > 0 ? newPast[newPast.length - 1] : originalData;
-
-    // 新しいオブジェクトを作成して状態を更新
-    const newFuture = [currentData, ...history.future];
+    // 現在の状態を未来履歴に追加
+    const newFuture = [previousState, ...history.future];
 
     set({
       history: {
@@ -96,18 +75,15 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
       },
     });
 
-    // targetStateがnullの場合はpreviousStateを使用
-    return targetState ? structuredClone(targetState) : (previousState ? structuredClone(previousState) : null);
+    // 戻る先の状態を返す（pop後の最後の履歴）
+    if (newPast.length > 0 && newPast[newPast.length - 1]) {
+      const lastItem = newPast[newPast.length - 1];
+      return deepCopy(lastItem);
+    }
+    return null;
   },
 
-  // 引数なしの旧undo（非推奨）- このメソッドは警告を表示する
-  undo: (): void => {
-    console.warn('HistoryStore.undo() is deprecated. Use useHistoryFacade instead.');
-    // 何も処理を行わない
-  },
-
-  // 元のredoメソッドをredoWithDataとしてリネーム
-  redoWithData: (currentData: Flow): Flow | null => {
+  redo: (): Flow | null => {
     const { history } = get();
 
     if (history.future.length === 0) {
@@ -120,7 +96,7 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
     const newFuture = history.future.slice(1);
 
     // 新しいオブジェクトを作成して状態を更新
-    const newPast = [...history.past, currentData];
+    const newPast = [...history.past, next];
 
     set({
       history: {
@@ -129,16 +105,10 @@ const useHistoryStore = create<HistoryStore>((set, get) => ({
       },
     });
 
-    return structuredClone(next);
+    return deepCopy(next);
   },
 
-  // 引数なしの旧redo（非推奨）- このメソッドは警告を表示する
-  redo: (): void => {
-    console.warn('HistoryStore.redo() is deprecated. Use useHistoryFacade instead.');
-    // 何も処理を行わない
-  },
-
-  clearHistory: (): void => {
+  clear: (): void => {
     set({ history: { past: [], future: [] } });
   },
 }));

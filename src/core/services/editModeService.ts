@@ -14,6 +14,10 @@ import { setFlowData } from '@/core/services/flowService';
  * このサービスは、編集モードの開始・終了・キャンセルなどの機能を提供します。
  */
 
+export function getIsEditMode(): boolean {
+  return useEditModeStore.getState().getIsEditMode();
+}
+
 /**
  * 編集モードを開始する
  *

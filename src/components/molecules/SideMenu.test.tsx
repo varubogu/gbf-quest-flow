@@ -28,6 +28,9 @@ interface FlowStore {
 const mockEditModeStore = {
   isEditMode: false,
   setIsEditMode: vi.fn(),
+  getIsEditMode: vi.fn().mockReturnValue(false),
+  editStart: vi.fn(),
+  editEnd: vi.fn(),
 };
 
 // settingsStoreFacadeのモック
@@ -98,8 +101,12 @@ vi.mock('@/core/stores/flowStore', () => ({
 
 // EditModeStoreのモック
 vi.mock('@/core/stores/editModeStore', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockFn: any = vi.fn((selector) => selector({ isEditMode: false }));
+  mockFn.getState = vi.fn().mockReturnValue({ isEditMode: false });
+  mockFn.subscribe = vi.fn();
   return {
-    default: vi.fn((selector) => selector(mockEditModeStore)),
+    default: mockFn,
   };
 });
 
