@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import {
   handleDataUpdate,
   mergeActionWithUpdates,
@@ -269,14 +269,14 @@ describe('flowService', () => {
           summons: [],
           characters: []
         });
-        const _updateStateMock = vi.fn();
+        const setFlowDataMock = vi.fn();
 
         (useBaseFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
-          _updateState: _updateStateMock
+          setFlowData: setFlowDataMock
         });
 
-        const pushToHistoryMock = historyService.pushToHistory as jest.Mock;
+        const pushToHistoryMock = historyService.pushToHistory as Mock;
 
         // テスト実行
         const mockFlow = {
@@ -296,7 +296,7 @@ describe('flowService', () => {
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(_updateStateMock).toHaveBeenCalledWith({
+        expect(setFlowDataMock).toHaveBeenCalledWith({
           ...mockFlow,
           title: '更新後のタイトル'
         });
@@ -319,14 +319,14 @@ describe('flowService', () => {
           summons: [],
           characters: []
         });
-        const _updateStateMock = vi.fn();
+        const setFlowDataMock = vi.fn();
 
         (useBaseFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
-          _updateState: _updateStateMock
+          setFlowData: setFlowDataMock
         });
 
-        const pushToHistoryMock = historyService.pushToHistory as jest.Mock;
+        const pushToHistoryMock = historyService.pushToHistory as Mock;
 
         // テスト実行
         const mockFlow = {
@@ -346,7 +346,7 @@ describe('flowService', () => {
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(_updateStateMock).toHaveBeenCalledWith({
+        expect(setFlowDataMock).toHaveBeenCalledWith({
           ...mockFlow,
           title: '更新後のタイトル'
         });
@@ -432,14 +432,14 @@ describe('flowService', () => {
         } as Flow;
 
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-        const _updateStateMock = vi.fn();
+        const setFlowDataMock = vi.fn();
 
         (useBaseFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
-          _updateState: _updateStateMock
+          setFlowData: setFlowDataMock
         });
 
-        const pushToHistoryMock = historyService.pushToHistory as jest.Mock;
+        const pushToHistoryMock = historyService.pushToHistory as Mock;
 
         // テスト実行
         const updates = { note: '更新後のノート' };
@@ -447,7 +447,7 @@ describe('flowService', () => {
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(_updateStateMock).toHaveBeenCalled();
+        expect(setFlowDataMock).toHaveBeenCalled();
         expect(pushToHistoryMock).toHaveBeenCalled();
       });
 
@@ -475,14 +475,14 @@ describe('flowService', () => {
         } as Flow;
 
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-        const _updateStateMock = vi.fn();
+        const setFlowDataMock = vi.fn();
 
         (useBaseFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
-          _updateState: _updateStateMock
+          setFlowData: setFlowDataMock
         });
 
-        const pushToHistoryMock = historyService.pushToHistory as jest.Mock;
+        const pushToHistoryMock = historyService.pushToHistory as Mock;
 
         // テスト実行
         const updates = { note: '更新後のノート' };
@@ -490,7 +490,7 @@ describe('flowService', () => {
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
-        expect(_updateStateMock).toHaveBeenCalled();
+        expect(setFlowDataMock).toHaveBeenCalled();
         expect(pushToHistoryMock).not.toHaveBeenCalled();
       });
 

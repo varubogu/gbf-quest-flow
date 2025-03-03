@@ -9,9 +9,6 @@ export interface BaseFlowStore {
   getActionById: (_index: number) => Action | undefined;
   setFlowData: (_data: Flow | null) => void;
   updateFlowData: (_updates: Partial<Flow>) => void;
-  updateAction: (_index: number, _updates: Partial<Action>) => void;
-  // 内部メソッド - flowServiceからのみ使用される
-  _updateState: (_newData: Flow) => void;
 }
 
 // 編集モード管理

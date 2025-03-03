@@ -96,9 +96,9 @@ describe('CharacterPanel', () => {
     // モックの実装を更新
     vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
       if (selector) {
-        return selector({ flowData: mockFlowData, updateFlowData: vi.fn() });
+        return selector({ flowData: mockFlowData });
       }
-      return { flowData: mockFlowData, updateFlowData: vi.fn() };
+      return { flowData: mockFlowData };
     });
   });
 
@@ -123,9 +123,9 @@ describe('CharacterPanel', () => {
   it('flowDataがnullの場合は何もレンダリングしない', () => {
     vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
       if (selector) {
-        return selector({ flowData: null, updateFlowData: vi.fn() });
+        return selector({ flowData: null });
       }
-      return { flowData: null, updateFlowData: vi.fn() };
+      return { flowData: null };
     });
 
     const { container } = render(<CharacterPanel isEditing={false} />);

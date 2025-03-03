@@ -69,16 +69,6 @@ export function syncWithBaseFlowStore(data: Flow | null): void {
   }
 }
 
-// 内部関数 - baseFlowStoreの状態を更新（_updateStateを使用）
-function updateBaseFlowStoreState(newData: Flow): void {
-  try {
-    // 新しい内部メソッドを使用して状態を更新
-    useBaseFlowStore.getState()._updateState(newData);
-  } catch (error) {
-    handleError(error, 'ベースフローストアの状態更新中にエラーが発生しました');
-  }
-}
-
 // フローデータの更新処理
 export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): void {
   try {
@@ -92,7 +82,7 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
     if (!shouldUpdate) return;
 
     // 変更後のデータを設定（内部メソッドを使用）
-    updateBaseFlowStoreState(newData);
+    useBaseFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加（変更後のデータを保存）
     if (isEditMode) {
@@ -113,7 +103,7 @@ export function updateAction(index: number, updates: Partial<Action>, isEditMode
     const newData = updateFlowWithAction(currentData, index, updates);
 
     // 変更後のデータを設定（内部メソッドを使用）
-    updateBaseFlowStoreState(newData);
+    useBaseFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加
     if (isEditMode) {

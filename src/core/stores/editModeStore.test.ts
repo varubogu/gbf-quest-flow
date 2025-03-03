@@ -69,7 +69,6 @@ describe('EditModeStore', () => {
       flowData: null,
       setFlowData: vi.fn(),
       updateFlowData: vi.fn(),
-      updateAction: vi.fn(),
       getActionById: vi.fn(),
     }));
 
@@ -130,7 +129,6 @@ describe('EditModeStore', () => {
         flowData: null,
         setFlowData: vi.fn(),
         updateFlowData: vi.fn(),
-        updateAction: vi.fn(),
         getActionById: vi.fn(),
       }));
 

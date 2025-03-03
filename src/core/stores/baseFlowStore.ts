@@ -31,12 +31,6 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
 
     set({ flowData: adjustedData });
   },
-
-  // 更新用メソッド - flowServiceから呼び出される内部メソッド
-  _updateState: (newData: Flow): void => {
-    set({ flowData: newData });
-  },
-
   // 以下のメソッドはファサードパターンとの互換性のために残しますが、
   // 内部実装はflowServiceに委譲します
   updateFlowData: (updates: Partial<Flow>): void => {
@@ -44,13 +38,6 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
     // flowServiceのupdateFlowDataメソッドをファサードから呼び出すことを推奨します
     const { updateFlowData } = require('../services/flowService');
     updateFlowData(updates, false);
-  },
-
-  updateAction: (index: number, updates: Partial<Action>): void => {
-    // 注: 実際の実装はflowServiceで行われ、このメソッドは互換性のために残されています
-    // flowServiceのupdateActionメソッドをファサードから呼び出すことを推奨します
-    const { updateAction } = require('../services/flowService');
-    updateAction(index, updates, false);
   },
 }));
 

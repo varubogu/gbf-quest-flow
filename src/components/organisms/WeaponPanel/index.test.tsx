@@ -94,7 +94,7 @@ describe('WeaponPanel', () => {
     // モックの実装を更新
     vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
       if (selector) {
-        return selector({ flowData: mockFlowData, updateFlowData: vi.fn() });
+        return selector({ flowData: mockFlowData });
       }
       return { flowData: mockFlowData, updateFlowData: vi.fn() };
     });
@@ -104,7 +104,7 @@ describe('WeaponPanel', () => {
     it('flowDataがnullの場合、nullを返す', () => {
       vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
         if (selector) {
-          return selector({ flowData: null, updateFlowData: vi.fn() });
+          return selector({ flowData: null });
         }
         return { flowData: null, updateFlowData: vi.fn() };
       });
