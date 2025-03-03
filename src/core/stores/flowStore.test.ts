@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import useBaseFlowStore from './baseFlowStore';
+import useFlowStore from './flowStore';
 
-describe('BaseFlowStore', () => {
+describe('FlowStore', () => {
   beforeEach(() => {
     // テスト前に状態をリセット
-    const store = useBaseFlowStore.getState();
+    const store = useFlowStore.getState();
     store.setFlowData(null);
   });
 
   describe('読み取り関数', () => {
     it('getFlowData - nullが返るべき（初期状態）', () => {
-      const result = useBaseFlowStore.getState().getFlowData();
+      const result = useFlowStore.getState().getFlowData();
       expect(result).toBeNull();
     });
 
@@ -48,8 +48,8 @@ describe('BaseFlowStore', () => {
         ],
       };
 
-      useBaseFlowStore.getState().setFlowData(sampleData);
-      const result = useBaseFlowStore.getState().getFlowData();
+      useFlowStore.getState().setFlowData(sampleData);
+      const result = useFlowStore.getState().getFlowData();
 
       // 期待値を実際の出力に合わせて修正
       const expectedData = {
@@ -155,14 +155,14 @@ describe('BaseFlowStore', () => {
         ],
       };
 
-      useBaseFlowStore.getState().setFlowData(sampleData);
+      useFlowStore.getState().setFlowData(sampleData);
 
       // インデックス0のアクションを取得
-      const action0 = useBaseFlowStore.getState().getActionById(0);
+      const action0 = useFlowStore.getState().getActionById(0);
       expect(action0).toEqual(sampleData.flow[0]);
 
       // インデックス1のアクションを取得
-      const action1 = useBaseFlowStore.getState().getActionById(1);
+      const action1 = useFlowStore.getState().getActionById(1);
       expect(action1).toEqual(sampleData.flow[1]);
     });
 
@@ -191,10 +191,10 @@ describe('BaseFlowStore', () => {
         flow: [{ hp: '', prediction: '', charge: '', guard: '', action: '', note: '' }],
       };
 
-      useBaseFlowStore.getState().setFlowData(sampleData);
+      useFlowStore.getState().setFlowData(sampleData);
 
       // 存在しないインデックスを指定
-      const action = useBaseFlowStore.getState().getActionById(999);
+      const action = useFlowStore.getState().getActionById(999);
       expect(action).toBeUndefined();
     });
   });

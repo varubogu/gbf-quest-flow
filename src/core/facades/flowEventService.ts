@@ -1,6 +1,6 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
@@ -46,9 +46,9 @@ export const handleExitEditMode = async (
       }
     }
 
-    const originalData = useBaseFlowStore.getState().originalData;
+    const originalData = useFlowStore.getState().originalData;
     if (originalData) {
-      useBaseFlowStore.getState().setFlowData(structuredClone(originalData));
+      useFlowStore.getState().setFlowData(structuredClone(originalData));
     }
     useEditModeStore.getState().setIsEditMode(false);
     clearHistory();

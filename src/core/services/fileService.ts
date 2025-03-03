@@ -1,6 +1,6 @@
 import organizationSettings from '@/content/settings/organization.json';
 import type { Flow } from '@/types/models';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
@@ -35,14 +35,14 @@ export async function newFlowData(): Promise<void> {
     // 編集モードを設定
     useEditModeStore.setState({ isEditMode: true });
 
-    // baseFlowStoreを更新
-    useBaseFlowStore.setState({
+    // flowStoreを更新
+    useFlowStore.setState({
       flowData: newData,
       originalData: null, // 新規作成時はoriginalDataはnull
     });
 
     // 更新後の状態を確認
-    const updatedState = useBaseFlowStore.getState();
+    const updatedState = useFlowStore.getState();
     const editState = useEditModeStore.getState();
     if (!updatedState.flowData || !editState.isEditMode) {
       console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
@@ -81,14 +81,14 @@ export async function loadFlowFromFile(): Promise<void> {
     // 編集モードをリセット
     useEditModeStore.setState({ isEditMode: false });
 
-    // baseFlowStoreを更新
-    useBaseFlowStore.setState({
+    // flowStoreを更新
+    useFlowStore.setState({
       flowData: data,
       originalData: null,
     });
 
     // 更新後の状態を確認
-    const updatedState = useBaseFlowStore.getState();
+    const updatedState = useFlowStore.getState();
     if (!updatedState.flowData) {
       console.error('loadFlowFromFile: 状態の更新に失敗しました', updatedState);
     }
@@ -112,8 +112,8 @@ export async function loadFlowFromFile(): Promise<void> {
  */
 export async function saveFlowToFile(fileName?: string): Promise<void> {
   try {
-    // まずbaseFlowStoreからデータを取得
-    let currentData = useBaseFlowStore.getState().getFlowData();
+    // まずflowStoreからデータを取得
+    let currentData = useFlowStore.getState().getFlowData();
 
 
     if (!currentData) {

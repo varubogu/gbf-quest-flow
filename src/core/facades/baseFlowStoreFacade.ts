@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Flow, Action } from '@/types/models';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { newFlowData } from '@/core/services/fileService';
 import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateAction } from '@/core/services/flowService';
@@ -17,13 +17,13 @@ import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateA
 const useBaseFlowStoreFacade = create((set, _get) => {
   // 初期状態を設定
   const initialState = {
-    flowData: useBaseFlowStore.getState().flowData,
-    originalData: useBaseFlowStore.getState().originalData,
+    flowData: useFlowStore.getState().flowData,
+    originalData: useFlowStore.getState().originalData,
     isEditMode: useEditModeStore.getState().isEditMode,
   };
 
-  // BaseFlowStoreの変更を監視
-  const _unsubBaseFlow = useBaseFlowStore.subscribe((state) => {
+  // FlowStoreの変更を監視
+  const _unsubBaseFlow = useFlowStore.subscribe((state) => {
     set({
       flowData: state.flowData,
       originalData: state.originalData
@@ -38,15 +38,15 @@ const useBaseFlowStoreFacade = create((set, _get) => {
   });
 
   return {
-    // 状態（プロパティ）- BaseFlowStoreとEditModeStoreから初期化
+    // 状態（プロパティ）- FlowStoreとEditModeStoreから初期化
     ...initialState,
 
-    // BaseFlowStore関連のメソッド - 読み取り系
-    getFlowData: (): Flow | null => useBaseFlowStore.getState().getFlowData(),
-    getActionById: (index: number): Action | undefined => useBaseFlowStore.getState().getActionById(index),
+    // FlowStore関連のメソッド - 読み取り系
+    getFlowData: (): Flow | null => useFlowStore.getState().getFlowData(),
+    getActionById: (index: number): Action | undefined => useFlowStore.getState().getActionById(index),
 
-    // BaseFlowStore関連のメソッド - 更新系（flowServiceに委譲）
-    setFlowData: (data: Flow | null): void => useBaseFlowStore.getState().setFlowData(data),
+    // FlowStore関連のメソッド - 更新系（flowServiceに委譲）
+    setFlowData: (data: Flow | null): void => useFlowStore.getState().setFlowData(data),
     updateFlowData: (updates: Partial<Flow>): void => {
       // 現在の編集モードを取得して更新
       const isEditMode = useEditModeStore.getState().isEditMode;

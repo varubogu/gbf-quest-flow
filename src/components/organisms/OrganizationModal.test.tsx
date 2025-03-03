@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { OrganizationModal } from './OrganizationModal';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import type { Flow } from '@/types/models';
 
@@ -143,7 +143,7 @@ vi.mock('./SkillTotalPanel', () => ({
   ),
 }));
 
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 vi.mock('@/core/facades/editModeStoreFacade');
 
 describe('OrganizationModal', () => {
@@ -188,8 +188,8 @@ describe('OrganizationModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // useBaseFlowStoreのモック
-    (useBaseFlowStore as any).mockImplementation((selector: Function) => {
+    // useFlowStoreのモック
+    (useFlowStore as any).mockImplementation((selector: Function) => {
       const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
       return selector(state);
     });
@@ -243,7 +243,7 @@ describe('OrganizationModal', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useBaseFlowStore as any).mockImplementation((selector: Function) => {
+      (useFlowStore as any).mockImplementation((selector: Function) => {
         const state = { flowData: null, updateFlowData: mockUpdateFlowData };
         return selector(state);
       });

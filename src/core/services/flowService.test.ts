@@ -4,17 +4,17 @@ import {
   mergeActionWithUpdates,
   updateFlowWithAction,
   handleError,
-  syncWithBaseFlowStore,
+  syncWithFlowStore,
   updateFlowData,
   updateAction
 } from './flowService';
 import type { Flow, Action } from '@/types/models';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import * as historyService from './historyService';
 
 // モックの設定
-vi.mock('@/core/stores/baseFlowStore', () => {
+vi.mock('@/core/stores/flowStore', () => {
   const getFlowDataMock = vi.fn();
   const setFlowDataMock = vi.fn();
   const _updateStateMock = vi.fn();
@@ -228,10 +228,10 @@ describe('flowService', () => {
       });
     });
 
-    describe('syncWithBaseFlowStore', () => {
-      it('baseFlowStoreのsetFlowDataを呼び出す', () => {
+    describe('syncWithFlowStore', () => {
+      it('flowStoreのsetFlowDataを呼び出す', () => {
         const setFlowDataMock = vi.fn();
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           setFlowData: setFlowDataMock
         });
 
@@ -247,7 +247,7 @@ describe('flowService', () => {
           characters: []
         } as Flow;
 
-        syncWithBaseFlowStore(mockFlow);
+        syncWithFlowStore(mockFlow);
 
         expect(setFlowDataMock).toHaveBeenCalledWith(mockFlow);
       });
@@ -271,7 +271,7 @@ describe('flowService', () => {
         });
         const setFlowDataMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
           setFlowData: setFlowDataMock
         });
@@ -321,7 +321,7 @@ describe('flowService', () => {
         });
         const setFlowDataMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
           setFlowData: setFlowDataMock
         });
@@ -368,7 +368,7 @@ describe('flowService', () => {
         });
         const _updateStateMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
           _updateState: _updateStateMock
         });
@@ -388,7 +388,7 @@ describe('flowService', () => {
           throw new Error('テストエラー');
         });
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock
         });
 
@@ -434,7 +434,7 @@ describe('flowService', () => {
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
         const setFlowDataMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
           setFlowData: setFlowDataMock
         });
@@ -477,7 +477,7 @@ describe('flowService', () => {
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
         const setFlowDataMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock,
           setFlowData: setFlowDataMock
         });
@@ -500,7 +500,7 @@ describe('flowService', () => {
           throw new Error('テストエラー');
         });
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock
         });
 

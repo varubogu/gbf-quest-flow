@@ -9,7 +9,7 @@ import {
 import type { Flow } from '@/types/models';
 
 // モックの設定
-vi.mock('@/core/stores/baseFlowStore', () => {
+vi.mock('@/core/stores/flowStore', () => {
   const getFlowDataMock = vi.fn();
   const setFlowDataMock = vi.fn();
   const setStateMock = vi.fn();
@@ -54,7 +54,7 @@ afterEach(() => {
 });
 
 // テスト用のインポート
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
 
@@ -101,7 +101,7 @@ describe('editModeService', () => {
       it('編集キャンセル時に元のデータに戻し、編集モードをオフにする', () => {
         // setFlowDataのモックを設定
         const setFlowDataMock = vi.fn();
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           setFlowData: setFlowDataMock
         });
 
@@ -129,10 +129,10 @@ describe('editModeService', () => {
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock
         });
-        useBaseFlowStore.setState = setStateMock;
+        useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行
@@ -152,7 +152,7 @@ describe('editModeService', () => {
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
-        useBaseFlowStore.setState = setStateMock;
+        useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行
@@ -171,7 +171,7 @@ describe('editModeService', () => {
         const originalData = { ...mockFlow, title: '元のタイトル' };
         const setFlowDataMock = vi.fn();
 
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           originalData,
           setFlowData: setFlowDataMock
         });
@@ -179,7 +179,7 @@ describe('editModeService', () => {
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
-        useBaseFlowStore.setState = setStateMock;
+        useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
         const clearHistoryMock = clearHistory as jest.Mock;
@@ -201,14 +201,14 @@ describe('editModeService', () => {
 
       it('元のデータがない場合、何もしない', () => {
         // モックの設定
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           originalData: null
         });
 
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
-        useBaseFlowStore.setState = setStateMock;
+        useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行

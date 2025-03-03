@@ -1,4 +1,4 @@
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/models';
 
 export function setTitle(title: string): void {
@@ -16,5 +16,5 @@ export async function loadSlugData(slug: string): Promise<void> {
   const res: Response = await fetch(`/content/flows/${slug}.json`);
   const data = await res.json() as Flow;
 
-  useBaseFlowStore.getState().setFlowData(data);
+  useFlowStore.getState().setFlowData(data);
 }

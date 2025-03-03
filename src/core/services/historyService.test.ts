@@ -6,7 +6,7 @@ import {
   canRedo
 } from './historyService';
 import useHistoryStore from '@/core/stores/historyStore';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { type Flow } from '@/types/types';
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
@@ -18,7 +18,7 @@ vi.mock('@/core/stores/historyStore', () => ({
   }
 }));
 
-vi.mock('@/core/stores/baseFlowStore', () => ({
+vi.mock('@/core/stores/flowStore', () => ({
   default: {
     getState: vi.fn()
   }
@@ -79,7 +79,7 @@ describe('History Service', () => {
       clearHistory: vi.fn()
     });
 
-    (useBaseFlowStore.getState as Mock).mockReturnValue({
+    (useFlowStore.getState as Mock).mockReturnValue({
       getFlowData: vi.fn(),
       setFlowData: vi.fn(),
       originalData: null
@@ -123,31 +123,31 @@ describe('History Service', () => {
     flow2.title = 'Test Flow 2';
 
     it('undoが正しく動作する', () => {
-      const baseFlowStore = useBaseFlowStore.getState();
+      const flowStore = useFlowStore.getState();
       const historyStore = useHistoryStore.getState();
 
       // 現在のデータを設定
-      (baseFlowStore.getFlowData as Mock).mockReturnValue(flow2);
+      (flowStore.getFlowData as Mock).mockReturnValue(flow2);
       // undoWithDataの戻り値を設定
       (historyStore.undoWithData as Mock).mockReturnValue(flow1);
 
       undo();
 
-      expect(baseFlowStore.setFlowData).toHaveBeenCalledWith(flow1);
+      expect(flowStore.setFlowData).toHaveBeenCalledWith(flow1);
     });
 
     it('redoが正しく動作する', () => {
-      const baseFlowStore = useBaseFlowStore.getState();
+      const flowStore = useFlowStore.getState();
       const historyStore = useHistoryStore.getState();
 
       // 現在のデータを設定
-      (baseFlowStore.getFlowData as Mock).mockReturnValue(flow1);
+      (flowStore.getFlowData as Mock).mockReturnValue(flow1);
       // redoWithDataの戻り値を設定
       (historyStore.redoWithData as Mock).mockReturnValue(flow2);
 
       redo();
 
-      expect(baseFlowStore.setFlowData).toHaveBeenCalledWith(flow2);
+      expect(flowStore.setFlowData).toHaveBeenCalledWith(flow2);
     });
   });
 

@@ -1,5 +1,5 @@
 import type { Flow } from '@/types/models';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
 
@@ -21,9 +21,9 @@ export function handleEditModeEnd(): void {
   clearHistory();
 }
 
-// ロジック関数 - baseFlowStoreとの同期処理
-function syncWithBaseFlowStore(data: Flow | null): void {
-  useBaseFlowStore.getState().setFlowData(data);
+// ロジック関数 - flowStoreとの同期処理
+function syncWithFlowStore(data: Flow | null): void {
+  useFlowStore.getState().setFlowData(data);
 }
 
 
@@ -32,8 +32,8 @@ export function handleCancelEdit(originalData: Flow): { flowData: Flow; isEditMo
   // 編集をキャンセルして元のデータに戻す
   const clonedData = structuredClone(originalData);
 
-  // baseFlowStoreも同期
-  syncWithBaseFlowStore(clonedData);
+  // flowStoreも同期
+  syncWithFlowStore(clonedData);
 
   // 履歴をクリア
   clearHistory();
@@ -50,18 +50,18 @@ export function handleCancelEdit(originalData: Flow): { flowData: Flow; isEditMo
 
 // 編集モードの設定
 export function setIsEditMode(isEdit: boolean): void {
-  const flowData = useBaseFlowStore.getState().getFlowData();
+  const flowData = useFlowStore.getState().getFlowData();
 
   if (isEdit && flowData) {
     // 編集モード開始時の処理
     const updates = handleEditModeStart(flowData);
-    useBaseFlowStore.setState({ originalData: updates.originalData });
+    useFlowStore.setState({ originalData: updates.originalData });
   }
 
   if (!isEdit) {
     // 編集モード終了時の処理
     handleEditModeEnd();
-    useBaseFlowStore.setState({ originalData: null });
+    useFlowStore.setState({ originalData: null });
   }
 
   useEditModeStore.setState({ isEditMode: isEdit });
@@ -69,11 +69,11 @@ export function setIsEditMode(isEdit: boolean): void {
 
 // 編集のキャンセル
 export function cancelEdit(): void {
-  const originalData = useBaseFlowStore.getState().originalData;
+  const originalData = useFlowStore.getState().originalData;
   if (originalData) {
     // 編集キャンセル時の処理
     const updates = handleCancelEdit(originalData);
-    useBaseFlowStore.setState({ flowData: updates.flowData, originalData: updates.originalData });
+    useFlowStore.setState({ flowData: updates.flowData, originalData: updates.originalData });
     useEditModeStore.setState({ isEditMode: updates.isEditMode });
   }
 }

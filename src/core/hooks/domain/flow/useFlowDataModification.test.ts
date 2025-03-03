@@ -6,8 +6,8 @@ import type { Flow } from '@/types/models';
 // モックの定義
 const mockUpdateFlowData = vi.fn();
 
-// BaseFlowStoreのモック
-vi.mock('@/core/stores/baseFlowStore', () => ({
+// FlowStoreのモック
+vi.mock('@/core/stores/flowStore', () => ({
   default: {
     getState: vi.fn(() => ({
       updateFlowData: mockUpdateFlowData

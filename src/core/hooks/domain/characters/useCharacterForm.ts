@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Member } from '@/types/types';
 import type { CharacterPosition } from '@/types/models';
 import { updateMemberField } from '@/lib/utils/characters/calculations';
-import type { BaseFlowStore } from '@/types/flowStore.types';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface UseCharacterFormResult {
   handleMemberChange: (
@@ -15,8 +15,8 @@ interface UseCharacterFormResult {
 }
 
 export const useCharacterForm = (): UseCharacterFormResult => {
-  const flowData = useBaseFlowStore((state: BaseFlowStore) => state.flowData);
-  const updateFlowData = useBaseFlowStore((state: BaseFlowStore) => state.updateFlowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const updateFlowData = useFlowStore((state: FlowStore) => state.updateFlowData);
 
   const handleMemberChange = useCallback(
     (position: CharacterPosition,

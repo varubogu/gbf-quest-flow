@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
 import type { Flow } from '@/types/types';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '../stores/editModeStore';
 
 // flowOperationsのモック
@@ -11,7 +11,7 @@ vi.mock('@/lib/utils/flowOperations', () => ({
 }));
 
 // storeのモック
-vi.mock('@/core/stores/baseFlowStore', () => ({
+vi.mock('@/core/stores/flowStore', () => ({
   default: {
     getState: vi.fn().mockReturnValue({
       setFlowData: vi.fn(),
@@ -126,7 +126,7 @@ describe('flowEventService', () => {
       const result = await handleExitEditMode(false, mockClearHistory);
 
       expect(mockConfirm).not.toHaveBeenCalled();
-      expect(useBaseFlowStore.getState().setFlowData).toHaveBeenCalledWith(useBaseFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
       expect(useEditModeStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -138,7 +138,7 @@ describe('flowEventService', () => {
       const result = await handleExitEditMode(true, mockClearHistory);
 
       expect(mockConfirm).toHaveBeenCalled();
-      expect(useBaseFlowStore.getState().setFlowData).not.toHaveBeenCalled();
+      expect(useFlowStore.getState().setFlowData).not.toHaveBeenCalled();
       expect(useEditModeStore.getState().setIsEditMode).not.toHaveBeenCalled();
       expect(mockClearHistory).not.toHaveBeenCalled();
       expect(result).toBe(false);
@@ -148,7 +148,7 @@ describe('flowEventService', () => {
       const result = await handleExitEditMode(true, mockClearHistory);
 
       expect(mockConfirm).toHaveBeenCalled();
-      expect(useBaseFlowStore.getState().setFlowData).toHaveBeenCalledWith(useBaseFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
       expect(useEditModeStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -160,7 +160,7 @@ describe('flowEventService', () => {
       const result = await handleCancel(true, mockClearHistory);
 
       expect(mockConfirm).toHaveBeenCalled();
-      expect(useBaseFlowStore.getState().setFlowData).toHaveBeenCalledWith(useBaseFlowStore.getState().originalData);
+      expect(useFlowStore.getState().setFlowData).toHaveBeenCalledWith(useFlowStore.getState().originalData);
       expect(useEditModeStore.getState().setIsEditMode).toHaveBeenCalledWith(false);
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);

@@ -38,8 +38,8 @@ vi.mock('@/core/facades/flowEventService', () => ({
   handleNewFlow: vi.fn(),
 }));
 
-// BaseFlowStoreとEditModeStoreのモック
-vi.mock('@/core/stores/baseFlowStore', () => ({
+// flowStoreとeditModeStoreのモック
+vi.mock('@/core/stores/flowStore', () => ({
   default: vi.fn((selector) => selector({ flowData: mockFlowData })),
 }));
 

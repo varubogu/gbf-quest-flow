@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoModal } from './InfoModal';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import type { Flow } from '@/types/models';
 
@@ -56,7 +56,7 @@ vi.mock('@headlessui/react', () => {
   return { Dialog };
 });
 
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 vi.mock('@/core/facades/editModeStoreFacade');
 vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
   useAutoResizeTextArea: () => ({ current: null }),
@@ -83,8 +83,8 @@ describe('InfoModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // useBaseFlowStoreのモック
-    (useBaseFlowStore as any).mockImplementation((selector) => {
+    // useFlowStoreのモック
+    (useFlowStore as any).mockImplementation((selector) => {
       if (selector.name === 'flowDataSelector') {
         return mockFlowData;
       } else if (typeof selector === 'function') {
@@ -230,7 +230,7 @@ describe('InfoModal', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useBaseFlowStore as any).mockImplementation((selector) => {
+      (useFlowStore as any).mockImplementation((selector) => {
         if (selector.name === 'flowDataSelector') {
           return null;
         } else if (typeof selector === 'function') {

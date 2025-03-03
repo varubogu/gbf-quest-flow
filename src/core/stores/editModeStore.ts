@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import organizationSettings from '@/content/settings/organization.json';
 import useErrorStore from './errorStore';
 import { clearHistory } from '@/core/services/historyService';
-import useBaseFlowStore from './baseFlowStore';
+import useFlowStore from './flowStore';
 import useCursorStore from './cursorStore';
 
 /**
@@ -20,17 +20,17 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
   // 編集モードの設定
   setIsEditMode: (isEdit: boolean): void => {
     try {
-      const flowData = useBaseFlowStore.getState().getFlowData();
+      const flowData = useFlowStore.getState().getFlowData();
 
       if (isEdit && flowData) {
-        // 編集モード開始時に現在のデータをbaseFlowStoreのoriginalDataとして保存
-        useBaseFlowStore.setState({ originalData: structuredClone(flowData) });
+        // 編集モード開始時に現在のデータをflowStoreのoriginalDataとして保存
+        useFlowStore.setState({ originalData: structuredClone(flowData) });
       }
 
       if (!isEdit) {
         // 編集モード終了時に履歴をクリア
         clearHistory();
-        useBaseFlowStore.setState({ originalData: null });
+        useFlowStore.setState({ originalData: null });
       }
 
       set({ isEditMode: isEdit });
@@ -46,12 +46,12 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
   // 編集キャンセル
   cancelEdit: (): void => {
     try {
-      const originalData = useBaseFlowStore.getState().originalData;
+      const originalData = useFlowStore.getState().originalData;
       if (originalData) {
         set({ isEditMode: false });
 
         // 元のデータに戻す
-        useBaseFlowStore.setState({
+        useFlowStore.setState({
           flowData: structuredClone(originalData),
           originalData: null
         });
@@ -170,7 +170,7 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
       };
 
       // 現在のデータをoriginalDataとして保持
-      const currentFlowData = useBaseFlowStore.getState().getFlowData();
+      const currentFlowData = useFlowStore.getState().getFlowData();
 
       // historyServiceの履歴をクリア
       clearHistory();
@@ -178,8 +178,8 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
       // 編集モードをオンにする
       set({ isEditMode: true });
 
-      // baseFlowStoreの状態を更新
-      useBaseFlowStore.setState({
+      // flowStoreの状態を更新
+      useFlowStore.setState({
         flowData: newData,
         originalData: currentFlowData,
       });

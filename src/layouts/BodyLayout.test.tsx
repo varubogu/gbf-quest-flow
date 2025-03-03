@@ -3,7 +3,7 @@ import { screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import BodyLayout from './BodyLayout';
 import type { Flow } from '@/types/types';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
@@ -65,7 +65,7 @@ vi.mock('@/core/services/fileService', () => ({
 }));
 
 // Zustandのフックをモック
-vi.mock('@/core/stores/baseFlowStore', () => {
+vi.mock('@/core/stores/flowStore', () => {
   const state = {
     flowData: null,
     setFlowData: vi.fn(),
@@ -73,11 +73,11 @@ vi.mock('@/core/stores/baseFlowStore', () => {
     originalData: null
   };
 
-  const useBaseFlowStoreMock: StoreMock = vi.fn((selector) => selector(state));
-  useBaseFlowStoreMock.getState = vi.fn(() => state);
+  const useFlowStoreMock: StoreMock = vi.fn((selector) => selector(state));
+  useFlowStoreMock.getState = vi.fn(() => state);
 
   return {
-    default: useBaseFlowStoreMock
+    default: useFlowStoreMock
   };
 });
 
@@ -341,7 +341,7 @@ describe('BodyLayout', () => {
 
   describe('BodyLayout', () => {
     beforeEach(() => {
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = null;
       useEditModeStore.getState().setIsEditMode(false);
     });
@@ -360,7 +360,7 @@ describe('BodyLayout', () => {
 
     it('初期データが渡された場合、ストアに設定される', () => {
       renderWithI18n(<BodyLayout initialData={mockInitialData} />);
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       expect(store.setFlowData).toHaveBeenCalledWith(mockInitialData);
     });
 
@@ -379,8 +379,8 @@ describe('BodyLayout', () => {
       const editModeStore = useEditModeStore.getState();
       editModeStore.setIsEditMode = setIsEditMode;
 
-      const baseFlowStore = useBaseFlowStore.getState();
-      baseFlowStore.flowData = mockFlowData();
+      const flowStore = useFlowStore.getState();
+      flowStore.flowData = mockFlowData();
 
       // 非同期処理を待つためにactを使用
       await act(async () => {
@@ -459,7 +459,7 @@ describe('BodyLayout', () => {
 
   describe('アクセシビリティ機能', () => {
     beforeEach(() => {
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = mockInitialData;
       const editStore = useEditModeStore.getState();
       editStore.setIsEditMode(false);
@@ -467,7 +467,7 @@ describe('BodyLayout', () => {
 
     it('編集モードへの切り替え時にスクリーンリーダー通知が表示される', async () => {
       // 1. 初期セットアップ
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = mockInitialData;
       const editStore = useEditModeStore.getState();
       editStore.setIsEditMode(false);
@@ -529,7 +529,7 @@ describe('BodyLayout', () => {
 
     it('表示モードへの切り替え時にスクリーンリーダー通知が表示される', async () => {
       // 1. 初期セットアップ（編集モードから開始）
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = mockInitialData;
       const editStore = useEditModeStore.getState();
       editStore.setIsEditMode(true);
@@ -599,7 +599,7 @@ describe('BodyLayout', () => {
       originalCreateObjectURL = URL.createObjectURL;
       originalRevokeObjectURL = URL.revokeObjectURL;
 
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = mockInitialData;
       const editStore = useEditModeStore.getState();
       editStore.setIsEditMode(true);
@@ -616,7 +616,7 @@ describe('BodyLayout', () => {
 
     it('Ctrl+Sで保存が実行される', async () => {
       // 1. 初期セットアップ
-      const store = useBaseFlowStore.getState();
+      const store = useFlowStore.getState();
       store.flowData = { ...mockInitialData };
       const editStore = useEditModeStore.getState();
       editStore.setIsEditMode(true);

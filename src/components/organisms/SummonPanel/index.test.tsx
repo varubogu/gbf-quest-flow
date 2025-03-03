@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { SummonPanel } from './index';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
 }
 
 // Zustandのモック
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 
 // useSummonFormフックのモック
 vi.mock('@/core/hooks/domain/summons/useSummonForm', () => ({
@@ -88,7 +88,7 @@ describe('SummonPanel', () => {
 
   beforeEach(() => {
     // モックの実装を更新
-    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+    vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
         return selector({ flowData: mockFlowData });
       }
@@ -118,7 +118,7 @@ describe('SummonPanel', () => {
   });
 
   it('flowDataがnullの場合は何もレンダリングしない', () => {
-    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+    vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
         return selector({ flowData: null });
       }

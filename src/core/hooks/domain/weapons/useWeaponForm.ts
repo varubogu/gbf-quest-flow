@@ -1,6 +1,6 @@
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/types';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
-import type { BaseFlowStore } from '@/types/flowStore.types';
+import useFlowStore from '@/core/stores/flowStore';
+import type { FlowStore } from '@/types/flowStore.types';
 
 export interface UseWeaponFormResult {
   handleChange: (
@@ -13,8 +13,8 @@ export interface UseWeaponFormResult {
 }
 
 export const useWeaponForm = (): UseWeaponFormResult => {
-  const flowData = useBaseFlowStore((state: BaseFlowStore) => state.flowData);
-  const updateFlowData = useBaseFlowStore((state: BaseFlowStore) => state.updateFlowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const updateFlowData = useFlowStore((state: FlowStore) => state.updateFlowData);
 
   const handleChange = (
     type: WeaponType,

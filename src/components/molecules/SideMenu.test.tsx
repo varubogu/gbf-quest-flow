@@ -89,8 +89,8 @@ vi.mock('@/core/facades/fileOperationsFacade', () => ({
   })),
 }));
 
-// BaseFlowStoreのモック
-vi.mock('@/core/stores/baseFlowStore', () => ({
+// flowStore
+vi.mock('@/core/stores/flowStore', () => ({
   default: vi.fn((selector: (_state: { flowData: Flow | null; originalData: Flow | null }) => unknown) => selector({
     flowData: null,
     originalData: null,

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { SkillTotalPanel } from './SkillTotalPanel';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/models';
 import type { WeaponSkillTotal } from '@/types/types';
 
@@ -40,7 +40,7 @@ vi.mock('@/components/molecules/SkillTable', () => ({
   ),
 }));
 
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 
 describe('SkillTotalPanel', () => {
   // テスト用のモックデータ
@@ -88,8 +88,8 @@ describe('SkillTotalPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // useBaseFlowStoreのモック
-    (useBaseFlowStore as any).mockImplementation((selector: Function) => {
+    // useFlowStoreのモック
+    (useFlowStore as any).mockImplementation((selector: Function) => {
       const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
       return selector(state);
     });
@@ -124,7 +124,7 @@ describe('SkillTotalPanel', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useBaseFlowStore as any).mockImplementation((selector: Function) => {
+      (useFlowStore as any).mockImplementation((selector: Function) => {
         const state = { flowData: null, updateFlowData: mockUpdateFlowData };
         return selector(state);
       });

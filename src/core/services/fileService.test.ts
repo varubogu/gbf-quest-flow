@@ -7,13 +7,13 @@ import {
   readJsonFile,
   saveJsonToFile,
 } from './fileService';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
 import type { Flow } from '@/types/types';
 
 // モック
-vi.mock('@/core/stores/baseFlowStore', () => ({
+vi.mock('@/core/stores/flowStore', () => ({
   default: {
     getState: vi.fn(() => ({
       getFlowData: vi.fn(),
@@ -171,7 +171,7 @@ describe('fileService', () => {
       expect(clearHistory).toHaveBeenCalled();
       expect(mockSetCurrentRow).toHaveBeenCalledWith(0);
       expect(useEditModeStore.setState).toHaveBeenCalledWith({ isEditMode: true });
-      expect(useBaseFlowStore.setState).toHaveBeenCalled();
+      expect(useFlowStore.setState).toHaveBeenCalled();
     });
   });
 

@@ -27,7 +27,7 @@ vi.mock('react-i18next', () => ({
 let mockFlowData = null;
 let mockIsEditMode = false;
 
-vi.mock('@/core/stores/baseFlowStore', () => ({
+vi.mock('@/core/stores/flowStore', () => ({
   default: (selector) => selector({ flowData: mockFlowData }),
 }));
 

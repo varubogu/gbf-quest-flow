@@ -7,7 +7,7 @@
 // import useFlowStore from './flowStore';
 import useErrorStore from './errorStore';
 import useHistoryStore from './historyStore';
-import useBaseFlowStore from './baseFlowStore';
+import useFlowStore from './flowStore';
 import useEditModeStore from './editModeStore';
 import useCursorStore from './cursorStore';
 import useSettingsStore from './settingsStore';
@@ -16,7 +16,7 @@ import useSettingsStore from './settingsStore';
 export {
   useErrorStore,
   useHistoryStore,
-  useBaseFlowStore,
+  useFlowStore,
   useEditModeStore,  // 新規追加
   useCursorStore, // 新規追加
   useSettingsStore,

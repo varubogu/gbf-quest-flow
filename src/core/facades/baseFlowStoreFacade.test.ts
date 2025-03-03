@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import useBaseFlowStoreFacade from './baseFlowStoreFacade';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import * as fileService from '@/core/services/fileService';
 import * as flowService from '@/core/services/flowService';
 import type { Flow, Action } from '@/types/models';
 
 // モックの設定
-vi.mock('@/core/stores/baseFlowStore', () => {
+vi.mock('@/core/stores/flowStore', () => {
   const getFlowDataMock = vi.fn();
   const getActionByIdMock = vi.fn();
   const setFlowDataMock = vi.fn();
@@ -90,10 +90,10 @@ describe('baseFlowStoreFacade', () => {
 
   describe('単体テスト', () => {
     describe('getFlowData', () => {
-      it('baseFlowStoreのgetFlowDataを呼び出す', () => {
+      it('flowStoreのgetFlowDataを呼び出す', () => {
         // モックの設定
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getFlowData: getFlowDataMock
         });
 
@@ -107,10 +107,10 @@ describe('baseFlowStoreFacade', () => {
     });
 
     describe('getActionById', () => {
-      it('baseFlowStoreのgetActionByIdを呼び出す', () => {
+      it('flowStoreのgetActionByIdを呼び出す', () => {
         // モックの設定
         const getActionByIdMock = vi.fn().mockReturnValue(mockAction);
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           getActionById: getActionByIdMock
         });
 
@@ -124,10 +124,10 @@ describe('baseFlowStoreFacade', () => {
     });
 
     describe('setFlowData', () => {
-      it('baseFlowStoreのsetFlowDataを呼び出す', () => {
+      it('flowStoreのsetFlowDataを呼び出す', () => {
         // モックの設定
         const setFlowDataMock = vi.fn();
-        (useBaseFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as any).mockReturnValue({
           setFlowData: setFlowDataMock
         });
 

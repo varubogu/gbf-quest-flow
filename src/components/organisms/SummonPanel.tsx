@@ -1,5 +1,5 @@
 import React from 'react';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
 import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
@@ -18,8 +18,8 @@ interface SummonPanelProps {
 
 export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStore((state: any) => state.flowData);
-  const updateFlowData = useBaseFlowStore((state: any) => state.updateFlowData);
+  const flowData = useFlowStore((state: any) => state.flowData);
+  const updateFlowData = useFlowStore((state: any) => state.updateFlowData);
 
   if (!flowData) return null;
 

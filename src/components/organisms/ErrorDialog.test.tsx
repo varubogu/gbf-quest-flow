@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorDialog } from './ErrorDialog';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 import type { Flow } from '@/types/models';
@@ -51,7 +51,7 @@ vi.mock('@headlessui/react', () => {
   return { Dialog };
 });
 
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 vi.mock('@/core/stores/errorStore');
 vi.mock('@/core/facades/FileOperations', () => ({
   downloadFlow: vi.fn(),
@@ -84,9 +84,9 @@ describe('ErrorDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // useBaseFlowStoreのモック
+    // useFlowStoreのモック
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useBaseFlowStore as any).mockImplementation((selector: (state: any) => any) =>
+    (useFlowStore as any).mockImplementation((selector: (state: any) => any) =>
       selector({ flowData: mockFlowData })
     );
 
@@ -168,7 +168,7 @@ describe('ErrorDialog', () => {
     it('flowDataがない場合、バックアップダウンロードボタンが表示されないこと', () => {
       // flowDataをnullに設定
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (useBaseFlowStore as any).mockImplementation((selector: (state: any) => any) =>
+      (useFlowStore as any).mockImplementation((selector: (state: any) => any) =>
         selector({ flowData: null })
       );
 

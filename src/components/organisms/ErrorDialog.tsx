@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 import type { ErrorSeverity, ErrorType } from '@/types/error.types';
@@ -9,7 +9,7 @@ import { formatErrorMessage } from '@/core/services/errorService';
 
 export function ErrorDialog(): React.ReactElement {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: any) => state.flowData);
   const { error, isErrorDialogOpen, clearError, executeRecoveryAction } = useErrorStore();
 
   const handleDownload = async (): Promise<void> => {

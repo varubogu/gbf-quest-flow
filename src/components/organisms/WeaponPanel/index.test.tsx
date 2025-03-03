@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import type { Flow } from '@/types/types';
 
@@ -86,13 +86,13 @@ const mockFlowData: Flow = {
 };
 
 // モックの設定
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 
 describe('WeaponPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // モックの実装を更新
-    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+    vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
         return selector({ flowData: mockFlowData });
       }
@@ -102,7 +102,7 @@ describe('WeaponPanel', () => {
 
   describe('単体テスト', () => {
     it('flowDataがnullの場合、nullを返す', () => {
-      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
           return selector({ flowData: null });
         }
@@ -115,7 +115,7 @@ describe('WeaponPanel', () => {
 
     it('updateFlowDataが正しく呼び出される', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
           return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
         }
@@ -196,7 +196,7 @@ describe('WeaponPanel', () => {
 
     it('武器データの編集が正しく機能する', () => {
       const mockUpdateFlowData = vi.fn();
-      vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+      vi.mocked(useFlowStore).mockImplementation((selector) => {
         if (selector) {
           return selector({ flowData: mockFlowData, updateFlowData: mockUpdateFlowData });
         }

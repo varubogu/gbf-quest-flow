@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { undo, redo } from '@/core/facades/historyFacade';
@@ -19,8 +19,8 @@ export function TableContainer({
   const { t } = useTranslation();
   const currentRow = useCursorStoreFacade((state: any) => state.currentRow);
   const setCurrentRow = useCursorStoreFacade((state: any) => state.setCurrentRow);
-  const flowData = useBaseFlowStore((state: any) => state.flowData);
-  const setFlowData = useBaseFlowStore((state: any) => state.setFlowData);
+  const flowData = useFlowStore((state: any) => state.flowData);
+  const setFlowData = useFlowStore((state: any) => state.setFlowData);
   const settings = useSettingsStoreFacade((state: any) => state.settings);
 
   // キーボードイベントのハンドラを追加

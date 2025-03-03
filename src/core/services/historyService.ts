@@ -1,9 +1,9 @@
 import type { Flow } from '@/types/models';
 import type { HistoryState, HistoryStore } from '@/core/stores/historyStore';
 import useHistoryStore from '@/core/stores/historyStore';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import type { BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 /**
  * 履歴操作と各ストアの連携を管理するサービス
@@ -15,7 +15,7 @@ import type { BaseFlowStore, EditModeStore } from '@/types/flowStore.types';
 
 // 各ストアの参照を取得するヘルパー関数
 const getHistoryStore = (): HistoryStore => useHistoryStore.getState();
-const getBaseFlowStore = (): BaseFlowStore => useBaseFlowStore.getState();
+const getFlowStore = (): FlowStore => useFlowStore.getState();
 const getEditModeStore = (): EditModeStore => useEditModeStore.getState();
 
 // 履歴状態の取得
@@ -32,9 +32,9 @@ export const pushToHistory = (data: Flow): void => {
 // 取り消し操作
 export const undo = (): void => {
   const historyStore = getHistoryStore();
-  const baseFlowStore = getBaseFlowStore();
-  const currentData = baseFlowStore.getFlowData();
-  const originalData = baseFlowStore.originalData;
+  const flowStore = getFlowStore();
+  const currentData = flowStore.getFlowData();
+  const originalData = flowStore.originalData;
 
   if (!currentData) {
     return;
@@ -44,16 +44,16 @@ export const undo = (): void => {
   const newData = historyStore.undoWithData(currentData, originalData);
 
   if (newData) {
-    // baseFlowStoreの状態を更新
-    baseFlowStore.setFlowData(newData);
+    // flowStoreの状態を更新
+    flowStore.setFlowData(newData);
   }
 };
 
 // やり直し操作
 export const redo = (): void => {
   const historyStore = getHistoryStore();
-  const baseFlowStore = getBaseFlowStore();
-  const currentData = baseFlowStore.getFlowData();
+  const flowStore = getFlowStore();
+  const currentData = flowStore.getFlowData();
 
   if (!currentData) {
     return;
@@ -63,8 +63,8 @@ export const redo = (): void => {
   const newData = historyStore.redoWithData(currentData);
 
   if (newData) {
-    // baseFlowStoreの状態を更新
-    baseFlowStore.setFlowData(newData);
+    // flowStoreの状態を更新
+    flowStore.setFlowData(newData);
   }
 };
 
@@ -76,7 +76,7 @@ export const clearHistory = (): void => {
 // 取り消し可能かどうか
 export const canUndo = (): boolean => {
   const historyState = getHistoryStore().getHistoryState();
-  return historyState.past.length > 0 || (getBaseFlowStore().originalData !== null);
+  return historyState.past.length > 0 || (getFlowStore().originalData !== null);
 };
 
 // やり直し可能かどうか

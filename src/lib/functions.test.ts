@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setTitle, loadSlugData } from './functions';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import type { Flow } from '@/types/types';
 
 // モックの設定
-vi.mock('@/core/stores/baseFlowStore', () => ({
+vi.mock('@/core/stores/flowStore', () => ({
   default: {
     getState: vi.fn(() => ({
       setFlowData: vi.fn(),
@@ -121,7 +121,7 @@ describe('functions', () => {
       });
 
       const setFlowDataMock = vi.fn();
-      vi.mocked(useBaseFlowStore.getState).mockReturnValue({
+      vi.mocked(useFlowStore.getState).mockReturnValue({
         setFlowData: setFlowDataMock,
       });
 

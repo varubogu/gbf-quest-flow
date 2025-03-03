@@ -2,7 +2,7 @@ import type { Flow, Action } from '@/types/models';
 
 // 各機能別のストア用インターフェース
 // 基本的なフロー状態管理
-export interface BaseFlowStore {
+export interface FlowStore {
   flowData: Flow | null;
   originalData: Flow | null;
   getFlowData: () => Flow | null;
@@ -46,8 +46,8 @@ export interface DeprecatedHistoryMethods {
 }
 
 // 完全なFlowStoreのインターフェース（分割後のファサード用）
-export interface FlowStore extends
-  BaseFlowStore,
+export interface SummaryFlowStore extends
+  FlowStore,
   EditModeStore,
   CursorStore,
   FileOperationMethods,

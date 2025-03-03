@@ -1,5 +1,5 @@
 import type { Flow, Action } from '@/types/models';
-import type { BaseFlowStore } from '@/types/flowStore.types';
+import type { FlowStore } from '@/types/flowStore.types';
 import { create } from 'zustand';
 import { adjustOrganizationData } from '../services/organizationService';
 
@@ -8,7 +8,7 @@ import { adjustOrganizationData } from '../services/organizationService';
  *
  * 注: 更新ロジックはflowServiceに移動し、このストアは状態の保持と基本的な読み取り機能のみを提供します
  */
-const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
+const useFlowStore = create<FlowStore>((set, get) => ({
   // 状態
   flowData: null,
   originalData: null,
@@ -41,4 +41,4 @@ const useBaseFlowStore = create<BaseFlowStore>((set, get) => ({
   },
 }));
 
-export default useBaseFlowStore;
+export default useFlowStore;

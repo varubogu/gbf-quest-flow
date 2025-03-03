@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { CharacterPanel } from './index';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 
 // Zustandのモック
-vi.mock('@/core/stores/baseFlowStore');
+vi.mock('@/core/stores/flowStore');
 
 // useCharacterFormフックのモック
 vi.mock('@/core/hooks/domain/characters/useCharacterForm', () => ({
@@ -94,7 +94,7 @@ describe('CharacterPanel', () => {
 
   beforeEach(() => {
     // モックの実装を更新
-    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+    vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
         return selector({ flowData: mockFlowData });
       }
@@ -121,7 +121,7 @@ describe('CharacterPanel', () => {
   });
 
   it('flowDataがnullの場合は何もレンダリングしない', () => {
-    vi.mocked(useBaseFlowStore).mockImplementation((selector) => {
+    vi.mocked(useFlowStore).mockImplementation((selector) => {
       if (selector) {
         return selector({ flowData: null });
       }

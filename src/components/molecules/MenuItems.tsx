@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { JSX } from 'react';
 
@@ -29,7 +29,7 @@ interface MenuItemsProps {
 
 export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useBaseFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: any) => state.flowData);
   const isEditMode = useEditModeStore((state: any) => state.isEditMode);
 
   const menuItems: MenuItem[] = [

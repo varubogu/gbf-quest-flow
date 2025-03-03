@@ -1,5 +1,5 @@
 import type { Flow, Action } from '@/types/models';
-import useBaseFlowStore from '@/core/stores/baseFlowStore';
+import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { pushToHistory } from './historyService';
 
@@ -7,7 +7,7 @@ import { pushToHistory } from './historyService';
  * フローデータ操作関連のサービス
  *
  * このサービスは、フローデータの更新や操作に関する機能を提供します。
- * baseFlowStoreの状態更新ロジックもこのサービスに集約されています。
+ * flowStoreの状態更新ロジックもこのサービスに集約されています。
  */
 
 // ロジック関数 - データ更新時の共通処理
@@ -60,10 +60,10 @@ export function handleError(error: unknown, defaultMessage: string): void {
     );
 }
 
-// ロジック関数 - baseFlowStoreとの同期処理
-export function syncWithBaseFlowStore(data: Flow | null): void {
+// ロジック関数 - flowStoreとの同期処理
+export function syncWithFlowStore(data: Flow | null): void {
   try {
-    useBaseFlowStore.getState().setFlowData(data);
+    useFlowStore.getState().setFlowData(data);
   } catch (error) {
     handleError(error, 'ベースフローストアとの同期中にエラーが発生しました');
   }
@@ -72,7 +72,7 @@ export function syncWithBaseFlowStore(data: Flow | null): void {
 // フローデータの更新処理
 export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): void {
   try {
-    const currentData = useBaseFlowStore.getState().getFlowData();
+    const currentData = useFlowStore.getState().getFlowData();
     if (!currentData) return;
 
     // データ更新処理
@@ -82,7 +82,7 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
     if (!shouldUpdate) return;
 
     // 変更後のデータを設定（内部メソッドを使用）
-    useBaseFlowStore.getState().setFlowData(newData);
+    useFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加（変更後のデータを保存）
     if (isEditMode) {
@@ -96,14 +96,14 @@ export function updateFlowData(updates: Partial<Flow>, isEditMode: boolean): voi
 // アクションの更新処理
 export function updateAction(index: number, updates: Partial<Action>, isEditMode: boolean): void {
   try {
-    const currentData = useBaseFlowStore.getState().getFlowData();
+    const currentData = useFlowStore.getState().getFlowData();
     if (!currentData) return;
 
     // アクション更新処理
     const newData = updateFlowWithAction(currentData, index, updates);
 
     // 変更後のデータを設定（内部メソッドを使用）
-    useBaseFlowStore.getState().setFlowData(newData);
+    useFlowStore.getState().setFlowData(newData);
 
     // 編集モード中のみ履歴に追加
     if (isEditMode) {

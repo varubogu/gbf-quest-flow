@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useEditModeStore from './editModeStore';
-import useBaseFlowStore from './baseFlowStore';
+import useFlowStore from './flowStore';
 import {
   clearHistory
 } from '@/core/services/historyService';
@@ -61,9 +61,9 @@ describe('EditModeStore', () => {
     // モックをリセット
     vi.clearAllMocks();
 
-    // baseFlowStoreのメソッドをスパイ
-    vi.spyOn(useBaseFlowStore, 'setState').mockImplementation(() => {});
-    vi.spyOn(useBaseFlowStore, 'getState').mockImplementation(() => ({
+    // flowStoreのメソッドをスパイ
+    vi.spyOn(useFlowStore, 'setState').mockImplementation(() => {});
+    vi.spyOn(useFlowStore, 'getState').mockImplementation(() => ({
       getFlowData: (): Flow => mockFlowData,
       originalData: null,
       flowData: null,
@@ -92,13 +92,13 @@ describe('EditModeStore', () => {
   });
 
   describe('setIsEditMode', () => {
-    it('trueに設定するとbaseFlowStoreのoriginalDataが更新されるべき', () => {
+    it('trueに設定するとflowStoreのoriginalDataが更新されるべき', () => {
       // 実行
       useEditModeStore.getState().setIsEditMode(true);
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(true);
-      expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
+      expect(useFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           originalData: expect.anything()
         })
@@ -112,7 +112,7 @@ describe('EditModeStore', () => {
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(false);
       expect(clearHistory).toHaveBeenCalled();
-      expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
+      expect(useFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           originalData: null
         })
@@ -123,7 +123,7 @@ describe('EditModeStore', () => {
   describe('cancelEdit', () => {
     it('originalDataが存在する場合、編集をキャンセルして元の状態に戻すべき', () => {
       // originalDataが存在するようにモックを設定
-      vi.spyOn(useBaseFlowStore, 'getState').mockImplementation(() => ({
+      vi.spyOn(useFlowStore, 'getState').mockImplementation(() => ({
         getFlowData: (): Flow => mockFlowData,
         originalData: mockFlowData,
         flowData: null,
@@ -140,7 +140,7 @@ describe('EditModeStore', () => {
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(false);
-      expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
+      expect(useFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           flowData: expect.anything(),
           originalData: null
@@ -157,7 +157,7 @@ describe('EditModeStore', () => {
       useEditModeStore.getState().cancelEdit();
 
       // setState()やhistory.back()は呼ばれないはず
-      expect(useBaseFlowStore.setState).not.toHaveBeenCalled();
+      expect(useFlowStore.setState).not.toHaveBeenCalled();
       expect(history.back).not.toHaveBeenCalled();
     });
   });
@@ -170,7 +170,7 @@ describe('EditModeStore', () => {
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(true);
       expect(clearHistory).toHaveBeenCalled();
-      expect(useBaseFlowStore.setState).toHaveBeenCalledWith(
+      expect(useFlowStore.setState).toHaveBeenCalledWith(
         expect.objectContaining({
           flowData: expect.objectContaining({
             title: '新しいフロー'
