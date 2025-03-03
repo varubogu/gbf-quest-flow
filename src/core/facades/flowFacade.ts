@@ -7,13 +7,6 @@ import {
   updateAction as serviceUpdateAction,
 } from '@/core/services/flowService';
 
-export interface IFlowFacade {
-  setFlowData: (_data: Flow | null) => void;
-  updateFlowData: (_updates: Partial<Flow>) => void;
-  updateAction: (_index: number, _updates: Partial<Action>) => void;
-  setIsEditMode: (_isEdit: boolean) => void;
-  createNewFlow: () => void;
-}
 
 /**
  * フローストアのファサード
