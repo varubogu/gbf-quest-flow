@@ -1,6 +1,5 @@
 import type { Flow } from '@/types/models';
-import type { HistoryState, HistoryStore } from '@/core/stores/historyStore';
-import useHistoryStore from '@/core/stores/historyStore';
+import useHistoryStore, { type HistoryState, type HistoryStore } from '@/core/stores/historyStore';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
