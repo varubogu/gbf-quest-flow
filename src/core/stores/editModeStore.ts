@@ -36,6 +36,10 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
     set({ isEditMode: false });
   },
 
+  // 重要：以下のメソッドは将来廃止予定です。
+  // 代わりに、editStartとeditEndを使用し、自身のストアの更新のみを役割とします。
+  
+
   // 編集モードの設定
   setIsEditMode: (isEdit: boolean): void => {
     try {
