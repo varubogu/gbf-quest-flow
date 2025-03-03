@@ -11,11 +11,30 @@ import useCursorStore from './cursorStore';
  * 編集モードの状態管理を行うストア
  */
 const useEditModeStore = create<EditModeStore>((set, get) => ({
-  // 状態
+  /**
+   * 編集モードの状態
+   */
   isEditMode: false,
 
-  // ゲッター
+  /**
+   * 編集モードの状態を取得する
+   * @returns 編集モードの状態
+   */
   getIsEditMode: (): boolean => get().isEditMode,
+
+  /**
+   * 編集モードを開始する
+   */
+  editStart: (): void => {
+    set({ isEditMode: true });
+  },
+
+  /**
+   * 編集モードを終了する
+   */
+  editEnd: (): void => {
+    set({ isEditMode: false });
+  },
 
   // 編集モードの設定
   setIsEditMode: (isEdit: boolean): void => {
