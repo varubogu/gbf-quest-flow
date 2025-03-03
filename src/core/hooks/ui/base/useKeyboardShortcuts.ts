@@ -22,7 +22,7 @@ interface NewProps {
 }
 
 // FlowStoreFacadeの状態の型定義
-interface BaseFlowState {
+interface FlowState {
   flowData: Flow | null;
   isEditMode: boolean;
 }
@@ -30,8 +30,8 @@ interface BaseFlowState {
 // 新しいインターフェースを使用する実装
 export const useKeyboardShortcuts = (props: NewProps): void => {
   // FlowStoreFacadeから状態を取得
-  const flowData = useFlowStore((state: BaseFlowState) => state.flowData);
-  const isEditMode = useEditModeStore((state: BaseFlowState) => state.isEditMode);
+  const flowData = useFlowStore((state: FlowState) => state.flowData);
+  const isEditMode = useEditModeStore((state: FlowState) => state.isEditMode);
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent): Promise<void> => {

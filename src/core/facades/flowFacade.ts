@@ -23,7 +23,7 @@ const useFlowFacade = create((set, _get) => {
   };
 
   // FlowStoreの変更を監視
-  const _unsubBaseFlow = useFlowStore.subscribe((state) => {
+  const _unsubFlow = useFlowStore.subscribe((state) => {
     set({
       flowData: state.flowData,
       originalData: state.originalData
