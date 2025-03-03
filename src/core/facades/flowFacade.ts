@@ -14,28 +14,13 @@ import { updateFlowData as serviceUpdateFlowData, updateAction as serviceUpdateA
  *
  * 注: 更新ロジックはflowServiceに委譲されています。
  */
-const useFlowFacade = create((set, _get) => {
+const useFlowFacade = create((_set, _get) => {
   // 初期状態を設定
   const initialState = {
     flowData: useFlowStore.getState().flowData,
     originalData: useFlowStore.getState().originalData,
     isEditMode: useEditModeStore.getState().isEditMode,
   };
-
-  // FlowStoreの変更を監視
-  const _unsubFlow = useFlowStore.subscribe((state) => {
-    set({
-      flowData: state.flowData,
-      originalData: state.originalData
-    });
-  });
-
-  // EditModeStoreの変更を監視
-  const _unsubEditMode = useEditModeStore.subscribe((state) => {
-    set({
-      isEditMode: state.isEditMode
-    });
-  });
 
   return {
     // 状態（プロパティ）- FlowStoreとEditModeStoreから初期化
