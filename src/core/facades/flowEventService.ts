@@ -1,7 +1,7 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
 import useFlowStore from '@/core/stores/flowStore';
-import useEditModeStore from '@/core/stores/editModeStore';
+import { setIsEditMode, createNewFlow } from '@/core/services/editModeService';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
 /**
@@ -15,7 +15,7 @@ export const handleFlowSave = async (
   const success = await saveFlow(flowData, sourceId);
   if (success) {
     clearHistory();
-    useEditModeStore.getState().setIsEditMode(false);
+    setIsEditMode(false);
   }
   return success;
 };
@@ -24,7 +24,7 @@ export const handleFlowSave = async (
  * 新規フロー作成処理を実行する
  */
 export const handleNewFlow = (currentFlowData: Flow | null = null): void => {
-  useEditModeStore.getState().createNewFlow();
+  createNewFlow();
   // 旧flowStoreも更新（後方互換性のため）- createNewFlowはfileServiceで両方更新されるため不要
   updateNewFlowState(currentFlowData);
 };
@@ -50,7 +50,7 @@ export const handleExitEditMode = async (
     if (originalData) {
       useFlowStore.getState().setFlowData(structuredClone(originalData));
     }
-    useEditModeStore.getState().setIsEditMode(false);
+    setIsEditMode(false);
     clearHistory();
     announceToScreenReader('編集モードを終了しました');
     return true;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useEditModeStore from '@/core/stores/editModeStore';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/atoms/Button';
 import { Plus } from 'lucide-react';
@@ -13,7 +13,7 @@ interface CreateFlowButtonProps {
 export function CreateFlowButton({ className, onClick }: CreateFlowButtonProps): JSX.Element {
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
-  const createNewFlow = useEditModeStore((state: any) => state.createNewFlow);
+  const createNewFlow = useEditModeStoreFacade((state: any) => state.createNewFlow);
 
   const handleClick = async () => {
     try {

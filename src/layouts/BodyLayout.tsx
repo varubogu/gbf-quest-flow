@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { LoadingLayout } from './LoadingLayout';
 import { EmptyLayout } from './EmptyLayout';
 import { FlowLayout } from './FlowLayout';
@@ -26,9 +27,9 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   // 各ストアから状態を取得 - 型アサーションを使用
   const flowData = useFlowStore((state) => (state as any).flowData);
   const isEditMode = useEditModeStore((state) => (state as any).isEditMode);
-  const setIsEditMode = useEditModeStore((state) => (state as any).setIsEditMode);
+  const setIsEditMode = useEditModeStoreFacade((state) => (state as any).setIsEditMode);
   const setFlowData = useFlowStore((state) => (state as any).setFlowData);
-  const createNewFlow = useEditModeStore((state) => (state as any).createNewFlow);
+  const createNewFlow = useEditModeStoreFacade((state) => (state as any).createNewFlow);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
 

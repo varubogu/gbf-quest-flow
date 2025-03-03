@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
+import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
@@ -39,7 +40,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const originalData = useFlowStore((state: any) => state.originalData);
   const loadFlowFromFile = useFileOperationsFacade((state: any) => state.loadFlowFromFile);
   const isEditMode = useEditModeStore((state: any) => state.isEditMode);
-  const setIsEditMode = useEditModeStore((state: any) => state.setIsEditMode);
+  const setIsEditMode = useEditModeStoreFacade((state: any) => state.setIsEditMode);
 
   const { hasChanges } = useEditHistory(flowData);
 

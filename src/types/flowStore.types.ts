@@ -14,6 +14,10 @@ export interface FlowStore {
 export interface EditModeStore {
   isEditMode: boolean;
   getIsEditMode: () => boolean;
+  editStart: () => void;
+  editEnd: () => void;
+
+  // 以下のメソッドはfacadeとserviceに移行したため、型定義のみ残す
   setIsEditMode: (_isEdit: boolean) => void;
   cancelEdit: () => void;
   createNewFlow: () => void;
