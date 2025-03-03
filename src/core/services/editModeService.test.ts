@@ -1,46 +1,44 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
-  handleEditModeStart,
-  handleEditModeEnd,
-  handleCancelEdit,
-  setIsEditMode,
-  cancelEdit
+  startEditMode,
+  finishEditMode,
+  cancelEditMode,
+  createNewFlow
 } from './editModeService';
 import type { Flow } from '@/types/models';
 
 // モックの設定
-vi.mock('@/core/stores/flowStore', () => {
-  const getFlowDataMock = vi.fn();
-  const setFlowDataMock = vi.fn();
-  const setStateMock = vi.fn();
+vi.mock('@/core/stores/flowStore', () => ({
+  default: {
+    getState: vi.fn(() => ({
+      getFlowData: vi.fn(),
+      setFlowData: vi.fn(),
+      originalData: null
+    })),
+    setState: vi.fn()
+  }
+}));
 
-  return {
-    default: {
-      getState: vi.fn(() => ({
-        getFlowData: getFlowDataMock,
-        setFlowData: setFlowDataMock,
-        originalData: null
-      })),
-      setState: setStateMock
-    }
-  };
-});
+vi.mock('@/core/stores/editModeStore', () => ({
+  default: {
+    setState: vi.fn()
+  }
+}));
 
-vi.mock('@/core/stores/editModeStore', () => {
-  const setStateMock = vi.fn();
+vi.mock('@/core/stores/cursorStore', () => ({
+  default: {
+    setState: vi.fn()
+  }
+}));
 
-  return {
-    default: {
-      setState: setStateMock
-    }
-  };
-});
+vi.mock('./historyService', () => ({
+  clearHistory: vi.fn()
+}));
 
-vi.mock('./historyService', () => {
-  return {
-    clearHistory: vi.fn()
-  };
-});
+// flowServiceのモック
+vi.mock('@/core/services/flowService', () => ({
+  setFlowData: vi.fn()
+}));
 
 // グローバルオブジェクトのモック
 const originalHistoryBack = window.history.back;
@@ -56,7 +54,9 @@ afterEach(() => {
 // テスト用のインポート
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
+import useCursorStore from '@/core/stores/cursorStore';
 import { clearHistory } from './historyService';
+import { setFlowData } from '@/core/services/flowService';
 
 describe('editModeService', () => {
   // モックのリセット
@@ -65,78 +65,74 @@ describe('editModeService', () => {
   });
 
   // テスト用のモックデータ
-  const mockFlow: Flow = {
+  const mockFlow = {
     title: 'テストフロー',
     quest: 'テストクエスト',
     author: 'テスト作者',
+    description: '',
+    updateDate: '',
+    note: '',
+    always: '',
     flow: [],
-    organization: null,
-    weapons: [],
-    jobs: [],
-    summons: [],
+    organization: {
+      job: {
+        name: '',
+        note: '',
+        equipment: {
+          name: '',
+          note: '',
+        },
+        abilities: [],
+      },
+      member: {
+        front: [],
+        back: [],
+      },
+      weapon: {
+        main: {
+          name: '',
+          note: '',
+          additionalSkill: '',
+        },
+        other: [],
+        additional: [],
+      },
+      weaponEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+      summon: {
+        main: { name: '', note: '' },
+        friend: { name: '', note: '' },
+        other: [],
+        sub: [],
+      },
+      totalEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+    },
     characters: []
-  };
-
-  describe('単体テスト', () => {
-    describe('handleEditModeStart', () => {
-      it('編集モード開始時に現在のデータのコピーを返す', () => {
-        const result = handleEditModeStart(mockFlow);
-
-        expect(result.originalData).toEqual(mockFlow);
-        expect(result.originalData).not.toBe(mockFlow); // ディープコピーされていることを確認
-      });
-    });
-
-    describe('handleEditModeEnd', () => {
-      it('編集モード終了時に履歴をクリアする', () => {
-        const clearHistoryMock = clearHistory as jest.Mock;
-
-        handleEditModeEnd();
-
-        expect(clearHistoryMock).toHaveBeenCalled();
-      });
-    });
-
-    describe('handleCancelEdit', () => {
-      it('編集キャンセル時に元のデータに戻し、編集モードをオフにする', () => {
-        // setFlowDataのモックを設定
-        const setFlowDataMock = vi.fn();
-        (useFlowStore.getState as any).mockReturnValue({
-          setFlowData: setFlowDataMock
-        });
-
-        const clearHistoryMock = clearHistory as jest.Mock;
-        const historyBackMock = window.history.back as jest.Mock;
-
-        const result = handleCancelEdit(mockFlow);
-
-        expect(result.flowData).toEqual(mockFlow);
-        expect(result.flowData).not.toBe(mockFlow); // ディープコピーされていることを確認
-        expect(result.isEditMode).toBe(false);
-        expect(result.originalData).toBeNull();
-        expect(clearHistoryMock).toHaveBeenCalled();
-        expect(historyBackMock).toHaveBeenCalled();
-        expect(setFlowDataMock).toHaveBeenCalledWith(expect.objectContaining(mockFlow));
-      });
-    });
-  });
+  } as Flow;
 
   describe('結合テスト', () => {
-    describe('setIsEditMode', () => {
+    describe('startEditMode', () => {
       it('編集モードをオンにすると、元のデータを保存する', () => {
         // モックの設定
         const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
-        (useFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
           getFlowData: getFlowDataMock
         });
         useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行
-        setIsEditMode(true);
+        startEditMode(true);
 
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
@@ -148,7 +144,6 @@ describe('editModeService', () => {
 
       it('編集モードをオフにすると、履歴をクリアし元のデータをnullにする', () => {
         // モックの設定
-        const clearHistoryMock = clearHistory as jest.Mock;
         const setStateMock = vi.fn();
         const editModeSetStateMock = vi.fn();
 
@@ -156,24 +151,41 @@ describe('editModeService', () => {
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行
-        setIsEditMode(false);
+        startEditMode(false);
 
         // 検証
-        expect(clearHistoryMock).toHaveBeenCalled();
+        expect(clearHistory).toHaveBeenCalled();
         expect(setStateMock).toHaveBeenCalledWith({ originalData: null });
         expect(editModeSetStateMock).toHaveBeenCalledWith({ isEditMode: false });
       });
     });
 
-    describe('cancelEdit', () => {
+    describe('finishEditMode', () => {
+      it('編集モードを終了し、履歴をクリアして元のデータをnullにする', () => {
+        // モックの設定
+        const setStateMock = vi.fn();
+        const editModeSetStateMock = vi.fn();
+
+        useFlowStore.setState = setStateMock;
+        useEditModeStore.setState = editModeSetStateMock;
+
+        // テスト実行
+        finishEditMode();
+
+        // 検証
+        expect(clearHistory).toHaveBeenCalled();
+        expect(setStateMock).toHaveBeenCalledWith({ originalData: null });
+        expect(editModeSetStateMock).toHaveBeenCalledWith({ isEditMode: false });
+      });
+    });
+
+    describe('cancelEditMode', () => {
       it('元のデータがある場合、編集をキャンセルして元のデータに戻す', () => {
         // モックの設定
         const originalData = { ...mockFlow, title: '元のタイトル' };
-        const setFlowDataMock = vi.fn();
 
-        (useFlowStore.getState as any).mockReturnValue({
-          originalData,
-          setFlowData: setFlowDataMock
+        (useFlowStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
+          originalData
         });
 
         const setStateMock = vi.fn();
@@ -182,26 +194,20 @@ describe('editModeService', () => {
         useFlowStore.setState = setStateMock;
         useEditModeStore.setState = editModeSetStateMock;
 
-        const clearHistoryMock = clearHistory as jest.Mock;
-        const historyBackMock = window.history.back as jest.Mock;
-
         // テスト実行
-        cancelEdit();
+        cancelEditMode();
 
         // 検証
-        expect(clearHistoryMock).toHaveBeenCalled();
-        expect(historyBackMock).toHaveBeenCalled();
-        expect(setFlowDataMock).toHaveBeenCalledWith(expect.objectContaining(originalData));
-        expect(setStateMock).toHaveBeenCalledWith({
-          flowData: expect.objectContaining(originalData),
-          originalData: null
-        });
+        expect(clearHistory).toHaveBeenCalled();
+        expect(window.history.back).toHaveBeenCalled();
+        expect(setFlowData).toHaveBeenCalledWith(expect.objectContaining(originalData));
+        expect(setStateMock).toHaveBeenCalledWith({ originalData: null });
         expect(editModeSetStateMock).toHaveBeenCalledWith({ isEditMode: false });
       });
 
       it('元のデータがない場合、何もしない', () => {
         // モックの設定
-        (useFlowStore.getState as any).mockReturnValue({
+        (useFlowStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
           originalData: null
         });
 
@@ -212,11 +218,38 @@ describe('editModeService', () => {
         useEditModeStore.setState = editModeSetStateMock;
 
         // テスト実行
-        cancelEdit();
+        cancelEditMode();
 
         // 検証
         expect(setStateMock).not.toHaveBeenCalled();
         expect(editModeSetStateMock).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('createNewFlow', () => {
+      it('新しいフローを作成し、編集モードをオンにする', () => {
+        // モックの設定
+        const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
+        const setStateMock = vi.fn();
+        const editModeSetStateMock = vi.fn();
+        const cursorSetStateMock = vi.fn();
+
+        (useFlowStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
+          getFlowData: getFlowDataMock
+        });
+
+        useFlowStore.setState = setStateMock;
+        useEditModeStore.setState = editModeSetStateMock;
+        useCursorStore.setState = cursorSetStateMock;
+
+        // テスト実行
+        createNewFlow();
+
+        // 検証
+        expect(editModeSetStateMock).toHaveBeenCalledWith({ isEditMode: true });
+        expect(setFlowData).toHaveBeenCalled();
+        expect(setStateMock).toHaveBeenCalledWith({ originalData: mockFlow });
+        expect(cursorSetStateMock).toHaveBeenCalledWith({ currentRow: 0 });
       });
     });
   });

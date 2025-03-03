@@ -21,8 +21,8 @@ vi.mock('@/core/stores/editModeStore', () => {
 // editModeServiceのモック
 vi.mock('@/core/services/editModeService', () => {
   return {
-    setIsEditMode: vi.fn(),
-    cancelEdit: vi.fn(),
+    startEditMode: vi.fn(),
+    cancelEditMode: vi.fn(),
     createNewFlow: vi.fn()
   };
 });
@@ -51,24 +51,24 @@ describe('editModeStoreFacade', () => {
     });
 
     describe('setIsEditMode', () => {
-      it('editModeServiceのsetIsEditModeを呼び出す', () => {
+      it('editModeServiceのstartEditModeを呼び出す', () => {
         // テスト実行
         const facade = useEditModeStoreFacade.getState();
         (facade as unknown as { setIsEditMode: (_isEdit: boolean) => void }).setIsEditMode(true);
 
         // 検証
-        expect(editModeService.setIsEditMode).toHaveBeenCalledWith(true);
+        expect(editModeService.startEditMode).toHaveBeenCalledWith(true);
       });
     });
 
     describe('cancelEdit', () => {
-      it('editModeServiceのcancelEditを呼び出す', () => {
+      it('editModeServiceのcancelEditModeを呼び出す', () => {
         // テスト実行
         const facade = useEditModeStoreFacade.getState();
         (facade as unknown as { cancelEdit: () => void }).cancelEdit();
 
         // 検証
-        expect(editModeService.cancelEdit).toHaveBeenCalled();
+        expect(editModeService.cancelEditMode).toHaveBeenCalled();
       });
     });
 

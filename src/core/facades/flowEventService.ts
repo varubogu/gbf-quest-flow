@@ -1,7 +1,7 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
 import useFlowStore from '@/core/stores/flowStore';
-import { setIsEditMode, createNewFlow } from '@/core/services/editModeService';
+import { startEditMode, createNewFlow } from '@/core/services/editModeService';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
 /**
@@ -15,7 +15,7 @@ export const handleFlowSave = async (
   const success = await saveFlow(flowData, sourceId);
   if (success) {
     clearHistory();
-    setIsEditMode(false);
+    startEditMode(false);
   }
   return success;
 };
@@ -50,7 +50,7 @@ export const handleExitEditMode = async (
     if (originalData) {
       useFlowStore.getState().setFlowData(structuredClone(originalData));
     }
-    setIsEditMode(false);
+    startEditMode(false);
     clearHistory();
     announceToScreenReader('編集モードを終了しました');
     return true;

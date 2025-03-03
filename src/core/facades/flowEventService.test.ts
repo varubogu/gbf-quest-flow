@@ -19,7 +19,7 @@ vi.mock('@/lib/utils/flowOperations', () => ({
 }));
 
 vi.mock('@/core/services/editModeService', () => ({
-  setIsEditMode: vi.fn(),
+  startEditMode: vi.fn(),
   createNewFlow: vi.fn()
 }));
 
@@ -89,7 +89,7 @@ describe('flowEventService', () => {
 
       // 検証
       expect(flowOperations.saveFlow).toHaveBeenCalledWith(mockFlow, null);
-      expect(editModeService.setIsEditMode).toHaveBeenCalledWith(false);
+      expect(editModeService.startEditMode).toHaveBeenCalledWith(false);
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
     });
@@ -118,7 +118,7 @@ describe('flowEventService', () => {
       expect(window.confirm).toHaveBeenCalled();
       expect(result).toBe(true);
       expect(mockClearHistory).toHaveBeenCalled();
-      expect(editModeService.setIsEditMode).toHaveBeenCalledWith(false);
+      expect(editModeService.startEditMode).toHaveBeenCalledWith(false);
       expect(mockSetFlowData).toHaveBeenCalled();
     });
 
@@ -133,7 +133,7 @@ describe('flowEventService', () => {
       expect(window.confirm).toHaveBeenCalled();
       expect(result).toBe(false);
       expect(mockClearHistory).not.toHaveBeenCalled();
-      expect(editModeService.setIsEditMode).not.toHaveBeenCalled();
+      expect(editModeService.startEditMode).not.toHaveBeenCalled();
       expect(mockSetFlowData).not.toHaveBeenCalled();
     });
   });

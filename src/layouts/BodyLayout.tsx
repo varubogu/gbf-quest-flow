@@ -28,7 +28,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
   // 各ストアから状態を取得
   const flowData = useFlowStore((state) => state.flowData as Flow | null);
   const isEditMode = useEditModeStore((state) => state.isEditMode as boolean);
-  const setIsEditMode = useEditModeStoreFacade((state) => state.setIsEditMode as (isEditMode: boolean) => void);
+  const setIsEditMode = useEditModeStoreFacade((state) => state.setIsEditMode as (_isEditMode: boolean) => void);
   const createNewFlow = useEditModeStoreFacade((state) => state.createNewFlow as () => void);
 
   const { recordChange, clearHistory, hasChanges } = useEditHistory(flowData);
