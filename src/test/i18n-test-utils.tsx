@@ -3,6 +3,7 @@ import type { RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';
 import type { ReactNode } from 'react';
 import { I18nextProvider } from 'react-i18next';
+import type { i18n } from 'i18next';
 
 // モック用のi18nextインスタンス
 const mockI18n = {
@@ -19,7 +20,7 @@ const mockI18n = {
   init: vi.fn(),
   on: vi.fn(),
   off: vi.fn(),
-  getFixedT: vi.fn().mockImplementation(() => (key: string) => key),
+  getFixedT: vi.fn().mockImplementation(() => (key: string): string => key),
   format: vi.fn().mockImplementation((value) => value),
   createInstance: vi.fn().mockReturnThis(),
   cloneInstance: vi.fn().mockReturnThis(),
@@ -76,7 +77,7 @@ vi.mock('@/lib/i18n', () => ({
 export const renderWithI18n = (ui: React.ReactElement): RenderResult => {
   // I18nextProviderでラップしてレンダリングする
   return render(
-    <I18nextProvider i18n={mockI18n as any}>
+    <I18nextProvider i18n={mockI18n as unknown as i18n}>
       {ui}
     </I18nextProvider>
   );

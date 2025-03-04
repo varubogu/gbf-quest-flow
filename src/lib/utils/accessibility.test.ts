@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import * as accessibilityModule from './accessibility';
 
 // モジュール全体をモック
@@ -12,11 +12,12 @@ vi.mock('./accessibility', async (importOriginal) => {
 
 describe('accessibility', () => {
   describe('announceToScreenReader', () => {
-    let appendChildSpy: any;
-    let removeChildSpy: any;
-    let createElementSpy: any;
-    let setAttributeSpy: any;
-    let mockElement: any;
+    let appendChildSpy: MockInstance<typeof document.body.appendChild>;
+    let removeChildSpy: MockInstance<typeof document.body.removeChild>;
+    let createElementSpy: MockInstance<typeof document.createElement>;
+    let setAttributeSpy: MockInstance<typeof HTMLElement.prototype.setAttribute>;
+    let mockElement: Partial<Element>;
+
 
     beforeEach(() => {
       // DOMのモック
@@ -81,8 +82,8 @@ describe('accessibility', () => {
 
 // handleError関数のテストを分離
 describe('handleError', () => {
-  let consoleErrorSpy: any;
-  let announceToScreenReaderSpy: any;
+  let consoleErrorSpy: MockInstance<typeof console.error>;
+  let announceToScreenReaderSpy: MockInstance<typeof accessibilityModule.announceToScreenReader>;
 
   beforeEach(() => {
     // テスト前にモジュールをリセット
