@@ -2,10 +2,11 @@ import { useEffect, type JSX } from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
-import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
+import useCursorStore from '@/core/stores/cursorStore';
+import type { SettingsStore } from '@/core/stores/settingsStore';
+import { setCurrentRow } from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { undo, redo } from '@/core/facades/historyFacade';
-import type { SettingsStore } from '@/core/stores/settingsStore';
 import type { CursorStore, FlowStore } from '@/types/flowStore.types';
 
 interface TableContainerProps {
@@ -17,8 +18,7 @@ export function TableContainer({
   isEditMode = false,
   data,
 }: TableContainerProps): JSX.Element | null {
-  const currentRow = useCursorStoreFacade((state: CursorStore) => state.currentRow);
-  const setCurrentRow = useCursorStoreFacade((state: CursorStore) => state.setCurrentRow);
+  const currentRow = useCursorStore((state: CursorStore) => state.currentRow);
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const setFlowData = useFlowStore((state: FlowStore) => state.setFlowData);
   const settings = useSettingsStoreFacade((state: SettingsStore) => state.settings);
@@ -56,11 +56,11 @@ export function TableContainer({
   };
 
   const handleMoveUp = (): void => {
-    if (currentRow > 0) setCurrentRow(currentRow - 1);
+    setCurrentRow(currentRow - 1);
   };
 
   const handleMoveDown = (): void => {
-    if (currentRow < flowData.flow.length - 1) setCurrentRow(currentRow + 1);
+    setCurrentRow(currentRow + 1);
   };
 
   const handleCellEdit = (rowIndex: number, field: keyof Action, value: string): void => {

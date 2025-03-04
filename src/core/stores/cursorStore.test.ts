@@ -25,14 +25,6 @@ describe('cursorStore', () => {
     expect(updatedStore.currentRow).toBe(5);
   });
 
-  it('getCurrentRowメソッドでcurrentRowの値を取得できること', () => {
-    const store = useCursorStore.getState();
-    store.setCurrentRow(3);
-
-    const currentRow = store.getCurrentRow();
-    expect(currentRow).toBe(3);
-  });
-
   it('不正な値（負の数）を設定しても動作すること', () => {
     const store = useCursorStore.getState();
     store.setCurrentRow(-1);

@@ -3,6 +3,7 @@ import type { Flow } from '@/types/models';
 import { handleFlowSave, handleNewFlow } from '@/core/facades/flowEventService';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
+import type { EditModeStore, FlowStore } from '@/types/flowStore.types';
 
 // 従来のインターフェース
 interface Props {
@@ -20,20 +21,16 @@ interface NewProps {
   onExitEditMode: () => Promise<void>;
 }
 
-// FlowStoreFacadeの状態の型定義
-interface FlowState {
-  flowData: Flow | null;
-  isEditMode: boolean;
-}
 
 // 新しいインターフェースを使用する実装
 export const useKeyboardShortcuts = (props: NewProps): void => {
   // FlowStoreFacadeから状態を取得
-  const flowData = useFlowStore((state: FlowState) => state.flowData);
-  const isEditMode = useEditModeStore((state: FlowState) => state.isEditMode);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent): Promise<void> => {
+      // Esc 編集モード解除
       if (event.key === 'Escape') {
         await props.onExitEditMode();
         return;
@@ -41,9 +38,12 @@ export const useKeyboardShortcuts = (props: NewProps): void => {
 
       if (!event.ctrlKey) return;
 
+      // Ctrl + S 保存
       if (event.key === 's' && isEditMode && flowData) {
         event.preventDefault();
         await props.onSave();
+
+      // Ctrl + N 新規作成
       } else if (event.key === 'n') {
         event.preventDefault();
         props.onNew();

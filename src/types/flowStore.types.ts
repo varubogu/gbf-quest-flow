@@ -23,7 +23,6 @@ export interface EditModeStore {
 export interface CursorStore {
   currentRow: number;
   setCurrentRow: (_row: number) => void;
-  getCurrentRow: () => number;
 }
 
 // ファイル操作関連
