@@ -1,10 +1,10 @@
-import { create } from 'zustand';
-import useEditModeStore from '@/core/stores/editModeStore';
 import {
-   getIsEditMode as getIsEditModeFromStore,
-   startEditMode,
-   cancelEditMode,
-   createNewFlow
+   getIsEditMode as getIsEditModeService,
+   startEdit as startEditService,
+   cancelEdit as cancelEditService,
+   finishEdit as finishEditService,
+   createNewFlow as createNewFlowService,
+   setIsEditMode as setIsEditModeService
 } from '@/core/services/editModeService';
 
 /**
@@ -14,30 +14,26 @@ import {
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
  */
-const useEditModeStoreFacade = create((set, _get) => {
-  // 初期状態を設定
-  const initialState = {
-    isEditMode: useEditModeStore.getState().isEditMode,
-  };
+export function getIsEditMode(): boolean {
+  return getIsEditModeService();
+}
 
-  // EditModeStoreの変更を監視
-  useEditModeStore.subscribe((state) => {
-    console.log('EditModeStoreFacade: EditModeStoreの変更を検知しました', state.isEditMode);
-    set({
-      isEditMode: state.isEditMode
-    });
-  });
+export function setIsEditMode(isEdit: boolean): void {
+  setIsEditModeService(isEdit);
+}
 
-  return {
-    // 状態（プロパティ）- EditModeStoreから初期化
-    ...initialState,
+export function startEdit(): void {
+  startEditService();
+}
 
-    getIsEditMode: (): boolean => getIsEditModeFromStore(),
+export function finishEdit(): void {
+  finishEditService();
+}
 
-    setIsEditMode: (isEdit: boolean): void => startEditMode(isEdit),
-    cancelEdit: (): void => cancelEditMode(),
-    createNewFlow: (): void => createNewFlow(),
-  };
-});
+export function cancelEdit(): void {
+  cancelEditService();
+}
 
-export default useEditModeStoreFacade;
+export function createNewFlow(): void {
+  createNewFlowService();
+}

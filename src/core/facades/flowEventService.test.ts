@@ -3,13 +3,11 @@ import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from 
 import * as flowOperations from '@/lib/utils/flowOperations';
 import * as editModeService from '@/core/services/editModeService';
 import useFlowStore from '@/core/stores/flowStore';
-import type { Flow } from '@/types/models';
+import type { Flow, Organization } from '@/types/models';
 
 // グローバルオブジェクトのモック
-Object.defineProperty(global, 'window', {
-  value: {
-    confirm: vi.fn()
-  }
+vi.stubGlobal('window', {
+  confirm: vi.fn()
 });
 
 // モックの設定
@@ -19,8 +17,10 @@ vi.mock('@/lib/utils/flowOperations', () => ({
 }));
 
 vi.mock('@/core/services/editModeService', () => ({
-  startEditMode: vi.fn(),
-  createNewFlow: vi.fn()
+  startEdit: vi.fn(),
+  createNewFlow: vi.fn(),
+  finishEdit: vi.fn(),
+  cancelEdit: vi.fn()
 }));
 
 vi.mock('@/lib/utils/accessibility', () => ({
@@ -49,7 +49,46 @@ describe('flowEventService', () => {
     description: 'テスト説明',
     updateDate: '2023-01-01',
     note: 'テストノート',
-    organization: {} as any, // テスト用に型だけ合わせる
+    organization: {
+      job: {
+        name: '',
+        note: '',
+        equipment: {
+          name: '',
+          note: '',
+        },
+        abilities: [],
+      },
+      member: {
+        front: [],
+        back: [],
+      },
+      weapon: {
+        main: {
+          name: '',
+          note: '',
+          additionalSkill: '',
+        },
+        other: [],
+        additional: [],
+      },
+      weaponEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+      summon: {
+        main: { name: '', note: '' },
+        friend: { name: '', note: '' },
+        other: [],
+        sub: [],
+      },
+      totalEffects: {
+        taRate: '',
+        hp: '',
+        defense: '',
+      },
+    } as Organization,
     always: 'テスト常時効果',
     flow: [
       {
@@ -89,7 +128,7 @@ describe('flowEventService', () => {
 
       // 検証
       expect(flowOperations.saveFlow).toHaveBeenCalledWith(mockFlow, null);
-      expect(editModeService.startEditMode).toHaveBeenCalledWith(false);
+      expect(editModeService.finishEdit).toHaveBeenCalled();
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
     });
@@ -118,7 +157,7 @@ describe('flowEventService', () => {
       expect(window.confirm).toHaveBeenCalled();
       expect(result).toBe(true);
       expect(mockClearHistory).toHaveBeenCalled();
-      expect(editModeService.startEditMode).toHaveBeenCalledWith(false);
+      expect(editModeService.cancelEdit).toHaveBeenCalled();
       expect(mockSetFlowData).toHaveBeenCalled();
     });
 
@@ -133,23 +172,24 @@ describe('flowEventService', () => {
       expect(window.confirm).toHaveBeenCalled();
       expect(result).toBe(false);
       expect(mockClearHistory).not.toHaveBeenCalled();
-      expect(editModeService.startEditMode).not.toHaveBeenCalled();
+      expect(editModeService.cancelEdit).not.toHaveBeenCalled();
       expect(mockSetFlowData).not.toHaveBeenCalled();
     });
   });
 
   describe('handleCancel', () => {
     it('handleExitEditModeを呼び出す', async () => {
-      // handleExitEditModeをモック
-      const mockExitEditMode = vi.fn().mockResolvedValue(true);
+      // モックの設定
+      vi.mocked(window.confirm).mockReturnValue(true);
 
-      // handleCancelの実装を直接テスト
-      expect(await handleCancel(true, mockClearHistory)).toBe(
-        await handleExitEditMode(true, mockClearHistory)
-      );
+      // テスト実行
+      const result = await handleCancel(true, mockClearHistory);
 
-      // 確認ダイアログが表示されたことを検証
+      // 検証
       expect(window.confirm).toHaveBeenCalled();
+      expect(result).toBe(true);
+      expect(mockClearHistory).toHaveBeenCalled();
+      expect(editModeService.cancelEdit).toHaveBeenCalled();
     });
   });
 });

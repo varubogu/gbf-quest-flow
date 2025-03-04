@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
 import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
@@ -40,7 +40,6 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const originalData = useFlowStore((state: any) => state.originalData);
   const loadFlowFromFile = useFileOperationsFacade((state: any) => state.loadFlowFromFile);
   const isEditMode = useEditModeStore((state: any) => state.isEditMode);
-  const setIsEditMode = useEditModeStoreFacade((state: any) => state.setIsEditMode);
 
   const { hasChanges } = useEditHistory(flowData);
 
@@ -129,7 +128,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
       <SheetTrigger asChild>
         <HamburgerMenu onClick={() => setIsOpen(true)} />
       </SheetTrigger>
-      <SheetContent side="left" width="w-[300px] sm:w-[400px]">
+      <SheetContent side="left" className="w-[300px] sm:w-[400px]">
         <SheetHeader>
           <SheetTitle>{menuView === 'menu' ? t('menu') : t('options')}</SheetTitle>
         </SheetHeader>

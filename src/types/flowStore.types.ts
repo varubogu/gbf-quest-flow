@@ -14,8 +14,9 @@ export interface FlowStore {
 export interface EditModeStore {
   isEditMode: boolean;
   getIsEditMode: () => boolean;
-  editStart: () => void;
-  editEnd: () => void;
+  setIsEditMode: (_isEdit: boolean) => void;
+  startEdit: () => void;
+  endEdit: () => void;
 }
 
 // カーソル位置管理

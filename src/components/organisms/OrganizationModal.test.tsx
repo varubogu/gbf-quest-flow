@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { OrganizationModal } from './OrganizationModal';
 import useFlowStore from '@/core/stores/flowStore';
-import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import useEditModeStore from '@/core/stores/editModeStore';
 import type { Flow } from '@/types/models';
 
 // モックの設定
@@ -26,7 +26,7 @@ vi.mock('react-i18next', () => ({
 // @headlessui/reactのモック
 vi.mock('@headlessui/react', () => {
   // Dialogコンポーネント
-  function Dialog(props) {
+  function Dialog(props: { children: React.ReactNode; open: boolean; onClose: () => void }) {
     const { children, open, onClose } = props;
     if (!open) return null;
     return (
@@ -36,7 +36,13 @@ vi.mock('@headlessui/react', () => {
     );
   }
 
-  Dialog.Panel = function DialogPanel(props) {
+  Dialog.Panel = function DialogPanel(props: {
+    children: React.ReactNode;
+    className?: string;
+    id?: string;
+    role?: string;
+    'aria-labelledby'?: string
+  }) {
     const { children, className, id, role, 'aria-labelledby': ariaLabelledby } = props;
     return (
       <div
@@ -52,7 +58,7 @@ vi.mock('@headlessui/react', () => {
   };
 
   // Tabコンポーネント
-  function Tab(props) {
+  function Tab(props: { children: React.ReactNode; className?: string | ((props: { selected: boolean }) => string) }) {
     const { children, className } = props;
     const selected = true; // 常にselectedをtrueとして扱う
     return (
@@ -66,8 +72,13 @@ vi.mock('@headlessui/react', () => {
     );
   }
 
-  function TabGroup(props) {
-    const { children, selectedIndex, onChange, className } = props;
+  function TabGroup(props: {
+    children: React.ReactNode | ((props: { selectedIndex: number }) => React.ReactNode);
+    selectedIndex?: number;
+    onChange?: (index: number) => void;
+    className?: string
+  }) {
+    const { children, selectedIndex = 0, onChange, className } = props;
     return (
       <div data-testid="tab-group" className={className}>
         {typeof children === 'function' ? children({ selectedIndex }) : children}
@@ -75,7 +86,7 @@ vi.mock('@headlessui/react', () => {
     );
   }
 
-  function TabList(props) {
+  function TabList(props: { children: React.ReactNode; className?: string }) {
     const { children, className } = props;
     return (
       <div data-testid="tab-list" className={className}>
@@ -84,7 +95,7 @@ vi.mock('@headlessui/react', () => {
     );
   }
 
-  function TabPanels(props) {
+  function TabPanels(props: { children: React.ReactNode; className?: string }) {
     const { children, className } = props;
     return (
       <div data-testid="tab-panels" className={className}>
@@ -93,7 +104,7 @@ vi.mock('@headlessui/react', () => {
     );
   }
 
-  function TabPanel(props) {
+  function TabPanel(props: { children: React.ReactNode; className?: string }) {
     const { children, className } = props;
     return (
       <div data-testid="tab-panel" className={className}>
@@ -103,7 +114,7 @@ vi.mock('@headlessui/react', () => {
   }
 
   // Tabオブジェクトの構築
-  const HeadlessTab = Tab;
+  const HeadlessTab = Tab as any;
   HeadlessTab.Group = TabGroup;
   HeadlessTab.List = TabList;
   HeadlessTab.Panels = TabPanels;
@@ -114,37 +125,37 @@ vi.mock('@headlessui/react', () => {
 
 // 子コンポーネントのモック
 vi.mock('./JobPanel', () => ({
-  JobPanel: ({ isEditing }) => (
+  JobPanel: ({ isEditing }: { isEditing: boolean }) => (
     <div data-testid="job-panel">JobPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
 vi.mock('./CharacterPanel/index', () => ({
-  CharacterPanel: ({ isEditing }) => (
+  CharacterPanel: ({ isEditing }: { isEditing: boolean }) => (
     <div data-testid="character-panel">CharacterPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
 vi.mock('./WeaponPanel/index', () => ({
-  WeaponPanel: ({ isEditing }) => (
+  WeaponPanel: ({ isEditing }: { isEditing: boolean }) => (
     <div data-testid="weapon-panel">WeaponPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
 vi.mock('./SummonPanel', () => ({
-  SummonPanel: ({ isEditing }) => (
+  SummonPanel: ({ isEditing }: { isEditing: boolean }) => (
     <div data-testid="summon-panel">SummonPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
 vi.mock('./SkillTotalPanel', () => ({
-  SkillTotalPanel: ({ isEditing }) => (
+  SkillTotalPanel: ({ isEditing }: { isEditing: boolean }) => (
     <div data-testid="skill-total-panel">SkillTotalPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
 vi.mock('@/core/stores/flowStore');
-vi.mock('@/core/facades/editModeStoreFacade');
+vi.mock('@/core/stores/editModeStore');
 
 describe('OrganizationModal', () => {
   // テスト用のモックデータ
@@ -194,8 +205,8 @@ describe('OrganizationModal', () => {
       return selector(state);
     });
 
-    // useEditModeStoreFacadeのモック
-    (useEditModeStoreFacade as any).mockImplementation((selector: Function) => {
+    // useEditModeStoreのモック
+    (useEditModeStore as any).mockImplementation((selector: Function) => {
       return selector({ isEditMode: false });
     });
   });
@@ -266,7 +277,7 @@ describe('OrganizationModal', () => {
 
     it('編集モードでは各パネルにisEditing=trueが渡されること', () => {
       // 編集モードをtrueに設定
-      (useEditModeStoreFacade as any).mockImplementation((selector: Function) => {
+      (useEditModeStore as any).mockImplementation((selector: Function) => {
         return selector({ isEditMode: true });
       });
 
@@ -286,7 +297,7 @@ describe('OrganizationModal', () => {
 
     it('編集モードで動画URLを変更するとupdateFlowData関数が呼ばれること', () => {
       // 編集モードをtrueに設定
-      (useEditModeStoreFacade as any).mockImplementation((selector: Function) => {
+      (useEditModeStore as any).mockImplementation((selector: Function) => {
         return selector({ isEditMode: true });
       });
 

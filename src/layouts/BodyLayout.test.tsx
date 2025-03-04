@@ -1,14 +1,13 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import BodyLayout from './BodyLayout';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 import type { Flow } from '@/types/models';
 import * as flowFacade from '@/core/facades/flowFacade';
+import * as editModeStoreFacade from '@/core/facades/editModeStoreFacade';
 
-// モック関数の宣言
-const mockSetFlowData = vi.fn();
-const mockSetIsEditMode = vi.fn();
-
+// vi.mockの呼び出しはファイルの先頭に巻き上げられるため、
+// 変数宣言の前に配置する必要があります
 // flowFacadeのモック
 vi.mock('@/core/facades/flowFacade', () => ({
   setFlowData: vi.fn(),
@@ -16,6 +15,16 @@ vi.mock('@/core/facades/flowFacade', () => ({
   updateAction: vi.fn(),
   setIsEditMode: vi.fn(),
   createNewFlow: vi.fn()
+}));
+
+// editModeStoreFacadeのモックを正しく実装
+vi.mock('@/core/facades/editModeStoreFacade', () => ({
+  setIsEditMode: vi.fn(),
+  startEdit: vi.fn(),
+  createNewFlow: vi.fn(),
+  getIsEditMode: vi.fn(),
+  finishEdit: vi.fn(),
+  cancelEdit: vi.fn()
 }));
 
 // 他のモックの設定
@@ -59,7 +68,7 @@ vi.mock('@/core/stores/flowStore', () => ({
   default: vi.fn((selector) => {
     return selector({
       flowData: null,
-      setFlowData: mockSetFlowData
+      setFlowData: vi.fn()
     });
   })
 }));
@@ -68,16 +77,6 @@ vi.mock('@/core/stores/editModeStore', () => ({
   default: vi.fn((selector) => {
     return selector({
       isEditMode: false
-    });
-  })
-}));
-
-vi.mock('@/core/facades/editModeStoreFacade', () => ({
-  default: vi.fn((selector) => {
-    return selector({
-      isEditMode: false,
-      setIsEditMode: mockSetIsEditMode,
-      createNewFlow: vi.fn()
     });
   })
 }));
@@ -145,7 +144,7 @@ describe('BodyLayout', () => {
     expect(flowFacade.setFlowData).toHaveBeenCalledWith(mockFlowData);
   });
 
-  it('編集モードで初期化された場合、setIsEditModeが呼ばれる', async () => {
+  it('編集モードで初期化された場合、startEditが呼ばれる', async () => {
     const mockFlowData: Flow = {
       title: 'テストフロー',
       quest: 'テストクエスト',
@@ -192,7 +191,7 @@ describe('BodyLayout', () => {
 
     renderWithI18n(<BodyLayout initialData={mockFlowData} initialMode="edit" />);
 
-    // flowFacadeのsetIsEditModeが呼ばれることを確認
-    expect(flowFacade.setIsEditMode).toHaveBeenCalledWith(true);
+    // editModeStoreFacadeのstartEditが呼ばれることを確認
+    expect(editModeStoreFacade.startEdit).toHaveBeenCalled();
   });
 });

@@ -1,54 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { CreateFlowButton } from './CreateFlowButton';
-import useEditModeStore from '@/core/stores/editModeStore';
-import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
-// モック
-vi.mock('@/core/stores/editModeStore', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mockFn: any = vi.fn((selector) => selector({
-    isEditMode: false,
-    createNewFlow: vi.fn()
-  }));
-  mockFn.getState = vi.fn().mockReturnValue({
-    isEditMode: false,
-    createNewFlow: vi.fn()
-  });
-  mockFn.subscribe = vi.fn();
-  mockFn.setState = vi.fn();
-  return {
-    default: mockFn,
-  };
-});
+// createNewFlow関数のモック
+vi.mock('@/core/facades/editModeStoreFacade', () => ({
+  createNewFlow: vi.fn()
+}));
 
-// useEditModeStoreFacadeのモック
-vi.mock('@/core/facades/editModeStoreFacade', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mockFn: any = vi.fn((selector) => selector({
-    isEditMode: false,
-    createNewFlow: vi.fn()
-  }));
-  return {
-    default: mockFn,
-  };
-});
+// 実際のモジュールをインポート
+import * as editModeStoreFacade from '@/core/facades/editModeStoreFacade';
 
 describe('CreateFlowButton', () => {
-  const mockCreateNewFlow = vi.fn();
   const mockOnClick = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // useEditModeStoreFacadeのモック実装を更新
-    (useEditModeStoreFacade as any).mockImplementation((selector) =>
-      selector({
-        isEditMode: false,
-        createNewFlow: mockCreateNewFlow
-      })
-    );
   });
 
   it('ボタンが正しくレンダリングされる', () => {
@@ -72,7 +39,7 @@ describe('CreateFlowButton', () => {
     const button = screen.getByTestId('create-flow-button');
     fireEvent.click(button);
 
-    expect(mockCreateNewFlow).toHaveBeenCalledTimes(1);
+    expect(editModeStoreFacade.createNewFlow).toHaveBeenCalledTimes(1);
 
     // ローディング状態になることを確認
     expect(button).toHaveTextContent('creating');
@@ -93,7 +60,7 @@ describe('CreateFlowButton', () => {
 
   it('エラー発生時にローディング状態が解除される', async () => {
     // エラーをスローするようにモックを設定
-    mockCreateNewFlow.mockImplementation(() => {
+    vi.mocked(editModeStoreFacade.createNewFlow).mockImplementation(() => {
       throw new Error('テストエラー');
     });
 

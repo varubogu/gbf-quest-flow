@@ -14,33 +14,38 @@ import { setFlowData } from '@/core/services/flowService';
  * このサービスは、編集モードの開始・終了・キャンセルなどの機能を提供します。
  */
 
+/**
+ * 編集モードの状態を取得する
+ * @returns 編集モードの状態
+ */
 export function getIsEditMode(): boolean {
   return useEditModeStore.getState().getIsEditMode();
+}
+
+/**
+ * 編集モードの状態を設定する
+ * @param isEdit 編集モードの状態
+ */
+export function setIsEditMode(isEdit: boolean): void {
+  useEditModeStore.getState().setIsEditMode(isEdit);
 }
 
 /**
  * 編集モードを開始する
  *
  * 現在のデータを保存し、編集モードをオンにします。
- * @param isEdit 編集モードにするかどうか
  */
-export function startEditMode(isEdit: boolean): void {
+export function startEdit(): void {
   try {
     const flowData = useFlowStore.getState().getFlowData();
 
-    if (isEdit && flowData) {
+    if (flowData) {
       // 編集モード開始時の処理
       const originalData = structuredClone(flowData);
       useFlowStore.setState({ originalData });
     }
 
-    if (!isEdit) {
-      // 編集モード終了時の処理
-      clearHistory();
-      useFlowStore.setState({ originalData: null });
-    }
-
-    useEditModeStore.setState({ isEditMode: isEdit });
+    useEditModeStore.getState().startEdit();
   } catch (error) {
     useErrorStore
       .getState()
@@ -57,12 +62,12 @@ export function startEditMode(isEdit: boolean): void {
  *
  * 編集内容を保存し、編集モードをオフにします。
  */
-export function finishEditMode(): void {
+export function finishEdit(): void {
   try {
     // 編集モード終了時の処理
     clearHistory();
     useFlowStore.setState({ originalData: null });
-    useEditModeStore.setState({ isEditMode: false });
+    useEditModeStore.getState().endEdit();
   } catch (error) {
     useErrorStore
       .getState()
@@ -79,26 +84,27 @@ export function finishEditMode(): void {
  *
  * 編集内容を破棄し、元のデータに戻します。
  */
-export function cancelEditMode(): void {
+export function cancelEdit(): void {
   try {
     const originalData = useFlowStore.getState().originalData;
     if (originalData) {
+      console.log('cancelEdit originalData');
       // 編集キャンセル時の処理
       const clonedData = structuredClone(originalData);
 
       // flowStoreを更新（flowService経由）
       setFlowData(clonedData);
 
-      // 編集モードをオフにする
+      // 編集前データを破棄
       useFlowStore.setState({ originalData: null });
-      useEditModeStore.setState({ isEditMode: false });
 
       // 履歴をクリア
       clearHistory();
 
-      // 履歴を戻る（popstateイベントが発火してデータが復元される）
-      history.back();
     }
+    useEditModeStore.getState().endEdit();
+    // 履歴を戻る（popstateイベントが発火してデータが復元される）
+    history.back();
   } catch (error) {
     useErrorStore
       .getState()
@@ -219,7 +225,7 @@ export function createNewFlow(): void {
     clearHistory();
 
     // 編集モードをオンにする
-    useEditModeStore.setState({ isEditMode: true });
+    useEditModeStore.getState().startEdit();
 
     // flowStoreの状態を更新（flowService経由）
     setFlowData(newData);

@@ -28,7 +28,7 @@ describe('EditModeStore', () => {
   describe('editStart', () => {
     it('編集モードを開始するとisEditModeがtrueになるべき', () => {
       // 実行
-      useEditModeStore.getState().editStart();
+      useEditModeStore.getState().startEdit();
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(true);
@@ -41,7 +41,7 @@ describe('EditModeStore', () => {
       useEditModeStore.setState({ isEditMode: true });
 
       // 実行
-      useEditModeStore.getState().editEnd();
+      useEditModeStore.getState().endEdit();
 
       // 検証
       expect(useEditModeStore.getState().isEditMode).toBe(false);

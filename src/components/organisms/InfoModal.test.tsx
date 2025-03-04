@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoModal } from './InfoModal';
-import useEditModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import useEditModeStore from '@/core/stores/editModeStore';
 import type { Flow } from '@/types/models';
 
 // モックの設定
@@ -88,15 +88,19 @@ vi.mock('@/core/facades/flowFacade', () => ({
   updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
 }));
 
-vi.mock('@/core/facades/editModeStoreFacade');
+// editModeStoreのモック
+vi.mock('@/core/stores/editModeStore', () => ({
+  __esModule: true,
+  default: vi.fn((selector) => selector({ isEditMode: false }))
+}));
 
 describe('InfoModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     currentFlowData = mockFlowData;
 
-    // 編集モードでない状態
-    (useEditModeStoreFacade as any).mockImplementation((selector) =>
+    // 編集モードでない状態をデフォルトに設定
+    (useEditModeStore as any).mockImplementation((selector) =>
       selector({ isEditMode: false })
     );
   });
@@ -157,7 +161,7 @@ describe('InfoModal', () => {
 
     it('編集モードで入力フィールドが表示されること', () => {
       // 編集モードの状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
+      (useEditModeStore as any).mockImplementation((selector) =>
         selector({ isEditMode: true })
       );
 
@@ -184,7 +188,7 @@ describe('InfoModal', () => {
 
     it('編集モードでフィールドを変更するとupdateFlowData関数が呼ばれること', () => {
       // 編集モードの状態
-      (useEditModeStoreFacade as any).mockImplementation((selector) =>
+      (useEditModeStore as any).mockImplementation((selector) =>
         selector({ isEditMode: true })
       );
 

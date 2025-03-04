@@ -17,16 +17,24 @@ const useEditModeStore = create<EditModeStore>((set, get) => ({
   getIsEditMode: (): boolean => get().isEditMode,
 
   /**
+   * 編集モードの状態を設定する
+   * @param isEdit 編集モードの状態
+   */
+  setIsEditMode: (isEdit: boolean): void => {
+    set({ isEditMode: isEdit });
+  },
+
+  /**
    * 編集モードを開始する
    */
-  editStart: (): void => {
+  startEdit: (): void => {
     set({ isEditMode: true });
   },
 
   /**
    * 編集モードを終了する
    */
-  editEnd: (): void => {
+  endEdit: (): void => {
     set({ isEditMode: false });
   },
 }));

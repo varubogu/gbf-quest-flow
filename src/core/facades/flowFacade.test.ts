@@ -103,7 +103,7 @@ describe('flowFacade', () => {
       it('editModeServiceのstartEditModeを呼び出す', () => {
         // モックの設定
         const startEditModeMock = vi.fn();
-        (editModeService.startEditMode as MockedFunction<typeof editModeService.startEditMode>) = startEditModeMock;
+        (editModeService.startEdit as MockedFunction<typeof editModeService.startEdit>) = startEditModeMock;
 
         // テスト実行
         setIsEditMode(true);
