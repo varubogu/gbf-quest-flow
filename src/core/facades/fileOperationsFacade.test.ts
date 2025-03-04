@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
+import { loadFlowFromFile, saveFlowToFile } from '@/core/facades/fileOperationsFacade';
 import * as fileService from '@/core/services/fileService';
 
 // fileServiceのモック
@@ -9,49 +9,69 @@ vi.mock('@/core/services/fileService', () => ({
 }));
 
 describe('fileOperationsFacade', () => {
-  let facade: FileOperationsFacade;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    facade = useFileOperationsFacade.getState();
   });
 
   describe('単体テスト', () => {
     describe('loadFlowFromFile', () => {
-      it('fileServiceのloadFlowFromFileを呼び出す', async () => {
-        await facade.loadFlowFromFile();
-        expect(fileService.loadFlowFromFile).toHaveBeenCalledTimes(1);
+      it('fileServiceのloadFlowFromFileを正しく呼び出す', async () => {
+        // モックの動作を設定
+        const mockLoadFlow = vi.mocked(fileService.loadFlowFromFile);
+        mockLoadFlow.mockResolvedValueOnce(undefined);
+
+        await loadFlowFromFile();
+
+        // モックが正しく呼び出されたことを確認
+        expect(mockLoadFlow).toHaveBeenCalledTimes(1);
+        expect(mockLoadFlow).toHaveBeenCalledWith();
       });
 
       it('エラーが発生した場合はそのエラーを伝播する', async () => {
         const error = new Error('テストエラー');
-        vi.mocked(fileService.loadFlowFromFile).mockRejectedValueOnce(error);
+        const mockLoadFlow = vi.mocked(fileService.loadFlowFromFile);
+        mockLoadFlow.mockRejectedValueOnce(error);
 
-        await expect(facade.loadFlowFromFile()).rejects.toThrow('テストエラー');
-        expect(fileService.loadFlowFromFile).toHaveBeenCalledTimes(1);
+        await expect(loadFlowFromFile()).rejects.toThrow('テストエラー');
+        expect(mockLoadFlow).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('saveFlowToFile', () => {
       it('fileServiceのsaveFlowToFileを呼び出す（ファイル名なし）', async () => {
-        await facade.saveFlowToFile();
-        expect(fileService.saveFlowToFile).toHaveBeenCalledTimes(1);
-        expect(fileService.saveFlowToFile).toHaveBeenCalledWith(undefined);
+        // モックの動作を設定
+        const mockSaveFlow = vi.mocked(fileService.saveFlowToFile);
+        mockSaveFlow.mockResolvedValueOnce(undefined);
+
+        await saveFlowToFile();
+
+        // モックが正しく呼び出されたことを確認
+        expect(mockSaveFlow).toHaveBeenCalledTimes(1);
+        expect(mockSaveFlow).toHaveBeenCalledWith(undefined);
       });
 
       it('fileServiceのsaveFlowToFileを呼び出す（ファイル名あり）', async () => {
         const fileName = 'test.json';
-        await facade.saveFlowToFile(fileName);
-        expect(fileService.saveFlowToFile).toHaveBeenCalledTimes(1);
-        expect(fileService.saveFlowToFile).toHaveBeenCalledWith(fileName);
+
+        // モックの動作を設定
+        const mockSaveFlow = vi.mocked(fileService.saveFlowToFile);
+        mockSaveFlow.mockResolvedValueOnce(undefined);
+
+        await saveFlowToFile(fileName);
+
+        // モックが正しく呼び出されたことを確認
+        expect(mockSaveFlow).toHaveBeenCalledTimes(1);
+        expect(mockSaveFlow).toHaveBeenCalledWith(fileName);
       });
 
       it('エラーが発生した場合はそのエラーを伝播する', async () => {
         const error = new Error('保存エラー');
-        vi.mocked(fileService.saveFlowToFile).mockRejectedValueOnce(error);
+        const mockSaveFlow = vi.mocked(fileService.saveFlowToFile);
+        mockSaveFlow.mockRejectedValueOnce(error);
 
-        await expect(facade.saveFlowToFile()).rejects.toThrow('保存エラー');
-        expect(fileService.saveFlowToFile).toHaveBeenCalledTimes(1);
+        await expect(saveFlowToFile()).rejects.toThrow('保存エラー');
+        expect(mockSaveFlow).toHaveBeenCalledTimes(1);
       });
     });
   });

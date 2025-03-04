@@ -87,9 +87,8 @@ vi.mock('@/core/facades/FileOperations', () => ({
 
 // FileOperationsFacadeのモック
 vi.mock('@/core/facades/fileOperationsFacade', () => ({
-  default: vi.fn(() => ({
-    loadFlowFromFile: vi.fn().mockResolvedValue(true),
-  })),
+  loadFlowFromFile: vi.fn().mockResolvedValue(true),
+  saveFlowToFile: vi.fn().mockResolvedValue(true),
 }));
 
 // flowStore

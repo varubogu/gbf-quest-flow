@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
-import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
+import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
 import { SettingsPanel } from './SettingsPanel';
@@ -39,7 +39,6 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   // 型アサーションを使用して型エラーを回避
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const originalData = useFlowStore((state: FlowStore) => state.originalData);
-  const loadFlowFromFile = useFileOperationsFacade((state: FileOperationsFacade) => state.loadFlowFromFile);
   const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   const { hasChanges } = useEditHistory(flowData);

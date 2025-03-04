@@ -1,25 +1,20 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent, act } from '@testing-library/react';
 import { LoadFlowButton } from './LoadFlowButton';
-import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // モック
+import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
+
 vi.mock('@/core/facades/fileOperationsFacade', () => ({
-  default: vi.fn(),
+  loadFlowFromFile: vi.fn(),
 }));
 
 describe('LoadFlowButton', () => {
-  const mockLoadFlowFromFile = vi.fn();
   const mockOnLoadComplete = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // useFileOperationsFacadeのモック実装
-    (useFileOperationsFacade as unknown as Mock).mockImplementation((selector: (_state: FileOperationsFacade) => Partial<FileOperationsFacade>) =>
-      selector({ loadFlowFromFile: mockLoadFlowFromFile } as unknown as FileOperationsFacade)
-    );
   });
 
   it('ボタンが正しくレンダリングされる', () => {
@@ -38,14 +33,15 @@ describe('LoadFlowButton', () => {
   });
 
   it('クリック時にファイル読み込み関数が呼ばれる', async () => {
-    mockLoadFlowFromFile.mockResolvedValue(undefined);
+    // モック関数の戻り値を設定
+    vi.mocked(loadFlowFromFile).mockResolvedValue(undefined);
 
     renderWithI18n(<LoadFlowButton onLoadComplete={mockOnLoadComplete} />);
 
     const button = screen.getByTestId('load-flow-button');
     fireEvent.click(button);
 
-    expect(mockLoadFlowFromFile).toHaveBeenCalledTimes(1);
+    expect(loadFlowFromFile).toHaveBeenCalledTimes(1);
 
     // ローディング状態になることを確認
     expect(button).toHaveTextContent('loadingFile');
@@ -71,7 +67,7 @@ describe('LoadFlowButton', () => {
   it('エラー発生時にローディング状態が解除される', async () => {
     // エラーをスローするようにモックを設定
     const testError = new Error('テストエラー');
-    mockLoadFlowFromFile.mockImplementation(() => {
+    vi.mocked(loadFlowFromFile).mockImplementation(() => {
       return Promise.reject(testError);
     });
 
@@ -87,7 +83,7 @@ describe('LoadFlowButton', () => {
       fireEvent.click(button);
       // Promiseの拒否を待つ
       try {
-        await mockLoadFlowFromFile();
+        await loadFlowFromFile();
       } catch {
         // エラーは期待通り
       }
