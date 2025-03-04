@@ -1,4 +1,4 @@
-import { useEffect, type JSX } from 'react';
+import { type JSX } from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
@@ -6,7 +6,6 @@ import useCursorStore from '@/core/stores/cursorStore';
 import type { SettingsStore } from '@/core/stores/settingsStore';
 import { setCurrentRow } from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
-import { undo, redo } from '@/core/facades/historyFacade';
 import type { CursorStore, FlowStore } from '@/types/flowStore.types';
 
 interface TableContainerProps {
@@ -22,29 +21,6 @@ export function TableContainer({
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const setFlowData = useFlowStore((state: FlowStore) => state.setFlowData);
   const settings = useSettingsStoreFacade((state: SettingsStore) => state.settings);
-
-  // キーボードイベントのハンドラを追加
-  useEffect(() => {
-    if (!isEditMode) return;
-
-    const handleKeyDown = (e: KeyboardEvent): void => {
-      // Cmd/Ctrl + Z
-      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        undo();
-      }
-      // Cmd/Ctrl + Shift + Z
-      else if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        redo();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return (): void => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isEditMode]);
 
   // flowDataが存在しない場合は何も表示しない
   if (!flowData) {

@@ -400,38 +400,4 @@ describe('TableContainer', () => {
       ]) as Action[]
     }));
   });
-
-  it('編集モードでCtrl+Zを押すとundoが呼ばれること', () => {
-    render(<TableContainer isEditMode={true} data={mockFlowData.flow} />);
-
-    // キーボードイベントのハンドラを取得
-    const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
-    const keydownHandler = addEventListenerSpy.mock.calls.find(call => call[0] === 'keydown')?.[1] as (_e: KeyboardEvent) => void;
-
-    // キーボードイベントを発火
-    if (keydownHandler) {
-      const event = new KeyboardEvent('keydown', { key: 'z', ctrlKey: true });
-      keydownHandler(event);
-
-      // undoが呼ばれたことを確認
-      expect(undo).toHaveBeenCalledTimes(1);
-    }
-  });
-
-  it('編集モードでCtrl+Shift+Zを押すとredoが呼ばれること', () => {
-    render(<TableContainer isEditMode={true} data={mockFlowData.flow} />);
-
-    // キーボードイベントのハンドラを取得
-    const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
-    const keydownHandler = addEventListenerSpy.mock.calls.find(call => call[0] === 'keydown')?.[1] as (_e: KeyboardEvent) => void;
-
-    // キーボードイベントを発火
-    if (keydownHandler) {
-      const event = new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, shiftKey: true });
-      keydownHandler(event);
-
-      // redoが呼ばれたことを確認
-      expect(redo).toHaveBeenCalledTimes(1);
-    }
-  });
 });
