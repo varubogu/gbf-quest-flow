@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts';
 import type { Flow } from '@/types/models';
+import type { EditModeStore, FlowStore } from '@/types/flowStore.types';
 
 // テスト用のモックデータ
 const mockFlowData: Flow = {
@@ -40,11 +41,11 @@ vi.mock('@/core/facades/flowEventService', () => ({
 
 // flowStoreとeditModeStoreのモック
 vi.mock('@/core/stores/flowStore', () => ({
-  default: vi.fn((selector) => selector({ flowData: mockFlowData })),
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: mockFlowData } as FlowStore)),
 }));
 
 vi.mock('@/core/stores/editModeStore', () => ({
-  default: vi.fn((selector) => selector({ isEditMode: true })),
+  default: vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) => selector({ isEditMode: true } as EditModeStore)),
 }));
 
 describe('useKeyboardShortcuts', () => {

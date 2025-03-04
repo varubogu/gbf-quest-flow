@@ -8,7 +8,7 @@ import { adjustOrganizationData } from '../services/organizationService';
  *
  * 注: 更新ロジックはflowServiceに移動し、このストアは状態の保持と基本的な読み取り機能のみを提供します
  */
-const useFlowStore = create<FlowStore>((set, get) => ({
+const useFlowStore = create<FlowStore>((set, get): FlowStore => ({
   /**
    * フローデータ
    */
@@ -23,7 +23,7 @@ const useFlowStore = create<FlowStore>((set, get) => ({
    * @returns フローデータ
    */
   getFlowData: (): Flow | null => get().flowData,
-  
+
   /**
    * アクションを取得する
    * @param index アクションのインデックス

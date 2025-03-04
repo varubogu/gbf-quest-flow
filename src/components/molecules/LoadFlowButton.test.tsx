@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { LoadFlowButton } from './LoadFlowButton';
-import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
+import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // モック
@@ -17,8 +17,8 @@ describe('LoadFlowButton', () => {
     vi.clearAllMocks();
 
     // useFileOperationsFacadeのモック実装
-    (useFileOperationsFacade as unknown as Mock).mockImplementation((selector) =>
-      selector({ loadFlowFromFile: mockLoadFlowFromFile })
+    (useFileOperationsFacade as unknown as Mock).mockImplementation((selector: (_state: FileOperationsFacade) => Partial<FileOperationsFacade>) =>
+      selector({ loadFlowFromFile: mockLoadFlowFromFile } as unknown as FileOperationsFacade)
     );
   });
 

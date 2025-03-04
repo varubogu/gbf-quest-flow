@@ -1,8 +1,8 @@
-import { create } from 'zustand';
+import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import type { AppSettings } from '@/types/settings';
 import useSettingsStore from '@/core/stores/settingsStore';
 
-interface SettingsStoreFacade {
+export interface SettingsStoreFacade {
   settings: AppSettings;
   updateSettings: (_newSettings: Partial<AppSettings>) => void;
 }
@@ -14,7 +14,7 @@ interface SettingsStoreFacade {
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
  */
-const useSettingsStoreFacade = create((_set, _get): SettingsStoreFacade => {
+const useSettingsStoreFacade: UseBoundStore<StoreApi<SettingsStoreFacade>> = create((_set, _get): SettingsStoreFacade => {
   // 初期状態を設定
   const initialState = {
     settings: useSettingsStore.getState().settings,
@@ -28,7 +28,7 @@ const useSettingsStoreFacade = create((_set, _get): SettingsStoreFacade => {
     updateSettings: (newSettings: Partial<AppSettings>): void => {
       useSettingsStore.getState().updateSettings(newSettings);
     },
-  };
+  } as SettingsStoreFacade;
 });
 
 export default useSettingsStoreFacade;

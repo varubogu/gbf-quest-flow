@@ -30,7 +30,7 @@ vi.mock('zustand', () => ({
   create: (fn: (
     _set: (_state: Record<string, unknown>) => void,
     _get: () => Record<string, unknown>
-  ) => Record<string, unknown>) => {
+  ) => Record<string, unknown>): Record<string, unknown> => {
     const store = fn(() => {}, () => ({}));
     return {
       getState: vi.fn(() => store),

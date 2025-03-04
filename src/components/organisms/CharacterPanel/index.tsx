@@ -9,6 +9,7 @@ import {
   tableHeaderCellBaseStyle,
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface CharacterPanelProps {
   isEditing: boolean;
@@ -16,7 +17,7 @@ interface CharacterPanelProps {
 
 export const CharacterPanel: React.FC<CharacterPanelProps> = memo(({ isEditing }) => {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const { handleMemberChange } = useCharacterForm();
 
   if (!flowData) return null;

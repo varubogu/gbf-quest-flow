@@ -12,14 +12,15 @@ import {
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
 import { updateFlowData } from '@/core/facades/flowFacade';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface SummonPanelProps {
   isEditing: boolean;
 }
 
-export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
+export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element | null {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   if (!flowData) return null;
 
@@ -130,7 +131,7 @@ export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
               />
             </tr>
             {/* その他の召喚石 */}
-            {flowData.organization.summon.other.map((summon, index) => (
+            {flowData.organization.summon.other.map((summon: Summon, index: number) => (
               <tr key={`other-${index}`}>
                 {index === 0 && (
                   <th
@@ -155,7 +156,7 @@ export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element {
               </tr>
             ))}
             {/* サブ召喚石 */}
-            {flowData.organization.summon.sub.map((summon, index) => (
+            {flowData.organization.summon.sub.map((summon: Summon, index: number) => (
               <tr key={`sub-${index}`}>
                 {index === 0 && (
                   <th

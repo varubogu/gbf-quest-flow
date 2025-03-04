@@ -13,6 +13,7 @@ import {
   tableWidthStyles,
 } from '@/components/atoms/TableStyles';
 import { updateFlowData } from '@/core/facades/flowFacade';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface WeaponPanelProps {
   isEditing: boolean;
@@ -20,7 +21,7 @@ interface WeaponPanelProps {
 
 export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   // メモ化された武器データを作成
   const weaponData = useMemo(() => {
@@ -30,7 +31,7 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
         name: flowData.organization.weapon.main.name,
         note: flowData.organization.weapon.main.note,
         additionalSkill: flowData.organization.weapon.main.additionalSkill,
-      },
+      } as Weapon,
       other: flowData.organization.weapon.other.map(weapon => ({
         name: weapon.name,
         note: weapon.note,
@@ -168,7 +169,7 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
           </tr>
 
           {/* その他の武器 */}
-          {weaponData.other.map((weapon, index) => (
+          {weaponData.other.map((weapon: Weapon, index: number) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
                 <th
@@ -200,7 +201,7 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
           ))}
 
           {/* 追加武器 */}
-          {weaponData.additional.map((weapon, index) => (
+          {weaponData.additional.map((weapon: Weapon, index: number) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
                 <th

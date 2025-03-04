@@ -5,6 +5,8 @@ import useFlowStore from '@/core/stores/flowStore';
 import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import { undo, redo } from '@/core/facades/historyFacade';
+import type { SettingsStore } from '@/core/stores/settingsStore';
+import type { CursorStore, FlowStore } from '@/types/flowStore.types';
 
 interface TableContainerProps {
   isEditMode?: boolean;
@@ -14,12 +16,12 @@ interface TableContainerProps {
 export function TableContainer({
   isEditMode = false,
   data,
-}: TableContainerProps): JSX.Element {
-  const currentRow = useCursorStoreFacade((state: any) => state.currentRow);
-  const setCurrentRow = useCursorStoreFacade((state: any) => state.setCurrentRow);
-  const flowData = useFlowStore((state: any) => state.flowData);
-  const setFlowData = useFlowStore((state: any) => state.setFlowData);
-  const settings = useSettingsStoreFacade((state: any) => state.settings);
+}: TableContainerProps): JSX.Element | null {
+  const currentRow = useCursorStoreFacade((state: CursorStore) => state.currentRow);
+  const setCurrentRow = useCursorStoreFacade((state: CursorStore) => state.setCurrentRow);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const setFlowData = useFlowStore((state: FlowStore) => state.setFlowData);
+  const settings = useSettingsStoreFacade((state: SettingsStore) => state.settings);
 
   // キーボードイベントのハンドラを追加
   useEffect(() => {
@@ -42,7 +44,7 @@ export function TableContainer({
     return (): void => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isEditMode, undo, redo]);
+  }, [isEditMode]);
 
   // flowDataが存在しない場合は何も表示しない
   if (!flowData) {

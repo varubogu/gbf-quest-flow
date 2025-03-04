@@ -5,10 +5,11 @@ import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
 import { formatErrorMessage } from '@/core/services/errorService';
+import type { FlowStore } from '@/types/flowStore.types';
 
 export function ErrorDialog(): React.ReactElement {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const { error, isErrorDialogOpen, clearError, executeRecoveryAction } = useErrorStore();
 
   const handleDownload = async (): Promise<void> => {

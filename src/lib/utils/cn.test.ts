@@ -11,6 +11,7 @@ describe('cn', () => {
   });
 
   it('条件付きクラス名を正しく処理する', () => {
+    // eslint-disable-next-line no-constant-binary-expression
     expect(cn('base', true && 'included', false && 'excluded')).toBe('base included');
   });
 

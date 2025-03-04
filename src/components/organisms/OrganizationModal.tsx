@@ -9,6 +9,7 @@ import useFlowStore from '@/core/stores/flowStore';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { useTranslation } from 'react-i18next';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 interface OrganizationModalProps {
   isOpen: boolean;
@@ -18,8 +19,8 @@ interface OrganizationModalProps {
 export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
-  const flowData = useFlowStore((state: any) => state.flowData);
-  const isEditMode = useEditModeStore((state: any) => state.isEditMode);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   if (!flowData) return null;
 

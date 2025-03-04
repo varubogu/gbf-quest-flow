@@ -85,7 +85,10 @@ describe('FileOperations', () => {
       expect(mockCreateElement).toHaveBeenCalledWith('a');
 
       // aタグのプロパティが設定されたことを確認
-      const aElement = mockCreateElement.mock.results[0].value;
+      const aElement = mockCreateElement.mock.results[0]?.value as HTMLAnchorElement;
+      if (!aElement) {
+        throw new Error('aタグが作成されていません');
+      }
       expect(aElement.href).toBe('blob:test-url');
       expect(aElement.download).toBe(filename);
 

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
-import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
+import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
 import { HamburgerMenu } from './HamburgerMenu';
 import { MenuItems } from './MenuItems';
 import { SettingsPanel } from './SettingsPanel';
@@ -22,6 +22,7 @@ import {
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import type { Flow, MenuView } from '@/types/types';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 interface Props {
   onSave: () => void;
@@ -36,10 +37,10 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
   const [menuView, setMenuView] = useState<MenuView>('menu');
 
   // 型アサーションを使用して型エラーを回避
-  const flowData = useFlowStore((state: any) => state.flowData);
-  const originalData = useFlowStore((state: any) => state.originalData);
-  const loadFlowFromFile = useFileOperationsFacade((state: any) => state.loadFlowFromFile);
-  const isEditMode = useEditModeStore((state: any) => state.isEditMode);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const originalData = useFlowStore((state: FlowStore) => state.originalData);
+  const loadFlowFromFile = useFileOperationsFacade((state: FileOperationsFacade) => state.loadFlowFromFile);
+  const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   const { hasChanges } = useEditHistory(flowData);
 

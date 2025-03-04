@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useFileOperationsFacade from './fileOperationsFacade';
+import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
 import * as fileService from '@/core/services/fileService';
 
 // fileServiceのモック
@@ -9,7 +9,7 @@ vi.mock('@/core/services/fileService', () => ({
 }));
 
 describe('fileOperationsFacade', () => {
-  let facade: ReturnType<typeof useFileOperationsFacade.getState>;
+  let facade: FileOperationsFacade;
 
   beforeEach(() => {
     vi.clearAllMocks();

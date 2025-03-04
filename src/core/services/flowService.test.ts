@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { Mock } from 'vitest';
-import type { Flow } from '@/types/models';
+import type { Flow, Organization } from '@/types/models';
 import {
   handleDataUpdate,
   mergeActionWithUpdates,
@@ -79,7 +79,7 @@ describe('flowService', () => {
           note: 'テスト備考',
           always: 'テスト常時効果',
           flow: [],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -109,7 +109,7 @@ describe('flowService', () => {
           note: 'テスト備考',
           always: 'テスト常時効果',
           flow: [],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -181,7 +181,7 @@ describe('flowService', () => {
             { hp: '100%', action: 'アクション1', note: 'ノート1', prediction: '', charge: '', guard: '' },
             { hp: '80%', action: 'アクション2', note: 'ノート2', prediction: '', charge: '', guard: '' }
           ],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -238,7 +238,7 @@ describe('flowService', () => {
           note: 'テスト備考',
           always: 'テスト常時効果',
           flow: [],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -265,7 +265,7 @@ describe('flowService', () => {
           note: 'テスト備考',
           always: 'テスト常時効果',
           flow: [],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -290,7 +290,7 @@ describe('flowService', () => {
           note: 'テスト備考',
           always: 'テスト常時効果',
           flow: [],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],
@@ -382,7 +382,7 @@ describe('flowService', () => {
               note: 'テストノート'
             }
           ],
-          organization: {} as any,
+          organization: {} as Organization,
           weapons: [],
           jobs: [],
           summons: [],

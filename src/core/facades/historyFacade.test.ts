@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as historyFacade from './historyFacade';
 import * as historyService from '@/core/services/historyService';
-import type { Flow, HistoryState } from '@/types/models';
+import type { Flow, HistoryState, Organization } from '@/types/models';
 
 // モックの設定
 vi.mock('@/core/services/historyService', () => {
@@ -23,7 +23,7 @@ describe('historyFacade', () => {
     description: 'テスト説明',
     updateDate: '2023-01-01',
     note: 'テストノート',
-    organization: {} as any, // テスト用に型だけ合わせる
+    organization: {} as Organization,
     always: 'テスト常時効果',
     flow: [
       {

@@ -2,8 +2,9 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoModal } from './InfoModal';
 import useEditModeStore from '@/core/stores/editModeStore';
-import type { Flow } from '@/types/models';
+import type { Flow, Organization } from '@/types/models';
 import type { JSX } from 'react';
+import type { EditModeStore, FlowStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -26,7 +27,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@headlessui/react', () => {
-  const Dialog = ({ children, open, _onClose }: any): JSX.Element | null => {
+  const Dialog = ({ children, open, _onClose }: { children: React.ReactNode; open: boolean; _onClose: () => void }): JSX.Element | null => {
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -57,7 +58,7 @@ vi.mock('@headlessui/react', () => {
 });
 
 vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
-  useAutoResizeTextArea: () => ({ current: null }),
+  useAutoResizeTextArea: (): { current: null } => ({ current: null }),
 }));
 
 // テスト用のモックデータ
@@ -69,7 +70,7 @@ const mockFlowData: Flow = {
   updateDate: '2023-01-01T12:00',
   movie: 'https://example.com/video',
   note: 'テストメモ\n複数行あり',
-  organization: {} as any,
+  organization: {} as Organization,
   always: 'テスト常時効果',
   flow: [],
 };
@@ -80,7 +81,7 @@ const mockOnClose = vi.fn();
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
 }));
 
 // flowFacadeのモック
@@ -92,7 +93,7 @@ vi.mock('@/core/facades/flowFacade', () => ({
 // editModeStoreのモック
 vi.mock('@/core/stores/editModeStore', () => ({
   __esModule: true,
-  default: vi.fn((selector) => selector({ isEditMode: false }))
+  default: vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) => selector({ isEditMode: false } as EditModeStore))
 }));
 
 describe('InfoModal', () => {
@@ -101,8 +102,8 @@ describe('InfoModal', () => {
     currentFlowData = mockFlowData;
 
     // 編集モードでない状態をデフォルトに設定
-    (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
-      selector({ isEditMode: false })
+    (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) =>
+      selector({ isEditMode: false } as EditModeStore)
     );
   });
 
@@ -162,8 +163,8 @@ describe('InfoModal', () => {
 
     it('編集モードで入力フィールドが表示されること', () => {
       // 編集モードの状態
-      (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
-        selector({ isEditMode: true })
+      (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) =>
+        selector({ isEditMode: true } as EditModeStore)
       );
 
       render(<InfoModal isOpen={true} onClose={mockOnClose} />);
@@ -189,8 +190,8 @@ describe('InfoModal', () => {
 
     it('編集モードでフィールドを変更するとupdateFlowData関数が呼ばれること', () => {
       // 編集モードの状態
-      (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
-        selector({ isEditMode: true })
+      (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) =>
+        selector({ isEditMode: true } as EditModeStore)
       );
 
       render(<InfoModal isOpen={true} onClose={mockOnClose} />);

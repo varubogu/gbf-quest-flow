@@ -1,17 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type JSX } from 'react';
 import type { WeaponSkillTotal } from '@/types/types';
-import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import { SkillTable } from '@/components/molecules/SkillTable';
 import { updateFlowData } from '@/core/facades/flowFacade';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface SkillTotalPanelProps {
   isEditing: boolean;
 }
 
-export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Element {
-  const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Element | null {
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   // メモ化されたスキル総合値データを作成
   const skillTotalData = useMemo(() => {

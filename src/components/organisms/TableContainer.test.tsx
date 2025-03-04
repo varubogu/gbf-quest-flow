@@ -6,6 +6,9 @@ import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
 import type { Flow } from '@/types/models';
 import type { Action } from '@/types/types';
+import type { CursorStore, FlowStore } from '@/types/flowStore.types';
+import type { SettingsStore } from '@/core/stores/settingsStore';
+import type { JSX } from 'react';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -32,7 +35,19 @@ vi.mock('./Table', () => ({
     onDeleteRow,
     onAddRow,
     onPasteRows,
-  }) => (
+  }: {
+    data: Action[];
+    currentRow: number;
+    buttonPosition: string;
+    onMoveUp: () => void;
+    onMoveDown: () => void;
+    onRowSelect: (_row: number) => void;
+    isEditMode: boolean;
+    onCellEdit: (_row: number, _field: keyof Action, _value: string) => void;
+    onDeleteRow: (_row: number) => void;
+    onAddRow: (_row: number) => void;
+    onPasteRows: (_row: number, _rows: Partial<Action>[]) => void;
+  }): JSX.Element => (
     <div data-testid="table">
       <div data-testid="table-data">
         {data.map((row: Action, index: number) => (
@@ -147,21 +162,21 @@ describe('TableContainer', () => {
     vi.clearAllMocks();
 
     // useFlowStoreのモック
-    (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
-      const state = { flowData: mockFlowData, setFlowData: mockSetFlowData };
-      return selector(state);
+    (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
+      const state = { flowData: mockFlowData, setFlowData: mockSetFlowData } as Partial<FlowStore>;
+      return selector(state as FlowStore);
     });
 
     // useCursorStoreFacadeのモック
-    (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
-      const state = { currentRow: mockCurrentRow, setCurrentRow: mockSetCurrentRow };
-      return selector(state);
+    (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: (_state: CursorStore) => Partial<CursorStore>) => {
+      const state = { currentRow: mockCurrentRow, setCurrentRow: mockSetCurrentRow } as Partial<CursorStore>;
+      return selector(state as CursorStore);
     });
 
     // useSettingsStoreFacadeのモック
-    (useSettingsStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
-      const state = { settings: mockSettings };
-      return selector(state);
+    (useSettingsStoreFacade as unknown as Mock).mockImplementation((selector: (_state: SettingsStore) => Partial<SettingsStore>) => {
+      const state = { settings: mockSettings } as Partial<SettingsStore>;
+      return selector(state as SettingsStore);
     });
 
     // document.addEventListenerのモック
@@ -219,9 +234,9 @@ describe('TableContainer', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
-        const state = { flowData: null, setFlowData: mockSetFlowData };
-        return selector(state);
+      (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
+        const state = { flowData: null, setFlowData: mockSetFlowData } as Partial<FlowStore>;
+        return selector(state as FlowStore);
       });
 
       const { container } = render(<TableContainer />);
@@ -246,9 +261,9 @@ describe('TableContainer', () => {
 
     it('上へ移動ボタンをクリックするとhandleMoveUpが呼ばれること', () => {
       // currentRowを1に設定
-      (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
-        const state = { currentRow: 1, setCurrentRow: mockSetCurrentRow };
-        return selector(state);
+      (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: (_state: CursorStore) => Partial<CursorStore>) => {
+        const state = { currentRow: 1, setCurrentRow: mockSetCurrentRow } as Partial<CursorStore>;
+        return selector(state as CursorStore);
       });
 
       render(<TableContainer />);

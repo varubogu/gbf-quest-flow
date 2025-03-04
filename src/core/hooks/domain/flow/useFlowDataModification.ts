@@ -50,7 +50,7 @@ export const useFlowDataModification = ({
         handleError(error, 'タイトル更新中');
       }
     },
-    [flowData, updateFlowData, recordChange]
+    [flowData, recordChange]
   );
 
   const handleAlwaysChange = useCallback(
@@ -69,7 +69,7 @@ export const useFlowDataModification = ({
         handleError(error, '常時実行項目更新中');
       }
     },
-    [flowData, updateFlowData, recordChange]
+    [flowData, recordChange]
   );
 
   // 変更破棄の確認

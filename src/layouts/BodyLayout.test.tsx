@@ -5,6 +5,7 @@ import { renderWithI18n } from '@/test/i18n-test-utils';
 import type { Flow } from '@/types/models';
 import * as flowFacade from '@/core/facades/flowFacade';
 import * as editModeStoreFacade from '@/core/facades/editModeStoreFacade';
+import type { EditModeStore, FlowStore } from '@/types/flowStore.types';
 
 // vi.mockの呼び出しはファイルの先頭に巻き上げられるため、
 // 変数宣言の前に配置する必要があります
@@ -29,13 +30,20 @@ vi.mock('@/core/facades/editModeStoreFacade', () => ({
 
 // 他のモックの設定
 vi.mock('@/core/hooks/domain/flow/useUrlManagement', () => ({
-  useUrlManagement: () => ({
+  useUrlManagement: (): {
+    handleUrlChange: () => void;
+  } => ({
     handleUrlChange: vi.fn()
   })
 }));
 
 vi.mock('@/core/hooks/domain/flow/useEditHistory', () => ({
-  useEditHistory: () => ({
+  useEditHistory: (): {
+    recordChange: () => void;
+    clearHistory: () => void;
+    hasChanges: boolean;
+    editHistory: unknown[];
+  } => ({
     recordChange: vi.fn(),
     clearHistory: vi.fn(),
     hasChanges: false,
@@ -48,7 +56,10 @@ vi.mock('@/core/hooks/domain/flow/useHistoryManagement', () => ({
 }));
 
 vi.mock('@/core/hooks/domain/flow/useFlowDataModification', () => ({
-  useFlowDataModification: () => ({
+  useFlowDataModification: (): {
+    handleTitleChange: () => void;
+    handleAlwaysChange: () => void;
+  } => ({
     handleTitleChange: vi.fn(),
     handleAlwaysChange: vi.fn()
   })
@@ -65,18 +76,25 @@ vi.mock('@/core/facades/flowEventService', () => ({
 }));
 
 vi.mock('@/core/stores/flowStore', () => ({
-  default: vi.fn((selector) => {
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => {
     return selector({
       flowData: null,
-      setFlowData: vi.fn()
+      setFlowData: vi.fn(),
+      originalData: null,
+      getFlowData: vi.fn(),
+      getActionById: vi.fn(),
     });
   })
 }));
 
 vi.mock('@/core/stores/editModeStore', () => ({
-  default: vi.fn((selector) => {
+  default: vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
     return selector({
-      isEditMode: false
+      isEditMode: false,
+      getIsEditMode: vi.fn(),
+      setIsEditMode: vi.fn(),
+      startEdit: vi.fn(),
+      endEdit: vi.fn(),
     });
   })
 }));

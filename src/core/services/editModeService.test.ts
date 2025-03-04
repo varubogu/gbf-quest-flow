@@ -177,7 +177,7 @@ describe('editModeService', () => {
         // 検証
         expect(getFlowDataMock).toHaveBeenCalled();
         expect(setStateMock).toHaveBeenCalledWith({
-          originalData: expect.objectContaining(mockFlow)
+          originalData: expect.objectContaining<Flow>(mockFlow) as Flow
         });
         expect(startEditMock).toHaveBeenCalled();
       });

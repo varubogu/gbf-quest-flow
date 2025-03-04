@@ -42,7 +42,7 @@ export const useCharacterForm = (): UseCharacterFormResult => {
         },
       });
     },
-    [flowData, updateFlowData]
+    [flowData]
   );
 
   return {

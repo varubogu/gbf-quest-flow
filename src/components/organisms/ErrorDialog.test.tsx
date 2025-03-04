@@ -27,7 +27,6 @@ vi.mock('react-i18next', () => ({
 
 // @headlessui/reactのモックを修正
 vi.mock('@headlessui/react', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const Dialog = ({
      children,
      open,

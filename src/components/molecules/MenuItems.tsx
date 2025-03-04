@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { JSX } from 'react';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 export interface MenuItem {
   id: string;
@@ -29,8 +30,8 @@ interface MenuItemsProps {
 
 export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
-  const isEditMode = useEditModeStore((state: any) => state.isEditMode);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   const menuItems: MenuItem[] = [
     { id: 'new', label: t('newData') as string, icon: FileText },

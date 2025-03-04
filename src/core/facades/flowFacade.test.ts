@@ -4,7 +4,7 @@ import { setFlowData, updateFlowData, updateAction, setIsEditMode, createNewFlow
 import * as editModeService from '@/core/services/editModeService';
 import * as fileService from '@/core/services/fileService';
 import * as flowService from '@/core/services/flowService';
-import type { Flow } from '@/types/models';
+import type { Flow, Organization } from '@/types/types';
 
 vi.mock('@/core/services/editModeService', () => {
   return {
@@ -35,7 +35,7 @@ describe('flowFacade', () => {
     description: 'テスト説明',
     updateDate: '2023-01-01',
     note: 'テストノート',
-    organization: {} as any, // テスト用に型だけ合わせる
+    organization: {} as Organization, // テスト用に型だけ合わせる
     always: 'テスト常時効果',
     flow: [
       {

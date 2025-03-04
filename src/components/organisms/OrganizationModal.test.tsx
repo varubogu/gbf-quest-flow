@@ -5,11 +5,12 @@ import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { Flow } from '@/types/models';
 import type { JSX } from 'react';
+import type { EditModeStore, FlowStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         jobAndCharacters: 'ジョブ・キャラ',
         weapons: '武器',
@@ -208,14 +209,14 @@ describe('OrganizationModal', () => {
     vi.clearAllMocks();
 
     // useFlowStoreのモック
-    (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
-      const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData };
-      return selector(state);
+    (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
+      const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData } as Partial<FlowStore>;
+      return selector(state as FlowStore);
     });
 
     // useEditModeStoreのモック
-    (useEditModeStore as unknown as Mock).mockImplementation((selector: Function) => {
-      return selector({ isEditMode: false });
+    (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
+      return selector({ isEditMode: false } as EditModeStore);
     });
   });
 
@@ -262,9 +263,9 @@ describe('OrganizationModal', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
-        const state = { flowData: null, updateFlowData: mockUpdateFlowData };
-        return selector(state);
+      (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
+        const state = { flowData: null, updateFlowData: mockUpdateFlowData } as Partial<FlowStore>;
+        return selector(state as FlowStore);
       });
 
       const { container } = render(<OrganizationModal isOpen={true} onClose={mockOnClose} />);
@@ -285,8 +286,8 @@ describe('OrganizationModal', () => {
 
     it('編集モードでは各パネルにisEditing=trueが渡されること', () => {
       // 編集モードをtrueに設定
-      (useEditModeStore as unknown as Mock).mockImplementation((selector: Function) => {
-        return selector({ isEditMode: true });
+      (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
+        return selector({ isEditMode: true } as EditModeStore);
       });
 
       render(<OrganizationModal isOpen={true} onClose={mockOnClose} />);
@@ -305,8 +306,8 @@ describe('OrganizationModal', () => {
 
     it('編集モードで動画URLを変更するとupdateFlowData関数が呼ばれること', () => {
       // 編集モードをtrueに設定
-      (useEditModeStore as unknown as Mock).mockImplementation((selector: Function) => {
-        return selector({ isEditMode: true });
+      (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
+        return selector({ isEditMode: true } as EditModeStore);
       });
 
       render(<OrganizationModal isOpen={true} onClose={mockOnClose} />);

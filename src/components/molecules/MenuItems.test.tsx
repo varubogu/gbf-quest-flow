@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MenuItems } from './MenuItems';
 import type { JSX } from 'react';
 import type { Flow } from '@/types/types';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -30,11 +31,11 @@ let mockFlowData: Flow | null = null;
 let mockIsEditMode = false;
 
 vi.mock('@/core/stores/flowStore', () => ({
-  default: (selector) => selector({ flowData: mockFlowData }),
+  default: (selector: (_state: FlowStore) => Partial<FlowStore>): Partial<FlowStore> => selector({ flowData: mockFlowData } as FlowStore),
 }));
 
 vi.mock('@/core/stores/editModeStore', () => ({
-  default: (selector) => selector({ isEditMode: mockIsEditMode }),
+  default: (selector: (_state: EditModeStore) => Partial<EditModeStore>): Partial<EditModeStore> => selector({ isEditMode: mockIsEditMode } as EditModeStore),
 }));
 
 // Lucide-reactのアイコンコンポーネントをモック
@@ -106,8 +107,42 @@ describe('MenuItems', () => {
 
   it('flowDataが存在する場合、追加のメニュー項目が表示されること', () => {
     // flowDataを設定
-    mockFlowData = { id: '1', name: 'Test Flow' };
-
+    mockFlowData = {
+      title: 'Test Flow',
+      quest: 'Test Quest',
+      author: 'Test Author',
+      description: 'Test Description',
+      updateDate: '2024-01-01',
+      note: 'Test Note',
+      organization: {
+        job: {
+          name: 'Test Job',
+          note: 'Test Job Note',
+          equipment: { name: 'Test Equipment', note: 'Test Equipment Note' },
+          abilities: [],
+        },
+        member: { front: [], back: [] },
+        weapon: {
+          main: { name: 'Test Weapon', note: 'Test Weapon Note', additionalSkill: 'Test Additional Skill' },
+          other: [],
+          additional: [],
+        },
+        weaponEffects: { taRate: 'Test TA Rate', hp: 'Test HP', defense: 'Test Defense' },
+        summon: {
+          main: { name: 'Test Summon', note: 'Test Summon Note' },
+          friend: { name: 'Test Friend', note: 'Test Friend Note' },
+          other: [],
+          sub: [],
+        },
+        totalEffects: {
+          taRate: 'Test TA Rate',
+          hp: 'Test HP',
+          defense: 'Test Defense',
+        },
+      },
+      always: 'Test Always',
+      flow: [],
+    };
     render(<MenuItems onItemClick={onItemClickMock} />);
 
     // flowDataが存在する場合の追加メニュー項目が表示されていることを確認
@@ -120,7 +155,42 @@ describe('MenuItems', () => {
 
   it('編集モードの場合、メニュー項目のテキストとアイコンが変更されること', () => {
     // flowDataとisEditModeを設定
-    mockFlowData = { id: '1', name: 'Test Flow' };
+    mockFlowData = {
+      title: 'Test Flow',
+      quest: 'Test Quest',
+      author: 'Test Author',
+      description: 'Test Description',
+      updateDate: '2024-01-01',
+      note: 'Test Note',
+      organization: {
+        job: {
+          name: 'Test Job',
+          note: 'Test Job Note',
+          equipment: { name: 'Test Equipment', note: 'Test Equipment Note' },
+          abilities: [],
+        },
+        member: { front: [], back: [] },
+        weapon: {
+          main: { name: 'Test Weapon', note: 'Test Weapon Note', additionalSkill: 'Test Additional Skill' },
+          other: [],
+          additional: [],
+        },
+        weaponEffects: { taRate: 'Test TA Rate', hp: 'Test HP', defense: 'Test Defense' },
+        summon: {
+          main: { name: 'Test Summon', note: 'Test Summon Note' },
+          friend: { name: 'Test Friend', note: 'Test Friend Note' },
+          other: [],
+          sub: [],
+        },
+        totalEffects: {
+          taRate: 'Test TA Rate',
+          hp: 'Test HP',
+          defense: 'Test Defense',
+        },
+      },
+      always: 'Test Always',
+      flow: [],
+    };
     mockIsEditMode = true;
 
     render(<MenuItems onItemClick={onItemClickMock} />);

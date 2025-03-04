@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import { SummonForm } from './SummonForm';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -10,7 +11,7 @@ interface SummonPanelProps {
 
 export const SummonPanel = memo(({ isEditing }: SummonPanelProps) => {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   if (!flowData) return null;
 

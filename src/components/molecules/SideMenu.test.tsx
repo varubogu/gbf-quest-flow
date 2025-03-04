@@ -3,6 +3,7 @@ import { SideMenu } from './SideMenu';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Flow } from '@/types/types';
 import { handleNewFlow } from '@/core/facades/flowEventService';
+import type { EditModeStore } from '@/types/flowStore.types';
 
 // FlowStoreの型定義
 interface FlowStore {
@@ -101,9 +102,8 @@ vi.mock('@/core/stores/flowStore', () => ({
 
 // EditModeStoreのモック
 vi.mock('@/core/stores/editModeStore', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mockFn: any = vi.fn((selector) => selector({ isEditMode: false }));
-  mockFn.getState = vi.fn().mockReturnValue({ isEditMode: false });
+  const mockFn = vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) => selector({ isEditMode: false } as EditModeStore));
+  mockFn.getState = vi.fn().mockReturnValue({ isEditMode: false } as EditModeStore);
   mockFn.subscribe = vi.fn();
   return {
     default: mockFn,
@@ -129,7 +129,9 @@ vi.mock('@/core/hooks/domain/flow/useFlowDataModification', () => ({
 
 // useEditHistoryのモック
 vi.mock('@/core/hooks/domain/flow/useEditHistory', () => ({
-  useEditHistory: () => ({
+  useEditHistory: (): {
+    hasChanges: boolean;
+  } => ({
     hasChanges: false,
   }),
 }));

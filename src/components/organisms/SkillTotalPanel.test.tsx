@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { SkillTotalPanel } from './SkillTotalPanel';
 import type { Flow } from '@/types/models';
 import type { WeaponSkillTotal } from '@/types/types';
+import type { FlowStore } from '@/types/flowStore.types';
+import type { JSX } from 'react';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -18,7 +20,19 @@ vi.mock('react-i18next', () => ({
 
 // SkillTableコンポーネントのモック
 vi.mock('@/components/molecules/SkillTable', () => ({
-  SkillTable: ({ id, isEditing, titleKey, values, onChange }: any) => (
+  SkillTable: (
+    { id,
+      isEditing,
+      titleKey,
+      values,
+      onChange,
+    }: {
+      id: string,
+      isEditing: boolean,
+      titleKey: string,
+      values: Record<string, string>,
+      onChange: (_key: string, _value: string) => void
+    }): JSX.Element => (
     <div data-testid="skill-table" id={id}>
       <div data-testid="skill-table-title">{titleKey}</div>
       <div data-testid="skill-table-editing">{isEditing ? 'true' : 'false'}</div>
@@ -83,7 +97,7 @@ const mockFlowData: Flow = {
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
 }));
 
 // flowFacadeのモック

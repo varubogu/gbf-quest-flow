@@ -1,5 +1,5 @@
 import React, { type JSX, useState } from 'react';
-import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
+import useFileOperationsFacade, { type FileOperationsFacade } from '@/core/facades/fileOperationsFacade';
 import { useTranslation } from 'react-i18next';
 
 interface LoadFlowButtonProps {
@@ -13,7 +13,7 @@ export const LoadFlowButton: React.FC<LoadFlowButtonProps> = ({
 }): JSX.Element => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const loadFlowFromFile = useFileOperationsFacade((state) => state.loadFlowFromFile);
+  const loadFlowFromFile = useFileOperationsFacade((state: FileOperationsFacade) => state.loadFlowFromFile);
 
   const handleClick = async (): Promise<void> => {
     try {

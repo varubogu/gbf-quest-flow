@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { JobPanel } from './JobPanel';
 import type { Flow } from '@/types/models';
 import type { Job, JobAbility, JobEquipment } from '@/types/types';
+import type { FlowStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -75,7 +76,7 @@ const mockFlowData: Flow = {
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
 }));
 
 // flowFacadeのモック

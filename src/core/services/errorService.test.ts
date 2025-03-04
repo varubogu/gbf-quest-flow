@@ -199,14 +199,14 @@ describe('errorService', () => {
       if (calls && calls.length > 0) {
         const firstCall = calls[0];
         if (firstCall && firstCall.length > 0) {
-          const firstArg = firstCall[0];
+          const firstArg = firstCall[0] as string;
           if (typeof firstArg === 'string') {
             expect(firstArg).toContain('[validation]');
             expect(firstArg).toContain('テストエラー');
           }
 
           if (firstCall.length > 1) {
-            const secondArg = firstCall[1];
+            const secondArg = firstCall[1] as AppError;
             expect(secondArg).toEqual({
               severity: error.severity,
               details: error.details,

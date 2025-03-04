@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { WeaponPanel } from './index';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import type { Flow } from '@/types/types';
+import type { FlowStore } from '@/types/flowStore.types';
 
 interface UseTranslationResult {
   t: (_key: string) => string;
@@ -94,7 +95,7 @@ const mockFlowData: Flow = {
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector) => selector({ flowData: currentFlowData }))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
 }));
 
 

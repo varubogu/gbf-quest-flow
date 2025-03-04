@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import useCursorStore from '@/core/stores/cursorStore';
 
 interface CursorStoreFacade {
@@ -14,7 +14,7 @@ interface CursorStoreFacade {
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
  */
-const useCursorStoreFacade = create((_set, _get): CursorStoreFacade => {
+const useCursorStoreFacade: UseBoundStore<StoreApi<CursorStoreFacade>> = create((_set, _get): CursorStoreFacade => {
   // 初期状態を設定
   const initialState = {
     currentRow: useCursorStore.getState().currentRow,

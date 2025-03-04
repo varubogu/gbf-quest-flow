@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import type { Flow } from '@/types/models';
+import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -15,8 +16,8 @@ interface InfoModalProps {
 
 export function InfoModal({ isOpen, onClose }: InfoModalProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData: Flow = useFlowStore((state: any) => state.flowData);
-  const isEditMode = useEditModeStore((state: any) => state.isEditMode);
+  const flowData: Flow | null = useFlowStore((state: FlowStore) => state.flowData);
+  const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   // テキストエリアのref
   const descriptionRef = useAutoResizeTextArea(flowData?.description || '');

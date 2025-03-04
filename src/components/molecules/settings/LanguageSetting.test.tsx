@@ -1,18 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageSetting } from './LanguageSetting';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SettingsStoreFacade } from '@/core/facades/settingsStoreFacade';
 
 // i18nextのモック
 vi.mock('i18next', () => ({
   default: {
-    use: () => ({
-      use: () => ({
-        init: vi.fn(),
-      }),
+    use: (): {
+      init: () => void;
+    } => ({
+      init: vi.fn(),
     }),
     language: 'ja',
     changeLanguage: vi.fn(),
-    t: (key: string) => key,
+    t: (key: string): string => key,
     exists: vi.fn(() => true),
     options: {
       fallbackLng: ['en'],
@@ -52,29 +53,15 @@ const mockUseSettingsStore = vi.fn().mockReturnValue({
   updateSettings: mockUpdateSettings,
 });
 
-// 英語設定のモック
-const mockUseSettingsStoreEnglish = vi.fn().mockReturnValue({
-  settings: {
-    language: 'English',
-  },
-  updateSettings: mockUpdateSettings,
-});
-
-interface UseSettingsStoreResult {
-  settings: {
-    language: string;
-  };
-  updateSettings: (_settings: { language: string }) => void;
-}
 
 // settingsStoreのモック
 vi.mock('@/core/stores/settingsStore', () => ({
-  default: () => mockUseSettingsStore(),
+  default: (): SettingsStoreFacade => mockUseSettingsStore(),
 }));
 
 // settingsStoreFacadeのモック
 vi.mock('@/core/facades/settingsStoreFacade', () => ({
-  default: () => mockUseSettingsStore(),
+  default: (): SettingsStoreFacade => mockUseSettingsStore(),
 }));
 
 describe('LanguageSetting', () => {

@@ -61,6 +61,7 @@ describe('NotificationBar', () => {
   });
 
   it('コンポーネントがアンマウントされるとタイマーがクリアされること', () => {
+    // eslint-disable-next-line no-undef
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
     const { unmount } = render(<NotificationBar message="test.message" />);
 
