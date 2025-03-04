@@ -209,11 +209,20 @@ const config = [
     },
     rules: {
       // src/core/service -> src/core/facadeを参照禁止（依存関係が逆転している）
+      // src/core/servicesから/src/core/hooks, src/componentsを参照禁止（依存関係が逆転している）
       'import/no-restricted-paths': ['warn', {
         zones: [
           {
             target: '**/src/core/services/**/*',
             from: '**/src/core/facades/**/*'
+          },
+          {
+            target: '**/src/core/services/**/*',
+            from: '**/src/core/hooks/**/*'
+          },
+          {
+            target: '**/src/core/services/**/*',
+            from: '**/src/components/**/*'
           }
         ]
       }]
@@ -265,6 +274,35 @@ const config = [
           {
             target: '**/src/core/hooks/**/*',
             from: '**/src/core/services/**/*'
+          }
+        ]
+      }]
+    }
+  },
+  // src/core/storesからsrc/core/service, src/core/facades, src/core/hooks, src/componentsを参照禁止（依存関係が逆転している）
+  {
+    files: ['**/src/core/stores/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      'import/no-restricted-paths': ['warn', {
+        zones: [
+          {
+            target: '**/src/core/stores/**/*',
+            from: '**/src/core/services/**/*'
+          },
+          {
+            target: '**/src/core/stores/**/*',
+            from: '**/src/core/facades/**/*'
+          },
+          {
+            target: '**/src/core/stores/**/*',
+            from: '**/src/core/hooks/**/*'
+          },
+          {
+            target: '**/src/core/stores/**/*',
+            from: '**/src/components/**/*'
           }
         ]
       }]
