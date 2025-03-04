@@ -4,6 +4,7 @@ import tseslintParser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import astroPlugin from 'eslint-plugin-astro';
+import importPlugin from 'eslint-plugin-import';
 
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
@@ -58,6 +59,7 @@ const config = [
     plugins: {
       react: /** @type {import('eslint-plugin-react').Plugin} */ (reactPlugin),
       'react-hooks': /** @type {import('eslint').ESLint.Plugin} */ (reactHooksPlugin),
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
     },
     rules: {
       'react/react-in-jsx-scope': 'off',
@@ -125,6 +127,7 @@ const config = [
       '@typescript-eslint': /** @type {import('@typescript-eslint/utils').TSESLint.Plugin} */ (tseslint),
       react: /** @type {import('eslint-plugin-react').Plugin} */ (reactPlugin),
       'react-hooks': /** @type {import('eslint').ESLint.Plugin} */ (reactHooksPlugin),
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'warn',
@@ -177,6 +180,96 @@ const config = [
     },
     processor: astroPlugin.processors['.astro'],
   },
+
+  // 特定のディレクトリからのインポート制限
+  {
+    files: ['**/src/ZZZZ/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      // ZZZZディレクトリからは、XXXXディレクトリのみにアクセスを許可
+      'import/no-restricted-paths': ['error', {
+        zones: [
+          {
+            target: '**/src/ZZZZ/**/*',
+            from: '**/src/**/*',
+            except: ['**/src/XXXX/**/*']
+          }
+        ]
+      }]
+    }
+  },
+
+  // 依存関係の制限ルール
+  {
+    files: ['**/src/core/services/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      // src/core/service -> src/core/facadeを参照禁止（依存関係が逆転している）
+      'import/no-restricted-paths': ['warn', {
+        zones: [
+          {
+            target: '**/src/core/services/**/*',
+            from: '**/src/core/facades/**/*'
+          }
+        ]
+      }]
+    }
+  },
+  {
+    files: ['**/src/core/facades/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      // src/core/facade -> src/core/storesを参照禁止（serviceを経由するか、コンポーネントから直接参照すべき）
+      'import/no-restricted-paths': ['warn', {
+        zones: [
+          {
+            target: '**/src/core/facades/**/*',
+            from: '**/src/core/stores/**/*'
+          }
+        ]
+      }]
+    }
+  },
+  {
+    files: ['**/src/components/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      // src/components -> src/core/serviceを参照禁止（facade経由でアクセスするべき）
+      'import/no-restricted-paths': ['warn', {
+        zones: [
+          {
+            target: '**/src/components/**/*',
+            from: '**/src/core/services/**/*'
+          }
+        ]
+      }]
+    }
+  },
+  {
+    files: ['**/src/core/hooks/**/*.{js,jsx,ts,tsx,astro}'],
+    plugins: {
+      import: /** @type {import('eslint').ESLint.Plugin} */ (importPlugin),
+    },
+    rules: {
+      // src/core/hooks -> src/core/serviceを参照禁止（facade経由でアクセスするべき）
+      'import/no-restricted-paths': ['warn', {
+        zones: [
+          {
+            target: '**/src/core/hooks/**/*',
+            from: '**/src/core/services/**/*'
+          }
+        ]
+      }]
+    }
+  }
 ];
 
 export default config;
