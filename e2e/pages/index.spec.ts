@@ -34,16 +34,6 @@ test.describe('初期ページ', () => {
     test('データ読み込みを押すとファイルを選択できる', async ({ page }) => {
       const filePath = 'e2e/test-data/sample.json';
 
-      // ファイル選択イベントをハンドリング
-      await page.evaluate(() => {
-        window.addEventListener('change', (e) => {
-          const input = e.target as HTMLInputElement;
-          if (input?.files?.length) {
-            console.log('File selected:', input.files[0]?.name);
-          }
-        }, { once: true });
-      });
-
       // input[type="file"]要素が作成されるのを待つ
       const fileChooserPromise = page.waitForEvent('filechooser');
       await page.click(`button:has-text("${loadButtonText}")`);

@@ -88,7 +88,6 @@ export function cancelEdit(): void {
   try {
     const originalData = useFlowStore.getState().originalData;
     if (originalData) {
-      console.log('cancelEdit originalData');
       // 編集キャンセル時の処理
       const clonedData = structuredClone(originalData);
 
@@ -100,7 +99,6 @@ export function cancelEdit(): void {
 
       // 履歴をクリア
       clearHistory();
-
     }
     useEditModeStore.getState().endEdit();
     // 履歴を戻る（popstateイベントが発火してデータが復元される）
