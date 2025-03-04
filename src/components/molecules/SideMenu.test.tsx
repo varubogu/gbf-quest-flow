@@ -101,11 +101,21 @@ vi.mock('@/core/stores/flowStore', () => ({
 
 // EditModeStoreのモック
 vi.mock('@/core/stores/editModeStore', () => {
-  const mockFn = vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) => selector({ isEditMode: false } as EditModeStore));
-  mockFn.getState = vi.fn().mockReturnValue({ isEditMode: false } as EditModeStore);
-  mockFn.subscribe = vi.fn();
+  const mockSelector = vi.fn((selector: (_state: EditModeStore) => Partial<EditModeStore>) =>
+    selector({ isEditMode: false } as EditModeStore)
+  );
+
+  // モック関数をオブジェクトとして拡張
+  const mockStore = Object.assign(
+    mockSelector,
+    {
+      getState: vi.fn().mockReturnValue({ isEditMode: false } as EditModeStore),
+      subscribe: vi.fn()
+    }
+  );
+
   return {
-    default: mockFn,
+    default: mockStore,
   };
 });
 
