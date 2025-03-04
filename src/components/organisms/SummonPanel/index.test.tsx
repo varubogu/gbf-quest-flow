@@ -12,7 +12,9 @@ vi.mock('@/core/stores/flowStore');
 
 // useSummonFormフックのモック
 vi.mock('@/core/hooks/domain/summons/useSummonForm', () => ({
-  useSummonForm: () => vi.fn(),
+  useSummonForm: (): { handleChange: () => void } => ({
+    handleChange: vi.fn(),
+  }),
 }));
 
 // i18nのモック

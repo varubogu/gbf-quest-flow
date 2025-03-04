@@ -4,8 +4,8 @@ import { NotificationBar } from './NotificationBar';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key, // 翻訳キーをそのまま返す
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => key, // 翻訳キーをそのまま返す
   }),
 }));
 

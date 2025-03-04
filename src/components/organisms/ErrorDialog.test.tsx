@@ -7,11 +7,12 @@ import { downloadFlow } from '@/core/facades/FileOperations';
 import type { Flow, Organization } from '@/types/models';
 import type { AppError } from '@/types/error.types';
 import { ErrorSeverity, ErrorType } from '@/types/error.types';
+import type { JSX } from 'react';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         errorOccurred: 'エラーが発生しました',
         errorMessage: 'エラーメッセージ',
@@ -27,7 +28,11 @@ vi.mock('react-i18next', () => ({
 // @headlessui/reactのモックを修正
 vi.mock('@headlessui/react', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const Dialog = ({ children, open, onClose }: { children: React.ReactNode; open: boolean; onClose: () => void }) => {
+  const Dialog = ({
+     children,
+     open,
+     _onClose
+  }: { children: React.ReactNode; open: boolean; _onClose: () => void }): JSX.Element | null => {
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -36,13 +41,13 @@ vi.mock('@headlessui/react', () => {
     );
   };
 
-  Dialog.Panel = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  Dialog.Panel = ({ children, className }: { children: React.ReactNode; className?: string }): JSX.Element => (
     <div data-testid="dialog-panel" className={className}>
       {children}
     </div>
   );
 
-  Dialog.Title = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  Dialog.Title = ({ children, className }: { children: React.ReactNode; className?: string }): JSX.Element => (
     <h2 data-testid="dialog-title" className={className}>
       {children}
     </h2>

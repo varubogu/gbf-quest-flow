@@ -13,7 +13,7 @@ export function TablePaddingSetting(): JSX.Element {
           min="0"
           max="8"
           value={settings.tablePadding}
-          onChange={(e) => updateSettings({ tablePadding: Number(e.target.value) })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ tablePadding: Number(e.target.value) })}
           className="w-48 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />
         <span className="ml-4">{settings.tablePadding}</span>

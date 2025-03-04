@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { createNewFlow } from '@/core/facades/editModeStoreFacade';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/atoms/Button';
-import { Plus } from 'lucide-react';
 import type { JSX } from 'react';
 
 interface CreateFlowButtonProps {
@@ -14,7 +12,7 @@ export function CreateFlowButton({ className, onClick }: CreateFlowButtonProps):
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = async (): Promise<void> => {
     try {
       setIsCreating(true);
 

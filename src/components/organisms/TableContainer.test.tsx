@@ -4,14 +4,13 @@ import { TableContainer } from './TableContainer';
 import useFlowStore from '@/core/stores/flowStore';
 import useCursorStoreFacade from '@/core/facades/cursorStoreFacade';
 import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
-import { undo, redo } from '@/core/facades/historyFacade';
 import type { Flow } from '@/types/models';
 import type { Action } from '@/types/types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
+  useTranslation: (): { t: (_key: string, _fallback: string) => string } => ({
+    t: (_key: string, fallback: string): string => fallback,
   }),
   initReactI18next: {
     type: '3rdParty',
@@ -36,7 +35,7 @@ vi.mock('./Table', () => ({
   }) => (
     <div data-testid="table">
       <div data-testid="table-data">
-        {data.map((row, index) => (
+        {data.map((row: Action, index: number) => (
           <div key={index} data-testid={`row-${index}`}>
             {Object.entries(row).map(([key, value]) => (
               <span key={key} data-testid={`cell-${index}-${key}`}>

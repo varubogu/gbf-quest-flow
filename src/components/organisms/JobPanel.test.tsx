@@ -6,8 +6,8 @@ import type { Job, JobAbility, JobEquipment } from '@/types/types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         jobItem: '項目',
         jobValue: '値',

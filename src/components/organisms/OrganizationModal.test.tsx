@@ -27,8 +27,8 @@ vi.mock('react-i18next', () => ({
 // @headlessui/reactのモック
 vi.mock('@headlessui/react', () => {
   // Dialogコンポーネント
-  function Dialog(props: { children: React.ReactNode; open: boolean; onClose: () => void }) {
-    const { children, open, onClose } = props;
+  function Dialog(props: { children: React.ReactNode; open: boolean; onClose: () => void }): JSX.Element | null {
+    const { children, open } = props;
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -43,7 +43,7 @@ vi.mock('@headlessui/react', () => {
     id?: string;
     role?: string;
     'aria-labelledby'?: string
-  }) {
+  }): JSX.Element {
     const { children, className, id, role, 'aria-labelledby': ariaLabelledby } = props;
     return (
       <div
@@ -59,7 +59,9 @@ vi.mock('@headlessui/react', () => {
   };
 
   // Tabコンポーネント
-  function Tab(props: { children: React.ReactNode; className?: string | ((props: { selected: boolean }) => string) }) {
+  function Tab(
+    props: { children: React.ReactNode; className?: string | ((_props: { selected: boolean }) => string) }
+  ): JSX.Element {
     const { children, className } = props;
     const selected = true; // 常にselectedをtrueとして扱う
     return (
@@ -79,7 +81,7 @@ vi.mock('@headlessui/react', () => {
     onChange?: (_index: number) => void;
     className?: string
   }): JSX.Element {
-    const { children, selectedIndex = 0, onChange, className } = props;
+    const { children, selectedIndex = 0, className } = props;
     return (
       <div data-testid="tab-group" className={className}>
         {typeof children === 'function' ? children({ selectedIndex }) : children}
@@ -115,7 +117,12 @@ vi.mock('@headlessui/react', () => {
   }
 
   // Tabオブジェクトの構築
-  const HeadlessTab = Tab as any;
+  const HeadlessTab = Tab as unknown as {
+    Group: typeof TabGroup;
+    List: typeof TabList;
+    Panels: typeof TabPanels;
+    Panel: typeof TabPanel;
+  };
   HeadlessTab.Group = TabGroup;
   HeadlessTab.List = TabList;
   HeadlessTab.Panels = TabPanels;

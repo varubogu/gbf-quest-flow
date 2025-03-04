@@ -3,10 +3,11 @@ import { TableCell } from './TableCell';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { renderTableCell } from '@/test/table-test-utils';
+import type { JSX } from 'react';
 
 // Textコンポーネントのモック
 vi.mock('../atoms/Text', () => ({
-  Text: ({ children, variant }: { children: React.ReactNode; variant: string }) => (
+  Text: ({ children, variant }: { children: React.ReactNode; variant: string }): JSX.Element => (
     <pre data-testid="text-component" data-variant={variant}>{children}</pre>
   ),
 }));

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { LoadFlowButton } from './LoadFlowButton';
 import useFileOperationsFacade from '@/core/facades/fileOperationsFacade';
@@ -17,7 +17,7 @@ describe('LoadFlowButton', () => {
     vi.clearAllMocks();
 
     // useFileOperationsFacadeのモック実装
-    (useFileOperationsFacade as any).mockImplementation((selector) =>
+    (useFileOperationsFacade as unknown as Mock).mockImplementation((selector) =>
       selector({ loadFlowFromFile: mockLoadFlowFromFile })
     );
   });
@@ -88,7 +88,7 @@ describe('LoadFlowButton', () => {
       // Promiseの拒否を待つ
       try {
         await mockLoadFlowFromFile();
-      } catch (error) {
+      } catch {
         // エラーは期待通り
       }
     });

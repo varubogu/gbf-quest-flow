@@ -112,7 +112,11 @@ vi.mock('@/core/stores/editModeStore', () => {
 
 // useFlowDataModificationのモック
 vi.mock('@/core/hooks/domain/flow/useFlowDataModification', () => ({
-  useFlowDataModification: () => ({
+  useFlowDataModification: (): {
+    handleSave: () => Promise<boolean>;
+    handleCancel: () => Promise<boolean>;
+    handleNew: () => Promise<boolean>;
+  } => ({
     handleSave: vi.fn().mockResolvedValue(true),
     handleCancel: vi.fn().mockResolvedValue(true),
     handleNew: vi.fn().mockImplementation(async () => {

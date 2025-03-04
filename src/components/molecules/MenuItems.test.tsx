@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MenuItems } from './MenuItems';
+import type { JSX } from 'react';
+import type { Flow } from '@/types/types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         newData: '新規作成',
         loadData: '読み込み',
@@ -24,7 +26,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // ストアのモック
-let mockFlowData = null;
+let mockFlowData: Flow | null = null;
 let mockIsEditMode = false;
 
 vi.mock('@/core/stores/flowStore', () => ({
@@ -36,7 +38,16 @@ vi.mock('@/core/stores/editModeStore', () => ({
 }));
 
 // Lucide-reactのアイコンコンポーネントをモック
-vi.mock('lucide-react', () => ({
+vi.mock('lucide-react', (): {
+  FileText: () => JSX.Element;
+  FolderOpen: () => JSX.Element;
+  Download: () => JSX.Element;
+  Edit2: () => JSX.Element;
+  Save: () => JSX.Element;
+  XCircle: () => JSX.Element;
+  Settings: () => JSX.Element;
+  HelpCircle: () => JSX.Element;
+} => ({
   FileText: () => <div data-testid="icon-file-text">FileText</div>,
   FolderOpen: () => <div data-testid="icon-folder-open">FolderOpen</div>,
   Download: () => <div data-testid="icon-download">Download</div>,

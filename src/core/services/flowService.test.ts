@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { Mock } from 'vitest';
-import type { Flow, Action } from '@/types/models';
+import type { Flow } from '@/types/models';
 import {
   handleDataUpdate,
   mergeActionWithUpdates,
@@ -11,7 +11,6 @@ import {
   setFlowData
 } from './flowService';
 import useFlowStore from '@/core/stores/flowStore';
-import useErrorStore from '@/core/stores/errorStore';
 import * as historyService from '@/core/services/historyService';
 import { errorFacade } from '@/core/facades/errorFacade';
 

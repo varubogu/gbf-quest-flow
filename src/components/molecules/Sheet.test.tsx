@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from './Sheet';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         close: '閉じる',
       };
@@ -17,7 +17,12 @@ vi.mock('react-i18next', () => ({
 // useSheetAnimationフックをモック
 let mockIsVisible = true;
 vi.mock('@/core/hooks/ui/base/useSheetAnimation', () => ({
-  useSheetAnimation: ({ open, side }: { open: boolean; side: 'left' | 'right' }) => {
+  useSheetAnimation: ({ open, side }: { open: boolean; side: 'left' | 'right' }): {
+    isVisible: boolean;
+    animateIn: boolean;
+    overlayClasses: string;
+    sheetClasses: string;
+  } => {
     // openがfalseになったらisVisibleもfalseに設定
     if (!open) {
       mockIsVisible = false;
@@ -74,7 +79,7 @@ describe('Sheet', () => {
   });
 
   it('SheetContentの閉じるボタンをクリックするとSheetが閉じること', () => {
-    const onOpenChangeMock = vi.fn((open) => {
+    const onOpenChangeMock = vi.fn((open: boolean) => {
       // onOpenChangeが呼ばれたときにmockIsVisibleを更新
       mockIsVisible = open;
     });
@@ -110,7 +115,7 @@ describe('Sheet', () => {
   });
 
   it('オーバーレイをクリックするとSheetが閉じること', () => {
-    const onOpenChangeMock = vi.fn((open) => {
+    const onOpenChangeMock = vi.fn((open: boolean) => {
       // onOpenChangeが呼ばれたときにmockIsVisibleを更新
       mockIsVisible = open;
     });

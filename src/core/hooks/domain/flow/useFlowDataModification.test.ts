@@ -17,7 +17,7 @@ vi.mock('@/core/facades/flowEventService', () => ({
 
 // i18nのモック
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): { t: (_key: string, _fallback: string) => string } => ({
     t: (_key: string, fallback: string): string => fallback
   })
 }));

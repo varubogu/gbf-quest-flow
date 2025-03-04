@@ -8,7 +8,7 @@ vi.mock('@/core/stores/flowStore');
 
 // useCharacterFormフックのモック
 vi.mock('@/core/hooks/domain/characters/useCharacterForm', () => ({
-  useCharacterForm: () => ({
+  useCharacterForm: (): { handleMemberChange: () => void } => ({
     handleMemberChange: vi.fn(),
   }),
 }));

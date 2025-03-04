@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HamburgerMenu } from './HamburgerMenu';
+import type { JSX } from 'react';
 
 // IconButtonのモック
 vi.mock('../atoms/IconButton', () => ({
-  IconButton: ({ onClick, label }: { onClick: () => void; label: string }) => (
+  IconButton: ({ onClick, label }: { onClick: () => void; label: string }): JSX.Element => (
     <button onClick={onClick} aria-label={label} data-testid="mock-icon-button">
       Menu Icon
     </button>
