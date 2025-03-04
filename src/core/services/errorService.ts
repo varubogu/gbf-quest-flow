@@ -191,11 +191,11 @@ export async function handleWithTryCatch<T>(
       if (errorHandler) {
         errorHandler(error);
       } else {
-        exports.displayUnknownError(error);
+        displayUnknownError(error);
       }
     } else {
       const unknownError = new Error('不明なエラーが発生しました');
-      exports.displayUnknownError(unknownError);
+      displayUnknownError(unknownError);
     }
     return undefined;
   }

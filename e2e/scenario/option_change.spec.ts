@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+
 import { test } from '@playwright/test';
 
 test.describe('オプションを変更する', () => {
@@ -9,7 +12,7 @@ test.describe('オプションを変更する', () => {
 
   test.describe('言語を変更する', () => {
     test('言語を変更する', async ({ page }) => {
-      
+
       // 言語を変更する
       // サイドメニューが変更されていることを確認
       // 行動表が変更されていることを確認

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
 // エラーの種類を定義する列挙型
 export enum ErrorType {
   VALIDATION = 'validation',
@@ -14,7 +14,7 @@ export enum ErrorSeverity {
   ERROR = 'error',
   CRITICAL = 'critical',
 }
-/* eslint-enable @typescript-eslint/no-unused-vars */
+/* eslint-enable @typescript-eslint/no-unused-vars, no-unused-vars */
 
 // アプリケーション固有のエラー情報
 export interface AppError {

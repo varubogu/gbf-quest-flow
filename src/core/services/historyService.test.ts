@@ -161,7 +161,7 @@ describe('History Service', () => {
       expect(useHistoryStore.setState).toHaveBeenCalledWith({
         history: {
           past: [],
-          future: expect.arrayContaining([expect.anything()])
+          future: expect.arrayContaining([expect.anything() as Flow]) as Flow[]
         }
       });
 

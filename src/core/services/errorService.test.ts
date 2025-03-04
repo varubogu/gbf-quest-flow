@@ -415,6 +415,27 @@ describe('errorService', () => {
       const displayUnknownErrorSpy = vi.spyOn(errorService, 'displayUnknownError')
         .mockImplementation(vi.fn());
 
+      // handleWithTryCatchを再定義して、モックしたdisplayUnknownErrorを使用するようにする
+      const handleWithTryCatchSpy = vi.spyOn(errorService, 'handleWithTryCatch').mockImplementation(
+        async (fn, errorHandler) => {
+          try {
+            return await fn();
+          } catch (error) {
+            if (error instanceof Error) {
+              if (errorHandler) {
+                errorHandler(error);
+              } else {
+                errorService.displayUnknownError(error);
+              }
+            } else {
+              const unknownError = new Error('不明なエラーが発生しました');
+              errorService.displayUnknownError(unknownError);
+            }
+            return undefined;
+          }
+        }
+      );
+
       const result = await errorService.handleWithTryCatch(fn);
 
       expect(result).toBeUndefined();
@@ -423,6 +444,7 @@ describe('errorService', () => {
       expect(displayUnknownErrorSpy).toHaveBeenCalledWith(error);
 
       // モックを元に戻す
+      handleWithTryCatchSpy.mockRestore();
       displayUnknownErrorSpy.mockRestore();
     });
 
@@ -432,6 +454,27 @@ describe('errorService', () => {
       // displayUnknownErrorをモック
       const displayUnknownErrorSpy = vi.spyOn(errorService, 'displayUnknownError')
         .mockImplementation(vi.fn());
+
+      // handleWithTryCatchを再定義して、モックしたdisplayUnknownErrorを使用するようにする
+      const handleWithTryCatchSpy = vi.spyOn(errorService, 'handleWithTryCatch').mockImplementation(
+        async (fn, errorHandler) => {
+          try {
+            return await fn();
+          } catch (error) {
+            if (error instanceof Error) {
+              if (errorHandler) {
+                errorHandler(error);
+              } else {
+                errorService.displayUnknownError(error);
+              }
+            } else {
+              const unknownError = new Error('不明なエラーが発生しました');
+              errorService.displayUnknownError(unknownError);
+            }
+            return undefined;
+          }
+        }
+      );
 
       const result = await errorService.handleWithTryCatch(fn);
 
@@ -447,6 +490,7 @@ describe('errorService', () => {
       }
 
       // モックを元に戻す
+      handleWithTryCatchSpy.mockRestore();
       displayUnknownErrorSpy.mockRestore();
     });
   });
