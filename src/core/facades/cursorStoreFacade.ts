@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import useCursorStore from '@/core/stores/cursorStore';
 
+interface CursorStoreFacade {
+  currentRow: number;
+  getCurrentRow: () => number;
+  setCurrentRow: (_row: number) => void;
+}
+
 /**
  * カーソルストアのファサード
  *
@@ -8,18 +14,11 @@ import useCursorStore from '@/core/stores/cursorStore';
  * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
  * コンポーネント側の変更を最小限に抑えることができます。
  */
-const useCursorStoreFacade = create((set, get) => {
+const useCursorStoreFacade = create((_set, _get): CursorStoreFacade => {
   // 初期状態を設定
   const initialState = {
     currentRow: useCursorStore.getState().currentRow,
   };
-
-  // CursorStoreの変更を監視
-  const unsubCursor = useCursorStore.subscribe((state) => {
-    set({
-      currentRow: state.currentRow
-    });
-  });
 
   return {
     // 状態（プロパティ）- CursorStoreから初期化

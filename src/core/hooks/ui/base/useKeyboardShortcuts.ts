@@ -3,7 +3,6 @@ import type { Flow } from '@/types/models';
 import { handleFlowSave, handleNewFlow } from '@/core/facades/flowEventService';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
 
 // 従来のインターフェース
 interface Props {

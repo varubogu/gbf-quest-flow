@@ -6,6 +6,7 @@ import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTe
 import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import { updateFlowData } from '@/core/facades/flowFacade';
+import type { Flow } from '@/types/models';
 
 interface InfoModalProps {
   isOpen: boolean;
@@ -14,9 +15,8 @@ interface InfoModalProps {
 
 export function InfoModal({ isOpen, onClose }: InfoModalProps): JSX.Element {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: any) => state.flowData);
+  const flowData: Flow = useFlowStore((state: any) => state.flowData);
   const isEditMode = useEditModeStore((state: any) => state.isEditMode);
-  const [formData, setFormData] = useState({ ...flowData });
 
   // テキストエリアのref
   const descriptionRef = useAutoResizeTextArea(flowData?.description || '');
@@ -185,7 +185,7 @@ export function InfoModal({ isOpen, onClose }: InfoModalProps): JSX.Element {
                           aria-label={t('otherNotes') as string}
                         />
                       ) : (
-                        flowData.note?.split('\n').map((line, i) => (
+                        flowData.note?.split('\n').map((line: string, i: number) => (
                           <React.Fragment key={i}>
                             {line}
                             {i < flowData.note.split('\n').length - 1 && <br />}

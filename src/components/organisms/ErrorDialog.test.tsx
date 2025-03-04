@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorDialog } from './ErrorDialog';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
-import type { Flow } from '@/types/models';
+import type { Flow, Organization } from '@/types/models';
 import type { AppError } from '@/types/error.types';
 import { ErrorSeverity, ErrorType } from '@/types/error.types';
 
@@ -74,7 +74,7 @@ describe('ErrorDialog', () => {
     description: 'テスト説明',
     updateDate: '2023-01-01',
     note: 'テストノート',
-    organization: {} as any,
+    organization: {} as Organization,
     always: 'テスト常時効果',
     flow: [],
   };
@@ -86,12 +86,12 @@ describe('ErrorDialog', () => {
 
     // useFlowStoreのモック
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useFlowStore as any).mockImplementation((selector: (state: any) => any) =>
+    (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: any) => any) =>
       selector({ flowData: mockFlowData })
     );
 
     // useErrorStoreのモック
-    (useErrorStore as any).mockReturnValue({
+    (useErrorStore as unknown as Mock).mockReturnValue({
       error: mockError,
       isErrorDialogOpen: true,
       clearError: mockClearError,
@@ -115,7 +115,7 @@ describe('ErrorDialog', () => {
 
     it('不明なエラーの場合、デフォルトメッセージが表示されること', () => {
       // エラーをnullに設定
-      (useErrorStore as any).mockReturnValue({
+      (useErrorStore as unknown as Mock).mockReturnValue({
         error: null,
         isErrorDialogOpen: true,
         clearError: mockClearError,
@@ -168,7 +168,7 @@ describe('ErrorDialog', () => {
     it('flowDataがない場合、バックアップダウンロードボタンが表示されないこと', () => {
       // flowDataをnullに設定
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (useFlowStore as any).mockImplementation((selector: (state: any) => any) =>
+      (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: any) => any) =>
         selector({ flowData: null })
       );
 
@@ -179,7 +179,7 @@ describe('ErrorDialog', () => {
 
     it('isErrorDialogOpenがfalseの場合、ダイアログが表示されないこと', () => {
       // isErrorDialogOpenをfalseに設定
-      (useErrorStore as any).mockReturnValue({
+      (useErrorStore as unknown as Mock).mockReturnValue({
         error: mockError,
         isErrorDialogOpen: false,
         clearError: mockClearError,

@@ -1,13 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { InfoModal } from './InfoModal';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { Flow } from '@/types/models';
+import type { JSX } from 'react';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
+  useTranslation: (): { t: (_key: string) => string } => ({
+    t: (key: string): string => {
       const translations: Record<string, string> = {
         infoModalTitle: 'フロー情報',
         flowTitle: 'タイトル',
@@ -25,7 +26,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@headlessui/react', () => {
-  const Dialog = ({ children, open, onClose }: any) => {
+  const Dialog = ({ children, open, _onClose }: any): JSX.Element | null => {
     if (!open) return null;
     return (
       <div data-testid="dialog">
@@ -34,7 +35,7 @@ vi.mock('@headlessui/react', () => {
     );
   };
 
-  Dialog.Panel = ({ children, className, id, role, 'aria-labelledby': ariaLabelledby }: any) => (
+  Dialog.Panel = ({ children, className, id, role, 'aria-labelledby': ariaLabelledby }: { children: React.ReactNode; className: string; id: string; role: string; 'aria-labelledby': string }): JSX.Element => (
     <div
       data-testid="dialog-panel"
       className={className}
@@ -46,7 +47,7 @@ vi.mock('@headlessui/react', () => {
     </div>
   );
 
-  Dialog.Title = ({ children, className, id }: any) => (
+  Dialog.Title = ({ children, className, id }: { children: React.ReactNode; className: string; id: string }): JSX.Element => (
     <h2 data-testid="dialog-title" className={className} id={id}>
       {children}
     </h2>
@@ -100,7 +101,7 @@ describe('InfoModal', () => {
     currentFlowData = mockFlowData;
 
     // 編集モードでない状態をデフォルトに設定
-    (useEditModeStore as any).mockImplementation((selector) =>
+    (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
       selector({ isEditMode: false })
     );
   });
@@ -161,7 +162,7 @@ describe('InfoModal', () => {
 
     it('編集モードで入力フィールドが表示されること', () => {
       // 編集モードの状態
-      (useEditModeStore as any).mockImplementation((selector) =>
+      (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
         selector({ isEditMode: true })
       );
 
@@ -188,7 +189,7 @@ describe('InfoModal', () => {
 
     it('編集モードでフィールドを変更するとupdateFlowData関数が呼ばれること', () => {
       // 編集モードの状態
-      (useEditModeStore as any).mockImplementation((selector) =>
+      (useEditModeStore as unknown as Mock).mockImplementation((selector) =>
         selector({ isEditMode: true })
       );
 

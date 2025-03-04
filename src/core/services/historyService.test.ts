@@ -153,7 +153,7 @@ describe('History Service', () => {
       const currentFlow = flow2;
       const originalFlow = flow1;
       (flowStore.getFlowData as Mock).mockReturnValue(currentFlow);
-      (flowStore.originalData as any) = originalFlow;
+      (flowStore.originalData as unknown) = originalFlow;
 
       undo();
 

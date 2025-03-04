@@ -96,7 +96,7 @@ describe('handleError', () => {
     announceToScreenReaderSpy = vi.fn();
     vi.doMock('./accessibility', () => ({
       announceToScreenReader: announceToScreenReaderSpy,
-      handleError: (error: unknown, context: string) => {
+      handleError: (error: unknown, context: string): void => {
         console.error(`${context}:`, error);
         announceToScreenReaderSpy(`${context}にエラーが発生しました`, 'alert');
       }

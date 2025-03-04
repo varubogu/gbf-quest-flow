@@ -4,7 +4,6 @@ import { Dialog } from '@headlessui/react';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
-import type { ErrorSeverity, ErrorType } from '@/types/error.types';
 import { formatErrorMessage } from '@/core/services/errorService';
 
 export function ErrorDialog(): React.ReactElement {

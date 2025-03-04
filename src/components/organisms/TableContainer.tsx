@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, type JSX } from 'react';
 import { Table } from './Table';
 import type { Action } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
@@ -16,7 +15,6 @@ export function TableContainer({
   isEditMode = false,
   data,
 }: TableContainerProps): JSX.Element {
-  const { t } = useTranslation();
   const currentRow = useCursorStoreFacade((state: any) => state.currentRow);
   const setCurrentRow = useCursorStoreFacade((state: any) => state.setCurrentRow);
   const flowData = useFlowStore((state: any) => state.flowData);

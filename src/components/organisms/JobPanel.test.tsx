@@ -22,7 +22,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
-  useAutoResizeTextArea: () => ({ current: null }),
+  useAutoResizeTextArea: (): { current: null } => ({ current: null }),
 }));
 
 // テスト用のモックデータ

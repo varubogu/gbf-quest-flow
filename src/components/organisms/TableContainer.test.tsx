@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TableContainer } from './TableContainer';
 import useFlowStore from '@/core/stores/flowStore';
@@ -148,19 +148,19 @@ describe('TableContainer', () => {
     vi.clearAllMocks();
 
     // useFlowStoreのモック
-    (useFlowStore as any).mockImplementation((selector: Function) => {
+    (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
       const state = { flowData: mockFlowData, setFlowData: mockSetFlowData };
       return selector(state);
     });
 
     // useCursorStoreFacadeのモック
-    (useCursorStoreFacade as any).mockImplementation((selector: Function) => {
+    (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
       const state = { currentRow: mockCurrentRow, setCurrentRow: mockSetCurrentRow };
       return selector(state);
     });
 
     // useSettingsStoreFacadeのモック
-    (useSettingsStoreFacade as any).mockImplementation((selector: Function) => {
+    (useSettingsStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
       const state = { settings: mockSettings };
       return selector(state);
     });
@@ -220,7 +220,7 @@ describe('TableContainer', () => {
 
     it('flowDataがnullの場合、nullを返すこと', () => {
       // flowDataをnullに設定
-      (useFlowStore as any).mockImplementation((selector: Function) => {
+      (useFlowStore as unknown as Mock).mockImplementation((selector: Function) => {
         const state = { flowData: null, setFlowData: mockSetFlowData };
         return selector(state);
       });
@@ -247,7 +247,7 @@ describe('TableContainer', () => {
 
     it('上へ移動ボタンをクリックするとhandleMoveUpが呼ばれること', () => {
       // currentRowを1に設定
-      (useCursorStoreFacade as any).mockImplementation((selector: Function) => {
+      (useCursorStoreFacade as unknown as Mock).mockImplementation((selector: Function) => {
         const state = { currentRow: 1, setCurrentRow: mockSetCurrentRow };
         return selector(state);
       });
