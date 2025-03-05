@@ -9,7 +9,7 @@ import {
   tableHeaderCellBaseStyle,
   tableCellBaseStyle,
   tableWidthStyles,
-} from '@/components/atoms/TableStyles';
+} from '@/components/styles/TableStyles';
 
 type SkillValue = WeaponSkillEffect | WeaponSkillTotal;
 type SkillField = keyof SkillValue;

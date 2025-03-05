@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { CharacterPosition, Member } from '@/types/models';
 import { CharacterIcon } from '@/components/molecules/Character/CharacterIcon';
 import { SkillDisplay } from '@/components/molecules/Character/SkillDisplay';
-import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
+import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 import { textInputBaseStyle } from '@/components/atoms/IconTextButton';
 
 interface CharacterFormProps {

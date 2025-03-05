@@ -8,7 +8,7 @@ import {
   tableHeaderRowStyle,
   tableHeaderCellBaseStyle,
   tableWidthStyles,
-} from '@/components/atoms/TableStyles';
+} from '@/components/styles/TableStyles';
 import type { FlowStore } from '@/types/flowStore.types';
 
 interface CharacterPanelProps {

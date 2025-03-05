@@ -12,7 +12,7 @@ import {
   tableHeaderCellBaseStyle,
   tableCellBaseStyle,
   tableWidthStyles,
-} from '@/components/atoms/TableStyles';
+} from '@/components/styles/TableStyles';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import { updateFlowData} from '@/core/facades/flowFacade';
 import type { FlowStore } from '@/types/flowStore.types';

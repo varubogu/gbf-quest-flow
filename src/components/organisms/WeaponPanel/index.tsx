@@ -11,7 +11,7 @@ import {
   tableHeaderCellBaseStyle,
   tableCellBaseStyle,
   tableWidthStyles,
-} from '@/components/atoms/TableStyles';
+} from '@/components/styles/TableStyles';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import type { FlowStore } from '@/types/flowStore.types';
 

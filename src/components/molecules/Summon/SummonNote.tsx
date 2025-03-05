@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { textareaBaseStyle } from '@/components/atoms/IconTextButton';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
-import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
+import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 
 interface SummonNoteProps {
   note: string;

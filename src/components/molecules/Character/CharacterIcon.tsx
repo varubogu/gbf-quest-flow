@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { textInputBaseStyle } from '@/components/atoms/IconTextButton';
-import { tableCellBaseStyle } from '@/components/atoms/TableStyles';
+import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 
 interface CharacterIconProps {
   name: string;
