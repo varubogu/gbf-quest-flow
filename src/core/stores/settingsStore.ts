@@ -10,12 +10,7 @@ export interface SettingsStore {
 const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
-      settings: {
-        language: '日本語',
-        buttonAlignment: 'right',
-        tablePadding: 8,
-        actionTableClickType: 'double',
-      },
+      settings: initSettings(),
       updateSettings: (newSettings: Partial<AppSettings>): void => {
         set((state) => ({
           settings: { ...state.settings, ...newSettings },
@@ -27,5 +22,18 @@ const useSettingsStore = create<SettingsStore>()(
     }
   )
 );
+
+/**
+ * 初期設定を返す
+ * @returns 初期設定
+ */
+function initSettings(): AppSettings {
+  return {
+    language: '日本語',
+    buttonAlignment: 'right',
+    tablePadding: 8,
+    actionTableClickType: 'double',
+  };
+}
 
 export default useSettingsStore;

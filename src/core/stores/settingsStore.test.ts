@@ -174,4 +174,16 @@ describe('settingsStore', () => {
       expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType);
     });
   });
+
+  describe('設定の初期化', () => {
+    it('初期設定が正しいこと', () => {
+      const { settings } = useSettingsStore.getState();
+      expect(settings).toEqual({
+        language: '日本語',
+        buttonAlignment: 'right',
+        tablePadding: 8,
+        actionTableClickType: 'double',
+      });
+    });
+  });
 });
