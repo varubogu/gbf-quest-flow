@@ -1,34 +1,20 @@
-import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import type { AppSettings } from '@/types/settings';
+import { settingsStoreService } from '@/core/services/settingsStoreService';
 import useSettingsStore from '@/core/stores/settingsStore';
 
-export interface SettingsStoreFacade {
-  settings: AppSettings;
-  updateSettings: (_newSettings: Partial<AppSettings>) => void;
+/**
+ * 設定の更新を行う関数
+ * @param newSettings 更新する設定
+ */
+export function updateSettings(newSettings: Partial<AppSettings>): void {
+  settingsStoreService.updateSettings(newSettings);
 }
 
 /**
- * 設定ストアのファサード
- *
- * このファサードは、設定ストアにアクセスするための統一されたインターフェースを提供します。
- * これにより、コンポーネントはストアの実装の詳細から切り離され、データアクセスの方法が変更されても
- * コンポーネント側の変更を最小限に抑えることができます。
+ * 設定を参照するためのフック
+ * コンポーネントはこのフックを使用して設定を参照します
+ * @returns 現在の設定
  */
-const useSettingsStoreFacade: UseBoundStore<StoreApi<SettingsStoreFacade>> = create((_set, _get): SettingsStoreFacade => {
-  // 初期状態を設定
-  const initialState = {
-    settings: useSettingsStore.getState().settings,
-  };
-
-  return {
-    // 状態（プロパティ）- SettingsStoreから初期化
-    ...initialState,
-
-    // SettingsStore関連のメソッド
-    updateSettings: (newSettings: Partial<AppSettings>): void => {
-      useSettingsStore.getState().updateSettings(newSettings);
-    },
-  } as SettingsStoreFacade;
-});
-
-export default useSettingsStoreFacade;
+export function useSettings(): AppSettings {
+  return useSettingsStore((state) => state.settings);
+}

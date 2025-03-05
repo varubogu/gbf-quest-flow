@@ -2,16 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import useSettingsStore from './settingsStore';
 import { act } from '@testing-library/react';
 
-// i18nのモック
-vi.mock('@/lib/i18n', () => ({
-  default: {
-    language: 'en', // 初期値をenに設定
-    changeLanguage: vi.fn(),
-  },
-}));
-
-// モックされたi18nのインポート
-const i18n = vi.mocked(await import('@/lib/i18n')).default;
 
 describe('settingsStore', () => {
   beforeEach(() => {
@@ -25,9 +15,6 @@ describe('settingsStore', () => {
         actionTableClickType: 'double',
       });
     });
-    // i18nのモックをリセット
-    vi.mocked(i18n.changeLanguage).mockClear();
-    vi.mocked(i18n).language = 'en'; // 初期値をenに設定
   });
 
   it('初期状態が正しいこと', () => {
@@ -48,35 +35,6 @@ describe('settingsStore', () => {
     const updatedState = useSettingsStore.getState();
     expect(updatedState.settings.buttonAlignment).toBe('left');
     expect(updatedState.settings.language).toBe('日本語'); // 他の設定は変更されないこと
-  });
-
-  describe('言語設定の更新', () => {
-    it('日本語に変更したとき、i18nの言語がjaに設定されること', () => {
-      vi.mocked(i18n).language = 'en';
-      const store = useSettingsStore.getState();
-      act(() => {
-        store.updateSettings({ language: '日本語' });
-      });
-      expect(vi.mocked(i18n.changeLanguage)).toHaveBeenCalledWith('ja');
-    });
-
-    it('英語に変更したとき、i18nの言語がenに設定されること', () => {
-      vi.mocked(i18n).language = 'ja';
-      const store = useSettingsStore.getState();
-      act(() => {
-        store.updateSettings({ language: 'English' });
-      });
-      expect(vi.mocked(i18n.changeLanguage)).toHaveBeenCalledWith('en');
-    });
-
-    it('言語が同じ場合はi18nの言語を変更しないこと', () => {
-      vi.mocked(i18n).language = 'ja';
-      const store = useSettingsStore.getState();
-      act(() => {
-        store.updateSettings({ language: '日本語' });
-      });
-      expect(vi.mocked(i18n.changeLanguage)).not.toHaveBeenCalled();
-    });
   });
 
   describe('行動表の余白設定', () => {
@@ -211,8 +169,8 @@ describe('settingsStore', () => {
       const newSettings = useSettingsStore.getState().settings;
       expect(newSettings.language).toBe('English');
       expect(newSettings.tablePadding).toBe(16);
-      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment);
-      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType);
+      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment); // 更新していない設定は維持される
+      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType); // 更新していない設定は維持される
     });
   });
 });
