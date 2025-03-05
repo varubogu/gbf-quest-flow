@@ -4,7 +4,7 @@ import { HamburgerMenu } from './HamburgerMenu';
 import type { JSX } from 'react';
 
 // IconButtonのモック
-vi.mock('../atoms/IconButton', () => ({
+vi.mock('@/components/atoms/common/IconButton', () => ({
   IconButton: ({ onClick, label }: { onClick: () => void; label: string }): JSX.Element => (
     <button onClick={onClick} aria-label={label} data-testid="mock-icon-button">
       Menu Icon

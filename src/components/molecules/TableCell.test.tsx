@@ -6,7 +6,7 @@ import { renderTableCell } from '@/test/table-test-utils';
 import type { JSX } from 'react';
 
 // Textコンポーネントのモック
-vi.mock('../atoms/Text', () => ({
+vi.mock('@/components/atoms/common/Text', () => ({
   Text: ({ children, variant }: { children: React.ReactNode; variant: string }): JSX.Element => (
     <pre data-testid="text-component" data-variant={variant}>{children}</pre>
   ),

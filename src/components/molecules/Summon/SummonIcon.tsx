@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { textInputBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle } from '@/components/atoms/common/IconTextButton';
 import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 
 interface SummonIconProps {

@@ -1,4 +1,4 @@
-import { Button } from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/common/Button';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LanguageSetting } from './LanguageSetting';

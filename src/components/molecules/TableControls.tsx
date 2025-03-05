@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { IconButton } from '../atoms/IconButton';
+import { IconButton } from '../atoms/common/IconButton';
 import { useTranslation } from 'react-i18next';
 import type { ActionTableButtonPosition } from '@/types/models';
 

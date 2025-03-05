@@ -4,7 +4,7 @@ import type { CharacterPosition, Member } from '@/types/models';
 import { CharacterIcon } from '@/components/molecules/Character/CharacterIcon';
 import { SkillDisplay } from '@/components/molecules/Character/SkillDisplay';
 import { tableCellBaseStyle } from '@/components/styles/TableStyles';
-import { textInputBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle } from '@/components/atoms/common/IconTextButton';
 
 interface CharacterFormProps {
   position: CharacterPosition;

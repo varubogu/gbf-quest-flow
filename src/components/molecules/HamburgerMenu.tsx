@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Menu } from 'lucide-react';
-import { IconButton } from '../atoms/IconButton';
+import { IconButton } from '../atoms/common/IconButton';
 
 interface HamburgerMenuProps {
   onClick: () => void;

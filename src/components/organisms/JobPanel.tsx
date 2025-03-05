@@ -4,7 +4,7 @@ import type { Job, JobAbility, JobEquipment } from '@/types/types';
 import {
   textInputBaseStyle,
   textareaBaseStyle,
-} from '@/components/atoms/IconTextButton';
+} from '@/components/atoms/common/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import {
   tableBaseStyle,

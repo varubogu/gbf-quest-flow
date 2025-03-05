@@ -2,7 +2,7 @@ import React, { type JSX } from 'react';
 import { Dialog as HeadlessDialog } from '@headlessui/react';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/IconTextButton';
+import { textInputBaseStyle, textareaBaseStyle } from '@/components/atoms/common/IconTextButton';
 import { useTranslation } from 'react-i18next';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import { updateFlowData } from '@/core/facades/flowFacade';
