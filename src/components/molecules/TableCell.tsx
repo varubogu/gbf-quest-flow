@@ -2,7 +2,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 import { Text } from '../atoms/Text';
 import type { Action, TableAlignment } from '@/types/types';
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { useAlignmentStyle } from '@/core/hooks/ui/base/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/core/hooks/ui/table/useTableCellBaseStyle';
 import { useTableCellStateStyle } from '@/core/hooks/ui/table/useTableCellStateStyle';
@@ -35,7 +35,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   className = '',
   'data-testid': dataTestId,
 }) => {
-  const { settings } = useSettingsStoreFacade();
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
   const { getAlignmentClass } = useAlignmentStyle();
   const { getBaseClassName, getBasePadding } = useTableCellBaseStyle();
   const { getStateClassName, getTextVariant } = useTableCellStateStyle();

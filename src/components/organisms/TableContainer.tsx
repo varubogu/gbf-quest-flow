@@ -3,8 +3,8 @@ import { Table } from '@/components/organisms/Table';
 import type { Action } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
 import useCursorStore from '@/core/stores/cursorStore';
-import type { SettingsStore } from '@/core/stores/settingsStore';
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
+
 import type { CursorStore, FlowStore } from '@/types/flowStore.types';
 import { useTableEventHandlers } from '@/core/hooks/ui/table/useTableEventHandlers';
 
@@ -19,7 +19,7 @@ export function TableContainer({
 }: TableContainerProps): JSX.Element | null {
   const currentRow = useCursorStore((state: CursorStore) => state.currentRow);
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
-  const settings = useSettingsStoreFacade((state: SettingsStore) => state.settings);
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
 
   const {
     handleRowSelect,

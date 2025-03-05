@@ -1,8 +1,9 @@
+import { updateSettings } from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
+import { SettingItem } from '@/components/molecules/SettingItem';
 import { useTranslation } from 'react-i18next';
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
-import { SettingItem } from '../SettingItem';
-import type { JSX } from 'react';
 import type { Language } from '@/types/types';
+import type { JSX } from 'react';
 
 // 言語設定の配列
 const LANGUAGES: { value: Language; translationKey: string }[] = [
@@ -14,7 +15,7 @@ const LANGUAGES: { value: Language; translationKey: string }[] = [
 
 export function LanguageSetting(): JSX.Element {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useSettingsStoreFacade();
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
 
   return (
     <SettingItem labelKey="language">

@@ -1,9 +1,10 @@
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import { updateSettings } from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { SettingItem } from '../SettingItem';
 import type { JSX } from 'react';
 
 export function TablePaddingSetting(): JSX.Element {
-  const { settings, updateSettings } = useSettingsStoreFacade();
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
 
   return (
     <SettingItem labelKey="tablePadding">

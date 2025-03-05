@@ -1,12 +1,13 @@
 import * as React from 'react';
 import type { Action } from '@/types/types';
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { useTableKeyboardNavigation } from '@/core/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/core/hooks/ui/table/useTableScroll';
 import { useActionTableConfig } from '@/core/hooks/ui/table/useActionTableConfig';
 import { TableControls } from '@/components/molecules/TableControls';
 import { TableHeader } from '@/components/molecules/TableHeader';
 import { TableRow } from '@/components/molecules/TableRow';
+import { type JSX } from 'react';
 
 interface TableProps {
   data: Action[];
@@ -22,7 +23,7 @@ interface TableProps {
   onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
 }
 
-export const Table: React.FC<TableProps> = ({
+export function Table({
   data,
   currentRow,
   buttonPosition = 'left',
@@ -34,8 +35,8 @@ export const Table: React.FC<TableProps> = ({
   onDeleteRow,
   onAddRow,
   onPasteRows,
-}) => {
-  const { settings } = useSettingsStoreFacade();
+}: TableProps): JSX.Element {
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   // 設定とスタイルの管理
@@ -148,4 +149,4 @@ export const Table: React.FC<TableProps> = ({
       </div>
     </div>
   );
-};
+}

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import { updateSettings } from '@/core/facades/settingsStoreFacade';
+import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore'
 import { SettingItem } from '@/components/molecules/SettingItem';
 import type { JSX } from 'react';
 import type { ClickType } from '@/types/types';
@@ -12,7 +13,13 @@ const CLICK_TYPES: { value: ClickType; translationKey: string }[] = [
 
 export function ActionTableClickTypeSetting(): JSX.Element {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useSettingsStoreFacade();
+  const settings = useSettingsStore((state: SettingsStore) => state.settings);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    updateSettings({
+      actionTableClickType: e.target.value as ClickType,
+    });
+  };
 
   return (
     <SettingItem labelKey="actionTableClickType">
@@ -24,7 +31,7 @@ export function ActionTableClickTypeSetting(): JSX.Element {
               name="actionTableClickType"
               value={value}
               checked={settings.actionTableClickType === value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSettings({ actionTableClickType: e.target.value as ClickType })}
+              onChange={handleChange}
               className="form-radio"
             />
             <span className="ml-2">{t(translationKey)}</span>
