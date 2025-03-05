@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent, act } from '@testing-library/react';
-import { LoadFlowButton } from './LoadFlowButton';
+import { LoadFlowButton } from '@/components/atoms/specific/LoadFlowButton';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
 // モック
