@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadFlowButton } from '@/components/molecules/LoadFlowButton';
-import { CreateFlowButton } from '@/components/molecules/CreateFlowButton';
+import { CreateFlowButton } from '@/components/atoms/specific/CreateFlowButton';
 
 interface EmptyLayoutProps {
   onNew?: () => void;
