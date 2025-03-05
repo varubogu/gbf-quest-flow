@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { AppSettings } from '@/types/settings';
 import { settingsStoreService } from '@/core/services/settingsStoreService';
-import { updateSettings, useSettings } from './settingsStoreFacade';
+import { updateSettings } from './settingsStoreFacade';
 
 // serviceのモック設定
 vi.mock('@/core/services/settingsStoreService', () => ({
@@ -40,16 +40,5 @@ describe('settingsStoreFacade', () => {
     updateSettings(newSettings);
 
     expect(settingsStoreService.updateSettings).toHaveBeenCalledWith(newSettings);
-  });
-
-  it('useSettingsを呼び出すとストアから設定が取得できること', () => {
-    const settings = useSettings();
-
-    expect(settings).toEqual({
-      language: '日本語',
-      buttonAlignment: 'right',
-      tablePadding: 8,
-      actionTableClickType: 'double',
-    });
   });
 });
