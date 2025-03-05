@@ -4,9 +4,9 @@ import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStor
 import { useTableKeyboardNavigation } from '@/core/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/core/hooks/ui/table/useTableScroll';
 import { useActionTableConfig } from '@/core/hooks/ui/table/useActionTableConfig';
-import { TableControls } from '@/components/molecules/TableControls';
-import { TableHeader } from '@/components/molecules/TableHeader';
-import { TableRow } from '@/components/molecules/TableRow';
+import { TableControls } from '@/components/molecules/common/table/TableControls';
+import { TableHeader } from '@/components/molecules/common/table/TableHeader';
+import { TableRow } from '@/components/molecules/common/table/TableRow';
 import { type JSX } from 'react';
 
 interface TableProps {

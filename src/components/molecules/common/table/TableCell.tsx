@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
-import { Text } from '../atoms/common/Text';
+import { Text } from '../../../atoms/common/Text';
 import type { Action, TableAlignment } from '@/types/types';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { useAlignmentStyle } from '@/core/hooks/ui/base/useAlignmentStyle';

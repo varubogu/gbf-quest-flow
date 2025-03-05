@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { TableControls } from '@/components/molecules/TableControls';
+import { TableControls } from '@/components/molecules/common/table/TableControls';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import type { JSX } from 'react';

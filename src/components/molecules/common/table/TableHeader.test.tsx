@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import type { RenderResult } from '@testing-library/react';
-import { TableHeader } from './TableHeader';
+import { TableHeader } from '@/components/molecules/common/table/TableHeader';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { JSX } from 'react';
 import type { TableAlignment } from '@/types/types';
 // TableHeaderCellコンポーネントのモック
-vi.mock('@/components/molecules/TableHeaderCell', () => ({
+vi.mock('@/components/molecules/common/table/TableHeaderCell', () => ({
   default: ({ column, alignment }: { column: string; alignment: TableAlignment }): JSX.Element => (
     <th
       data-testid={`header-cell-${column}`}

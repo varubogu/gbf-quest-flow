@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
 import type { ActionTableColumn, TableAlignment } from '@/types/types';
-import TableHeaderCell from '@/components/molecules/TableHeaderCell';
+import TableHeaderCell from '@/components/molecules/common/table/TableHeaderCell';
 
 interface TableHeaderProps {
   className: string;
