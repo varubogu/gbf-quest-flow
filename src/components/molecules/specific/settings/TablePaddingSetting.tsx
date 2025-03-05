@@ -1,6 +1,6 @@
 import { updateSettings } from '@/core/facades/settingsStoreFacade';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
-import { SettingItem } from '../SettingItem';
+import { SettingItem } from '../../SettingItem';
 import type { JSX } from 'react';
 
 export function TablePaddingSetting(): JSX.Element {

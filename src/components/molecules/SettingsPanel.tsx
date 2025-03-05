@@ -1,10 +1,10 @@
 import { Button } from '@/components/atoms/common/Button';
 import { Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { LanguageSetting } from './settings/LanguageSetting';
-import { ButtonAlignmentSetting } from './settings/ButtonAlignmentSetting';
-import { TablePaddingSetting } from './settings/TablePaddingSetting';
-import { ActionTableClickTypeSetting } from './settings/ActionTableClickTypeSetting';
+import { LanguageSetting } from './specific/settings/LanguageSetting';
+import { ButtonAlignmentSetting } from './specific/settings/ButtonAlignmentSetting';
+import { TablePaddingSetting } from './specific/settings/TablePaddingSetting';
+import { ActionTableClickTypeSetting } from './specific/settings/ActionTableClickTypeSetting';
 import type { JSX } from 'react';
 interface SettingsPanelProps {
   onBack: () => void;
