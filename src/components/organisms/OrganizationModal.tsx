@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
-import { WeaponPanel } from './WeaponPanel/index';
+import { WeaponPanel } from './specific/weapon/index';
 import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
-import { CharacterPanel } from './CharacterPanel/index';
+import { CharacterPanel } from './specific/charactor/index';
 import { SkillTotalPanel } from './specific/skills/SkillTotalPanel';
 import useFlowStore from '@/core/stores/flowStore';
 import { updateFlowData } from '@/core/facades/flowFacade';
