@@ -1,6 +1,6 @@
 import { updateSettings } from '@/core/facades/settingsStoreFacade';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
-import { SettingItem } from '@/components/molecules/SettingItem';
+import { SettingItem } from '@/components/molecules/common/SettingItem';
 import { useTranslation } from 'react-i18next';
 import type { Language } from '@/types/types';
 import type { JSX } from 'react';

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { updateSettings } from '@/core/facades/settingsStoreFacade';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore'
-import { SettingItem } from '@/components/molecules/SettingItem';
+import { SettingItem } from '@/components/molecules/common/SettingItem';
 import type { JSX } from 'react';
 import type { ButtonAlignment } from '@/types/types';
 
