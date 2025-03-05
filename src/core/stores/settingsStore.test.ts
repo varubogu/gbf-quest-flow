@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import useSettingsStore from './settingsStore';
 import { act } from '@testing-library/react';
-
 
 describe('settingsStore', () => {
   beforeEach(() => {
@@ -167,10 +166,12 @@ describe('settingsStore', () => {
       });
 
       const newSettings = useSettingsStore.getState().settings;
+      //変化した項目を確認
       expect(newSettings.language).toBe('English');
       expect(newSettings.tablePadding).toBe(16);
-      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment); // 更新していない設定は維持される
-      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType); // 更新していない設定は維持される
+      // 更新していない設定は維持される
+      expect(newSettings.buttonAlignment).toBe(initialSettings.buttonAlignment);
+      expect(newSettings.actionTableClickType).toBe(initialSettings.actionTableClickType);
     });
   });
 });
