@@ -5,7 +5,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/molecules/Sheet';
+} from '@/components/organisms/common/Sheet';
 import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
