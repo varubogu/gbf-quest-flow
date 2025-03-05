@@ -2,8 +2,8 @@ import React, { type JSX } from 'react';
 import useFlowStore from '@/core/stores/flowStore';
 import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
-import { SummonIcon } from '@/components/molecules/Summon/SummonIcon';
-import { SummonNote } from '@/components/molecules/Summon/SummonNote';
+import { SummonIcon } from '@/components/molecules/specific/summon/SummonIcon';
+import { SummonNote } from '@/components/molecules/specific/summon/SummonNote';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,

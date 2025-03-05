@@ -3,8 +3,8 @@ import useFlowStore from '@/core/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
 import { SkillTable } from '@/components/molecules/SkillTable';
-import { WeaponIcon } from '@/components/molecules/Weapon/WeaponIcon';
-import { WeaponNote } from '@/components/molecules/Weapon/WeaponNote';
+import { WeaponIcon } from '@/components/molecules/specific/weapon/WeaponIcon';
+import { WeaponNote } from '@/components/molecules/specific/weapon/WeaponNote';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,
