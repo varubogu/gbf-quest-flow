@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
-import { SideMenu } from '@/components/molecules/SideMenu';
+import { SideMenu } from '@/components/organisms/SideMenu';
 import { IconButton } from '@/components/atoms/common/IconButton';
 import { IconTextButton } from '@/components/atoms/common/IconTextButton';
 import { TableContainer } from '@/components/organisms/TableContainer';

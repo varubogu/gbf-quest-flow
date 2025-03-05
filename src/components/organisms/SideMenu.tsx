@@ -11,9 +11,9 @@ import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
 import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
-import { HamburgerMenu } from './HamburgerMenu';
-import { MenuItems } from './MenuItems';
-import { SettingsPanel } from './SettingsPanel';
+import { HamburgerMenu } from '../molecules/HamburgerMenu';
+import { MenuItems } from '../molecules/MenuItems';
+import { SettingsPanel } from './specific/settings/SettingsPanel';
 import {
   downloadFlow,
   getDownloadFilename,

@@ -1,7 +1,7 @@
 import React, { useMemo, type JSX } from 'react';
 import type { WeaponSkillTotal } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
-import { SkillTable } from '@/components/molecules/SkillTable';
+import { SkillTable } from '@/components/organisms/specific/skills/SkillTable';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import type { FlowStore } from '@/types/flowStore.types';
 

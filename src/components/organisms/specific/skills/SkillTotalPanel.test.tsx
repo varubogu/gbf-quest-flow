@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { SkillTotalPanel } from './SkillTotalPanel';
-import type { Flow } from '@/types/models';
-import type { WeaponSkillTotal } from '@/types/types';
+import { SkillTotalPanel } from '@/components/organisms/specific/skills/SkillTotalPanel';
+import type { Flow, WeaponSkillTotal } from '@/types/types';
 import type { FlowStore } from '@/types/flowStore.types';
 import type { JSX } from 'react';
 
@@ -19,7 +18,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // SkillTableコンポーネントのモック
-vi.mock('@/components/molecules/SkillTable', () => ({
+vi.mock('@/components/organisms/specific/skills/SkillTable', () => ({
   SkillTable: (
     { id,
       isEditing,

@@ -4,7 +4,7 @@ import { WeaponPanel } from './WeaponPanel/index';
 import { SummonPanel } from './SummonPanel';
 import { JobPanel } from './JobPanel';
 import { CharacterPanel } from './CharacterPanel/index';
-import { SkillTotalPanel } from './SkillTotalPanel';
+import { SkillTotalPanel } from './specific/skills/SkillTotalPanel';
 import useFlowStore from '@/core/stores/flowStore';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import useEditModeStore from '@/core/stores/editModeStore';

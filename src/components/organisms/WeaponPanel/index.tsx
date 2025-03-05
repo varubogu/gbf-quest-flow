@@ -2,7 +2,7 @@ import React, { useMemo, type JSX } from 'react';
 import useFlowStore from '@/core/stores/flowStore';
 import type { Weapon, WeaponSkillEffect, WeaponType } from '@/types/models';
 import { useTranslation } from 'react-i18next';
-import { SkillTable } from '@/components/molecules/SkillTable';
+import { SkillTable } from '@/components/organisms/specific/skills/SkillTable';
 import { WeaponIcon } from '@/components/molecules/specific/weapon/WeaponIcon';
 import { WeaponNote } from '@/components/molecules/specific/weapon/WeaponNote';
 import {
