@@ -6,7 +6,7 @@ import type { Action } from '@/types/types';
 import * as useTableEventHandlers from '@/core/hooks/ui/table/useTableEventHandlers';
 import * as useFlowStore from '@/core/stores/flowStore';
 import * as useCursorStore from '@/core/stores/cursorStore';
-import * as useSettingsStoreFacade from '@/core/facades/settingsStoreFacade';
+import * as useSettingsStore from '@/core/stores/settingsStore';
 
 // モックデータ
 const mockData: Action[] = [
@@ -118,8 +118,8 @@ describe('TableContainer', () => {
       selector({ currentRow: 1, setCurrentRow: vi.fn() })
     );
 
-    // useSettingsStoreFacadeのモック
-    vi.spyOn(useSettingsStoreFacade, 'default').mockImplementation((selector) =>
+    // useSettingsStoreのモック（参照系）
+    vi.spyOn(useSettingsStore, 'default').mockImplementation((selector) =>
       selector({
         settings: {
           buttonAlignment: 'left',
