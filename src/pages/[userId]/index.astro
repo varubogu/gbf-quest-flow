@@ -3,21 +3,31 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
 import {
-  getRoutingPaths,
-  isUserSlug,
+  getRoutingPathSummaryList,
   type AstroContents,
-  type SlugUsersParameter,
 } from '@/lib/utils/routing';
 
 export async function getStaticPaths() {
   const flows = await getCollection('flows');
-  const paths = await getRoutingPaths(flows as unknown as AstroContents[]);
-  const results = paths.filter((path) => isUserSlug(path.params)) as unknown as SlugUsersParameter[];
-  return results;
+  const paths = await getRoutingPathSummaryList(flows as unknown as AstroContents[]);
+  return paths;
 }
 
+const { userId } = Astro.params;
+const { flowList } = Astro.props;
+const origin = Astro.url.origin;
 ---
 
 <BaseLayout>
-  ユーザーの行動表リストが表示される予定です
+  <h2 class="text-2xl font-bold">{userId}の行動表リスト</h2>
+  {
+    flowList.map((flow) => {
+      const url = new URL(flow.slug, origin);
+      return (
+        <div>
+          <a href={`${url}`} class="text-blue-600 underline">{flow.title}</a>
+        </div>
+      );
+    })
+  }
 </BaseLayout>
