@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { SummonPanel } from './SummonPanel';
-import type { Flow } from '@/types/models';
+import type { Flow, SummonType } from '@/types/models';
 import type { Summon } from '@/types/types';
 
 // モックの設定
@@ -19,41 +19,70 @@ vi.mock('react-i18next', () => ({
 }));
 
 // 各セクションコンポーネントのモック
-vi.mock('@/components/molecules/specific/summon/MainSummonSection', () => ({
-  MainSummonSection: vi.fn(({ summon, isEditing, _onSummonChange }) => (
-    <tr data-testid="main-summon-section">
-      <td>{summon.name}</td>
-      <td>{isEditing ? 'editing' : 'viewing'}</td>
-    </tr>
-  )),
-}));
+vi.mock('@/components/molecules/specific/summon/MainSummonSection', () => {
+  interface MainSummonSectionProps {
+    summon: Summon;
+    isEditing: boolean;
+    _onSummonChange: (_type: SummonType, _index: number | null, _field: keyof Summon, _value: string) => void;
+  }
 
-vi.mock('@/components/molecules/specific/summon/FriendSummonSection', () => ({
-  FriendSummonSection: vi.fn(({ summon, isEditing, _onSummonChange }) => (
-    <tr data-testid="friend-summon-section">
-      <td>{summon.name}</td>
-      <td>{isEditing ? 'editing' : 'viewing'}</td>
-    </tr>
-  )),
-}));
+  return {
+    MainSummonSection: vi.fn(({ summon, isEditing, _onSummonChange }: MainSummonSectionProps) => (
+      <tr data-testid="main-summon-section">
+        <td>{summon.name}</td>
+        <td>{isEditing ? 'editing' : 'viewing'}</td>
+      </tr>
+    )),
+  };
+});
 
-vi.mock('@/components/molecules/specific/summon/OtherSummonSection', () => ({
-  OtherSummonSection: vi.fn(({ summons, isEditing, _onSummonChange }) => (
-    <tr data-testid="other-summon-section">
-      <td>{summons.length} items</td>
-      <td>{isEditing ? 'editing' : 'viewing'}</td>
-    </tr>
-  )),
-}));
+vi.mock('@/components/molecules/specific/summon/FriendSummonSection', () => {
+  interface FriendSummonSectionProps {
+    summon: Summon;
+    isEditing: boolean;
+    _onSummonChange: (_type: SummonType, _index: number | null, _field: keyof Summon, _value: string) => void;
+  }
+  return {
+    FriendSummonSection: vi.fn(({ summon, isEditing, _onSummonChange }: FriendSummonSectionProps) => (
+      <tr data-testid="friend-summon-section">
+        <td>{summon.name}</td>
+        <td>{isEditing ? 'editing' : 'viewing'}</td>
+      </tr>
+    )),
+  };
+});
 
-vi.mock('@/components/molecules/specific/summon/SubSummonSection', () => ({
-  SubSummonSection: vi.fn(({ summons, isEditing, _onSummonChange }) => (
-    <tr data-testid="sub-summon-section">
-      <td>{summons.length} items</td>
+vi.mock('@/components/molecules/specific/summon/OtherSummonSection', () => {
+  interface OtherSummonSectionProps {
+    summons: Summon[];
+    isEditing: boolean;
+    _onSummonChange: (_type: SummonType, _index: number | null, _field: keyof Summon, _value: string) => void;
+  }
+  return {
+    OtherSummonSection: vi.fn(({ summons, isEditing, _onSummonChange }: OtherSummonSectionProps) => (
+      <tr data-testid="other-summon-section">
+        <td>{summons.length} items</td>
       <td>{isEditing ? 'editing' : 'viewing'}</td>
     </tr>
-  )),
-}));
+    )),
+  };
+});
+
+vi.mock('@/components/molecules/specific/summon/SubSummonSection', () => {
+  interface SubSummonSectionProps {
+    summons: Summon[];
+    isEditing: boolean;
+    _onSummonChange: (_type: SummonType, _index: number | null, _field: keyof Summon, _value: string) => void;
+  }
+  return {
+    SubSummonSection: vi.fn(({ summons, isEditing, _onSummonChange }: SubSummonSectionProps) => (
+      <tr data-testid="sub-summon-section">
+        <td>{summons.length} items</td>
+        <td>{isEditing ? 'editing' : 'viewing'}</td>
+      </tr>
+    )),
+  };
+});
 
 // カスタムフックのモック
 const handleSummonChangeMock = vi.fn();
