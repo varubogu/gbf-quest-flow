@@ -23,7 +23,10 @@ vi.mock('i18next', () => ({
 
 // モックの作成
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): {
+    t: (_key: string) => string,
+    i18n: { changeLanguage: () => void }
+  } => ({
     t: (key: string) => key,
     i18n: {
       changeLanguage: vi.fn(),
@@ -38,7 +41,11 @@ vi.mock('react-i18next', () => ({
 // settingsStoreのモック（参照系）
 vi.mock('../../../core/stores/settingsStore', () => {
   return {
-    default: () => ({
+    default: (): {
+      settings: {
+        language: '日本語',
+      },
+    } => ({
       settings: {
         language: '日本語',
       },

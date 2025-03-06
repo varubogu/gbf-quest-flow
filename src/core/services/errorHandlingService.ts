@@ -29,9 +29,10 @@ export async function handleWithTryCatch<T>(
 
 /**
  * 同期処理のエラーをハンドリングするためのヘルパー関数
- * @param fn 実行する関数
- * @param errorHandler エラーハンドラー
- * @returns 関数の戻り値
+ * @param {function(): T} fn 実行する関数
+ * @param {function(_error: Error): void} errorHandler エラーハンドラー
+ * @type {T} 関数の戻り値の型
+ * @returns {T} 関数の戻り値
  */
 export function handleSyncWithTryCatch<T>(
   fn: () => T,

@@ -11,7 +11,6 @@ import {
   type AstroContents,
   type SlugParameters,
   type SlugUsersParameter,
-  type FlowStaticSummary,
   type UserSlugDirectory
 } from './routing';
 import type { Flow } from '@/types/models';

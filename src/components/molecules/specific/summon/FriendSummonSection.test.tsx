@@ -19,7 +19,7 @@ vi.mock('react-i18next', () => ({
 
 // SummonIconとSummonNoteのモック
 vi.mock('./SummonIcon', () => ({
-  SummonIcon: vi.fn(({ name, isEditing, onChange, 'aria-label': ariaLabel }) => (
+  SummonIcon: vi.fn(({ name, isEditing, _onChange, 'aria-label': ariaLabel }) => (
     <td data-testid="summon-icon">
       <span>{name}</span>
       <span>{isEditing ? 'editing' : 'viewing'}</span>
@@ -29,7 +29,7 @@ vi.mock('./SummonIcon', () => ({
 }));
 
 vi.mock('./SummonNote', () => ({
-  SummonNote: vi.fn(({ note, isEditing, onChange, 'aria-label': ariaLabel }) => (
+  SummonNote: vi.fn(({ note, isEditing, _onChange, 'aria-label': ariaLabel }) => (
     <td data-testid="summon-note">
       <span>{note}</span>
       <span>{isEditing ? 'editing' : 'viewing'}</span>

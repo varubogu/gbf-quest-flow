@@ -2,9 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   parseCurrentUrl,
   updateUrl,
-  updateUrlForNewFlow,
-  updateUrlForEditMode,
-  updateUrlForViewMode,
   createPopStateHandler
 } from './urlService';
 import type { Flow } from '@/types/models';

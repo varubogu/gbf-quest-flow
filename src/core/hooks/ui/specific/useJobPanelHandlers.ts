@@ -1,9 +1,13 @@
-import type { Job, JobAbility, JobEquipment } from '@/types/types';
+import type { Flow, Job, JobAbility, JobEquipment } from '@/types/types';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import type { FlowStore } from '@/types/flowStore.types';
 
-export const useJobPanelHandlers = () => {
+export const useJobPanelHandlers = (): {
+  flowData: Flow | undefined;
+  handleJobChange: (_field: keyof Job, _value: string) => void;
+  handleEquipmentChange: (_field: keyof JobEquipment, _value: string) => void;
+} => {
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   const handleJobChange = (field: keyof Job, value: string): void => {

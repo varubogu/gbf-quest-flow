@@ -28,24 +28,24 @@ vi.mock('@/core/stores/errorStore', () => ({
 // errorFactoryのモック
 vi.mock('@/core/services/errorFactoryService', () => ({
   errorFactory: {
-    createValidationError: vi.fn((message, details) => ({
+    createValidationError: vi.fn((message: string, details: Record<string, unknown>) => ({
       type: ErrorType.VALIDATION,
       message,
       details,
     })),
-    createNetworkError: vi.fn((originalError, details) => ({
+    createNetworkError: vi.fn((originalError: Error, details: Record<string, unknown>) => ({
       type: ErrorType.NETWORK,
       message: `ネットワークエラーが発生しました: ${originalError.message}`,
       originalError,
       details,
     })),
-    createFileOperationError: vi.fn((originalError, details) => ({
+    createFileOperationError: vi.fn((originalError: Error, details: Record<string, unknown>) => ({
       type: ErrorType.FILE_OPERATION,
       message: `ファイル操作エラーが発生しました: ${originalError.message}`,
       originalError,
       details,
     })),
-    createUnknownError: vi.fn((originalError) => ({
+    createUnknownError: vi.fn((originalError: Error) => ({
       type: ErrorType.UNKNOWN,
       message: `予期しないエラーが発生しました: ${originalError.message}`,
       originalError,

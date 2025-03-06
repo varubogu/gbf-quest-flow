@@ -75,7 +75,7 @@ describe('errorHandlingService', () => {
       const result = 'テスト結果';
       const fn = vi.fn().mockReturnValue(result);
 
-      const actual = handleSyncWithTryCatch(fn);
+      const actual: string | undefined = handleSyncWithTryCatch<string>(fn);
 
       expect(actual).toBe(result);
       expect(fn).toHaveBeenCalledTimes(1);
@@ -84,12 +84,12 @@ describe('errorHandlingService', () => {
 
     it('エラーが発生した場合はエラーハンドラーを呼び出すこと', () => {
       const error = new Error('テストエラー');
-      const fn = vi.fn().mockImplementation(() => {
+      const fn = vi.fn().mockImplementation(():number => {
         throw error;
       });
       const errorHandler = vi.fn();
 
-      const actual = handleSyncWithTryCatch(fn, errorHandler);
+      const actual: number | undefined = handleSyncWithTryCatch<number>(fn, errorHandler);
 
       expect(actual).toBeUndefined();
       expect(fn).toHaveBeenCalledTimes(1);
@@ -99,11 +99,11 @@ describe('errorHandlingService', () => {
 
     it('エラーハンドラーが指定されていない場合はdisplayUnknownErrorを呼び出すこと', () => {
       const error = new Error('テストエラー');
-      const fn = vi.fn().mockImplementation(() => {
+      const fn = vi.fn().mockImplementation((): number => {
         throw error;
       });
 
-      const actual = handleSyncWithTryCatch(fn);
+      const actual: number | undefined = handleSyncWithTryCatch<number>(fn);
 
       expect(actual).toBeUndefined();
       expect(fn).toHaveBeenCalledTimes(1);
@@ -111,11 +111,11 @@ describe('errorHandlingService', () => {
     });
 
     it('Errorインスタンスでないエラーの場合は新しいErrorを作成すること', () => {
-      const fn = vi.fn().mockImplementation(() => {
+      const fn = vi.fn().mockImplementation((): number => {
         throw '文字列エラー';
       });
 
-      const actual = handleSyncWithTryCatch(fn);
+      const actual: number | undefined = handleSyncWithTryCatch<number>(fn);
 
       expect(actual).toBeUndefined();
       expect(fn).toHaveBeenCalledTimes(1);

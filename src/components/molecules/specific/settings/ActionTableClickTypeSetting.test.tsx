@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // モックの作成
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): { t: (_key: string) => string } => ({
     t: (key: string) => key,
   }),
 }));
@@ -19,7 +19,11 @@ vi.mock('../../../core/facades/settingsStoreFacade', () => {
 // settingsStoreのモック
 vi.mock('../../../core/stores/settingsStore', () => {
   return {
-    default: () => ({
+    default: (): {
+      settings: {
+        actionTableClickType: 'single',
+      },
+    } => ({
       settings: {
         actionTableClickType: 'single',
       },

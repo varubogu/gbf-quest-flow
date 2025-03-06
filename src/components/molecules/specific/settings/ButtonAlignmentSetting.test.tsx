@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // モックの作成
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useTranslation: (): { t: (_key: string) => string } => ({
     t: (key: string) => key,
   }),
 }));
@@ -12,7 +12,11 @@ vi.mock('react-i18next', () => ({
 // settingsStoreのモック（参照系）
 vi.mock('../../../core/stores/settingsStore', () => {
   return {
-    default: () => ({
+    default: (): {
+      settings: {
+        buttonAlignment: 'left',
+      },
+    } => ({
       settings: {
         buttonAlignment: 'left',
       },

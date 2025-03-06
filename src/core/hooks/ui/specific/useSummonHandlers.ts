@@ -1,9 +1,12 @@
-import type { Summon, SummonType } from '@/types/types';
+import type { Flow, Summon, SummonType } from '@/types/types';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import useFlowStore from '@/core/stores/flowStore';
 import type { FlowStore } from '@/types/flowStore.types';
 
-export const useSummonHandlers = () => {
+export const useSummonHandlers = (): {
+  flowData: Flow | undefined;
+  handleSummonChange: (_type: SummonType, _index: number | null, _field: keyof Summon, _value: string) => void;
+} => {
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
 
   const handleSummonChange = (type: SummonType, index: number | null, field: keyof Summon, value: string): void => {

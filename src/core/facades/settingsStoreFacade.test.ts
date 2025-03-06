@@ -17,10 +17,10 @@ vi.mock('@/core/stores/settingsStore', () => {
     buttonAlignment: 'right',
     tablePadding: 8,
     actionTableClickType: 'double',
-  };
+  } as AppSettings;
 
   return {
-    default: vi.fn((selector) => {
+    default: vi.fn((selector: (_state: { settings: AppSettings }) => { settings: AppSettings }) => {
       if (selector) {
         return selector({ settings: mockSettings });
       }
