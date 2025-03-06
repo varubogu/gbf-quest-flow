@@ -3,7 +3,6 @@ import {
   startEdit,
   finishEdit,
   cancelEdit,
-  createNewFlow,
   setIsEditMode
 } from './editModeService';
 import type { Flow } from '@/types/models';
@@ -33,12 +32,6 @@ vi.mock('@/core/stores/editModeStore', () => ({
   }
 }));
 
-vi.mock('@/core/stores/cursorStore', () => ({
-  default: {
-    setState: vi.fn()
-  }
-}));
-
 vi.mock('./historyService', () => ({
   clearHistory: vi.fn()
 }));
@@ -62,7 +55,6 @@ afterEach(() => {
 // テスト用のインポート
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
-import useCursorStore from '@/core/stores/cursorStore';
 import { clearHistory } from './historyService';
 import { setFlowData } from '@/core/services/flowService';
 
@@ -250,35 +242,6 @@ describe('editModeService', () => {
         // 検証
         expect(setStateMock).not.toHaveBeenCalled();
         expect(endEditMock).toHaveBeenCalled();
-      });
-    });
-
-    describe('createNewFlow', () => {
-      it('新しいフローを作成し、編集モードをオンにする', () => {
-        // モックの設定
-        const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-        const setStateMock = vi.fn();
-        const startEditMock = vi.fn();
-        const cursorSetStateMock = vi.fn();
-
-        (useFlowStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
-          getFlowData: getFlowDataMock
-        });
-
-        useFlowStore.setState = setStateMock;
-        (useEditModeStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
-          startEdit: startEditMock
-        });
-        useCursorStore.setState = cursorSetStateMock;
-
-        // テスト実行
-        createNewFlow();
-
-        // 検証
-        expect(startEditMock).toHaveBeenCalled();
-        expect(setFlowData).toHaveBeenCalled();
-        expect(setStateMock).toHaveBeenCalledWith({ originalData: mockFlow });
-        expect(cursorSetStateMock).toHaveBeenCalledWith({ currentRow: 0 });
       });
     });
   });

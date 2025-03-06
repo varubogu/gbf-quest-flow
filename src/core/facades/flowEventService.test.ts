@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
 import * as flowOperations from '@/lib/utils/flowOperations';
 import * as editModeService from '@/core/services/editModeService';
+import * as flowInitService from '@/core/services/flowInitService';
 import useFlowStore from '@/core/stores/flowStore';
 import type { Flow, Organization } from '@/types/models';
 
@@ -18,9 +19,12 @@ vi.mock('@/lib/utils/flowOperations', () => ({
 
 vi.mock('@/core/services/editModeService', () => ({
   startEdit: vi.fn(),
-  createNewFlow: vi.fn(),
   finishEdit: vi.fn(),
   cancelEdit: vi.fn()
+}));
+
+vi.mock('@/core/services/flowInitService', () => ({
+  newFlowData: vi.fn()
 }));
 
 vi.mock('@/lib/utils/accessibility', () => ({
@@ -140,7 +144,7 @@ describe('flowEventService', () => {
       handleNewFlow(mockFlow);
 
       // 検証
-      expect(editModeService.createNewFlow).toHaveBeenCalled();
+      expect(flowInitService.newFlowData).toHaveBeenCalled();
       expect(flowOperations.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
     });
   });

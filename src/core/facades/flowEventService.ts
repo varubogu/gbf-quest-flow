@@ -1,7 +1,8 @@
 import type { Flow } from '@/types/models';
 import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
 import useFlowStore from '@/core/stores/flowStore';
-import { createNewFlow, finishEdit, cancelEdit } from '@/core/services/editModeService';
+import { finishEdit, cancelEdit } from '@/core/services/editModeService';
+import { newFlowData } from '@/core/services/flowInitService';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 
 /**
@@ -24,7 +25,7 @@ export const handleFlowSave = async (
  * 新規フロー作成処理を実行する
  */
 export const handleNewFlow = (currentFlowData: Flow | null = null): void => {
-  createNewFlow();
+  newFlowData();
   // 旧flowStoreも更新（後方互換性のため）- createNewFlowはfileServiceで両方更新されるため不要
   updateNewFlowState(currentFlowData);
 };

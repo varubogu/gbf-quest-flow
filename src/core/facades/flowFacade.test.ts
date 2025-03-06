@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Mock, MockedFunction } from 'vitest';
 import { setFlowData, updateFlowData, updateAction, setIsEditMode, createNewFlow } from './flowFacade';
 import * as editModeService from '@/core/services/editModeService';
-import * as fileService from '@/core/services/fileService';
+import * as flowInitService from '@/core/services/flowInitService';
 import * as flowService from '@/core/services/flowService';
 import type { Flow, Organization } from '@/types/types';
 
@@ -12,7 +12,7 @@ vi.mock('@/core/services/editModeService', () => {
   };
 });
 
-vi.mock('@/core/services/fileService', () => {
+vi.mock('@/core/services/flowInitService', () => {
   return {
     newFlowData: vi.fn()
   };
@@ -114,9 +114,9 @@ describe('flowFacade', () => {
     });
 
     describe('createNewFlow', () => {
-      it('fileServiceのnewFlowDataを呼び出す', () => {
+      it('flowInitServiceのnewFlowDataを呼び出す', () => {
         // モックの設定
-        const newFlowDataMock = fileService.newFlowData as Mock;
+        const newFlowDataMock = flowInitService.newFlowData as Mock;
 
         // テスト実行
         createNewFlow();
