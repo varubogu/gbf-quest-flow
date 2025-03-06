@@ -1,18 +1,17 @@
 import React, { type JSX } from 'react';
-import useFlowStore from '@/core/stores/flowStore';
-import type { Summon, SummonType } from '@/types/types';
 import { useTranslation } from 'react-i18next';
-import { SummonIcon } from '@/components/molecules/specific/summon/SummonIcon';
-import { SummonNote } from '@/components/molecules/specific/summon/SummonNote';
 import {
   tableBaseStyle,
   tableHeaderRowStyle,
   tableHeaderCellBaseStyle,
-  tableCellBaseStyle,
   tableWidthStyles,
 } from '@/components/styles/TableStyles';
-import { updateFlowData } from '@/core/facades/flowFacade';
-import type { FlowStore } from '@/types/flowStore.types';
+import { useSummonHandlers } from '@/core/hooks/ui/specific/useSummonHandlers';
+import { MainSummonSection } from '@/components/molecules/specific/summon/MainSummonSection';
+import { FriendSummonSection } from '@/components/molecules/specific/summon/FriendSummonSection';
+import { OtherSummonSection } from '@/components/molecules/specific/summon/OtherSummonSection';
+import { SubSummonSection } from '@/components/molecules/specific/summon/SubSummonSection';
+import type { Summon } from '@/types/types';
 
 interface SummonPanelProps {
   isEditing: boolean;
@@ -20,70 +19,24 @@ interface SummonPanelProps {
 
 export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element | null {
   const { t } = useTranslation();
-  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const { flowData, handleSummonChange } = useSummonHandlers();
 
   if (!flowData) return null;
 
-  const handleSummonChange = (type: SummonType, index: number | null, field: keyof Summon, value: string): void => {
-    if (!flowData) return;
+  const handleMainSummonChange = (field: keyof Summon, value: string): void => {
+    handleSummonChange('main', null, field, value);
+  };
 
-    let newSummonData;
-    if (type === 'main') {
-      newSummonData = {
-        ...flowData.organization.summon,
-        main: {
-          name: flowData.organization.summon.main.name,
-          note: flowData.organization.summon.main.note,
-          [field]: value,
-        },
-      };
-    } else if (type === 'friend') {
-      newSummonData = {
-        ...flowData.organization.summon,
-        friend: {
-          name: flowData.organization.summon.friend.name,
-          note: flowData.organization.summon.friend.note,
-          [field]: value,
-        },
-      };
-    } else if (type === 'other' && index !== null) {
-      const newOther = [...flowData.organization.summon.other];
-      const currentSummon = newOther[index];
-      if (currentSummon) {
-        newOther[index] = {
-          name: currentSummon.name,
-          note: currentSummon.note,
-          [field]: value,
-        };
-      }
-      newSummonData = {
-        ...flowData.organization.summon,
-        other: newOther,
-      };
-    } else if (type === 'sub' && index !== null) {
-      const newSub = [...flowData.organization.summon.sub];
-      const currentSummon = newSub[index];
-      if (currentSummon) {
-        newSub[index] = {
-          name: currentSummon.name,
-          note: currentSummon.note,
-          [field]: value,
-        };
-      }
-      newSummonData = {
-        ...flowData.organization.summon,
-        sub: newSub,
-      };
-    }
+  const handleFriendSummonChange = (field: keyof Summon, value: string): void => {
+    handleSummonChange('friend', null, field, value);
+  };
 
-    if (newSummonData) {
-      updateFlowData({
-        organization: {
-          ...flowData.organization,
-          summon: newSummonData,
-        },
-      });
-    }
+  const handleOtherSummonChange = (index: number, field: keyof Summon, value: string): void => {
+    handleSummonChange('other', index, field, value);
+  };
+
+  const handleSubSummonChange = (index: number, field: keyof Summon, value: string): void => {
+    handleSummonChange('sub', index, field, value);
   };
 
   return (
@@ -99,87 +52,32 @@ export function SummonPanel({ isEditing }: SummonPanelProps): JSX.Element | null
           </thead>
           <tbody>
             {/* メイン召喚石 */}
-            <tr>
-              <th className={tableCellBaseStyle}>{t('summonMain')}</th>
-              <SummonIcon
-                name={flowData.organization.summon.main.name}
-                isEditing={isEditing}
-                onChange={(value) => handleSummonChange('main', null, 'name', value)}
-                aria-label={t('summonName') as string}
-              />
-              <SummonNote
-                note={flowData.organization.summon.main.note}
-                isEditing={isEditing}
-                onChange={(value) => handleSummonChange('main', null, 'note', value)}
-                aria-label={t('overview') as string}
-              />
-            </tr>
+            <MainSummonSection
+              summon={flowData.organization.summon.main}
+              isEditing={isEditing}
+              onSummonChange={handleMainSummonChange}
+            />
+
             {/* フレンド召喚石 */}
-            <tr>
-              <th className={tableCellBaseStyle}>{t('summonFriend')}</th>
-              <SummonIcon
-                name={flowData.organization.summon.friend.name}
-                isEditing={isEditing}
-                onChange={(value) => handleSummonChange('friend', null, 'name', value)}
-                aria-label={t('summonName') as string}
-              />
-              <SummonNote
-                note={flowData.organization.summon.friend.note}
-                isEditing={isEditing}
-                onChange={(value) => handleSummonChange('friend', null, 'note', value)}
-                aria-label={t('overview') as string}
-              />
-            </tr>
+            <FriendSummonSection
+              summon={flowData.organization.summon.friend}
+              isEditing={isEditing}
+              onSummonChange={handleFriendSummonChange}
+            />
+
             {/* その他の召喚石 */}
-            {flowData.organization.summon.other.map((summon: Summon, index: number) => (
-              <tr key={`other-${index}`}>
-                {index === 0 && (
-                  <th
-                    className={tableCellBaseStyle}
-                    rowSpan={flowData.organization.summon.other.length}
-                  >
-                    {t('summonNormal')}
-                  </th>
-                )}
-                <SummonIcon
-                  name={summon.name}
-                  isEditing={isEditing}
-                  onChange={(value) => handleSummonChange('other', index, 'name', value)}
-                  aria-label={t('summonName') as string}
-                />
-                <SummonNote
-                  note={summon.note}
-                  isEditing={isEditing}
-                  onChange={(value) => handleSummonChange('other', index, 'note', value)}
-                  aria-label={t('overview') as string}
-                />
-              </tr>
-            ))}
+            <OtherSummonSection
+              summons={flowData.organization.summon.other}
+              isEditing={isEditing}
+              onSummonChange={handleOtherSummonChange}
+            />
+
             {/* サブ召喚石 */}
-            {flowData.organization.summon.sub.map((summon: Summon, index: number) => (
-              <tr key={`sub-${index}`}>
-                {index === 0 && (
-                  <th
-                    className={tableCellBaseStyle}
-                    rowSpan={flowData.organization.summon.sub.length}
-                  >
-                    {t('summonSub')}
-                  </th>
-                )}
-                <SummonIcon
-                  name={summon.name}
-                  isEditing={isEditing}
-                  onChange={(value) => handleSummonChange('sub', index, 'name', value)}
-                  aria-label={t('summonName') as string}
-                />
-                <SummonNote
-                  note={summon.note}
-                  isEditing={isEditing}
-                  onChange={(value) => handleSummonChange('sub', index, 'note', value)}
-                  aria-label={t('overview') as string}
-                />
-              </tr>
-            ))}
+            <SubSummonSection
+              summons={flowData.organization.summon.sub}
+              isEditing={isEditing}
+              onSummonChange={handleSubSummonChange}
+            />
           </tbody>
         </table>
       </div>
