@@ -31,22 +31,9 @@ export interface FileOperationMethods {
   saveFlowToFile: (_fileName?: string) => Promise<void>;
 }
 
-// 非推奨の履歴関連機能（後方互換性のため残す）
-export interface DeprecatedHistoryMethods {
-  // @deprecated - historyStoreを直接使用してください
-  pushToHistory: (_data: Flow) => void;
-  // @deprecated - historyStoreを直接使用してください
-  undo: () => void;
-  // @deprecated - historyStoreを直接使用してください
-  redo: () => void;
-  // @deprecated - historyStoreを直接使用してください
-  clearHistory: () => void;
-}
-
 // 完全なFlowStoreのインターフェース（分割後のファサード用）
 export interface SummaryFlowStore extends
   FlowStore,
   EditModeStore,
   CursorStore,
-  FileOperationMethods,
-  DeprecatedHistoryMethods {}
+  FileOperationMethods {}

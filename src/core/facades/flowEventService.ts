@@ -1,10 +1,11 @@
 import type { Flow } from '@/types/models';
 import { saveFlow } from '@/core/services/fileOperationService';
-import { updateNewFlowState } from '@/core/services/fileEventService';
-import useFlowStore from '@/core/stores/flowStore';
 import { finishEdit, cancelEdit } from '@/core/services/editModeService';
 import { newFlowDataSync } from '@/core/services/flowDataInitService';
+import { updateUrlForNewFlow, updateUrlForViewMode } from '@/core/services/urlService';
+import useFlowStore from '@/core/stores/flowStore';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
+
 /**
  * フローの保存処理を実行する
  */
@@ -17,6 +18,8 @@ export const handleFlowSave = async (
   if (success) {
     clearHistory();
     finishEdit();
+    // 保存成功時にURLを更新
+    updateUrlForViewMode(sourceId, flowData);
   }
   return success;
 };
@@ -26,8 +29,10 @@ export const handleFlowSave = async (
  */
 export const handleNewFlow = (currentFlowData: Flow | null = null): void => {
   newFlowDataSync();
-  // 旧flowStoreも更新（後方互換性のため）- createNewFlowはfileServiceで両方更新されるため不要
-  updateNewFlowState(currentFlowData);
+  // URLを更新
+  updateUrlForNewFlow(currentFlowData);
+  // アクセシビリティ通知
+  announceToScreenReader('新しいフローを作成しました');
 };
 
 /**
@@ -53,6 +58,13 @@ export const handleExitEditMode = async (
     }
     cancelEdit();
     clearHistory();
+
+    // 編集モード終了時にURLを更新
+    const currentData = useFlowStore.getState().flowData;
+    if (currentData) {
+      updateUrlForViewMode(null, currentData);
+    }
+
     announceToScreenReader('編集モードを終了しました');
     return true;
   } catch (error) {

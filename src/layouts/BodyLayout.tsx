@@ -8,12 +8,12 @@ import { FlowLayout } from './FlowLayout';
 import type { Flow, ViewMode } from '@/types/models';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 import { useUrlManagement } from '@/core/hooks/domain/flow/useUrlManagement';
-import { useHistoryManagement } from '@/core/hooks/domain/flow/useHistoryManagement';
 import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import { useKeyboardShortcuts } from '@/core/hooks/ui/base/useKeyboardShortcuts';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
 import * as flowFacade from '@/core/facades/flowFacade';
+import { setupHistoryListener } from '@/core/facades/urlFacade';
 
 interface Props {
   initialData?: Flow | null;
@@ -80,8 +80,31 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
     initialMode,
   });
 
-  // 履歴管理
-  useHistoryManagement(createNewFlow, setIsEditMode, flowFacade.setFlowData, initialData);
+  // 履歴管理（新しいurlFacadeを使用）
+  useEffect(() => {
+    const cleanup = setupHistoryListener({
+      onModeChange: (mode) => {
+        if (mode === 'new') {
+          createNewFlow();
+          setIsEditMode(true);
+        } else if (mode === 'edit') {
+          setIsEditMode(true);
+        } else {
+          setIsEditMode(false);
+        }
+      },
+      onFlowDataChange: (flowData) => {
+        flowFacade.setFlowData(flowData);
+      },
+      onInitialData: () => {
+        if (initialData) {
+          flowFacade.setFlowData(initialData);
+        }
+      }
+    });
+
+    return cleanup;
+  }, [initialData]);
 
   // キーボードショートカット - 新しいインターフェースを使用
   useKeyboardShortcuts({

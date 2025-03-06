@@ -1,10 +1,9 @@
 import organizationSettings from '@/content/settings/organization.json';
 import type { Flow } from '@/types/models';
 import useFlowStore from '@/core/stores/flowStore';
-import useEditModeStore from '../stores/editModeStore';
-import useCursorStore from '../stores/cursorStore';
-import { clearHistory } from './historyService';
-import { handleFileOperationError } from './fileOperationService';
+import useEditModeStore from '@/core/stores/editModeStore';
+import { setCurrentRow } from '@/core/services/cursorService';
+import { clearHistory } from '@/core/services/historyService';
 import { errorFactory } from '@/core/services/errorFactoryService';
 import useErrorStore from '@/core/stores/errorStore';
 import { setFlowData } from '@/core/services/flowService';
@@ -16,57 +15,11 @@ import { setFlowData } from '@/core/services/flowService';
  */
 
 /**
- * 新しい空のフローデータを作成する
- * @deprecated 代わりに createNewFlowData() を使用してください
- */
-export async function newFlowData(): Promise<void> {
-  try {
-    // 新しいデータを作成
-    const newData = createEmptyFlowData();
-
-    // 履歴をクリア
-    clearHistory();
-
-    // カーソル位置をリセット
-    useCursorStore.getState().setCurrentRow(0);
-
-    // 編集モードを設定
-    useEditModeStore.setState({ isEditMode: true });
-
-    // flowStoreを更新
-    useFlowStore.setState({
-      flowData: newData,
-      originalData: null, // 新規作成時はoriginalDataはnull
-    });
-
-    // 更新後の状態を確認
-    const updatedState = useFlowStore.getState();
-    const editState = useEditModeStore.getState();
-    if (!updatedState.flowData || !editState.isEditMode) {
-      console.error('createNewFlow: 状態の更新に失敗しました', updatedState);
-    }
-
-  } catch (error) {
-    console.error('新規フロー作成エラー:', error);
-    handleFileOperationError(error, '新規フローの作成中にエラーが発生しました');
-    throw error;
-  }
-}
-
-/**
- * 空のフローデータを作成する
- * @deprecated 代わりに createNewFlowData() を使用してください
- */
-export function createEmptyFlowData(): Flow {
-  return createNewFlowData();
-}
-
-/**
  * 新規フローデータを作成する
  * @returns 新規フローデータ
  */
+// 空のデータを作成
 export function createNewFlowData(): Flow {
-  // 空のデータを作成
   return {
     title: '新しいフロー',
     quest: '',
@@ -169,11 +122,12 @@ export function createNewFlowData(): Flow {
  */
 export function newFlowDataSync(): void {
   try {
-    // 新規フローデータを作成
-    const newData = createNewFlowData();
 
     // 現在のデータをoriginalDataとして保持
     const currentFlowData = useFlowStore.getState().getFlowData();
+
+    // 新規フローデータを作成
+    const newData = createNewFlowData();
 
     // historyServiceの履歴をクリア
     clearHistory();
@@ -186,9 +140,8 @@ export function newFlowDataSync(): void {
     useFlowStore.setState({ originalData: currentFlowData });
 
     // カーソル位置をリセット
-    useCursorStore.setState({
-      currentRow: 0
-    });
+    setCurrentRow(0);
+
   } catch (error) {
     useErrorStore
       .getState()

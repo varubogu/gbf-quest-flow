@@ -8,7 +8,7 @@ import type { Flow, Organization } from '@/types/types';
 
 vi.mock('@/core/services/editModeService', () => {
   return {
-    startEditMode: vi.fn()
+    setIsEditMode: vi.fn()
   };
 });
 
@@ -102,14 +102,14 @@ describe('flowFacade', () => {
     describe('setIsEditMode', () => {
       it('editModeServiceのstartEditModeを呼び出す', () => {
         // モックの設定
-        const startEditModeMock = vi.fn();
-        (editModeService.startEdit as MockedFunction<typeof editModeService.startEdit>) = startEditModeMock;
+        const setIsEditModeMock = vi.fn();
+        (editModeService.setIsEditMode as MockedFunction<typeof editModeService.setIsEditMode>) = setIsEditModeMock;
 
         // テスト実行
         setIsEditMode(true);
 
         // 検証
-        expect(startEditModeMock).toHaveBeenCalledWith(true);
+        expect(setIsEditModeMock).toHaveBeenCalledWith(true);
       });
     });
 

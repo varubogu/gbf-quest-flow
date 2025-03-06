@@ -20,6 +20,11 @@ vi.mock('@/core/services/fileEventService', () => ({
   updateNewFlowState: vi.fn()
 }));
 
+vi.mock('@/core/services/urlService', () => ({
+  updateUrlForNewFlow: vi.fn(),
+  updateUrlForViewMode: vi.fn()
+}));
+
 vi.mock('@/core/services/editModeService', () => ({
   startEdit: vi.fn(),
   finishEdit: vi.fn(),
@@ -48,7 +53,8 @@ vi.mock('@/core/stores/flowStore', () => {
 });
 
 import * as fileOperationService from '@/core/services/fileOperationService';
-import * as fileEventService from '@/core/services/fileEventService';
+import * as urlService from '@/core/services/urlService';
+
 describe('flowEventService', () => {
   // テスト用のモックデータ
   const mockFlow: Flow = {
@@ -150,7 +156,7 @@ describe('flowEventService', () => {
 
       // 検証
       expect(flowDataInitService.newFlowDataSync).toHaveBeenCalled();
-      expect(fileEventService.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
+      expect(urlService.updateUrlForNewFlow).toHaveBeenCalledWith(mockFlow);
     });
   });
 

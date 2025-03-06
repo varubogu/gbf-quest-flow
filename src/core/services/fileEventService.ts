@@ -1,5 +1,3 @@
-import type { Flow } from '@/types/models';
-import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
 import { clearHistory } from '@/core/services/historyService';
 import {
   readJsonFile,
@@ -10,6 +8,7 @@ import {
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import useCursorStore from '@/core/stores/cursorStore';
+import { updateUrlForViewMode } from '@/core/services/urlService';
 
 /**
  * ファイル操作関連のサービス
@@ -18,9 +17,6 @@ import useCursorStore from '@/core/stores/cursorStore';
  * 実際のファイル操作はfileOperationServiceに委譲し、
  * データ初期化はflowDataInitServiceに委譲します。
  */
-
-// 新規フローデータ作成の再エクスポート
-export { newFlowData } from './flowDataInitService';
 
 // ファイル操作関数の再エクスポート
 export {
@@ -68,8 +64,8 @@ export async function loadFlowFromFile(): Promise<void> {
       console.error('loadFlowFromFile: 状態の更新に失敗しました', updatedState);
     }
 
-    // URLを更新（fileOperationServiceに委譲）
-    updateViewModeState(data);
+    // URLを更新
+    updateUrlForViewMode(null, data);
   } catch (error) {
     console.error('ファイル読み込みエラー:', error);
     handleFileOperationError(error, 'ファイルの読み込み中にエラーが発生しました');
@@ -95,36 +91,5 @@ export async function saveFlowToFile(fileName?: string): Promise<void> {
   } catch (error) {
     handleFileOperationError(error, 'ファイルの保存中にエラーが発生しました');
     throw error;
-  }
-};
-
-/**
- * 新規作成時のURL状態とアクセシビリティを更新する
- * @param flowData 現在のフローデータ（新規作成をキャンセルした時の履歴用）
- */
-export const updateNewFlowState = (flowData: Flow | null = null): void => {
-  try {
-    if (flowData) {
-      history.pushState({ flowData }, '', '/?mode=new');
-    }
-    announceToScreenReader('新しいフローを作成しました');
-  } catch (error) {
-    handleError(error, '新規作成中');
-  }
-};
-
-/**
- * 表示モード時のURL状態を更新する
- * @param flowData フローデータ
- */
-export function updateViewModeState(flowData: Flow): void {
-  try {
-    history.pushState(
-      { isSaving: false, flowData },
-      '',
-      `${window.location.pathname}?mode=view`
-    );
-  } catch (error) {
-    handleError(error, 'URL更新中');
   }
 };
