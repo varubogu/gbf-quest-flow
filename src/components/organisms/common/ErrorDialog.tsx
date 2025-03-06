@@ -4,7 +4,7 @@ import { Dialog } from '@headlessui/react';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/FileOperations';
-import { formatErrorMessage } from '@/core/services/errorService';
+import { formatErrorMessage } from '@/core/services/errorFactoryService';
 import type { FlowStore } from '@/types/flowStore.types';
 
 export function ErrorDialog(): React.ReactElement {

@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { errorFacade } from './errorFacade';
-import * as errorService from '@/core/services/errorService';
+import * as errorDisplayService from '@/core/services/errorDisplayService';
+import * as errorHandlingService from '@/core/services/errorHandlingService';
 import type { AppError } from '@/types/error.types';
 import { ErrorType, ErrorSeverity } from '@/types/error.types';
 
-// errorServiceのモック
-vi.mock('@/core/services/errorService', () => ({
+// errorDisplayServiceのモック
+vi.mock('@/core/services/errorDisplayService', () => ({
   displayValidationError: vi.fn(),
   displayNetworkError: vi.fn(),
   displayFileOperationError: vi.fn(),
@@ -13,6 +14,10 @@ vi.mock('@/core/services/errorService', () => ({
   displayCustomError: vi.fn(),
   clearErrorDisplay: vi.fn(),
   executeErrorRecoveryAction: vi.fn().mockResolvedValue(undefined),
+}));
+
+// errorHandlingServiceのモック
+vi.mock('@/core/services/errorHandlingService', () => ({
   handleWithTryCatch: vi.fn(),
 }));
 
@@ -28,8 +33,8 @@ describe('errorFacade', () => {
 
       errorFacade.showValidationError(message, details);
 
-      expect(errorService.displayValidationError).toHaveBeenCalledTimes(1);
-      expect(errorService.displayValidationError).toHaveBeenCalledWith(message, details);
+      expect(errorDisplayService.displayValidationError).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.displayValidationError).toHaveBeenCalledWith(message, details);
     });
   });
 
@@ -40,8 +45,8 @@ describe('errorFacade', () => {
 
       errorFacade.showNetworkError(originalError, details);
 
-      expect(errorService.displayNetworkError).toHaveBeenCalledTimes(1);
-      expect(errorService.displayNetworkError).toHaveBeenCalledWith(originalError, details);
+      expect(errorDisplayService.displayNetworkError).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.displayNetworkError).toHaveBeenCalledWith(originalError, details);
     });
   });
 
@@ -53,8 +58,8 @@ describe('errorFacade', () => {
 
       errorFacade.showFileOperationError(originalError, details, recoveryAction);
 
-      expect(errorService.displayFileOperationError).toHaveBeenCalledTimes(1);
-      expect(errorService.displayFileOperationError).toHaveBeenCalledWith(originalError, details, recoveryAction);
+      expect(errorDisplayService.displayFileOperationError).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.displayFileOperationError).toHaveBeenCalledWith(originalError, details, recoveryAction);
     });
   });
 
@@ -64,8 +69,8 @@ describe('errorFacade', () => {
 
       errorFacade.showUnknownError(originalError);
 
-      expect(errorService.displayUnknownError).toHaveBeenCalledTimes(1);
-      expect(errorService.displayUnknownError).toHaveBeenCalledWith(originalError);
+      expect(errorDisplayService.displayUnknownError).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.displayUnknownError).toHaveBeenCalledWith(originalError);
     });
   });
 
@@ -81,8 +86,8 @@ describe('errorFacade', () => {
 
       errorFacade.showCustomError(customError);
 
-      expect(errorService.displayCustomError).toHaveBeenCalledTimes(1);
-      expect(errorService.displayCustomError).toHaveBeenCalledWith(customError);
+      expect(errorDisplayService.displayCustomError).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.displayCustomError).toHaveBeenCalledWith(customError);
     });
   });
 
@@ -90,7 +95,7 @@ describe('errorFacade', () => {
     it('clearErrorDisplayを呼び出すこと', () => {
       errorFacade.clearError();
 
-      expect(errorService.clearErrorDisplay).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.clearErrorDisplay).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -98,7 +103,7 @@ describe('errorFacade', () => {
     it('executeErrorRecoveryActionを呼び出すこと', async () => {
       await errorFacade.executeRecoveryAction();
 
-      expect(errorService.executeErrorRecoveryAction).toHaveBeenCalledTimes(1);
+      expect(errorDisplayService.executeErrorRecoveryAction).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -108,12 +113,12 @@ describe('errorFacade', () => {
       const errorHandler = vi.fn();
       const expectedResult = 'success';
 
-      vi.mocked(errorService.handleWithTryCatch).mockResolvedValue(expectedResult);
+      vi.mocked(errorHandlingService.handleWithTryCatch).mockResolvedValue(expectedResult);
 
       const result = await errorFacade.tryCatch(fn, errorHandler);
 
-      expect(errorService.handleWithTryCatch).toHaveBeenCalledTimes(1);
-      expect(errorService.handleWithTryCatch).toHaveBeenCalledWith(fn, errorHandler);
+      expect(errorHandlingService.handleWithTryCatch).toHaveBeenCalledTimes(1);
+      expect(errorHandlingService.handleWithTryCatch).toHaveBeenCalledWith(fn, errorHandler);
       expect(result).toBe(expectedResult);
     });
   });

@@ -7,8 +7,8 @@ import {
   displayCustomError,
   clearErrorDisplay,
   executeErrorRecoveryAction,
-  handleWithTryCatch
-} from '@/core/services/errorService';
+} from '@/core/services/errorDisplayService';
+import { handleWithTryCatch } from '@/core/services/errorHandlingService';
 
 /**
  * エラーハンドリングファサード

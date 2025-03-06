@@ -5,7 +5,7 @@ import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
 import { clearHistory } from './historyService';
 import { handleFileOperationError } from './fileOperationService';
-import { errorFactory } from '@/core/services/errorService';
+import { errorFactory } from '@/core/services/errorFactoryService';
 import useErrorStore from '@/core/stores/errorStore';
 import { setFlowData } from '@/core/services/flowService';
 

@@ -1,7 +1,7 @@
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
-import { errorFactory } from '@/core/services/errorService';
+import { errorFactory } from '@/core/services/errorFactoryService';
 import useErrorStore from '@/core/stores/errorStore';
 import { setFlowData } from '@/core/services/flowService';
 
