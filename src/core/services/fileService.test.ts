@@ -1,18 +1,15 @@
 // この機能は結合試験以上のレベルでテストする必要がある
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
 import {
-  newFlowData,
   loadFlowFromFile,
   saveFlowToFile,
 } from './fileService';
 import {
-  createFileInput,
   readJsonFile,
   saveJsonToFile,
   selectFile,
 } from './fileOperationService';
-import { createEmptyFlowData } from './flowDataInitService';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
@@ -151,8 +148,8 @@ describe('fileService', () => {
   describe('loadFlowFromFile', () => {
     it('ファイルからフローデータを読み込み、ストアを更新する', async () => {
       // selectFileとreadJsonFileのモックを設定
-      (selectFile as jest.Mock).mockResolvedValue({ name: 'test.json' });
-      (readJsonFile as jest.Mock).mockResolvedValue(mockFlow);
+      (selectFile as Mock).mockResolvedValue({ name: 'test.json' });
+      (readJsonFile as Mock).mockResolvedValue(mockFlow);
 
       await loadFlowFromFile();
 
@@ -166,7 +163,7 @@ describe('fileService', () => {
 
     it('ファイル選択がキャンセルされた場合は何もしない', async () => {
       // selectFileがnullを返すようにモック
-      (selectFile as jest.Mock).mockResolvedValue(null);
+      (selectFile as Mock).mockResolvedValue(null);
 
       await loadFlowFromFile();
 
@@ -181,7 +178,7 @@ describe('fileService', () => {
     it('現在のフローデータをファイルとして保存する', async () => {
       // getFlowDataのモックを設定
       const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
-      (useFlowStore.getState as jest.Mock).mockReturnValue({
+      (useFlowStore.getState as Mock).mockReturnValue({
         getFlowData: getFlowDataMock,
       });
 
@@ -194,7 +191,7 @@ describe('fileService', () => {
     it('データがない場合はエラーをスローする', async () => {
       // getFlowDataがnullを返すようにモック
       const getFlowDataMock = vi.fn().mockReturnValue(null);
-      (useFlowStore.getState as jest.Mock).mockReturnValue({
+      (useFlowStore.getState as Mock).mockReturnValue({
         getFlowData: getFlowDataMock,
       });
 
