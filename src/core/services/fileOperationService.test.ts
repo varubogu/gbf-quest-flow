@@ -161,10 +161,10 @@ describe('fileOperationService', () => {
 
     it('ファイル名が指定されていない場合はフロータイトルを使用する', async () => {
       await saveJsonToFile(mockFlow);
-
       const aElement = mockCreateElement.mock.results.find(
-        (result) => result.value && result.value.download !== undefined
-      )?.value;
+        /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+        (result): boolean => result.value && result.value.download !== undefined
+      )?.value as HTMLAnchorElement;
 
       expect(aElement.download).toBe(`${mockFlow.title}.json`);
     });
@@ -202,8 +202,9 @@ describe('fileOperationService', () => {
 
       // aタグのプロパティが設定されたことを確認
       const aElement = mockCreateElement.mock.results.find(
-        (result) => result.value && result.value.download !== undefined
-      )?.value;
+        /* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
+        (result): boolean => result.value && result.value.download !== undefined
+      )?.value as HTMLAnchorElement;
       expect(aElement.href).toBe('blob:test-url');
       expect(aElement.download).toBe(filename);
 
