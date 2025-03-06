@@ -1,5 +1,5 @@
 import type { Flow, Action } from '@/types/models';
-import { startEdit } from '@/core/services/editModeService';
+import { setIsEditMode as setIsEditMode_Service } from '@/core/services/editModeService';
 import { newFlowDataSync } from '@/core/services/flowDataInitService';
 import {
   setFlowData as serviceSetFlowData,
@@ -32,10 +32,10 @@ export function updateAction(index: number, updates: Partial<Action>): void {
 // EditModeStore関連のメソッド
 export function setIsEditMode(isEdit: boolean): void {
   // serviceを直接呼び出す
-  startEdit(isEdit);
+  setIsEditMode_Service(isEdit);
 }
 
-// FileService関連のメソッド
+// FileEventService関連のメソッド
 export function createNewFlow(): void {
   // flowDataInitServiceを使用して新規フローを作成
   newFlowDataSync();

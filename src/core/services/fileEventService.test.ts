@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vite
 import {
   loadFlowFromFile,
   saveFlowToFile,
-} from './fileService';
+} from './fileEventService';
 import {
   readJsonFile,
   saveJsonToFile,
@@ -78,7 +78,7 @@ const mockCreateElement = vi.fn();
 const mockCreateObjectURL = vi.fn();
 const mockRevokeObjectURL = vi.fn();
 
-describe('fileService', () => {
+describe('fileEventService', () => {
   // テスト用のモックデータ
   const mockFlow: Flow = {
     title: 'テストフロー',

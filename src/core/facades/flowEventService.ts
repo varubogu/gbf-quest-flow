@@ -1,10 +1,10 @@
 import type { Flow } from '@/types/models';
-import { saveFlow, updateNewFlowState } from '@/core/services/fileOperationService';
+import { saveFlow } from '@/core/services/fileOperationService';
+import { updateNewFlowState } from '@/core/services/fileEventService';
 import useFlowStore from '@/core/stores/flowStore';
 import { finishEdit, cancelEdit } from '@/core/services/editModeService';
 import { newFlowDataSync } from '@/core/services/flowDataInitService';
 import { announceToScreenReader, handleError } from '@/lib/utils/accessibility';
-
 /**
  * フローの保存処理を実行する
  */

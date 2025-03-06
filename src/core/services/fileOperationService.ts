@@ -182,17 +182,3 @@ export const saveFlow = async (flowData: Flow, sourceId: string | null = null): 
   }
 };
 
-/**
- * 新規作成時のURL状態とアクセシビリティを更新する
- * @param flowData 現在のフローデータ（履歴用）
- */
-export const updateNewFlowState = (flowData: Flow | null = null): void => {
-  try {
-    if (flowData) {
-      history.pushState({ flowData }, '', '/?mode=new');
-    }
-    announceToScreenReader('新しいフローを作成しました');
-  } catch (error) {
-    handleError(error, '新規作成中');
-  }
-};

@@ -8,8 +8,7 @@ import {
   getDownloadFilename,
   shouldConfirmDiscard,
   showNoDataAlert,
-  saveFlow,
-  updateNewFlowState
+  saveFlow
 } from './fileOperationService';
 import type { Flow } from '@/types/types';
 
@@ -308,44 +307,6 @@ describe('fileOperationService', () => {
 
       // 失敗を返すことを確認
       expect(result).toBe(false);
-    });
-  });
-
-  describe('updateNewFlowState', () => {
-    it('新規フロー作成時の状態を更新する', () => {
-      updateNewFlowState(mockFlow);
-
-      // 履歴が更新されたことを確認
-      expect(mockPushState).toHaveBeenCalledWith(
-        { flowData: mockFlow },
-        '',
-        '/?mode=new'
-      );
-
-      // スクリーンリーダーに通知されたことを確認
-      expect(accessibility.announceToScreenReader).toHaveBeenCalledWith('新しいフローを作成しました');
-    });
-
-    it('flowDataがnullの場合も正常に動作する', () => {
-      updateNewFlowState(null);
-
-      // 履歴が更新されないことを確認
-      expect(mockPushState).not.toHaveBeenCalled();
-
-      // スクリーンリーダーに通知されたことを確認
-      expect(accessibility.announceToScreenReader).toHaveBeenCalledWith('新しいフローを作成しました');
-    });
-
-    it('エラーが発生した場合はエラーハンドリングを行う', () => {
-      // エラーを発生させる
-      mockPushState.mockImplementation(() => {
-        throw new Error('テストエラー');
-      });
-
-      updateNewFlowState(mockFlow);
-
-      // エラーハンドリングが呼ばれたことを確認
-      expect(accessibility.handleError).toHaveBeenCalled();
     });
   });
 });

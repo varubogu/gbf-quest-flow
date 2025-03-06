@@ -5,11 +5,13 @@ import {
   shouldConfirmDiscard as shouldConfirmDiscard_Service,
   showNoDataAlert as showNoDataAlert_Service,
   saveFlow as saveFlow_Service,
-  updateNewFlowState as updateNewFlowState_Service
 } from '@/core/services/fileOperationService';
 
-// fileService.tsからの関数をインポート
-import { loadFlowFromFile as loadFlowFromFile_Service, saveFlowToFile as saveFlowToFile_Service } from '@/core/services/fileService';
+// fileEventService.tsからの関数をインポート
+import {
+  loadFlowFromFile as loadFlowFromFile_Service,
+  saveFlowToFile as saveFlowToFile_Service,
+} from '@/core/services/fileEventService';
 
 /**
  * フローデータをダウンロードする
@@ -72,10 +74,3 @@ export async function saveFlow(flowData: Flow, sourceId: string | null = null): 
   return await saveFlow_Service(flowData, sourceId);
 }
 
-/**
- * 新規作成時のURL状態とアクセシビリティを更新する（flowOperations.tsからの移行）
- * @param flowData 現在のフローデータ（履歴用）
- */
-export function updateNewFlowState(flowData: Flow | null = null): void {
-  updateNewFlowState_Service(flowData);
-}

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
-import * as fileOperationsFacade from '@/core/services/fileOperationService';
 import * as editModeService from '@/core/services/editModeService';
 import * as flowDataInitService from '@/core/services/flowDataInitService';
 import useFlowStore from '@/core/stores/flowStore';
@@ -14,6 +13,10 @@ vi.stubGlobal('window', {
 // モックの設定
 vi.mock('@/core/services/fileOperationService', () => ({
   saveFlow: vi.fn(),
+  updateNewFlowState: vi.fn()
+}));
+
+vi.mock('@/core/services/fileEventService', () => ({
   updateNewFlowState: vi.fn()
 }));
 
@@ -44,6 +47,8 @@ vi.mock('@/core/stores/flowStore', () => {
   };
 });
 
+import * as fileOperationService from '@/core/services/fileOperationService';
+import * as fileEventService from '@/core/services/fileEventService';
 describe('flowEventService', () => {
   // テスト用のモックデータ
   const mockFlow: Flow = {
@@ -125,13 +130,13 @@ describe('flowEventService', () => {
   describe('handleFlowSave', () => {
     it('ファイルを保存し、編集モードを終了する', async () => {
       // モックの設定
-      vi.mocked(fileOperationsFacade.saveFlow).mockResolvedValue(true);
+      vi.mocked(fileOperationService.saveFlow).mockResolvedValue(true);
 
       // テスト実行
       const result = await handleFlowSave(mockFlow, null, mockClearHistory);
 
       // 検証
-      expect(fileOperationsFacade.saveFlow).toHaveBeenCalledWith(mockFlow, null);
+      expect(fileOperationService.saveFlow).toHaveBeenCalledWith(mockFlow, null);
       expect(editModeService.finishEdit).toHaveBeenCalled();
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -145,7 +150,7 @@ describe('flowEventService', () => {
 
       // 検証
       expect(flowDataInitService.newFlowDataSync).toHaveBeenCalled();
-      expect(fileOperationsFacade.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
+      expect(fileEventService.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
     });
   });
 
