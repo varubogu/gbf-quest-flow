@@ -5,8 +5,8 @@ import { SummonPanel } from '../../organisms/SummonPanel';
 import { JobPanel } from '../../organisms/JobPanel';
 import { CharacterPanel } from '../../organisms/specific/charactor/index';
 import { SkillTotalPanel } from '../../organisms/specific/skills/SkillTotalPanel';
+import { VideoPanel } from '../../organisms/specific/VideoPanel';
 import useFlowStore from '@/core/stores/flowStore';
-import { updateFlowData } from '@/core/facades/flowFacade';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { useTranslation } from 'react-i18next';
 import type { FlowStore, EditModeStore } from '@/types/flowStore.types';
@@ -116,31 +116,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
 
                   <HeadlessTab.Panel className="h-full overflow-auto">
                     <div className="p-4">
-                      {/* 動画情報 */}
-                      <div id="video-panel">
-                        <h3 className="text-lg font-bold mb-4">{t('video')}</h3>
-                        {isEditMode ? (
-                          <input
-                            type="text"
-                            value={flowData.movie || ''}
-                            onChange={(e) => updateFlowData({ movie: e.target.value })}
-                            className="border p-2 w-full"
-                            aria-label={t('video') as string}
-                          />
-                        ) : (
-                          flowData.movie && (
-                            <a
-                              href={flowData.movie}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-500 hover:underline"
-                              aria-label={t('video') as string}
-                            >
-                              {flowData.movie}
-                            </a>
-                          )
-                        )}
-                      </div>
+                      <VideoPanel isEditing={isEditMode} />
                     </div>
                   </HeadlessTab.Panel>
 
