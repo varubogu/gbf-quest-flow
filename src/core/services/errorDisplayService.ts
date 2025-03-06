@@ -1,7 +1,6 @@
 import type { AppError } from '@/types/error.types';
 import useErrorStore from '@/core/stores/errorStore';
 import { errorFactory } from './errorFactoryService';
-import { logError } from './errorFactoryService';
 
 /**
  * バリデーションエラーを表示します

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleFlowSave, handleNewFlow, handleExitEditMode, handleCancel } from './flowEventService';
-import * as flowOperations from '@/lib/utils/flowOperations';
+import * as fileOperationsFacade from '@/core/services/fileOperationService';
 import * as editModeService from '@/core/services/editModeService';
 import * as flowDataInitService from '@/core/services/flowDataInitService';
 import useFlowStore from '@/core/stores/flowStore';
@@ -12,7 +12,7 @@ vi.stubGlobal('window', {
 });
 
 // モックの設定
-vi.mock('@/lib/utils/flowOperations', () => ({
+vi.mock('@/core/services/fileOperationService', () => ({
   saveFlow: vi.fn(),
   updateNewFlowState: vi.fn()
 }));
@@ -125,13 +125,13 @@ describe('flowEventService', () => {
   describe('handleFlowSave', () => {
     it('ファイルを保存し、編集モードを終了する', async () => {
       // モックの設定
-      vi.mocked(flowOperations.saveFlow).mockResolvedValue(true);
+      vi.mocked(fileOperationsFacade.saveFlow).mockResolvedValue(true);
 
       // テスト実行
       const result = await handleFlowSave(mockFlow, null, mockClearHistory);
 
       // 検証
-      expect(flowOperations.saveFlow).toHaveBeenCalledWith(mockFlow, null);
+      expect(fileOperationsFacade.saveFlow).toHaveBeenCalledWith(mockFlow, null);
       expect(editModeService.finishEdit).toHaveBeenCalled();
       expect(mockClearHistory).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -145,7 +145,7 @@ describe('flowEventService', () => {
 
       // 検証
       expect(flowDataInitService.newFlowDataSync).toHaveBeenCalled();
-      expect(flowOperations.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
+      expect(fileOperationsFacade.updateNewFlowState).toHaveBeenCalledWith(mockFlow);
     });
   });
 

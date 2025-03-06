@@ -1,5 +1,5 @@
 import type { Flow } from '@/types/models';
-import { saveFlow, updateNewFlowState } from '@/lib/utils/flowOperations';
+import { saveFlow, updateNewFlowState } from '@/core/services/fileOperationService';
 import useFlowStore from '@/core/stores/flowStore';
 import { finishEdit, cancelEdit } from '@/core/services/editModeService';
 import { newFlowDataSync } from '@/core/services/flowDataInitService';

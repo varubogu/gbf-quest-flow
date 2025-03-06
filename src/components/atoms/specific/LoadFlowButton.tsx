@@ -1,5 +1,5 @@
 import React, { type JSX, useState } from 'react';
-import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
+import { loadFlowFromFile } from '@/core/facades/fileOperationFacade';
 import { useTranslation } from 'react-i18next';
 
 interface LoadFlowButtonProps {

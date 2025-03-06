@@ -3,12 +3,13 @@ import { screen, fireEvent, act } from '@testing-library/react';
 import { LoadFlowButton } from '@/components/atoms/specific/LoadFlowButton';
 import { renderWithI18n } from '@/test/i18n-test-utils';
 
-// モック
-import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
-
-vi.mock('@/core/facades/fileOperationsFacade', () => ({
+vi.mock('@/core/facades/fileOperationFacade', () => ({
   loadFlowFromFile: vi.fn(),
 }));
+
+// モック
+import { loadFlowFromFile } from '@/core/facades/fileOperationFacade';
+
 
 describe('LoadFlowButton', () => {
   const mockOnLoadComplete = vi.fn();

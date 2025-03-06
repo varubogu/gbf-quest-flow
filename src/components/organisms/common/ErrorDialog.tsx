@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Dialog } from '@headlessui/react';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import { downloadFlow } from '@/core/facades/FileOperations';
+import { downloadFlow } from '@/core/facades/FileOperationsFacade';
 import { formatErrorMessage } from '@/core/services/errorFactoryService';
 import type { FlowStore } from '@/types/flowStore.types';
 

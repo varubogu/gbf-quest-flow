@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
-import { loadFlowFromFile } from '@/core/facades/fileOperationsFacade';
+import { loadFlowFromFile } from '@/core/facades/fileOperationFacade';
 import { HamburgerMenu } from '../../molecules/common/HamburgerMenu';
 import { MenuItems } from '../../molecules/common/MenuItems';
 import { SettingsPanel } from '../../organisms/specific/settings/SettingsPanel';
@@ -18,7 +18,7 @@ import {
   downloadFlow,
   getDownloadFilename,
   showNoDataAlert,
-} from '@/core/facades/FileOperations';
+} from '@/core/facades/fileOperationFacade';
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { useEditHistory } from '@/core/hooks/domain/flow/useEditHistory';
 import type { Flow, MenuView } from '@/types/types';

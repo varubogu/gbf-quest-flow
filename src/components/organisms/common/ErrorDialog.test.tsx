@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorDialog } from './ErrorDialog';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import { downloadFlow } from '@/core/facades/FileOperations';
+import { downloadFlow } from '@/core/facades/FileOperationsFacade';
 import type { Flow, Organization } from '@/types/models';
 import type { AppError } from '@/types/error.types';
 import { ErrorSeverity, ErrorType } from '@/types/error.types';
@@ -57,7 +57,7 @@ vi.mock('@headlessui/react', () => {
 
 vi.mock('@/core/stores/flowStore');
 vi.mock('@/core/stores/errorStore');
-vi.mock('@/core/facades/FileOperations', () => ({
+vi.mock('@/core/facades/FileOperationsFacade', () => ({
   downloadFlow: vi.fn(),
 }));
 
