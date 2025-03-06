@@ -79,7 +79,11 @@
 │   ├── styles            # スタイル定義（Tailwind CSS）
 │   │
 │   ├── test              # 結合テストコード、モック関連
+│   │   ├── __mocks__     # モックデータ
+│   │   ├── integration   # 結合テストデータ
 │   │   ├── mocks         # モックデータ
+│   │   ├── fixtures      # テスト用データ
+│   │   └── helpers       # テスト用ヘルパー関数
 │   │
 │   └── types             # 型定義
 │
