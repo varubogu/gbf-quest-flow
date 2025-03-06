@@ -1,5 +1,4 @@
 import type { Flow } from '@/types/models';
-import { string } from 'astro:schema';
 
 export interface AstroContents {
   id: string;
