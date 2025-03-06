@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
 import { WeaponPanel } from '../../organisms/specific/weapon/index';
-import { SummonPanel } from '../../organisms/SummonPanel';
-import { JobPanel } from '../../organisms/JobPanel';
+import { SummonPanel } from '../../organisms/specific/SummonPanel';
+import { JobPanel } from '../../organisms/specific/JobPanel';
 import { CharacterPanel } from '../../organisms/specific/charactor/index';
 import { SkillTotalPanel } from '../../organisms/specific/skills/SkillTotalPanel';
 import { VideoPanel } from '../../organisms/specific/VideoPanel';

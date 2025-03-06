@@ -1,5 +1,5 @@
 import { type JSX } from 'react';
-import { Table } from '@/components/organisms/Table';
+import { Table } from '@/components/organisms/common/table/Table';
 import type { Action } from '@/types/types';
 import useFlowStore from '@/core/stores/flowStore';
 import useCursorStore from '@/core/stores/cursorStore';

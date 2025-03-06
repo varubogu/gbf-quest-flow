@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { TableContainer } from './TableContainer';
+import { TableContainer } from '@/components/organisms/common/table/TableContainer';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import type { Action } from '@/types/types';
@@ -25,7 +25,7 @@ const mockHandleAddRow = vi.fn();
 const mockHandlePasteRows = vi.fn();
 
 // モックの設定
-vi.mock('@/components/organisms/Table', () => ({
+vi.mock('@/components/organisms/common/table/Table', () => ({
   Table: vi.fn(
     ({
       data,
