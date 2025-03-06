@@ -3,10 +3,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   newFlowData,
+  loadFlowFromFile,
+  saveFlowToFile,
+} from './fileService';
+import {
   createFileInput,
   readJsonFile,
   saveJsonToFile,
-} from './fileService';
+  selectFile,
+} from './fileOperationService';
+import { createEmptyFlowData } from './flowDataInitService';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { clearHistory } from './historyService';
@@ -52,6 +58,19 @@ vi.mock('@/core/stores/errorStore', () => ({
 
 vi.mock('./historyService', () => ({
   clearHistory: vi.fn(),
+}));
+
+vi.mock('./fileOperationService', () => ({
+  createFileInput: vi.fn(),
+  readJsonFile: vi.fn(),
+  saveJsonToFile: vi.fn(),
+  selectFile: vi.fn(),
+  handleFileOperationError: vi.fn(),
+}));
+
+vi.mock('./flowDataInitService', () => ({
+  newFlowData: vi.fn(),
+  createEmptyFlowData: vi.fn(),
 }));
 
 // DOMモック
@@ -129,62 +148,59 @@ describe('fileService', () => {
     vi.restoreAllMocks();
   });
 
-  describe('createFileInput', () => {
-    it('ファイル選択用のinput要素を作成する', () => {
-      const input = createFileInput();
-      expect(input.type).toBe('file');
-      expect(input.accept).toBe('.json');
-    });
-  });
+  describe('loadFlowFromFile', () => {
+    it('ファイルからフローデータを読み込み、ストアを更新する', async () => {
+      // selectFileとreadJsonFileのモックを設定
+      (selectFile as jest.Mock).mockResolvedValue({ name: 'test.json' });
+      (readJsonFile as jest.Mock).mockResolvedValue(mockFlow);
 
-  describe('readJsonFile', () => {
-    it('ファイルからJSONデータを読み込む', async () => {
-      // File.text()をモック
-      const mockText = JSON.stringify(mockFlow);
-      const mockFile = {
-        text: vi.fn().mockResolvedValue(mockText)
-      } as unknown as File;
+      await loadFlowFromFile();
 
-      const result = await readJsonFile(mockFile);
-      expect(result).toEqual(mockFlow);
-      expect(mockFile.text).toHaveBeenCalled();
-    });
-
-    it('不正なJSONの場合はエラーをスローする', async () => {
-      // 不正なJSONを返すモック
-      const mockFile = {
-        text: vi.fn().mockResolvedValue('invalid json')
-      } as unknown as File;
-
-      await expect(readJsonFile(mockFile)).rejects.toThrow();
-      expect(mockFile.text).toHaveBeenCalled();
-    });
-  });
-
-  describe('newFlowData', () => {
-    it('新しいフローデータを作成し、ストアを更新する', async () => {
-      // テスト前にモックの設定を確認
-      expect(mockSetCurrentRow).toBeDefined();
-
-      await newFlowData();
-
+      expect(selectFile).toHaveBeenCalled();
+      expect(readJsonFile).toHaveBeenCalled();
       expect(clearHistory).toHaveBeenCalled();
       expect(mockSetCurrentRow).toHaveBeenCalledWith(0);
-      expect(useEditModeStore.setState).toHaveBeenCalledWith({ isEditMode: true });
+      expect(useEditModeStore.setState).toHaveBeenCalledWith({ isEditMode: false });
       expect(useFlowStore.setState).toHaveBeenCalled();
+    });
+
+    it('ファイル選択がキャンセルされた場合は何もしない', async () => {
+      // selectFileがnullを返すようにモック
+      (selectFile as jest.Mock).mockResolvedValue(null);
+
+      await loadFlowFromFile();
+
+      expect(selectFile).toHaveBeenCalled();
+      expect(readJsonFile).not.toHaveBeenCalled();
+      expect(clearHistory).not.toHaveBeenCalled();
+      expect(useFlowStore.setState).not.toHaveBeenCalled();
     });
   });
 
-  describe('saveJsonToFile', () => {
-    it('フローデータをJSONファイルとして保存する', async () => {
-      await saveJsonToFile(mockFlow, 'test.json');
+  describe('saveFlowToFile', () => {
+    it('現在のフローデータをファイルとして保存する', async () => {
+      // getFlowDataのモックを設定
+      const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
+      (useFlowStore.getState as jest.Mock).mockReturnValue({
+        getFlowData: getFlowDataMock,
+      });
 
-      expect(mockCreateElement).toHaveBeenCalledWith('a');
-      expect(mockCreateObjectURL).toHaveBeenCalled();
-      expect(mockAppendChild).toHaveBeenCalled();
-      expect(mockClick).toHaveBeenCalled();
-      expect(mockRemoveChild).toHaveBeenCalled();
-      expect(mockRevokeObjectURL).toHaveBeenCalled();
+      await saveFlowToFile('test.json');
+
+      expect(getFlowDataMock).toHaveBeenCalled();
+      expect(saveJsonToFile).toHaveBeenCalledWith(mockFlow, 'test.json');
+    });
+
+    it('データがない場合はエラーをスローする', async () => {
+      // getFlowDataがnullを返すようにモック
+      const getFlowDataMock = vi.fn().mockReturnValue(null);
+      (useFlowStore.getState as jest.Mock).mockReturnValue({
+        getFlowData: getFlowDataMock,
+      });
+
+      await expect(saveFlowToFile()).rejects.toThrow();
+      expect(getFlowDataMock).toHaveBeenCalled();
+      expect(saveJsonToFile).not.toHaveBeenCalled();
     });
   });
 });
