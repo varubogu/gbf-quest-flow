@@ -1,18 +1,24 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BodyLayout from '@/layouts/BodyLayout';
-import { getCollection } from 'astro:content';
 
-// 有効なパスを生成
+import {
+  getRoutingPaths,
+  isUserSlug,
+  type AstroContents,
+  type SlugUsersParameter,
+} from '@/lib/utils/routing';
+
 export async function getStaticPaths() {
   const flows = await getCollection('flows');
-  return flows.map((flow) => ({
-    params: { id: flow.id },
-    props: { flowData: flow.data },
-  }));
+  const paths = await getRoutingPaths(flows as unknown as AstroContents[]);
+  const results = paths.filter((path) => isUserSlug(path.params)) as unknown as SlugUsersParameter[];
+  console.log(results);
+  return results;
 }
 
-const { id } = Astro.params;
+const { userArticleId } = Astro.params;
 const { flowData } = Astro.props;
 const mode = Astro.url.searchParams.get('mode');
 
@@ -27,6 +33,6 @@ if (!flowData) {
     client:load
     initialData={flowData}
     initialMode={mode === 'edit' ? 'edit' : 'view'}
-    sourceId={id}
+    sourceId={userArticleId}
   />
 </BaseLayout>

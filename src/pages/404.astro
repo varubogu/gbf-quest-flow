@@ -2,12 +2,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BodyLayout from '@/layouts/BodyLayout';
 import { NotificationBar } from '@/components/molecules/common/NotificationBar';
-import { I18nProvider } from '@/components/I18nProvider';
 ---
 
 <BaseLayout>
-  <I18nProvider client:load>
-    <NotificationBar client:load message="dataNotFound" />
-    <BodyLayout client:load />
-  </I18nProvider>
+  <NotificationBar client:load message="dataNotFound" />
+  <BodyLayout client:load />
 </BaseLayout>

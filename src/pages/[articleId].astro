@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BodyLayout from '@/layouts/BodyLayout';
+import {
+  getRoutingPaths,
+  isSlug,
+  type AstroContents,
+  type SlugParameters,
+} from '@/lib/utils/routing';
+
+
+export async function getStaticPaths() {
+  const flows = await getCollection('flows');
+  const paths = await getRoutingPaths(flows as unknown as AstroContents[]);
+  const results = paths.filter((path) => isSlug(path.params)) as unknown as SlugParameters[];
+  console.log(results);
+  return results;
+}
+
+const { articleId } = Astro.params;
+const { flowData } = Astro.props;
+const mode = Astro.url.searchParams.get('mode');
+
+// データが見つからない場合は404へ
+if (!flowData) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout>
+  <BodyLayout
+    client:load
+    initialData={flowData}
+    initialMode={mode === 'edit' ? 'edit' : 'view'}
+    sourceId={articleId}
+  />
+</BaseLayout>

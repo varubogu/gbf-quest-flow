@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+import {
+  getRoutingPaths,
+  isUserSlug,
+  type AstroContents,
+  type SlugUsersParameter,
+} from '@/lib/utils/routing';
+
+export async function getStaticPaths() {
+  const flows = await getCollection('flows');
+  const paths = await getRoutingPaths(flows as unknown as AstroContents[]);
+  const results = paths.filter((path) => isUserSlug(path.params)) as unknown as SlugUsersParameter[];
+  console.log(results);
+  return results;
+}
+
+---
+
+<BaseLayout>
+  ユーザーの行動表リストが表示される予定です
+</BaseLayout>
