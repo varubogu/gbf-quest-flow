@@ -55,27 +55,13 @@ describe('flowService', () => {
 
   describe('handleDataUpdate', () => {
     it('現在のデータと更新内容を正しくマージする', () => {
-      const currentData = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const currentData = flowData();
 
       const updates = {
         title: '更新後のタイトル'
       };
 
-      const result = handleDataUpdate(currentData, updates);
+      const result = handleDataUpdate(currentData as Flow, updates);
 
       expect(result.newData).toEqual({
         ...currentData,
@@ -85,27 +71,13 @@ describe('flowService', () => {
     });
 
     it('データに変更がない場合はshouldUpdateがfalseになる', () => {
-      const currentData = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const currentData = flowData();
 
       const updates = {
         title: 'テストフロー' // 変更なし
       };
 
-      const result = handleDataUpdate(currentData, updates);
+      const result = handleDataUpdate(currentData as Flow, updates);
 
       expect(result.shouldUpdate).toBe(false);
     });
@@ -154,30 +126,17 @@ describe('flowService', () => {
 
   describe('updateFlowWithAction', () => {
     it('指定されたインデックスのアクションを更新する', () => {
-      const currentData = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [
-          { hp: '100%', action: 'アクション1', note: 'ノート1', prediction: '', charge: '', guard: '' },
-          { hp: '80%', action: 'アクション2', note: 'ノート2', prediction: '', charge: '', guard: '' }
-        ],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const currentData = flowData();
+      currentData.flow = [
+        { hp: '100%', action: 'アクション1', note: 'ノート1', prediction: '', charge: '', guard: '' },
+        { hp: '80%', action: 'アクション2', note: 'ノート2', prediction: '', charge: '', guard: '' }
+      ];
 
       const updates = {
         note: '更新されたノート'
       };
 
-      const result = updateFlowWithAction(currentData, 1, updates);
+      const result = updateFlowWithAction(currentData as Flow, 1, updates);
 
       expect(result.flow[1]).toEqual({
         hp: '80%',
@@ -214,23 +173,9 @@ describe('flowService', () => {
         setFlowData: setFlowDataMock
       });
 
-      const mockFlow = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const mockFlow = flowData();
 
-      setFlowData(mockFlow);
+      setFlowData(mockFlow as Flow);
 
       expect(setFlowDataMock).toHaveBeenCalledWith(mockFlow);
       expect(historyService.clearHistory).toHaveBeenCalled();
@@ -240,21 +185,7 @@ describe('flowService', () => {
   describe('updateFlowData', () => {
     it('フローデータを更新し、編集履歴に追加する', () => {
       // モックの設定
-      const mockFlow = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const mockFlow = flowData();
 
       const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
       const setFlowDataMock = vi.fn();
@@ -282,21 +213,7 @@ describe('flowService', () => {
 
     it('データに変更がない場合は何もしない', () => {
       // モックの設定
-      const mockFlow = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const mockFlow = flowData();
 
       const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
       const setFlowDataMock = vi.fn();
@@ -339,30 +256,17 @@ describe('flowService', () => {
   describe('updateAction', () => {
     it('指定されたインデックスのアクションを更新し、編集履歴に追加する', () => {
       // モックの設定
-      const mockFlow = {
-        title: 'テストフロー',
-        quest: 'テストクエスト',
-        author: 'テスト作者',
-        description: 'テスト説明',
-        updateDate: '2023-01-01',
-        note: 'テスト備考',
-        always: 'テスト常時効果',
-        flow: [
-          {
-            hp: '100%',
-            prediction: 'テスト予測',
-            charge: '100%',
-            guard: 'なし',
-            action: 'テストアクション',
-            note: 'テストノート'
-          }
-        ],
-        organization: {} as Organization,
-        weapons: [],
-        jobs: [],
-        summons: [],
-        characters: []
-      } as Flow;
+      const mockFlow = flowData();
+      mockFlow.flow = [
+        {
+          hp: '100%',
+          prediction: 'テスト予測',
+          charge: '100%',
+          guard: 'なし',
+          action: 'テストアクション',
+          note: 'テストノート'
+        }
+      ];
 
       const getFlowDataMock = vi.fn().mockReturnValue(mockFlow);
       const setFlowDataMock = vi.fn();
@@ -416,3 +320,17 @@ describe('flowService', () => {
     });
   });
 });
+
+function flowData(): Partial<Flow> {
+  return {
+    title: 'テストフロー',
+    quest: 'テストクエスト',
+    author: 'テスト作者',
+    description: 'テスト説明',
+    updateDate: '2023-01-01',
+    note: 'テスト備考',
+    always: 'テスト常時効果',
+    flow: [],
+    organization: {} as Organization,
+  };
+}
