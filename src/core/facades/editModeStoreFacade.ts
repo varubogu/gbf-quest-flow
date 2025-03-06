@@ -5,7 +5,7 @@ import {
    finishEdit as finishEditService,
    setIsEditMode as setIsEditModeService
 } from '@/core/services/editModeService';
-import { newFlowData } from '@/core/services/flowInitService';
+import { newFlowDataSync } from '@/core/services/flowDataInitService';
 
 /**
  * 編集モードストアのファサード
@@ -35,5 +35,5 @@ export function cancelEdit(): void {
 }
 
 export function createNewFlow(): void {
-  newFlowData();
+  newFlowDataSync();
 }

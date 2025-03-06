@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as editModeStoreFacade from './editModeStoreFacade';
 import * as editModeService from '@/core/services/editModeService';
-import * as flowInitService from '@/core/services/flowInitService';
+import * as flowDataInitService from '@/core/services/flowDataInitService';
 
 // editModeServiceのモック
 vi.mock('@/core/services/editModeService', () => {
@@ -14,10 +14,10 @@ vi.mock('@/core/services/editModeService', () => {
   };
 });
 
-// flowInitServiceのモック
-vi.mock('@/core/services/flowInitService', () => {
+// flowDataInitServiceのモック
+vi.mock('@/core/services/flowDataInitService', () => {
   return {
-    newFlowData: vi.fn()
+    newFlowDataSync: vi.fn()
   };
 });
 
@@ -85,7 +85,7 @@ describe('editModeStoreFacade', () => {
         editModeStoreFacade.createNewFlow();
 
         // 検証
-        expect(flowInitService.newFlowData).toHaveBeenCalledTimes(1);
+        expect(flowDataInitService.newFlowDataSync).toHaveBeenCalledTimes(1);
       });
     });
   });

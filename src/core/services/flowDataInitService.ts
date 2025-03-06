@@ -5,6 +5,9 @@ import useEditModeStore from '../stores/editModeStore';
 import useCursorStore from '../stores/cursorStore';
 import { clearHistory } from './historyService';
 import { handleFileOperationError } from './fileOperationService';
+import { errorFactory } from '@/core/services/errorService';
+import useErrorStore from '@/core/stores/errorStore';
+import { setFlowData } from '@/core/services/flowService';
 
 /**
  * フローデータの初期化関連のサービス
@@ -14,6 +17,7 @@ import { handleFileOperationError } from './fileOperationService';
 
 /**
  * 新しい空のフローデータを作成する
+ * @deprecated 代わりに createNewFlowData() を使用してください
  */
 export async function newFlowData(): Promise<void> {
   try {
@@ -51,8 +55,17 @@ export async function newFlowData(): Promise<void> {
 
 /**
  * 空のフローデータを作成する
+ * @deprecated 代わりに createNewFlowData() を使用してください
  */
 export function createEmptyFlowData(): Flow {
+  return createNewFlowData();
+}
+
+/**
+ * 新規フローデータを作成する
+ * @returns 新規フローデータ
+ */
+export function createNewFlowData(): Flow {
   // 空のデータを作成
   return {
     title: '新しいフロー',
@@ -147,4 +160,42 @@ export function createEmptyFlowData(): Flow {
       },
     ],
   };
+}
+
+/**
+ * 新規フローを作成する
+ *
+ * 空のデータを作成し、編集モードをオンにします。
+ */
+export function newFlowDataSync(): void {
+  try {
+    // 新規フローデータを作成
+    const newData = createNewFlowData();
+
+    // 現在のデータをoriginalDataとして保持
+    const currentFlowData = useFlowStore.getState().getFlowData();
+
+    // historyServiceの履歴をクリア
+    clearHistory();
+
+    // 編集モードをオンにする
+    useEditModeStore.getState().startEdit();
+
+    // flowStoreの状態を更新（flowService経由）
+    setFlowData(newData);
+    useFlowStore.setState({ originalData: currentFlowData });
+
+    // カーソル位置をリセット
+    useCursorStore.setState({
+      currentRow: 0
+    });
+  } catch (error) {
+    useErrorStore
+      .getState()
+      .showError(
+        errorFactory.createUnknownError(
+          error instanceof Error ? error : new Error('新規フロー作成中にエラーが発生しました')
+        )
+      );
+  }
 }
