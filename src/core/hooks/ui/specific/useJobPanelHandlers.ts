@@ -4,11 +4,12 @@ import useFlowStore from '@/core/stores/flowStore';
 import type { FlowStore } from '@/types/flowStore.types';
 
 export const useJobPanelHandlers = (): {
-  flowData: Flow | undefined;
+  flowData: Flow;
   handleJobChange: (_field: keyof Job, _value: string) => void;
   handleEquipmentChange: (_field: keyof JobEquipment, _value: string) => void;
+  handleAbilityChange: (_index: number, _field: keyof JobAbility, _value: string) => void;
 } => {
-  const flowData = useFlowStore((state: FlowStore) => state.flowData);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData) as Flow;
 
   const handleJobChange = (field: keyof Job, value: string): void => {
     if (!flowData) return;
