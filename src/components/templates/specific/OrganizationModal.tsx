@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
-import { WeaponPanel } from './specific/weapon/index';
-import { SummonPanel } from './SummonPanel';
-import { JobPanel } from './JobPanel';
-import { CharacterPanel } from './specific/charactor/index';
-import { SkillTotalPanel } from './specific/skills/SkillTotalPanel';
+import { WeaponPanel } from '../../organisms/specific/weapon/index';
+import { SummonPanel } from '../../organisms/SummonPanel';
+import { JobPanel } from '../../organisms/JobPanel';
+import { CharacterPanel } from '../../organisms/specific/charactor/index';
+import { SkillTotalPanel } from '../../organisms/specific/skills/SkillTotalPanel';
 import useFlowStore from '@/core/stores/flowStore';
 import { updateFlowData } from '@/core/facades/flowFacade';
 import useEditModeStore from '@/core/stores/editModeStore';

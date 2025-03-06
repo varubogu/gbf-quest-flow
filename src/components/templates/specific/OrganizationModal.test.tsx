@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { OrganizationModal } from '@/components/organisms/OrganizationModal';
+import { OrganizationModal } from '@/components/templates/specific/OrganizationModal';
 import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import type { Flow } from '@/types/models';

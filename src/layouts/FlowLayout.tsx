@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
-import { SideMenu } from '@/components/organisms/SideMenu';
+import { SideMenu } from '@/components/templates/common/SideMenu';
 import { IconButton } from '@/components/atoms/common/IconButton';
 import { IconTextButton } from '@/components/atoms/common/IconTextButton';
 import { TableContainer } from '@/components/organisms/TableContainer';
-import { OrganizationModal } from '@/components/organisms/OrganizationModal';
-import { InfoModal } from '@/components/organisms/InfoModal';
+import { OrganizationModal } from '@/components/templates/specific/OrganizationModal';
+import { InfoModal } from '@/components/templates/specific/InfoModal';
 import { Button } from '@/components/atoms/common/Button';
 import type { Flow } from '@/types/models';
 
