@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as errorService from './errorService';
-import { errorFactory } from './errorService';
+import { errorFactory } from './errorFactoryService';
 import useErrorStore from '@/core/stores/errorStore';
 import type { AppError } from '@/types/error.types';
 import { ErrorType, ErrorSeverity } from '@/types/error.types';
