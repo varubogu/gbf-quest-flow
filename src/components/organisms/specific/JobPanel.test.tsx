@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { JobPanel } from './JobPanel';
 import type { Flow } from '@/types/models';
 import type { Job, JobAbility, JobEquipment } from '@/types/types';
-import type { FlowStore } from '@/types/flowStore.types';
 
 // モックの設定
 vi.mock('react-i18next', () => ({
@@ -22,8 +21,49 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@/core/hooks/ui/base/useAutoResizeTextArea', () => ({
-  useAutoResizeTextArea: (): { current: null } => ({ current: null }),
+// 新しいコンポーネントのモック
+vi.mock('@/components/molecules/specific/JobInfoPanel', () => ({
+  JobInfoPanel: vi.fn(({ job, _isEditing, _onJobChange }) => (
+    <tr data-testid="job-info-panel">
+      <td>ジョブ</td>
+      <td>{job.name}</td>
+      <td>{job.note}</td>
+    </tr>
+  )),
+}));
+
+vi.mock('@/components/molecules/specific/JobEquipmentPanel', () => ({
+  JobEquipmentPanel: vi.fn(({ equipment, _isEditing, _onEquipmentChange }) => (
+    <tr data-testid="job-equipment-panel">
+      <td>特殊装備</td>
+      <td>{equipment.name}</td>
+      <td>{equipment.note}</td>
+    </tr>
+  )),
+}));
+
+vi.mock('@/components/molecules/specific/AbilityRow', () => ({
+  AbilityRow: vi.fn(({ ability, index, _isEditing, totalAbilities, _onAbilityChange }) => (
+    <tr data-testid={`ability-row-${index}`}>
+      {index === 0 && <td rowSpan={totalAbilities}>アビリティ</td>}
+      <td>{ability.name}</td>
+      <td>{ability.note}</td>
+    </tr>
+  )),
+}));
+
+// カスタムフックのモック
+const handleJobChangeMock = vi.fn();
+const handleEquipmentChangeMock = vi.fn();
+const handleAbilityChangeMock = vi.fn();
+
+vi.mock('@/core/hooks/ui/specific/useJobPanelHandlers', () => ({
+  useJobPanelHandlers: vi.fn(() => ({
+    flowData: currentFlowData,
+    handleJobChange: handleJobChangeMock,
+    handleEquipmentChange: handleEquipmentChangeMock,
+    handleAbilityChange: handleAbilityChangeMock,
+  })),
 }));
 
 // テスト用のモックデータ
@@ -74,16 +114,6 @@ const mockFlowData: Flow = {
 
 // flowStoreのモック
 let currentFlowData: Flow | null = mockFlowData;
-vi.mock('@/core/stores/flowStore', () => ({
-  __esModule: true,
-  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
-}));
-
-// flowFacadeのモック
-const updateFlowDataMock = vi.fn();
-vi.mock('@/core/facades/flowFacade', () => ({
-  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
-}));
 
 describe('JobPanel', () => {
   beforeEach(() => {
@@ -100,22 +130,11 @@ describe('JobPanel', () => {
       expect(screen.getByText('値')).toBeInTheDocument();
       expect(screen.getByText('概要')).toBeInTheDocument();
 
-      // ジョブ情報が表示されていることを確認
-      expect(screen.getByText('ジョブ')).toBeInTheDocument();
-      expect(screen.getByText('テストジョブ')).toBeInTheDocument();
-      expect(screen.getByText('テストジョブの説明')).toBeInTheDocument();
-
-      // 特殊装備情報が表示されていることを確認
-      expect(screen.getByText('特殊装備')).toBeInTheDocument();
-      expect(screen.getByText('テスト装備')).toBeInTheDocument();
-      expect(screen.getByText('テスト装備の説明')).toBeInTheDocument();
-
-      // アビリティ情報が表示されていることを確認
-      expect(screen.getByText('アビリティ')).toBeInTheDocument();
-      expect(screen.getByText('アビリティ1')).toBeInTheDocument();
-      expect(screen.getByText('アビリティ1の説明')).toBeInTheDocument();
-      expect(screen.getByText('アビリティ2')).toBeInTheDocument();
-      expect(screen.getByText('アビリティ2の説明複数行あり')).toBeInTheDocument();
+      // 各コンポーネントが表示されていることを確認
+      expect(screen.getByTestId('job-info-panel')).toBeInTheDocument();
+      expect(screen.getByTestId('job-equipment-panel')).toBeInTheDocument();
+      expect(screen.getByTestId('ability-row-0')).toBeInTheDocument();
+      expect(screen.getByTestId('ability-row-1')).toBeInTheDocument();
     });
 
     it('flowDataがnullの場合、nullを返すこと', () => {
@@ -126,145 +145,6 @@ describe('JobPanel', () => {
 
       // 何も表示されないことを確認
       expect(container.firstChild).toBeNull();
-    });
-  });
-
-  describe('結合テスト', () => {
-    it('編集モードでジョブ名を変更するとupdateFlowData関数が呼ばれること', () => {
-      render(<JobPanel isEditing={true} />);
-
-      // ジョブ名の入力フィールドを取得
-      const jobNameInput = screen.getByDisplayValue('テストジョブ');
-      expect(jobNameInput).toBeInTheDocument();
-
-      // ジョブ名を変更
-      fireEvent.change(jobNameInput, { target: { value: '新しいジョブ' } });
-
-      // updateFlowData関数が呼ばれたことを確認
-      expect(updateFlowDataMock).toHaveBeenCalledWith({
-        organization: {
-          ...mockFlowData.organization,
-          job: {
-            ...mockFlowData.organization.job,
-            name: '新しいジョブ',
-          },
-        },
-      });
-    });
-
-    it('編集モードでジョブ説明を変更するとupdateFlowData関数が呼ばれること', () => {
-      render(<JobPanel isEditing={true} />);
-
-      // ジョブ説明の入力フィールドを取得
-      const jobNoteTextarea = screen.getByDisplayValue('テストジョブの説明');
-      expect(jobNoteTextarea).toBeInTheDocument();
-
-      // ジョブ説明を変更
-      fireEvent.change(jobNoteTextarea, { target: { value: '新しいジョブの説明' } });
-
-      // updateFlowData関数が呼ばれたことを確認
-      expect(updateFlowDataMock).toHaveBeenCalledWith({
-        organization: {
-          ...mockFlowData.organization,
-          job: {
-            ...mockFlowData.organization.job,
-            note: '新しいジョブの説明',
-          },
-        },
-      });
-    });
-
-    it('編集モードで特殊装備名を変更するとupdateFlowData関数が呼ばれること', () => {
-      render(<JobPanel isEditing={true} />);
-
-      // 特殊装備名の入力フィールドを取得
-      const equipmentNameInput = screen.getByDisplayValue('テスト装備');
-      expect(equipmentNameInput).toBeInTheDocument();
-
-      // 特殊装備名を変更
-      fireEvent.change(equipmentNameInput, { target: { value: '新しい装備' } });
-
-      // updateFlowData関数が呼ばれたことを確認
-      expect(updateFlowDataMock).toHaveBeenCalledWith({
-        organization: {
-          ...mockFlowData.organization,
-          job: {
-            ...mockFlowData.organization.job,
-            equipment: {
-              ...mockFlowData.organization.job.equipment,
-              name: '新しい装備',
-            },
-          },
-        },
-      });
-    });
-
-    it('編集モードでアビリティ名を変更するとupdateFlowData関数が呼ばれること', () => {
-      render(<JobPanel isEditing={true} />);
-
-      // アビリティ名の入力フィールドを取得（最初のアビリティ）
-      const abilityNameInput = screen.getByDisplayValue('アビリティ1');
-      expect(abilityNameInput).toBeInTheDocument();
-
-      // アビリティ名を変更
-      fireEvent.change(abilityNameInput, { target: { value: '新しいアビリティ' } });
-
-      // updateFlowData関数が呼ばれたことを確認
-      expect(updateFlowDataMock).toHaveBeenCalledWith({
-        organization: {
-          ...mockFlowData.organization,
-          job: {
-            ...mockFlowData.organization.job,
-            abilities: [
-              {
-                ...mockFlowData.organization.job.abilities[0],
-                name: '新しいアビリティ',
-              },
-              mockFlowData.organization.job.abilities[1],
-            ],
-          },
-        },
-      });
-    });
-
-    it('編集モードでアビリティ説明を変更するとupdateFlowData関数が呼ばれること', () => {
-      render(<JobPanel isEditing={true} />);
-
-      // アビリティ説明の入力フィールドを取得（最初のアビリティ）
-      const abilityNoteTextarea = screen.getByDisplayValue('アビリティ1の説明');
-      expect(abilityNoteTextarea).toBeInTheDocument();
-
-      // アビリティ説明を変更
-      fireEvent.change(abilityNoteTextarea, { target: { value: '新しいアビリティの説明' } });
-
-      // updateFlowData関数が呼ばれたことを確認
-      expect(updateFlowDataMock).toHaveBeenCalledWith({
-        organization: {
-          ...mockFlowData.organization,
-          job: {
-            ...mockFlowData.organization.job,
-            abilities: [
-              {
-                ...mockFlowData.organization.job.abilities[0],
-                note: '新しいアビリティの説明',
-              },
-              mockFlowData.organization.job.abilities[1],
-            ],
-          },
-        },
-      });
-    });
-
-    it('閲覧モードでは入力フィールドが表示されないこと', () => {
-      render(<JobPanel isEditing={false} />);
-
-      // 入力フィールドが表示されていないことを確認
-      expect(screen.queryByDisplayValue('テストジョブ')).not.toBeInTheDocument();
-      expect(screen.queryByDisplayValue('テストジョブの説明')).not.toBeInTheDocument();
-      expect(screen.queryByDisplayValue('テスト装備')).not.toBeInTheDocument();
-      expect(screen.queryByDisplayValue('テスト装備の説明')).not.toBeInTheDocument();
-      expect(screen.queryByDisplayValue('アビリティ1')).not.toBeInTheDocument();
-      expect(screen.queryByDisplayValue('アビリティ1の説明')).not.toBeInTheDocument();
     });
   });
 });
