@@ -13,7 +13,6 @@ export async function getStaticPaths() {
   const flows = await getCollection('flows');
   const paths = await getRoutingPaths(flows as unknown as AstroContents[]);
   const results = paths.filter((path) => isUserSlug(path.params)) as unknown as SlugUsersParameter[];
-  console.log(results);
   return results;
 }
 
