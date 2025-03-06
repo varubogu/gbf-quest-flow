@@ -93,7 +93,7 @@ describe('urlService', () => {
       expect(window.history.pushState).toHaveBeenCalledWith(
         { flowData },
         '',
-        '/?mode=new'
+        new URL('http://localhost:3000/?mode=new')
       );
     });
 
@@ -105,7 +105,7 @@ describe('urlService', () => {
       expect(window.history.pushState).toHaveBeenCalledWith(
         { flowData },
         '',
-        '/test-id?mode=edit'
+        new URL('http://localhost:3000/test-id?mode=edit')
       );
     });
 
@@ -117,7 +117,7 @@ describe('urlService', () => {
       expect(window.history.pushState).toHaveBeenCalledWith(
         { flowData },
         '',
-        '/test-id'
+        new URL('http://localhost:3000/test-id')
       );
     });
 
@@ -129,7 +129,7 @@ describe('urlService', () => {
       expect(window.history.pushState).toHaveBeenCalledWith(
         { flowData, isSaving: true },
         '',
-        '/'
+        new URL('http://localhost:3000/')
       );
     });
   });

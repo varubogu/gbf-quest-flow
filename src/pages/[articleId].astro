@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   return results;
 }
 
-const { articleId } = Astro.params;
+const relativePath = Astro.url.pathname;
 const { flowData } = Astro.props;
 const mode = Astro.url.searchParams.get('mode');
 
@@ -32,6 +32,6 @@ if (!flowData) {
     client:load
     initialData={flowData}
     initialMode={mode === 'edit' ? 'edit' : 'view'}
-    sourceId={articleId}
+    sourceId={relativePath}
   />
 </BaseLayout>

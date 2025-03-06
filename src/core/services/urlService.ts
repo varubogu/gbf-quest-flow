@@ -38,7 +38,7 @@ export function parseCurrentUrl(): { mode: ViewMode; sourceId: string | null } {
 /**
  * URLを更新する
  * @param mode 表示モード
- * @param sourceId ソースID（省略可）
+ * @param sourceId ソースID（省略可）※URLが https://example.com/user1/article1 のようなユーザーの記事の場合は user1/article1 がsourceIdになる
  * @param flowData フローデータ（省略可）
  * @param isSaving 保存中かどうか（省略可）
  */
@@ -62,21 +62,19 @@ export function updateUrl(
       state.isSaving = true;
     }
 
-    let url = '';
-
+    let url: URL; // 現在のドメインで初期化
+    const origin = window.location.origin;
+    const relativePath = sourceId  || '';
     // モードに応じてURLを生成
     if (mode === 'new') {
-      url = '/?mode=new';
+      url = new URL('?mode=new', origin);
     } else if (mode === 'edit') {
-      url = sourceId ? `/${sourceId}?mode=edit` : '/?mode=edit';
+      url = new URL(`${relativePath}?mode=edit`, origin);
     } else if (mode === 'view') {
-      url = sourceId ? `/${sourceId}` : '/';
-      // 明示的にviewモードを指定する場合
-      if (window.location.search.includes('mode=')) {
-        url = sourceId ? `/${sourceId}?mode=view` : '/?mode=view';
-      }
+      url = new URL(`${relativePath}`, origin);
+    } else {
+      url = new URL(relativePath, origin);
     }
-
     history.pushState(state, '', url);
   } catch (error) {
     handleError(error, 'URL更新中');
