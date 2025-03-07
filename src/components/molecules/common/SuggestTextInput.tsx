@@ -160,6 +160,12 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
       debounceTimerRef.current = setTimeout(async () => {
         try {
           const items = await onSuggest(value);
+          if (!Array.isArray(items)) {
+            console.error('onSuggest must return an array');
+            setSuggestions([]);
+            setIsOpen(false);
+            return;
+          }
           setSuggestions(items.slice(0, maxSuggestions));
           setIsOpen(items.length > 0);
           setHighlightedIndex(-1);
@@ -356,28 +362,24 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
 
         {isOpen && (
           <div
-            ref={suggestionsRef}
             className={cn(
-              'absolute z-10 w-full overflow-auto rounded-md border border-input bg-background py-1 shadow-md bg-white',
-              {
-                'bottom-full mb-1': showDropUp,
-                'top-full mt-1': !showDropUp
-              }
+              'absolute z-10 w-full overflow-auto rounded-md border border-input py-1 shadow-md bg-white',
+              showDropUp ? 'bottom-full mb-1' : 'top-full mt-1'
             )}
             style={{ maxHeight: '200px' }}
+            ref={suggestionsRef}
+            role="listbox"
           >
             {suggestions.map((item, index) => (
               <div
                 key={item.id}
                 className={cn(
-                  'cursor-pointer px-3 py-2 text-sm',
-                  'hover:bg-accent hover:text-accent-foreground hover:bg-gray-300',
-                  {
-                    'bg-accent text-accent-foreground': index === highlightedIndex,
-                  }
+                  'cursor-pointer px-3 py-2 text-sm hover:text-accent-foreground hover:bg-gray-300',
+                  index === highlightedIndex && 'bg-gray-200'
                 )}
                 onClick={() => handleSuggestionClick(item)}
-                onMouseEnter={() => setHighlightedIndex(index)}
+                role="option"
+                aria-selected={index === highlightedIndex}
               >
                 {item.label}
               </div>

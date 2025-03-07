@@ -1,5 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { TextInputArea } from './TextInputArea';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 
@@ -17,13 +16,11 @@ describe('TextInputArea', () => {
     expect(textarea.tagName).toBe('TEXTAREA');
   });
 
-  it('入力値が正しく反映される', async () => {
-    const user = userEvent.setup();
+  it('入力値が正しく反映される', () => {
     render(<TextInputArea placeholder="テスト入力" />);
-
     const textarea = screen.getByPlaceholderText('テスト入力') as HTMLTextAreaElement;
-    await user.type(textarea, 'テストテキスト\n複数行');
 
+    fireEvent.change(textarea, { target: { value: 'テストテキスト\n複数行' } });
     expect(textarea.value).toBe('テストテキスト\n複数行');
   });
 
@@ -66,14 +63,12 @@ describe('TextInputArea', () => {
     expect(textarea).toHaveClass('resize-vertical');
   });
 
-  it('onChange イベントが正しく発火する', async () => {
+  it('onChange イベントが正しく発火する', () => {
     const handleChange = vi.fn();
-    const user = userEvent.setup();
-
     render(<TextInputArea placeholder="テスト入力" onChange={handleChange} />);
 
     const textarea = screen.getByPlaceholderText('テスト入力');
-    await user.type(textarea, 'a');
+    fireEvent.change(textarea, { target: { value: 'a' } });
 
     expect(handleChange).toHaveBeenCalled();
   });

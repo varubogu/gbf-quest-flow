@@ -1,5 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { TextInput } from './TextInput';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 
@@ -17,13 +16,11 @@ describe('TextInput', () => {
     expect(input.tagName).toBe('INPUT');
   });
 
-  it('入力値が正しく反映される', async () => {
-    const user = userEvent.setup();
+  it('入力値が正しく反映される', () => {
     render(<TextInput placeholder="テスト入力" />);
-
     const input = screen.getByPlaceholderText('テスト入力') as HTMLInputElement;
-    await user.type(input, 'テストテキスト');
 
+    fireEvent.change(input, { target: { value: 'テストテキスト' } });
     expect(input.value).toBe('テストテキスト');
   });
 
@@ -72,14 +69,12 @@ describe('TextInput', () => {
     expect(input).toHaveClass('disabled:opacity-50');
   });
 
-  it('onChange イベントが正しく発火する', async () => {
+  it('onChange イベントが正しく発火する', () => {
     const handleChange = vi.fn();
-    const user = userEvent.setup();
-
     render(<TextInput placeholder="テスト入力" onChange={handleChange} />);
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'a');
+    fireEvent.change(input, { target: { value: 'a' } });
 
     expect(handleChange).toHaveBeenCalled();
   });

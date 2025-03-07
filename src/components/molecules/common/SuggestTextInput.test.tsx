@@ -1,7 +1,6 @@
-import { render, screen, cleanup, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { SuggestTextInput, SuggestItem } from './SuggestTextInput';
-import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
+import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
+import { SuggestTextInput, type SuggestItem } from './SuggestTextInput';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 
 describe('SuggestTextInput', () => {
   const mockSuggestions: SuggestItem[] = [
@@ -12,23 +11,19 @@ describe('SuggestTextInput', () => {
     { id: '5', label: 'サンプル5' },
   ];
 
-  const mockOnSuggest = vi.fn().mockImplementation((query: string) => {
-    return mockSuggestions.filter(item =>
+  const mockOnSuggest = vi.fn().mockImplementation(async (query: string) => {
+    const filtered = mockSuggestions.filter(item =>
       item.label.toLowerCase().includes(query.toLowerCase())
     );
+    return Promise.resolve(filtered);
   });
 
   const mockOnChange = vi.fn();
   const mockOnSelect = vi.fn();
 
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
   afterEach(() => {
     cleanup();
     vi.resetAllMocks();
-    vi.useRealTimers();
   });
 
   it('正しくレンダリングされる', () => {
@@ -46,36 +41,35 @@ describe('SuggestTextInput', () => {
   });
 
   it('入力時にサジェストが表示される', async () => {
-    const user = userEvent.setup({ delay: null });
-
     render(
       <SuggestTextInput
         placeholder="テスト入力"
         onSuggest={mockOnSuggest}
         onChange={mockOnChange}
-        debounceMs={0} // テスト用に遅延を0に設定
+        debounceMs={0}
       />
     );
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'テスト');
+
+    await act(async () => {
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: 'テスト' } });
+      await vi.advanceTimersByTimeAsync(1000);
+    });
 
     expect(mockOnChange).toHaveBeenCalledWith('テスト');
     expect(mockOnSuggest).toHaveBeenCalledWith('テスト');
 
-    // タイマーを進める
-    vi.runAllTimers();
-
     // サジェストが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText('テスト3')).toBeDefined();
-      expect(screen.getByText('テスト4')).toBeDefined();
-    });
+    const items = await screen.findAllByRole('option');
+    console.log("5. ", items);
+    expect(items).toHaveLength(2);
+    expect(items[0]).toHaveTextContent('テスト3');
+    expect(items[1]).toHaveTextContent('テスト4');
   });
 
   it('サジェストアイテムをクリックすると選択される', async () => {
-    const user = userEvent.setup({ delay: null });
-
     render(
       <SuggestTextInput
         placeholder="テスト入力"
@@ -87,15 +81,18 @@ describe('SuggestTextInput', () => {
     );
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'テスト');
 
-    // タイマーを進める
-    vi.runAllTimers();
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'テスト' } });
+      await vi.advanceTimersByTimeAsync(1000);
+    });
 
-    // サジェストアイテムをクリック
-    await waitFor(async () => {
-      const suggestionItem = screen.getByText('テスト3');
-      await user.click(suggestionItem);
+    const items = await screen.findAllByRole('option');
+    const suggestionItem = items[0];
+
+    await act(async () => {
+      fireEvent.click(suggestionItem);
+      await vi.advanceTimersByTimeAsync(0);
     });
 
     expect(mockOnSelect).toHaveBeenCalledWith({ id: '3', label: 'テスト3' });
@@ -103,8 +100,6 @@ describe('SuggestTextInput', () => {
   });
 
   it('キーボード操作でサジェストを選択できる', async () => {
-    const user = userEvent.setup({ delay: null });
-
     render(
       <SuggestTextInput
         placeholder="テスト入力"
@@ -116,15 +111,23 @@ describe('SuggestTextInput', () => {
     );
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'テスト');
 
-    // タイマーを進める
-    vi.runAllTimers();
+    await act(async () => {
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: 'テスト' } });
+      await vi.advanceTimersByTimeAsync(2000);
+    });
 
-    // 下矢印キーを押して最初のアイテムを選択
-    await waitFor(async () => {
-      await user.keyboard('{ArrowDown}');
-      await user.keyboard('{Enter}');
+    await screen.findAllByRole('option');
+
+    await act(async () => {
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      await vi.advanceTimersByTimeAsync(100);
+    });
+
+    await act(async () => {
+      fireEvent.keyDown(input, { key: 'Enter' });
+      await vi.advanceTimersByTimeAsync(200);
     });
 
     expect(mockOnSelect).toHaveBeenCalledWith({ id: '3', label: 'テスト3' });
@@ -132,8 +135,6 @@ describe('SuggestTextInput', () => {
   });
 
   it('Escapeキーでサジェストを閉じることができる', async () => {
-    const user = userEvent.setup({ delay: null });
-
     render(
       <SuggestTextInput
         placeholder="テスト入力"
@@ -144,33 +145,32 @@ describe('SuggestTextInput', () => {
     );
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'テスト');
 
-    // タイマーを進める
-    vi.runAllTimers();
-
-    // サジェストが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText('テスト3')).toBeDefined();
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'テスト' } });
+      await vi.advanceTimersByTimeAsync(0);
     });
 
-    // Escapeキーを押してサジェストを閉じる
-    await user.keyboard('{Escape}');
+    const items = await screen.findAllByRole('option');
+    expect(items).toHaveLength(2);
 
-    // サジェストが閉じられることを確認
-    await waitFor(() => {
-      expect(screen.queryByText('テスト3')).toBeNull();
+    await act(async () => {
+      fireEvent.keyDown(input, { key: 'Escape' });
+      await vi.advanceTimersByTimeAsync(0);
     });
+
+    expect(screen.queryByRole('option')).toBeNull();
   });
 
   it('maxSuggestionsを超えるサジェストは表示されない', async () => {
-    const user = userEvent.setup({ delay: null });
     const manyMockSuggestions: SuggestItem[] = Array.from({ length: 10 }, (_, i) => ({
       id: String(i + 1),
       label: `テストアイテム${i + 1}`
     }));
 
-    const manyMockOnSuggest = vi.fn().mockReturnValue(manyMockSuggestions);
+    const manyMockOnSuggest = vi.fn().mockImplementation(async () => {
+      return Promise.resolve(manyMockSuggestions);
+    });
 
     render(
       <SuggestTextInput
@@ -183,17 +183,16 @@ describe('SuggestTextInput', () => {
     );
 
     const input = screen.getByPlaceholderText('テスト入力');
-    await user.type(input, 'テスト');
 
-    // タイマーを進める
-    vi.runAllTimers();
-
-    // 最大3つのサジェストのみ表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText('テストアイテム1')).toBeDefined();
-      expect(screen.getByText('テストアイテム2')).toBeDefined();
-      expect(screen.getByText('テストアイテム3')).toBeDefined();
-      expect(screen.queryByText('テストアイテム4')).toBeNull();
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'テスト' } });
+      await vi.advanceTimersByTimeAsync(0);
     });
+
+    const items = await screen.findAllByRole('option');
+    expect(items).toHaveLength(3);
+    expect(items[0]).toHaveTextContent('テストアイテム1');
+    expect(items[1]).toHaveTextContent('テストアイテム2');
+    expect(items[2]).toHaveTextContent('テストアイテム3');
   });
 });
