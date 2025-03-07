@@ -13,6 +13,10 @@ alwaysApply: false
 
 - `docs/environment.md` を参照
 
+## コーディング規約について
+
+`docs/rules/coding-rule.md` を参照
+
 ## 自動テストについて
 
-`docs/design/testing.md` を参照
+`docs/rules/testing-rule.md` を参照
