@@ -1,23 +1,24 @@
 import * as React from 'react';
 import { useCallback } from 'react';
+import type { Action } from '@/types/models';
 import type { Settings } from '@/types/settings';
 import { useActionCellError } from './useActionCellError';
-import { parseTabSeparatedText, convertToGenericRows } from '@/lib/utils/tableDataParser';
+import { parseTabSeparatedText, convertToActions } from '@/lib/utils/tableDataParser';
 
-export interface TableCellEventProps<T extends Record<string, string>> {
+export interface ActionCellEventProps {
   content: string;
   value: string;
   isEditable: boolean;
-  field?: string;
+  field?: keyof Action;
   onChange?: ((_: string) => void) | undefined;
-  onPasteRows?: ((_: Partial<T>[]) => void) | undefined;
+  onPasteRows?: ((_: Partial<Action>[]) => void) | undefined;
   setIsEditing: (_isEditing: boolean) => void;
   setValue: (_value: string) => void;
   adjustTextareaHeight: () => void;
   settings: Settings;
 }
 
-export interface UseTableCellEventsResult {
+export interface UseActionCellEventsResult {
   handleClick: () => void;
   handleBlur: () => void;
   handleKeyDown: (_e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -25,7 +26,7 @@ export interface UseTableCellEventsResult {
   handlePaste: (_e: React.ClipboardEvent<HTMLTextAreaElement>) => void;
 }
 
-export const useActionCellEvents = <T extends Record<string, string>>({
+export const useActionCellEvents = ({
   content,
   value,
   isEditable,
@@ -36,7 +37,7 @@ export const useActionCellEvents = <T extends Record<string, string>>({
   setValue,
   adjustTextareaHeight,
   settings: _settings,
-}: TableCellEventProps<T>): UseTableCellEventsResult => {
+}: ActionCellEventProps): UseActionCellEventsResult => {
   const { handlePasteError, handleValidationError } = useActionCellError();
 
   const handleClick = useCallback(() => {
@@ -85,8 +86,8 @@ export const useActionCellEvents = <T extends Record<string, string>>({
         if (text.includes('\t')) {
           e.preventDefault();
           const rows = parseTabSeparatedText(text);
-          const items = convertToGenericRows<T>(rows, field);
-          onPasteRows(items);
+          const actions = convertToActions(rows, field);
+          onPasteRows(actions);
           setIsEditing(false);
           return;
         }
@@ -105,10 +106,10 @@ export const useActionCellEvents = <T extends Record<string, string>>({
 
         // 複数行の場合は配列として処理
         e.preventDefault();
-        const items = lines.map(line => ({
+        const actions = lines.map(line => ({
           [field]: line.trim()
-        } as Partial<T>));
-        onPasteRows(items);
+        }));
+        onPasteRows(actions);
         setIsEditing(false);
       } catch (error) {
         handlePasteError(error);

@@ -1,68 +1,54 @@
 import { type JSX } from 'react';
 import { Table } from '@/components/organisms/common/table/Table';
+import type { Action } from '@/types/types';
+import useFlowStore from '@/core/stores/flowStore';
+import useCursorStore from '@/core/stores/cursorStore';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
-import { type TableAlignment } from '@/types/types';
 
-interface TableContainerProps<T extends Record<string, string>> {
+import type { CursorStore, FlowStore } from '@/types/flowStore.types';
+import { useTableEventHandlers } from '@/core/hooks/ui/table/useTableEventHandlers';
+
+interface TableContainerProps {
   isEditMode?: boolean;
-  data: T[];
-  currentRow: number;
-  columns: (keyof T)[];
-  alignments: Record<keyof T, TableAlignment>;
-  getRowClasses: (_props: { index: number; currentRow: number; baseBackground: string }) => string;
-  headerClasses: string;
-  tableId?: string;
-  onRowSelect: (_index: number) => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  onCellEdit?: (_rowIndex: number, _field: keyof T, _value: string) => void;
-  onDeleteRow?: (_index: number) => void;
-  onAddRow?: (_index: number) => void;
-  onPasteRows?: (_index: number, _rows: Partial<T>[]) => void;
+  data?: Action[];
 }
 
-export function TableContainer<T extends Record<string, string>>({
+export function TableContainer({
   isEditMode = false,
   data,
-  currentRow,
-  columns,
-  alignments,
-  getRowClasses,
-  headerClasses,
-  tableId,
-  onRowSelect,
-  onMoveUp,
-  onMoveDown,
-  onCellEdit,
-  onDeleteRow,
-  onAddRow,
-  onPasteRows,
-}: TableContainerProps<T>): JSX.Element | null {
+}: TableContainerProps): JSX.Element | null {
+  const currentRow = useCursorStore((state: CursorStore) => state.currentRow);
+  const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const settings = useSettingsStore((state: SettingsStore) => state.settings);
 
-  // データが存在しない場合は空のテーブルを表示する
-  if (!data) {
+  const {
+    handleRowSelect,
+    handleMoveUp,
+    handleMoveDown,
+    handleCellEdit,
+    handleDeleteRow,
+    handleAddRow,
+    handlePasteRows,
+  } = useTableEventHandlers();
+
+  // flowDataが存在しない場合は何も表示しない
+  if (!flowData) {
     return null;
   }
 
   return (
-    <Table<T>
-      data={data}
+    <Table
+      data={data ?? flowData.flow}
       currentRow={currentRow}
       buttonPosition={settings.buttonAlignment === 'left' ? 'left' : 'right'}
-      onMoveUp={onMoveUp}
-      onMoveDown={onMoveDown}
-      onRowSelect={onRowSelect}
+      onMoveUp={handleMoveUp}
+      onMoveDown={handleMoveDown}
+      onRowSelect={handleRowSelect}
       isEditMode={isEditMode}
-      onCellEdit={onCellEdit}
-      onDeleteRow={onDeleteRow}
-      onAddRow={onAddRow}
-      onPasteRows={onPasteRows}
-      columns={columns}
-      alignments={alignments}
-      getRowClasses={getRowClasses}
-      headerClasses={headerClasses}
-      tableId={tableId}
+      onCellEdit={handleCellEdit}
+      onDeleteRow={handleDeleteRow}
+      onAddRow={handleAddRow}
+      onPasteRows={handlePasteRows}
     />
   );
 }

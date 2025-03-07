@@ -40,22 +40,9 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('TableHeader', () => {
-  const columns = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'] as const;
-
-  const alignments: Record<string, TableAlignment> = {
-    hp: 'right',
-    prediction: 'left',
-    charge: 'center',
-    guard: 'center',
-    action: 'left',
-    note: 'left',
-  };
-
   const defaultProps = {
     className: 'test-header-class',
     isEditMode: false,
-    columns,
-    alignments,
     onAddRow: vi.fn(),
   };
 

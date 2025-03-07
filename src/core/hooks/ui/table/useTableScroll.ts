@@ -1,24 +1,23 @@
 import { useEffect, type RefObject, useRef } from 'react';
+import type { Action } from '@/types/models';
 
 const TOUCHPAD_SCROLL_THRESHOLD = 35;
 
-interface UseTableScrollProps<T> {
+interface UseTableScrollProps {
   containerRef: RefObject<HTMLDivElement | null>;
   currentRow: number;
-  data: T[];
+  data: Action[];
   onRowSelect: (_index: number) => void;
   isEditMode: boolean;
-  getRowId?: (_index: number) => string;
 }
 
-export const useTableScroll = <T>({
+export const useTableScroll = ({
   containerRef,
   currentRow,
   data,
   onRowSelect,
   isEditMode,
-  getRowId = (index: number) => `row-${index}`,
-}: UseTableScrollProps<T>): void => {
+}: UseTableScrollProps): void => {
   const accumulatedDeltaRef = useRef(0);
 
   // ホイールスクロール制御
@@ -71,8 +70,7 @@ export const useTableScroll = <T>({
     if (isEditMode) return;
 
     const container = containerRef.current;
-    const rowId = getRowId(currentRow);
-    const target = document.getElementById(rowId);
+    const target = document.getElementById(`action-row-${currentRow}`);
     if (target && container) {
       const containerRect = container.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
@@ -88,5 +86,5 @@ export const useTableScroll = <T>({
         behavior: 'smooth',
       });
     }
-  }, [currentRow, isEditMode, containerRef, getRowId]);
+  }, [currentRow, isEditMode, containerRef]);
 };

@@ -1,18 +1,19 @@
 import { useEffect } from 'react';
+import type { Action } from '@/types/models';
 
-interface UseTableKeyboardNavigationProps<T> {
+interface UseTableKeyboardNavigationProps {
   currentRow: number;
-  data: T[];
+  data: Action[];
   onRowSelect: (_index: number) => void;
   isEditMode: boolean;
 }
 
-export const useTableKeyboardNavigation = <T>({
+export const useTableKeyboardNavigation = ({
   currentRow,
   data,
   onRowSelect,
   isEditMode,
-}: UseTableKeyboardNavigationProps<T>): void => {
+}: UseTableKeyboardNavigationProps): void => {
   useEffect(() => {
     if (isEditMode) return;
 

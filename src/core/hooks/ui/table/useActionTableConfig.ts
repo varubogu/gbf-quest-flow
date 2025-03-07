@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+import type { ActionTableButtonPosition } from '@/types/models';
 import { cn } from '@/lib/utils/cn';
 
-export interface TableColumnConfig {
+interface ActionTableColumnConfig {
   [key: string]: {
     alignment: string;
     isEditable: boolean;
@@ -10,64 +11,47 @@ export interface TableColumnConfig {
   };
 }
 
-interface UseTableConfigProps {
+interface UseActionTableConfigProps {
   isEditMode: boolean;
-  columnWidths?: string[];
-  baseBackground?: string;
-  selectedBackground?: string;
-  completedBackground?: string;
-  headerBackground?: string;
-  borderColor?: string;
 }
 
-export interface UseTableConfigResult {
+export interface UseActionTableConfigResult {
   headerClasses: string;
   getRowClasses: (_props: { index: number; currentRow: number; baseBackground: string }) => string;
 }
 
-export const useTableConfig = ({
+export const useActionTableConfig = ({
   isEditMode,
-  columnWidths = [],
-  baseBackground = 'bg-white',
-  selectedBackground = 'bg-yellow-200',
-  completedBackground = 'bg-gray-300',
-  headerBackground = 'bg-green-300',
-  borderColor = 'border-gray-400',
-}: UseTableConfigProps): UseTableConfigResult => {
+}: UseActionTableConfigProps): UseActionTableConfigResult => {
   // グリッドレイアウトのクラスを生成
   const gridClasses = useMemo(() => {
-    // 編集モードの場合は削除と追加ボタン用の列を追加
-    const editPrefix = isEditMode ? 'grid-cols-[3.5rem_3.5rem_' : 'grid-cols-[';
-
-    // カラム幅が指定されている場合はそれを使用
-    const widthsStr = columnWidths.length > 0
-      ? columnWidths.join('_')
-      : '5fr_15fr_4fr_4fr_30fr_20fr';
-
-    return cn('min-w-full grid', `${editPrefix}${widthsStr}]`);
-  }, [isEditMode, columnWidths]);
+    const editColumns = isEditMode
+      ? 'grid-cols-[3.5rem_3.5rem_5fr_15fr_4fr_4fr_30fr_20fr]'
+      : 'grid-cols-[5fr_15fr_4fr_4fr_30fr_20fr]';
+    return cn('min-w-full grid', editColumns);
+  }, [isEditMode]);
 
   // ヘッダー行のクラスを生成
   const headerClasses = useMemo(() => {
     return cn(
       gridClasses,
-      headerBackground,
+      'bg-green-300',
       'sticky',
       isEditMode ? 'top-0' : 'top-12',
       'z-10',
       'shadow-sm',
       'border-b',
-      borderColor,
+      'border-gray-400',
       'border-l',
       'border-r'
     );
-  }, [gridClasses, isEditMode, headerBackground, borderColor]);
+  }, [gridClasses, isEditMode]);
 
   // データ行のクラスを生成する関数
   const getRowClasses = ({
     index,
     currentRow,
-    baseBackground: rowBackground,
+    baseBackground,
   }: {
     index: number;
     currentRow: number;
@@ -76,14 +60,14 @@ export const useTableConfig = ({
     return cn(
       gridClasses,
       'border-b',
-      borderColor,
+      'border-gray-400',
       'border-l',
       'border-r',
       !isEditMode && index === currentRow
-        ? `border border-yellow-500 ${selectedBackground}`
+        ? 'border border-yellow-500 bg-yellow-200'
         : !isEditMode && index < currentRow
-          ? `opacity-50 ${rowBackground}`
-          : rowBackground
+          ? `opacity-50 ${baseBackground}`
+          : baseBackground
     );
   };
 
@@ -94,17 +78,14 @@ export const useTableConfig = ({
 };
 
 // 設定の型ガード関数
-export const isValidColumnConfig = (config: unknown): config is TableColumnConfig => {
+export const isValidColumnConfig = (config: unknown): config is ActionTableColumnConfig => {
   if (typeof config !== 'object' || config === null) return false;
 
-  // 少なくとも1つのプロパティがあることを確認
+  const requiredColumns = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'] as const;
   const configObject = config as Record<string, unknown>;
-  const keys = Object.keys(configObject);
-  if (keys.length === 0) return false;
 
-  // 各プロパティが正しい形式かチェック
-  return keys.every((key) => {
-    const col = configObject[key];
+  return requiredColumns.every((column) => {
+    const col = configObject[column];
     return (
       col &&
       typeof col === 'object' &&
@@ -123,6 +104,6 @@ export const isValidColumnConfig = (config: unknown): config is TableColumnConfi
 
 export const isValidButtonPosition = (
   position: unknown
-): position is 'left' | 'right' => {
+): position is ActionTableButtonPosition => {
   return position === 'left' || position === 'right';
 };

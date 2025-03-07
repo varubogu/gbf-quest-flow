@@ -1,23 +1,29 @@
 import * as React from 'react';
 import { Plus } from 'lucide-react';
-import type { TableAlignment } from '@/types/types';
+import type { ActionTableColumn, TableAlignment } from '@/types/types';
 import TableHeaderCell from '@/components/molecules/common/table/TableHeaderCell';
 
-interface TableHeaderProps<T extends Record<string, string>> {
+interface TableHeaderProps {
   className: string;
   isEditMode: boolean;
-  columns: (keyof T)[];
-  alignments: Record<keyof T, TableAlignment>;
   onAddRow?: (_index: number) => void;
 }
 
-export const TableHeader = <T extends Record<string, string>>({
+export const TableHeader: React.FC<TableHeaderProps> = ({
   className,
   isEditMode,
-  columns,
-  alignments,
   onAddRow,
-}: TableHeaderProps<T>): React.ReactElement => {
+}) => {
+  const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
+  const alignments: Record<ActionTableColumn, TableAlignment> = {
+    hp: 'right',
+    prediction: 'left',
+    charge: 'center',
+    guard: 'center',
+    action: 'left',
+    note: 'left',
+  };
+
   const stickyClasses = isEditMode ? 'sticky top-0 z-10' : 'sticky top-12 z-10';
 
   return (
@@ -38,8 +44,8 @@ export const TableHeader = <T extends Record<string, string>>({
         )}
         {columns.map((column) => (
           <TableHeaderCell
-            key={String(column)}
-            column={String(column)}
+            key={column}
+            column={column}
             alignment={alignments[column]}
           />
         ))}

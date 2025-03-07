@@ -1,6 +1,6 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { Table } from './Table';
-import type { Action, TableAlignment } from '@/types/types';
+import type { Action } from '@/types/types';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 
@@ -11,30 +11,7 @@ const mockData: Action[] = [
   { hp: '80%', prediction: '特殊技', charge: '', guard: '', action: 'アクション3', note: '' },
 ];
 
-// 列定義
-const columns: (keyof Action)[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
-
-// 列の配置
-const alignments: Record<keyof Action, TableAlignment> = {
-  hp: 'right',
-  prediction: 'left',
-  charge: 'center',
-  guard: 'center',
-  action: 'left',
-  note: 'left',
-};
-
-// 行のクラス名を生成する関数
-const getRowClasses = ({ index, currentRow, baseBackground }: { index: number; currentRow: number; baseBackground: string }): string => {
-  return `grid grid-cols-[5fr_15fr_4fr_4fr_30fr_20fr] border-b border-gray-400 border-l border-r ${
-    index === currentRow ? 'border border-yellow-500 bg-yellow-200' : baseBackground
-  }`;
-};
-
-// ヘッダーのクラス名
-const headerClasses = 'grid grid-cols-[5fr_15fr_4fr_4fr_30fr_20fr] bg-green-300 sticky top-12 z-10 shadow-sm border-b border-gray-400 border-l border-r';
-
-describe('Table', () => {
+describe('ActionTable', () => {
   const mockOnRowSelect = vi.fn();
   const mockOnMoveUp = vi.fn();
   const mockOnMoveDown = vi.fn();
@@ -47,17 +24,13 @@ describe('Table', () => {
 
   it('マウスホイールで上下に移動できる', () => {
     const { container } = render(
-      <Table<Action>
+      <Table
         data={mockData}
         currentRow={1}
         buttonPosition="right"
         onRowSelect={mockOnRowSelect}
         onMoveUp={mockOnMoveUp}
         onMoveDown={mockOnMoveDown}
-        columns={columns}
-        alignments={alignments}
-        getRowClasses={getRowClasses}
-        headerClasses={headerClasses}
       />
     );
 
@@ -75,17 +48,13 @@ describe('Table', () => {
 
   it('タッチパッドのスクロールは累積値に基づいて移動する', async () => {
     const { container } = render(
-      <Table<Action>
+      <Table
         data={mockData}
         currentRow={1}
         buttonPosition="right"
         onRowSelect={mockOnRowSelect}
         onMoveUp={mockOnMoveUp}
         onMoveDown={mockOnMoveDown}
-        columns={columns}
-        alignments={alignments}
-        getRowClasses={getRowClasses}
-        headerClasses={headerClasses}
       />
     );
 
@@ -107,17 +76,13 @@ describe('Table', () => {
   it('最初の行より上、最後の行より下にはスクロールできない', () => {
     // 最初の行でのテスト
     const { container: firstContainer } = render(
-      <Table<Action>
+      <Table
         data={mockData}
         currentRow={0}
         buttonPosition="right"
         onRowSelect={mockOnRowSelect}
         onMoveUp={mockOnMoveUp}
         onMoveDown={mockOnMoveDown}
-        columns={columns}
-        alignments={alignments}
-        getRowClasses={getRowClasses}
-        headerClasses={headerClasses}
       />
     );
 
@@ -132,17 +97,13 @@ describe('Table', () => {
 
     // 最後の行でのテスト
     const { container: lastContainer } = render(
-      <Table<Action>
+      <Table
         data={mockData}
         currentRow={2}
         buttonPosition="right"
         onRowSelect={mockOnRowSelect}
         onMoveUp={mockOnMoveUp}
         onMoveDown={mockOnMoveDown}
-        columns={columns}
-        alignments={alignments}
-        getRowClasses={getRowClasses}
-        headerClasses={headerClasses}
       />
     );
 
@@ -156,7 +117,7 @@ describe('Table', () => {
 
   it('編集モード中はスクロールが無効になる', () => {
     const { container } = render(
-      <Table<Action>
+      <Table
         data={mockData}
         currentRow={1}
         buttonPosition="right"
@@ -164,10 +125,6 @@ describe('Table', () => {
         onMoveUp={mockOnMoveUp}
         onMoveDown={mockOnMoveDown}
         isEditMode={true}
-        columns={columns}
-        alignments={alignments}
-        getRowClasses={getRowClasses}
-        headerClasses={headerClasses}
       />
     );
 
