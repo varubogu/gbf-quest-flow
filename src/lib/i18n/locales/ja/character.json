@@ -1,6 +1,6 @@
 {
   "jobAndCharacters": "ジョブ、キャラ、アビリティ",
-  "job": "ジョブ",
+  "jobCharacterTitle": "ジョブ",
   "characters": "キャラクター",
   "skill": "スキル",
   "effectAmount": "効果量",

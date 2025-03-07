@@ -90,7 +90,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
                     <div className="p-4">
                       {/* ジョブ情報 */}
                       <div className="mb-8">
-                        <h3 className="text-lg font-bold mb-4">{t('job')}</h3>
+                        <h3 className="text-lg font-bold mb-4">{t('jobCharacterTitle')}</h3>
                         <JobPanel isEditing={isEditMode} />
                       </div>
 
