@@ -358,7 +358,7 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
           <div
             ref={suggestionsRef}
             className={cn(
-              'absolute z-10 w-full overflow-auto rounded-md border border-input bg-background py-1 shadow-md',
+              'absolute z-10 w-full overflow-auto rounded-md border border-input bg-background py-1 shadow-md bg-white',
               {
                 'bottom-full mb-1': showDropUp,
                 'top-full mt-1': !showDropUp
@@ -371,7 +371,7 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
                 key={item.id}
                 className={cn(
                   'cursor-pointer px-3 py-2 text-sm',
-                  'hover:bg-accent hover:text-accent-foreground',
+                  'hover:bg-accent hover:text-accent-foreground hover:bg-gray-300',
                   {
                     'bg-accent text-accent-foreground': index === highlightedIndex,
                   }
