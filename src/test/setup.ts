@@ -1,40 +1,13 @@
 /// <reference types="vitest" />
 /// <reference types="@testing-library/jest-dom" />
-import { beforeAll, afterEach, afterAll, vi, expect } from 'vitest';
+import { beforeAll, beforeEach, afterEach, afterAll, vi, expect } from 'vitest';
 import { server } from './mocks/server';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
 
 expect.extend(matchers);
 
-// コンソールエラーの抑制設定
-const originalConsoleError = console.error;
-beforeAll(() => {
-  console.error = (...args: unknown[]): void => {
-    const firstArg = args[0];
-    if (
-      typeof firstArg === 'string' &&
-      firstArg.includes('Warning: ReactDOM.render is no longer supported')
-    ) {
-      return;
-    }
-    originalConsoleError(...args);
-  };
-});
 
-afterAll(() => {
-  console.error = originalConsoleError;
-});
-
-// MSWのセットアップ
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
-afterEach(() => {
-  server.resetHandlers();
-  cleanup(); // React Testing Libraryのクリーンアップ
-  // Zustandのストアの更新を同期的に処理
-  vi.runAllTimers();
-});
-afterAll(() => server.close());
 
 // matchMediaのモック
 Object.defineProperty(window, 'matchMedia', {
@@ -65,15 +38,6 @@ Object.defineProperty(window, 'scrollTo', {
   value: scrollToMock,
 });
 
-// Zustandの状態更新を同期的に処理するためのセットアップ
-beforeAll(() => {
-  vi.useFakeTimers();
-});
-
-afterAll(() => {
-  vi.useRealTimers();
-});
-
 // IntersectionObserverのモック
 class MockIntersectionObserver {
   observe = vi.fn();
@@ -98,4 +62,51 @@ Object.defineProperty(window, 'ResizeObserver', {
   writable: true,
   configurable: true,
   value: MockResizeObserver,
+});
+
+
+// コンソールエラーの抑制設定
+const originalConsoleError = console.error;
+beforeAll(() => {
+  vi.useRealTimers();
+
+  console.error = (...args: unknown[]): void => {
+    const firstArg = args[0];
+    if (
+      typeof firstArg === 'string' &&
+      firstArg.includes('Warning: ReactDOM.render is no longer supported')
+    ) {
+      return;
+    }
+    originalConsoleError(...args);
+  };
+  return server.listen({ onUnhandledRequest: 'error' });
+});
+
+beforeEach(() => {
+  // タイマーをvitestのタイマーにモック
+  vi.useFakeTimers();
+
+  // vitestでjestタイマーに依存する処理を実行可能にする
+  // Zustandの状態更新、ユーザーイベント、非同期関数などを処理するためのセットアップ
+  // ただし、一度に実行するとテストエラーになるものがある。
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  globalThis.jest = {
+    advanceTimersByTime: vi.advanceTimersByTime.bind(vi),
+  }
+});
+
+// MSWのセットアップ
+afterEach(() => {
+  server.resetHandlers();
+  cleanup(); // React Testing Libraryのクリーンアップ
+  // Zustandのストアの更新を同期的に処理
+  vi.runAllTimers();
+});
+
+afterAll(() => {
+  vi.useRealTimers();
+  console.error = originalConsoleError;
+  return server.close();
 });
