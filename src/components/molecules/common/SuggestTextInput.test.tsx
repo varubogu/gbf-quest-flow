@@ -63,7 +63,6 @@ describe('SuggestTextInput', () => {
 
     // サジェストが表示されることを確認
     const items = await screen.findAllByRole('option');
-    console.log("5. ", items);
     expect(items).toHaveLength(2);
     expect(items[0]).toHaveTextContent('テスト3');
     expect(items[1]).toHaveTextContent('テスト4');
