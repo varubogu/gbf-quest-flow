@@ -5,6 +5,10 @@ import { CharacterIcon } from '@/components/molecules/specific/character/Charact
 import { SkillDisplay } from '@/components/molecules/specific/character/SkillDisplay';
 import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 import { textInputBaseStyle } from '@/components/atoms/common/IconTextButton';
+import { SuggestTextInput } from '@/components/molecules/common/SuggestTextInput';
+import type { SuggestItem } from '@/components/molecules/common/SuggestTextInput';
+import { characterAwakeTypeSuggest } from '@/config/suggest';
+import { cn } from '@/lib/utils/cn';
 
 interface CharacterFormProps {
   position: CharacterPosition;
@@ -14,6 +18,9 @@ interface CharacterFormProps {
 }
 
 type HandleChange = (_index: number, _field: keyof Member) => (_value: string) => void;
+
+// SuggestTextInput用のカスタムスタイル
+const suggestInputStyle = 'border-0 shadow-none p-0';
 
 export const CharacterForm: React.FC<CharacterFormProps> = memo(({
   position,
@@ -27,9 +34,21 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
     onMemberChange(position, index, field, value);
   }, [position, onMemberChange]);
 
-  const handleAwakeTypeChange = useCallback((index: number) => (e: React.ChangeEvent<HTMLInputElement>): void => {
-    onMemberChange(position, index, 'awaketype', e.target.value);
-  }, [position, onMemberChange]);
+  /**
+   * 覚醒タイプのサジェスト候補を取得する関数
+   * @param query - 入力された文字列
+   * @returns サジェスト候補のリスト
+   */
+  const handleAwakeTypeSuggest = useCallback((query: string): SuggestItem[] => {
+    return characterAwakeTypeSuggest
+      .map(item => ({
+        id: String(item.id),
+        label: t(item.translationKey) as string
+      }))
+      .filter(item =>
+        item.label.toLowerCase().includes(query.toLowerCase())
+      );
+  }, []);
 
   return (
     <>
@@ -59,11 +78,12 @@ export const CharacterForm: React.FC<CharacterFormProps> = memo(({
           />
           <td className={tableCellBaseStyle} role="cell">
             {isEditing ? (
-              <input
-                type="text"
-                value={char.awaketype}
-                onChange={handleAwakeTypeChange(index)}
-                className={textInputBaseStyle}
+              <SuggestTextInput
+                defaultValue={char.awaketype}
+                onChange={handleChange(index, 'awaketype')}
+                onSuggest={handleAwakeTypeSuggest}
+                onSelect={(item) => onMemberChange(position, index, 'awaketype', item.label)}
+                className={cn(textInputBaseStyle, suggestInputStyle)}
                 maxLength={4}
                 aria-label={t('characterAwakening') as string}
               />
