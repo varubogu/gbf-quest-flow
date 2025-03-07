@@ -1,4 +1,3 @@
-
 interface Quests {
     name: string;
     alias: string[];
@@ -6,29 +5,29 @@ interface Quests {
 
   export const questNames: Quests[] = [
     // 高難易度マルチ
-    { name: 'ダーク・ラプチャー・ゼロ', alias: ['ルシゼロ', 'スパルシゼロ', 'ルシファー'] },
-    { name: '天元たる六色の理', alias: ['天六'] },
-    { name: '進撃せし蒼き究極の龍', alias: ['スパバハ', 'スーパーアルティメットバハムート'] },
-    { name: '武極の試練', alias: [] },
-    { name: 'ムゲンHL', alias: [] },
-    { name: 'ディアスポラHL', alias: [] },
-    { name: 'ジークフリートHL', alias: [] },
-    { name: 'シエテHL', alias: [] },
-    { name: 'コスモスHL', alias: [] },
-    { name: 'アガスティアHL', alias: [] },
-    { name: 'ダークラプチャー（HARD）', alias: ['ルシHard', 'ルシファー'] },
-    { name: 'バース・オブ・ニューキング', alias: ['ベルゼバブ', 'バブ'] },
-    { name: '狡知の堕天使', alias: ['ベリアル', 'ベリ'] },
-    { name: 'ザ・ワールドHL', alias: [] },
-    { name: '進撃せし究極の龍', alias: ['アルバハHL', 'アルティメットバハムート'] },
+    { name: 'darkRaptureZero', alias: ['darkRaptureZero.1', 'darkRaptureZero.2', 'darkRaptureZero.3'] },
+    { name: 'sixColorsOfPrinciple', alias: ['sixColorsOfPrinciple.1'] },
+    { name: 'superUltimateBahamut', alias: ['superUltimateBahamut.1', 'superUltimateBahamut.2'] },
+    { name: 'trialOfMartialProwess', alias: [] },
+    { name: 'mugenHL', alias: [] },
+    { name: 'diasporaHL', alias: [] },
+    { name: 'siegfriedHL', alias: [] },
+    { name: 'sieteHL', alias: [] },
+    { name: 'cosmosHL', alias: [] },
+    { name: 'agastiaHL', alias: [] },
+    { name: 'darkRaptureHard', alias: ['darkRaptureHard.1', 'darkRaptureHard.2'] },
+    { name: 'birthOfNewKing', alias: ['birthOfNewKing.1', 'birthOfNewKing.2'] },
+    { name: 'cunningFallenAngel', alias: ['cunningFallenAngel.1', 'cunningFallenAngel.2'] },
+    { name: 'theWorldHL', alias: [] },
+    { name: 'ultimateBahamutHL', alias: ['ultimateBahamutHL.1', 'ultimateBahamutHL.2'] },
 
     // 天井征伐線
-    { name: 'ギルベルト', alias: [] },
-    { name: 'ナル・グレートウォール', alias: [] },
-    { name: '紫の騎士', alias: [] },
-    { name: 'エキドナ', alias: [] },
-    { name: '黄金の騎士', alias: [] },
-    { name: '白騎士', alias: [] },
-    { name: 'ケルブ', alias: [] },
-    { name: 'キクリ', alias: [] },
+    { name: 'gilbert', alias: [] },
+    { name: 'nalGreatWall', alias: [] },
+    { name: 'purpleKnight', alias: [] },
+    { name: 'echidna', alias: [] },
+    { name: 'goldenKnight', alias: [] },
+    { name: 'whiteKnight', alias: [] },
+    { name: 'cherub', alias: [] },
+    { name: 'kikuri', alias: [] },
   ]
