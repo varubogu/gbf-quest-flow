@@ -1,5 +1,3 @@
-import type { Action } from '@/types/models';
-
 /**
  * タブ区切りテキストを解析する関数
  */
@@ -67,14 +65,25 @@ export const parseTabSeparatedText = (text: string): string[][] => {
 };
 
 /**
- * 解析したデータをActionオブジェクトに変換する関数
+ * 解析したデータをジェネリック型のオブジェクトに変換する関数
  */
-export const convertToActions = (rows: string[][], startField: keyof Action): Partial<Action>[] => {
-  // フィールドの順序を定義
-  const fieldOrder: (keyof Action)[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
+export const convertToGenericRows = <T extends Record<string, string>>(
+  rows: string[][],
+  startField: string,
+  fieldOrder?: string[]
+): Partial<T>[] => {
+  // フィールドの順序が指定されていない場合はエラー
+  if (!fieldOrder || fieldOrder.length === 0) {
+    throw new Error('fieldOrderRequired');
+  }
 
   // 貼り付け開始位置のインデックスを取得
   const startIndex = fieldOrder.indexOf(startField);
+
+  // 指定されたフィールドが見つからない場合はエラー
+  if (startIndex === -1) {
+    throw new Error('invalidStartField');
+  }
 
   // 各行のデータ列数を取得（空の列も含める）
   const dataColumnCount = Math.max(...rows.map((row) => row.length));
@@ -97,7 +106,7 @@ export const convertToActions = (rows: string[][], startField: keyof Action): Pa
   }
 
   return rows.map((row) => {
-    const action: Partial<Action> = {};
+    const item: Partial<T> = {} as Partial<T>;
 
     // 貼り付け開始位置から順にデータを割り当て
     row.forEach((value, index) => {
@@ -105,11 +114,23 @@ export const convertToActions = (rows: string[][], startField: keyof Action): Pa
       if (fieldIndex < fieldOrder.length) {
         const field = fieldOrder[fieldIndex];
         if (field) {
-          action[field] = value.trim();
+          (item as Record<string, string>)[field] = value.trim();
         }
       }
     });
 
-    return action;
+    return item;
   });
+};
+
+/**
+ * 解析したデータをActionオブジェクトに変換する関数（後方互換性のため）
+ * @deprecated 代わりにconvertToGenericRowsを使用してください
+ */
+export const convertToActions = <T extends Record<string, string>>(
+  rows: string[][],
+  startField: string,
+  fieldOrder: string[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note']
+): Partial<T>[] => {
+  return convertToGenericRows<T>(rows, startField, fieldOrder);
 };

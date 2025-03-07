@@ -6,11 +6,11 @@ import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
 import { SideMenu } from '@/components/templates/common/SideMenu';
 import { IconButton } from '@/components/atoms/common/IconButton';
 import { IconTextButton } from '@/components/atoms/common/IconTextButton';
-import { TableContainer } from '@/components/organisms/common/table/TableContainer';
 import { OrganizationModal } from '@/components/templates/specific/OrganizationModal';
 import { InfoModal } from '@/components/templates/specific/InfoModal';
 import { Button } from '@/components/atoms/common/Button';
 import type { Flow } from '@/types/models';
+import { ActionTableContainer } from '@/components/organisms/specific/table/ActionTableContainer';
 
 interface Props {
   flowData: Flow;
@@ -138,7 +138,7 @@ export function FlowLayout({
             <PanelResizeHandle className="h-2 bg-gray-300 hover:bg-gray-400 transition-colors cursor-row-resize" />
             <Panel defaultSize={50} minSize={10}>
               <div className="h-full overflow-auto">
-                <TableContainer data={flowData.flow} isEditMode={isEditMode} />
+                <ActionTableContainer data={flowData.flow} isEditMode={isEditMode} />
               </div>
             </Panel>
           </PanelGroup>

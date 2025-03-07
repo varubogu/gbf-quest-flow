@@ -25,6 +25,9 @@ describe('useTableScroll', () => {
     height: 50,
   };
 
+  // 行IDの生成関数
+  const getRowId = (index: number): string => `action-row-${index}`;
+
   beforeEach(() => {
     vi.clearAllMocks();
     document.body.innerHTML = '';
@@ -42,12 +45,13 @@ describe('useTableScroll', () => {
   it('編集モード時はスクロール制御を無効にする', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
-      useTableScroll({
+      useTableScroll<Action>({
         containerRef,
         currentRow: 2,
         data: mockData,
         onRowSelect: mockOnRowSelect,
         isEditMode: true,
+        getRowId,
       })
     );
 
@@ -59,12 +63,13 @@ describe('useTableScroll', () => {
   it('マウスホイールで下にスクロールすると次の行に移動する', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
-      useTableScroll({
+      useTableScroll<Action>({
         containerRef,
         currentRow: 2,
         data: mockData,
         onRowSelect: mockOnRowSelect,
         isEditMode: false,
+        getRowId,
       })
     );
 
@@ -76,12 +81,13 @@ describe('useTableScroll', () => {
   it('マウスホイールで上にスクロールすると前の行に移動する', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
-      useTableScroll({
+      useTableScroll<Action>({
         containerRef,
         currentRow: 2,
         data: mockData,
         onRowSelect: mockOnRowSelect,
         isEditMode: false,
+        getRowId,
       })
     );
 
@@ -93,12 +99,13 @@ describe('useTableScroll', () => {
   it('行が選択されると自動的にその行が表示される位置までスクロールする', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
-      useTableScroll({
+      useTableScroll<Action>({
         containerRef,
         currentRow: 2,
         data: mockData,
         onRowSelect: mockOnRowSelect,
         isEditMode: false,
+        getRowId,
       })
     );
 

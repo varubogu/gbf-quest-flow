@@ -2,52 +2,44 @@ import * as React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { TableCell } from './TableCell';
 import type {
-  Action,
-  ActionTableColumn,
   TableAlignment
 } from '@/types/types';
 
-interface TableRowProps {
-  data: Action;
+interface TableRowProps<T extends Record<string, string>> {
+  data: T;
   index: number;
   isCurrentRow: boolean;
   isEditMode: boolean;
   className: string;
+  columns: (keyof T)[];
+  alignments: Record<keyof T, TableAlignment>;
   onRowClick: () => void;
   onRowDoubleClick: () => void;
-  onCellEdit?: (_field: keyof Action, _value: string) => void;
+  onCellEdit?: (_field: keyof T, _value: string) => void;
   onDeleteRow?: () => void;
   onAddRow?: () => void;
-  onPasteRows?: (_rows: Partial<Action>[]) => void;
+  onPasteRows?: (_rows: Partial<T>[]) => void;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({
+export const TableRow = <T extends Record<string, string>>({
   data,
   index,
   isCurrentRow,
   isEditMode,
   className,
+  columns,
+  alignments,
   onRowClick,
   onRowDoubleClick,
   onCellEdit,
   onDeleteRow,
   onAddRow,
   onPasteRows,
-}) => {
-  const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
-  const alignments: Record<ActionTableColumn, TableAlignment> = {
-    hp: 'right',
-    prediction: 'left',
-    charge: 'center',
-    guard: 'center',
-    action: 'left',
-    note: 'left',
-  };
-
+}: TableRowProps<T>): React.ReactElement => {
   return (
     <tr
-      id={`action-row-${index}`}
-      data-testid={`action-row-${index}`}
+      id={`row-${index}`}
+      data-testid={`row-${index}`}
       className={className}
       onClick={onRowClick}
       onDoubleClick={onRowDoubleClick}
@@ -73,16 +65,16 @@ export const TableRow: React.FC<TableRowProps> = ({
         </>
       )}
       {columns.map((column) => (
-        <TableCell
-          key={column}
+        <TableCell<T>
+          key={String(column)}
           content={data[column] || ''}
           isCurrentRow={isCurrentRow}
           isEditable={isEditMode}
           onChange={(value) => onCellEdit?.(column, value)}
           onPasteRows={onPasteRows}
-          field={column}
+          field={String(column)}
           alignment={alignments[column]}
-          data-testid={`cell-${column}-${index}`}
+          data-testid={`cell-${String(column)}-${index}`}
         />
       ))}
     </tr>

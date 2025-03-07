@@ -1,29 +1,33 @@
 import * as React from 'react';
-import type { Action } from '@/types/types';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { useTableKeyboardNavigation } from '@/core/hooks/ui/table/useTableKeyboardNavigation';
 import { useTableScroll } from '@/core/hooks/ui/table/useTableScroll';
-import { useActionTableConfig } from '@/core/hooks/ui/table/useActionTableConfig';
 import { TableControls } from '@/components/molecules/common/table/TableControls';
 import { TableHeader } from '@/components/molecules/common/table/TableHeader';
 import { TableRow } from '@/components/molecules/common/table/TableRow';
 import { type JSX } from 'react';
+import { type TableAlignment } from '@/types/types';
 
-interface TableProps {
-  data: Action[];
+interface TableProps<T extends Record<string, string>> {
+  data: T[];
   currentRow: number;
   buttonPosition?: 'left' | 'right';
   onRowSelect: (_index: number) => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
   isEditMode?: boolean;
-  onCellEdit?: (_rowIndex: number, _field: keyof Action, _value: string) => void;
+  onCellEdit?: (_rowIndex: number, _field: keyof T, _value: string) => void;
   onDeleteRow?: (_index: number) => void;
   onAddRow?: (_index: number) => void;
-  onPasteRows?: (_index: number, _rows: Partial<Action>[]) => void;
+  onPasteRows?: (_index: number, _rows: Partial<T>[]) => void;
+  columns: (keyof T)[];
+  alignments: Record<keyof T, TableAlignment>;
+  getRowClasses: (_props: { index: number; currentRow: number; baseBackground: string }) => string;
+  headerClasses: string;
+  tableId?: string;
 }
 
-export function Table({
+export function Table<T extends Record<string, string>>({
   data,
   currentRow,
   buttonPosition = 'left',
@@ -35,14 +39,14 @@ export function Table({
   onDeleteRow,
   onAddRow,
   onPasteRows,
-}: TableProps): JSX.Element {
+  columns,
+  alignments,
+  getRowClasses,
+  headerClasses,
+  tableId = 'data-table',
+}: TableProps<T>): JSX.Element {
   const settings = useSettingsStore((state: SettingsStore) => state.settings);
   const containerRef = React.useRef<HTMLDivElement>(null);
-
-  // 設定とスタイルの管理
-  const { headerClasses, getRowClasses } = useActionTableConfig({
-    isEditMode,
-  });
 
   // キーボードナビゲーションの設定
   useTableKeyboardNavigation({
@@ -85,7 +89,7 @@ export function Table({
   return (
     <div
       ref={containerRef}
-      id="flow-action-table"
+      id={tableId}
       className="flex flex-col h-full overflow-y-auto"
     >
         <div className="sticky top-0 z-10">
@@ -102,10 +106,12 @@ export function Table({
 
       <div>
         <table className="w-full border-separate border-spacing-0">
-          <TableHeader
+          <TableHeader<T>
             className={headerClasses}
             isEditMode={isEditMode}
-            onAddRow={onAddRow ?? ((): void => {})}
+            columns={columns}
+            alignments={alignments}
+            onAddRow={onAddRow}
           />
 
           <tbody>
@@ -113,14 +119,19 @@ export function Table({
               // HPが空の場合、直前のHPが存在する行まで遡る
               let currentIndex = index;
               let hpRowCount = 0; // HPが入っている行数をカウント
-              for (let i = 0; i <= index; i++) {
-                if (data[i]?.hp?.trim()) {
-                  hpRowCount++;
+
+              // HPフィールドが存在する場合のみ処理
+              if ('hp' in row) {
+                for (let i = 0; i <= index; i++) {
+                  if (data[i]?.['hp']?.toString().trim()) {
+                    hpRowCount++;
+                  }
+                }
+                while (currentIndex > 0 && !data[currentIndex]?.['hp']?.toString().trim()) {
+                  currentIndex--;
                 }
               }
-              while (currentIndex > 0 && !data[currentIndex]?.hp?.trim()) {
-                currentIndex--;
-              }
+
               // HPが存在する行の番号を使用
               const isEvenRow = hpRowCount % 2 === 1; // HPが入っている行数で判定
 
@@ -128,13 +139,15 @@ export function Table({
               const baseBackground = isEvenRow ? 'bg-white' : 'bg-gray-300';
 
               return (
-                <TableRow
-                  key={`action-row-${index}`}
+                <TableRow<T>
+                  key={`row-${index}`}
                   data={row}
                   index={index}
                   isCurrentRow={index === currentRow}
                   isEditMode={isEditMode}
                   className={getRowClasses({ index, currentRow, baseBackground })}
+                  columns={columns}
+                  alignments={alignments}
                   onRowClick={() => handleRowClick(index)}
                   onRowDoubleClick={() => handleRowDoubleClick(index)}
                   onCellEdit={(field, value) => onCellEdit?.(index, field, value)}

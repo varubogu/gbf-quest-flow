@@ -3,8 +3,9 @@ import type { RenderResult } from '@testing-library/react';
 import { TableRow } from './TableRow';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderTableRow } from '@/test/table-test-utils';
+import type { TableAlignment } from '@/types/types';
 
-describe('ActionTableRow', () => {
+describe('TableRow', () => {
   const mockData = {
     hp: '95',
     prediction: 'テスト予兆（1億ダメージ）',
@@ -14,12 +15,25 @@ describe('ActionTableRow', () => {
     note: 'テストノート',
   };
 
+  const columns = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'] as const;
+
+  const alignments: Record<string, TableAlignment> = {
+    hp: 'right',
+    prediction: 'left',
+    charge: 'center',
+    guard: 'center',
+    action: 'left',
+    note: 'left',
+  };
+
   const defaultProps = {
     data: mockData,
     index: 0,
     isCurrentRow: false,
     isEditMode: false,
     className: 'test-class',
+    columns,
+    alignments,
     onRowClick: vi.fn(),
     onRowDoubleClick: vi.fn(),
     onCellEdit: vi.fn(),
@@ -67,7 +81,7 @@ describe('ActionTableRow', () => {
   });
 
   it('クリックイベントが正しく発火する', () => {
-    const row = screen.getByTestId('action-row-0');
+    const row = screen.getByTestId('row-0');
     row.click();
     expect(defaultProps.onRowClick).toHaveBeenCalledTimes(1);
 
@@ -100,13 +114,13 @@ describe('ActionTableRow', () => {
   });
 
   it('指定されたクラス名が適用される', () => {
-    const row = screen.getByTestId('action-row-0');
+    const row = screen.getByTestId('row-0');
     expect(row).toHaveClass('test-class');
   });
 
   it('現在の行のスタイルが正しく適用される', () => {
     // 通常の行
-    let row = screen.getByTestId('action-row-0');
+    let row = screen.getByTestId('row-0');
     expect(row).toHaveClass('test-class');
 
     // 現在の行
@@ -117,7 +131,7 @@ describe('ActionTableRow', () => {
         </tbody>
       </table>
     );
-    row = screen.getByTestId('action-row-0');
+    row = screen.getByTestId('row-0');
     expect(row).toHaveClass('test-class');
   });
 });

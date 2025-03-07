@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 import { Text } from '../../../atoms/common/Text';
-import type { Action, TableAlignment } from '@/types/types';
+import type { TableAlignment } from '@/types/types';
 import useSettingsStore, { type SettingsStore } from '@/core/stores/settingsStore';
 import { useAlignmentStyle } from '@/core/hooks/ui/base/useAlignmentStyle';
 import { useTableCellBaseStyle } from '@/core/hooks/ui/table/useTableCellBaseStyle';
@@ -10,20 +10,20 @@ import { useActionCellEvents } from '@/core/hooks/ui/table/useActionCellEvents';
 import { useActionCellState } from '@/core/hooks/ui/table/useActionCellState';
 import { useTextareaStyle } from '@/core/hooks/ui/base/useTextareaStyle';
 
-interface TableCellProps {
+interface TableCellProps<T extends Record<string, string>> {
   content: string;
   isCurrentRow?: boolean;
   isHeader?: boolean;
   isEditable?: boolean;
   onChange?: (_: string) => void;
-  onPasteRows?: ((_: Partial<Action>[]) => void) | undefined;
-  field?: keyof Action;
+  onPasteRows?: ((_: Partial<T>[]) => void) | undefined;
+  field?: string;
   alignment?: TableAlignment;
   className?: string;
   'data-testid'?: string;
 }
 
-export const TableCell: React.FC<TableCellProps> = ({
+export const TableCell = <T extends Record<string, string>>({
   content,
   isCurrentRow = false,
   isHeader = false,
@@ -34,7 +34,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   alignment = 'left' as const,
   className = '',
   'data-testid': dataTestId,
-}) => {
+}: TableCellProps<T>): React.ReactElement => {
   const settings = useSettingsStore((state: SettingsStore) => state.settings);
   const { getAlignmentClass } = useAlignmentStyle();
   const { getBaseClassName, getBasePadding } = useTableCellBaseStyle();
@@ -60,7 +60,7 @@ export const TableCell: React.FC<TableCellProps> = ({
     content,
     value,
     isEditable,
-    field: field as keyof Action,
+    field,
     onChange,
     onPasteRows,
     setIsEditing,
