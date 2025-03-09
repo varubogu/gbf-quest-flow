@@ -1,6 +1,6 @@
 {
-  "$schema": "../../../../.astro/collections/flows.schema.json",
-  "title": "vvvルシゼロ火マナ",
+  "$schema": "../../../.astro/collections/flows.schema.json",
+  "title": "ルシゼロ火マナ",
   "quest": "ダーク・ラプチャー・ゼロ",
   "author": "鈴木太郎",
   "description": "ルシゼロの火マナ編成",
@@ -9,6 +9,7 @@
   "note": "自由に記述するエリアです",
   "organization": {
     "job": {
+      "key": "manaDiver",
       "name": "マナダイバー",
       "note": "ダメアビで予兆解除を狙う",
       "equipment": {
@@ -17,14 +18,17 @@
       },
       "abilities": [
         {
+          "key": "jobAbility.secretTriad",
           "name": "シークレットトライアド",
           "note": "追撃数、刻印による火力貢献"
         },
         {
+          "key": "jobAbility.wildMagika",
           "name": "ワイルドマギカ",
           "note": "アビダメ、行動回数追加"
         },
         {
+          "key": "jobAbility.clearAll",
           "name": "クリアオール",
           "note": "緑林檎解除、暗闇や連撃しないデバフ対処"
         }
@@ -33,6 +37,7 @@
     "member": {
       "front": [
         {
+          "key": "リミパーシヴァル",
           "name": "リミパーシヴァル",
           "awaketype": "防御",
           "note": "TA、弱体数、ヒット数など。区間によっては2アビの緊急回避も使える",
@@ -40,6 +45,7 @@
           "limitBonus": ""
         },
         {
+          "key": "リミゼタ",
           "name": "リミゼタ",
           "awaketype": "防御",
           "note": "TA、ディスペル、弱体数、アビダメ、ヒット数などほぼすべての予兆で活躍する",
@@ -47,6 +53,7 @@
           "limitBonus": ""
         },
         {
+          "key": "フェニー",
           "name": "フェニー",
           "awaketype": "連撃",
           "note": "アビダメ、耐久など\n他キャラは奥義を打てないことが多いのでFC稼ぎキャラでもある\n自動復活すると耐久力があがるので早めに発動させたい",
@@ -56,6 +63,7 @@
       ],
       "back": [
         {
+          "key": "アラナン",
           "name": "アラナン",
           "awaketype": "任意",
           "note": "基本出ない想定。出た場合はさっさとバースト",
@@ -63,6 +71,7 @@
           "limitBonus": ""
         },
         {
+          "key": "ミカエル",
           "name": "ミカエル",
           "awaketype": "任意",
           "note": "加護ブースト目的\n基本表には出ない",
@@ -73,47 +82,56 @@
     },
     "weapon": {
       "main": {
+        "key": "フェニー杖",
         "name": "フェニー杖",
         "note": "火傷稼ぎ、回復、アビダメ",
         "additionalSkill": ""
       },
       "other": [
         {
+          "key": "ミカ斧",
           "name": "ミカ斧",
           "note": "与ダメ",
           "additionalSkill": ""
         },
         {
-          "name": "ミカ斧",
-          "note": "与ダメ\n極まると2本めが抜ける場合がある",
-          "additionalSkill": ""
-        },
-        {
+          "key": "リミパー剣",
           "name": "リミパー剣",
           "note": "防御、特殊上限\nムゲン剣と合わせて剣4にする",
           "additionalSkill": ""
         },
         {
+          "key": "リミパー剣",
+          "name": "リミパー剣",
+          "note": "防御、特殊上限\nムゲン剣と合わせて剣4にする",
+          "additionalSkill": ""
+        },
+        {
+          "key": "リミゼタ槍",
           "name": "リミゼタ槍",
           "note": "ヒット数\n最低1、あれば最大3",
           "additionalSkill": ""
         },
         {
+          "key": "クビラ槍",
           "name": "クビラ槍",
           "note": "アビダメが多いので1は編成したい",
           "additionalSkill": ""
         },
         {
+          "key": "終末（神）220↑",
           "name": "終末（神）220↑",
           "note": "",
           "additionalSkill": "通常上限\n極破"
         },
         {
+          "key": "極星剣",
           "name": "極星剣",
           "note": "パー剣スキルのため剣。\nもし発動できてるなら杖の方が良い",
           "additionalSkill": ""
         },
         {
+          "key": "ムゲン剣",
           "name": "ムゲン剣",
           "note": "",
           "additionalSkill": "防御or特殊覚醒"
@@ -121,16 +139,19 @@
       ],
       "additional": [
         {
+          "key": "ドラポンオリジン",
           "name": "ドラポンオリジン",
           "note": "与ダメ",
           "additionalSkill": "神石神威\n無属性与ダメ"
         },
         {
+          "key": "サン刀",
           "name": "サン刀",
           "note": "再行動時の回復\nデビル拳5凸、風ワールド琴で代用可能",
           "additionalSkill": ""
         },
         {
+          "key": "オメガ杖",
           "name": "オメガ杖",
           "note": "主、フェニー連撃のため杖必須",
           "additionalSkill": "連撃、アビ上限、回復"
@@ -138,49 +159,59 @@
       ]
     },
     "weaponEffects": {
+      "key": "",
       "taRate": "55%",
       "hp": "400%",
       "defense": "90%"
     },
     "summon": {
       "main": {
+        "key": "超越アグニス220↑",
         "name": "超越アグニス220↑",
         "note": "極破加護目的、弱体数や奥義加速も"
       },
       "friend": {
+        "key": "超越アグニス220↑",
         "name": "超越アグニス220↑",
         "note": "同上\n片面極破や連撃率確保済みならルシでも良い"
       },
       "other": [
         {
+          "key": "黒麒麟3凸",
           "name": "黒麒麟3凸",
           "note": "事故リカバリ"
         },
         {
+          "key": "トリゼロ4凸",
           "name": "トリゼロ4凸",
           "note": "奥義5回用、裏で事故リカバリ"
         },
         {
+          "key": "サン5凸",
           "name": "サン5凸",
           "note": "6回行動、ゼタの自動アビ"
         },
         {
+          "key": "超越ルシ230↑",
           "name": "超越ルシ230↑",
           "note": "回復"
         }
       ],
       "sub": [
         {
+          "key": "ミカエル",
           "name": "ミカエル",
           "note": "ダメ上限強化"
         },
         {
+          "key": "ウィルナス4凸",
           "name": "ウィルナス4凸",
           "note": ""
         }
       ]
     },
     "totalEffects": {
+      "key": "",
       "taRate": "パーは確定、ゼタは1アビ中確定\n武器55% + フェニー1で10% + 神滅戦大事な物で3% = 68%が基本\n",
       "hp": "400%",
       "defense": "90%"

@@ -55,12 +55,14 @@ export type ButtonAlignment = 'left' | 'right';
 
 // キャラクター/武器/召喚石の共通項目のスキーマ
 const itemBaseSchema = z.object({
+  key: z.string(),
   name: z.string(),
   note: z.string(),
 });
 
 // ジョブのスキーマ
 const jobAbilitySchema = z.object({
+  key: z.string(),
   name: z.string(),
   note: z.string(),
 });
@@ -71,6 +73,7 @@ const jobEquipmentSchema = z.object({
 });
 
 const jobSchema = z.object({
+  key: z.string(),
   name: z.string(),
   note: z.string(),
   equipment: jobEquipmentSchema,
@@ -79,6 +82,7 @@ const jobSchema = z.object({
 
 // 編成メンバーのスキーマ
 const memberSchema = itemBaseSchema.extend({
+  key: z.string(),
   awaketype: z.string(),
   accessories: z.string(),
   limitBonus: z.string(),
@@ -86,6 +90,7 @@ const memberSchema = itemBaseSchema.extend({
 
 // 武器のスキル効果量のスキーマ
 const weaponSkillEffectSchema = z.object({
+  key: z.string(),
   taRate: z.string(),
   hp: z.string(),
   defense: z.string(),
@@ -93,12 +98,14 @@ const weaponSkillEffectSchema = z.object({
 
 // 武器のスキル総合値のスキーマ
 const weaponSkillTotalSchema = z.object({
+  key: z.string(),
   taRate: z.string(),
   hp: z.string(),
   defense: z.string(),
 });
 
 const weaponSchema = itemBaseSchema.extend({
+  key: z.string(),
   additionalSkill: z.string(),
 });
 
