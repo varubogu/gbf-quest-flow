@@ -1,16 +1,16 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 import { flowSchema } from '@/types/models';
-import { z } from 'astro:content';
 import type { OrganizationSettings } from '@/types/settings';
 
 const settingsSchema = z.custom<OrganizationSettings>();
 const settingsCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/settings' }),
   schema: settingsSchema,
 });
 
 const flowCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/flows' }),
   schema: flowSchema,
 });
 

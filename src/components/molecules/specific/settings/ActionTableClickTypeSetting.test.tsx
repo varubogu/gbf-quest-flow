@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ActionTableClickTypeSetting } from './ActionTableClickTypeSetting';
+import { updateSettings } from '@/core/facades/settingsStoreFacade';
+import type { SettingsStore } from '@/core/stores/settingsStore';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // モックの作成
@@ -7,27 +9,30 @@ vi.mock('react-i18next', () => ({
   useTranslation: (): { t: (_key: string) => string } => ({
     t: (key: string) => key,
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
 }));
 
 // settingsStoreFacadeのモック
-vi.mock('../../../core/facades/settingsStoreFacade', () => {
+vi.mock('@/core/facades/settingsStoreFacade', () => {
   return {
     updateSettings: vi.fn(),
   };
 });
 
 // settingsStoreのモック
-vi.mock('../../../core/stores/settingsStore', () => {
+const mockState = {
+  settings: {
+    actionTableClickType: 'single',
+  },
+  updateSettings: vi.fn(),
+} as unknown as SettingsStore;
+
+vi.mock('@/core/stores/settingsStore', () => {
   return {
-    default: (): {
-      settings: {
-        actionTableClickType: 'single',
-      },
-    } => ({
-      settings: {
-        actionTableClickType: 'single',
-      },
-    }),
+    default: (selector: (_state: SettingsStore) => unknown): unknown => selector(mockState),
   };
 });
 
@@ -43,36 +48,21 @@ describe('ActionTableClickTypeSetting', () => {
     expect(screen.getByLabelText('doubleClick')).toBeInTheDocument();
   });
 
-  it('初期表示では1番目のクリックタイプ（single）が選択されていることを確認', () => {
+  it('ストアの設定値（single）が選択されていることを確認', () => {
     render(<ActionTableClickTypeSetting />);
     const singleRadio = screen.getByLabelText('singleClick') as HTMLInputElement;
     const doubleRadio = screen.getByLabelText('doubleClick') as HTMLInputElement;
 
-    // 実際の動作に合わせて期待値を調整
-    expect(singleRadio.checked).toBe(false);
+    expect(singleRadio.checked).toBe(true);
     expect(doubleRadio.checked).toBe(false);
   });
 
-  // このテストはモックの問題で一時的にスキップ
-  it.skip('クリックタイプが変更されたときにupdateSettingsが呼び出されることを確認', () => {
+  it('クリックタイプが変更されたときにupdateSettingsが呼び出されることを確認', () => {
     render(<ActionTableClickTypeSetting />);
     fireEvent.click(screen.getByLabelText('doubleClick'));
 
-    // 実際のテストでは以下のようにチェックするが、現在のモック設定では動作しない
-    // expect(updateSettingsMock).toHaveBeenCalledWith({
-    //   actionTableClickType: 'double',
-    // });
-  });
-
-  it('double（2番目の項目）が選択された状態でテスト', () => {
-    // このテストは現在のモック実装では正確にテストできないため、
-    // 実際のコンポーネントの動作を確認するだけにします
-    render(<ActionTableClickTypeSetting />);
-    const singleRadio = screen.getByLabelText('singleClick') as HTMLInputElement;
-    const doubleRadio = screen.getByLabelText('doubleClick') as HTMLInputElement;
-
-    // 実際の動作に合わせて期待値を調整
-    expect(singleRadio.checked).toBe(false);
-    expect(doubleRadio.checked).toBe(false);
+    expect(updateSettings).toHaveBeenCalledWith({
+      actionTableClickType: 'double',
+    });
   });
 });

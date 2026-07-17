@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorDialog } from './ErrorDialog';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
-import { downloadFlow } from '@/core/facades/FileOperationsFacade';
+import { downloadFlow } from '@/core/facades/fileOperationFacade';
 import type { Flow, Organization } from '@/types/models';
 import type { AppError } from '@/types/error.types';
 import { ErrorSeverity, ErrorType } from '@/types/error.types';
@@ -28,25 +28,37 @@ vi.mock('react-i18next', () => ({
 // @headlessui/reactのモックを修正
 vi.mock('@headlessui/react', () => {
   const Dialog = ({
-     children,
-     open,
-     _onClose
-  }: { children: React.ReactNode; open: boolean; _onClose: () => void }): JSX.Element | null => {
+    children,
+    open,
+    _onClose,
+  }: {
+    children: React.ReactNode;
+    open: boolean;
+    _onClose: () => void;
+  }): JSX.Element | null => {
     if (!open) return null;
-    return (
-      <div data-testid="dialog">
-        {children}
-      </div>
-    );
+    return <div data-testid="dialog">{children}</div>;
   };
 
-  Dialog.Panel = ({ children, className }: { children: React.ReactNode; className?: string }): JSX.Element => (
+  Dialog.Panel = ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }): JSX.Element => (
     <div data-testid="dialog-panel" className={className}>
       {children}
     </div>
   );
 
-  Dialog.Title = ({ children, className }: { children: React.ReactNode; className?: string }): JSX.Element => (
+  Dialog.Title = ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }): JSX.Element => (
     <h2 data-testid="dialog-title" className={className}>
       {children}
     </h2>
@@ -57,7 +69,7 @@ vi.mock('@headlessui/react', () => {
 
 vi.mock('@/core/stores/flowStore');
 vi.mock('@/core/stores/errorStore');
-vi.mock('@/core/facades/FileOperationsFacade', () => ({
+vi.mock('@/core/facades/fileOperationFacade', () => ({
   downloadFlow: vi.fn(),
 }));
 
@@ -69,7 +81,7 @@ describe('ErrorDialog', () => {
     severity: ErrorSeverity.ERROR,
     timestamp: new Date(),
     details: { test: 'テスト詳細' },
-    recoverable: false
+    recoverable: false,
   };
   const mockFlowData: Flow = {
     title: 'テストフロー',

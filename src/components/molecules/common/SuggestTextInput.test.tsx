@@ -12,7 +12,7 @@ describe('SuggestTextInput', () => {
   ];
 
   const mockOnSuggest = vi.fn().mockImplementation(async (query: string) => {
-    const filtered = mockSuggestions.filter(item =>
+    const filtered = mockSuggestions.filter((item) =>
       item.label.toLowerCase().includes(query.toLowerCase())
     );
     return Promise.resolve(filtered);
@@ -23,7 +23,8 @@ describe('SuggestTextInput', () => {
 
   afterEach(() => {
     cleanup();
-    vi.resetAllMocks();
+    // resetAllMocksはmockImplementationまで消してしまうため、呼び出し履歴のみクリアする
+    vi.clearAllMocks();
   });
 
   it('正しくレンダリングされる', () => {
@@ -164,7 +165,7 @@ describe('SuggestTextInput', () => {
   it('maxSuggestionsを超えるサジェストは表示されない', async () => {
     const manyMockSuggestions: SuggestItem[] = Array.from({ length: 10 }, (_, i) => ({
       id: String(i + 1),
-      label: `テストアイテム${i + 1}`
+      label: `テストアイテム${i + 1}`,
     }));
 
     const manyMockOnSuggest = vi.fn().mockImplementation(async () => {

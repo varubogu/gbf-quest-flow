@@ -1,9 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import {
-  parseCurrentUrl,
-  updateUrl,
-  createPopStateHandler
-} from './urlService';
+import { parseCurrentUrl, updateUrl, createPopStateHandler } from './urlService';
 import type { Flow } from '@/types/models';
 
 describe('urlService', () => {
@@ -16,7 +12,7 @@ describe('urlService', () => {
     window.history.pushState = vi.fn();
 
     // window.locationのモック
-    delete (window as any).location;
+    Reflect.deleteProperty(window, 'location');
     window.location = {
       ...originalLocation,
       pathname: '/',
@@ -40,7 +36,7 @@ describe('urlService', () => {
 
       expect(result).toEqual({
         mode: 'view',
-        sourceId: null
+        sourceId: null,
       });
     });
 
@@ -52,7 +48,7 @@ describe('urlService', () => {
 
       expect(result).toEqual({
         mode: 'view',
-        sourceId: 'test-id'
+        sourceId: 'test-id',
       });
     });
 
@@ -64,7 +60,7 @@ describe('urlService', () => {
 
       expect(result).toEqual({
         mode: 'edit',
-        sourceId: null
+        sourceId: null,
       });
     });
 
@@ -76,7 +72,7 @@ describe('urlService', () => {
 
       expect(result).toEqual({
         mode: 'edit',
-        sourceId: 'test-id'
+        sourceId: 'test-id',
       });
     });
   });
@@ -146,8 +142,8 @@ describe('urlService', () => {
       // モックイベント
       const mockEvent = {
         state: {
-          flowData: { title: 'テスト' }
-        }
+          flowData: { title: 'テスト' },
+        },
       } as PopStateEvent;
 
       // URLを設定

@@ -4,7 +4,7 @@ import {
   updateUrlForEditMode,
   updateUrlForViewMode,
   setupHistoryListener,
-  parseCurrentUrl
+  parseCurrentUrl,
 } from './urlFacade';
 
 // urlServiceのモック
@@ -14,7 +14,7 @@ vi.mock('../services/urlService', () => ({
   updateUrlForViewMode: vi.fn(),
   updateUrlForSaving: vi.fn(),
   createPopStateHandler: vi.fn(),
-  parseCurrentUrl: vi.fn()
+  parseCurrentUrl: vi.fn(),
 }));
 
 import * as urlService from '../services/urlService';
@@ -64,11 +64,11 @@ describe('urlFacade', () => {
       const handlers = {
         onModeChange: vi.fn(),
         onSourceChange: vi.fn(),
-        onFlowDataChange: vi.fn()
+        onFlowDataChange: vi.fn(),
       };
 
       // モックの戻り値を設定
-      (urlService.createPopStateHandler as any).mockReturnValue(mockHandler);
+      vi.mocked(urlService.createPopStateHandler).mockReturnValue(mockHandler);
 
       // addEventListener/removeEventListenerのモック
       const originalAddEventListener = window.addEventListener;
@@ -102,7 +102,7 @@ describe('urlFacade', () => {
   describe('parseCurrentUrl', () => {
     it('urlServiceの対応する関数を呼び出す', () => {
       const mockResult = { mode: 'view', sourceId: 'test-id' };
-      (urlService.parseCurrentUrl as any).mockReturnValue(mockResult);
+      vi.mocked(urlService.parseCurrentUrl).mockReturnValue(mockResult);
 
       const result = parseCurrentUrl();
 

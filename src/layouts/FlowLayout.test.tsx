@@ -8,16 +8,23 @@ const mockOnResize = vi.fn();
 
 vi.mock('react-resizable-panels', () => {
   return {
-    Panel: ({ children, onResize }: { children: React.ReactNode; onResize?: (_size: number) => void }): React.ReactElement => {
+    Panel: ({
+      children,
+      onResize,
+    }: {
+      children: React.ReactNode;
+      onResize?: (_panelSize: { asPercentage: number; inPixels: number }) => void;
+    }): React.ReactElement => {
       if (onResize) {
         mockOnResize.mockImplementation(onResize);
-        setTimeout(() => onResize(30), 0);
+        setTimeout(() => onResize({ asPercentage: 30, inPixels: 300 }), 0);
       }
       return <div>{children}</div>;
     },
-    PanelGroup: ({ children }: { children: React.ReactNode }): React.ReactElement => <div>{children}</div>,
-    PanelResizeHandle: (): React.ReactElement => <div data-testid="resize-handle" />,
-    ImperativePanelHandle: vi.fn(),
+    Group: ({ children }: { children: React.ReactNode }): React.ReactElement => (
+      <div>{children}</div>
+    ),
+    Separator: (): React.ReactElement => <div data-testid="resize-handle" />,
   };
 });
 

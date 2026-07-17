@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import type { ImperativePanelHandle } from 'react-resizable-panels';
+import { Group, Panel, Separator } from 'react-resizable-panels';
+import type { PanelImperativeHandle, PanelSize } from 'react-resizable-panels';
 import { Sword, Info, Minimize2, Maximize2, Save, X } from 'lucide-react';
 import { SideMenu } from '@/components/templates/common/SideMenu';
 import { IconButton } from '@/components/atoms/common/IconButton';
@@ -36,9 +36,10 @@ export function FlowLayout({
   const [isInfoModalOpen, setIsInfoModalOpen] = React.useState(false);
   const [isMemoCollapsed, setIsMemoCollapsed] = React.useState(false);
   const [lastMemoSize, setLastMemoSize] = React.useState(50);
-  const memoPanelRef = useRef<ImperativePanelHandle>(null);
+  const memoPanelRef = useRef<PanelImperativeHandle>(null);
 
-  const handleMemoResize = useCallback((size: number) => {
+  const handleMemoResize = useCallback((panelSize: PanelSize) => {
+    const size = panelSize.asPercentage;
     if (size > 0) {
       setLastMemoSize(size);
     }
@@ -48,7 +49,7 @@ export function FlowLayout({
   const handleMemoToggle = useCallback(() => {
     if (!memoPanelRef.current) return;
     const targetSize = isMemoCollapsed ? lastMemoSize : 0;
-    memoPanelRef.current.resize(targetSize);
+    memoPanelRef.current.resize(`${targetSize}%`);
   }, [isMemoCollapsed, lastMemoSize]);
 
   // タイトルの変更を監視
@@ -71,7 +72,9 @@ export function FlowLayout({
             data-testid="flow-title-input"
           />
         ) : (
-          <h1 id="flow-title" className="ml-4 flex-1 text-lg font-medium" data-testid="flow-title">{flowData.title}</h1>
+          <h1 id="flow-title" className="ml-4 flex-1 text-lg font-medium" data-testid="flow-title">
+            {flowData.title}
+          </h1>
         )}
         <div className="flex gap-2">
           {isEditMode ? (
@@ -99,17 +102,22 @@ export function FlowLayout({
             onClick={() => setIsOrganizationModalOpen(true)}
           />
           <IconButton
-           icon={Info}
-           label={t('otherInfo') as string}
-           aria-label={t('otherInfo') as string}
-           onClick={() => setIsInfoModalOpen(true)}
+            icon={Info}
+            label={t('otherInfo') as string}
+            aria-label={t('otherInfo') as string}
+            onClick={() => setIsInfoModalOpen(true)}
           />
         </div>
       </header>
       <main className="flex-1 pt-14">
         <div className="h-[calc(100vh-3.5rem)]">
-          <PanelGroup direction="vertical">
-            <Panel ref={memoPanelRef} defaultSize={50} minSize={0} onResize={handleMemoResize}>
+          <Group orientation="vertical" className="h-full w-full">
+            <Panel
+              panelRef={memoPanelRef}
+              defaultSize="50%"
+              minSize="0%"
+              onResize={handleMemoResize}
+            >
               <div className="h-full overflow-auto">
                 <div className="p-4 h-full">
                   {isEditMode ? (
@@ -135,13 +143,13 @@ export function FlowLayout({
                 </div>
               </div>
             </Panel>
-            <PanelResizeHandle className="h-2 bg-gray-300 hover:bg-gray-400 transition-colors cursor-row-resize" />
-            <Panel defaultSize={50} minSize={10}>
+            <Separator className="h-2 bg-gray-300 hover:bg-gray-400 transition-colors cursor-row-resize" />
+            <Panel defaultSize="50%" minSize="10%">
               <div className="h-full overflow-auto">
                 <TableContainer data={flowData.flow} isEditMode={isEditMode} />
               </div>
             </Panel>
-          </PanelGroup>
+          </Group>
         </div>
       </main>
       <OrganizationModal
