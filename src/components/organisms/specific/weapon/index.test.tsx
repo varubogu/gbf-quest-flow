@@ -18,7 +18,7 @@ vi.mock('react-i18next', () => ({
 // flowFacadeのモック
 const updateFlowDataMock = vi.fn();
 vi.mock('@/core/facades/flowFacade', () => ({
-  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args)),
 }));
 
 // モックデータ
@@ -37,13 +37,13 @@ const mockFlowData: Flow = {
       note: 'テストジョブノート',
       equipment: {
         name: 'テスト装備',
-        note: 'テスト装備ノート'
+        note: 'テスト装備ノート',
       },
-      abilities: []
+      abilities: [],
     },
     member: {
       front: [],
-      back: []
+      back: [],
     },
     weapon: {
       main: {
@@ -67,37 +67,38 @@ const mockFlowData: Flow = {
       ],
     },
     weaponEffects: {
-      taRate: '50%',
+      taRate: '50',
       hp: '3000',
-      defense: '10%',
+      defense: '10',
     },
     totalEffects: {
-      taRate: '50%',
+      taRate: '50',
       hp: '3000',
-      defense: '10%',
+      defense: '10',
     },
     summon: {
       main: {
         name: 'テスト召喚石',
-        note: 'テスト召喚石ノート'
+        note: 'テスト召喚石ノート',
       },
       friend: {
         name: 'フレンド召喚石',
-        note: 'フレンド召喚石ノート'
+        note: 'フレンド召喚石ノート',
       },
       other: [],
-      sub: []
-    }
-  }
+      sub: [],
+    },
+  },
 };
 
 // flowStoreのモック
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) =>
+    selector({ flowData: currentFlowData } as FlowStore)
+  ),
 }));
-
 
 describe('WeaponPanel', () => {
   beforeEach(() => {
@@ -156,9 +157,9 @@ describe('WeaponPanel', () => {
       expect(screen.getByText('追加スキル1')).toBeInTheDocument();
       expect(screen.getByText('追加ノート1')).toBeInTheDocument();
 
-      // スキル効果の確認
+      // スキル効果の確認(割合タイプのため末尾に%が自動付与される)
       expect(screen.getByText('50%')).toBeInTheDocument();
-      expect(screen.getByText('3000')).toBeInTheDocument();
+      expect(screen.getByText('3000%')).toBeInTheDocument();
       expect(screen.getByText('10%')).toBeInTheDocument();
     });
 
@@ -180,10 +181,10 @@ describe('WeaponPanel', () => {
       expect(screen.getByDisplayValue('追加スキル1')).toBeInTheDocument();
       expect(screen.getByDisplayValue('追加ノート1')).toBeInTheDocument();
 
-      // スキル効果の入力フィールド確認
-      expect(screen.getByDisplayValue('50%')).toBeInTheDocument();
+      // スキル効果の入力フィールド確認(編集中は生の数値のみが入力値になる)
+      expect(screen.getByDisplayValue('50')).toBeInTheDocument();
       expect(screen.getByDisplayValue('3000')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('10%')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('10')).toBeInTheDocument();
     });
 
     it('武器データの編集が正しく機能する', () => {
@@ -202,8 +203,8 @@ describe('WeaponPanel', () => {
       });
 
       // スキル効果の編集をテスト
-      const skillInput = screen.getByDisplayValue('50%');
-      fireEvent.change(skillInput, { target: { value: '60%' } });
+      const skillInput = screen.getByDisplayValue('50');
+      fireEvent.change(skillInput, { target: { value: '60' } });
 
       expect(updateFlowDataMock).toHaveBeenCalled();
     });

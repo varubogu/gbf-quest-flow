@@ -159,7 +159,11 @@
       ]
     },
     "weaponEffects": {
-      "key": "",
+      "taRate": "55",
+      "hp": "400",
+      "defense": "90"
+    },
+    "weaponEffectNotes": {
       "taRate": "55%",
       "hp": "400%",
       "defense": "90%"
@@ -211,7 +215,11 @@
       ]
     },
     "totalEffects": {
-      "key": "",
+      "taRate": "55",
+      "hp": "400",
+      "defense": "90"
+    },
+    "totalEffectNotes": {
       "taRate": "パーは確定、ゼタは1アビ中確定\n武器55% + フェニー1で10% + 神滅戦大事な物で3% = 68%が基本\n",
       "hp": "400%",
       "defense": "90%"

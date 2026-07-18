@@ -164,13 +164,21 @@
       ]
     },
     "weaponEffects": {
-      "key": "",
+      "taRate": "",
+      "hp": "400",
+      "defense": "75"
+    },
+    "weaponEffectNotes": {
       "taRate": "TA予兆は無視",
       "hp": "400",
       "defense": "75"
     },
     "totalEffects": {
-      "key": "",
+      "taRate": "",
+      "hp": "400",
+      "defense": "75"
+    },
+    "totalEffectNotes": {
       "taRate": "TA予兆は無視",
       "hp": "400",
       "defense": "75"

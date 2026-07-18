@@ -32,17 +32,18 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
         note: flowData.organization.weapon.main.note,
         additionalSkill: flowData.organization.weapon.main.additionalSkill,
       } as Weapon,
-      other: flowData.organization.weapon.other.map(weapon => ({
+      other: flowData.organization.weapon.other.map((weapon) => ({
         name: weapon.name,
         note: weapon.note,
         additionalSkill: weapon.additionalSkill,
       })),
-      additional: flowData.organization.weapon.additional.map(weapon => ({
+      additional: flowData.organization.weapon.additional.map((weapon) => ({
         name: weapon.name,
         note: weapon.note,
         additionalSkill: weapon.additionalSkill,
       })),
       effects: flowData.organization.weaponEffects,
+      effectNotes: flowData.organization.weaponEffectNotes ?? {},
     };
   }, [flowData]);
 
@@ -125,6 +126,40 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
     });
   };
 
+  const handleSkillEffectNoteChange = (field: keyof WeaponSkillEffect, value: string): void => {
+    if (!flowData || !updateFlowData) return;
+
+    const newSkillEffectNotes = {
+      ...flowData.organization.weaponEffectNotes,
+      [field]: value,
+    };
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        weaponEffectNotes: newSkillEffectNotes,
+      },
+    });
+  };
+
+  const handleSkillEffectRemove = (field: keyof WeaponSkillEffect): void => {
+    if (!flowData || !updateFlowData) return;
+
+    const newSkillEffects = { ...flowData.organization.weaponEffects };
+    delete newSkillEffects[field];
+
+    const newSkillEffectNotes = { ...flowData.organization.weaponEffectNotes };
+    delete newSkillEffectNotes[field];
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        weaponEffects: newSkillEffects,
+        weaponEffectNotes: newSkillEffectNotes,
+      },
+    });
+  };
+
   return (
     <div id="weapon-panel" className="overflow-x-auto">
       <table id="weapon-table" className={tableBaseStyle}>
@@ -172,10 +207,7 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
           {weaponData.other.map((weapon: Weapon, index: number) => (
             <tr key={`other-${index}`}>
               {index === 0 && (
-                <th
-                  className={tableCellBaseStyle}
-                  rowSpan={weaponData.other.length}
-                >
+                <th className={tableCellBaseStyle} rowSpan={weaponData.other.length}>
                   {t('weaponNormal')}
                 </th>
               )}
@@ -204,10 +236,7 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
           {weaponData.additional.map((weapon: Weapon, index: number) => (
             <tr key={`additional-${index}`}>
               {index === 0 && (
-                <th
-                  className={tableCellBaseStyle}
-                  rowSpan={weaponData.additional.length}
-                >
+                <th className={tableCellBaseStyle} rowSpan={weaponData.additional.length}>
                   {t('weaponAdditional')}
                 </th>
               )}
@@ -220,7 +249,9 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
               <WeaponNote
                 text={weapon.additionalSkill}
                 isEditing={isEditing}
-                onChange={(value) => handleWeaponChange('additional', index, 'additionalSkill', value)}
+                onChange={(value) =>
+                  handleWeaponChange('additional', index, 'additionalSkill', value)
+                }
                 aria-label={t('weaponAdditionalSkill') as string}
               />
               <WeaponNote
@@ -240,7 +271,10 @@ export function WeaponPanel({ isEditing }: WeaponPanelProps): JSX.Element {
         isEditing={isEditing}
         titleKey="skillEffects"
         values={weaponData.effects}
+        notes={weaponData.effectNotes}
         onChange={handleSkillEffectChange}
+        onNoteChange={handleSkillEffectNoteChange}
+        onRemove={handleSkillEffectRemove}
       />
     </div>
   );

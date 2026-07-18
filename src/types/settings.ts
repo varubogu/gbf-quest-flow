@@ -1,4 +1,4 @@
-import type { Language, Side, ClickType } from "@/types/types";
+import type { Language, Side, ClickType } from '@/types/types';
 
 export interface OrganizationSettings {
   job: {
@@ -19,6 +19,20 @@ export interface OrganizationSettings {
     other: number;
     sub: number;
   };
+}
+
+// スキル効果量の入力値のパターン("percentage": 割合(マイナス割合を含む)、"add": 加減算)
+export type SkillEffectValueType = 'percentage' | 'add';
+
+// スキル効果量の項目定義(キーはWeaponSkillEffect/WeaponSkillTotalのフィールド名。
+// 表示ラベルの翻訳キーは "skill_" + key で参照する)
+export interface SkillEffectFieldDefinition {
+  key: string;
+  type: SkillEffectValueType;
+}
+
+export interface SkillEffectSettings {
+  fields: SkillEffectFieldDefinition[];
 }
 
 export interface AppSettings {

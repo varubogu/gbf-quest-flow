@@ -52,7 +52,6 @@ export type AnnouncementType = 'status' | 'alert';
 export type Language = '日本語' | 'English';
 export type ButtonAlignment = 'left' | 'right';
 
-
 // キャラクター/武器/召喚石の共通項目のスキーマ
 const itemBaseSchema = z.object({
   key: z.string(),
@@ -89,20 +88,12 @@ const memberSchema = itemBaseSchema.extend({
 });
 
 // 武器のスキル効果量のスキーマ
-const weaponSkillEffectSchema = z.object({
-  key: z.string(),
-  taRate: z.string(),
-  hp: z.string(),
-  defense: z.string(),
-});
+// 項目構成は src/content/settings/skillEffects.json で管理するため、
+// キーを固定せず任意のキー(値は文字列)を許容する。未定義のキーは値なしとして扱う。
+const weaponSkillEffectSchema = z.record(z.string(), z.string());
 
-// 武器のスキル総合値のスキーマ
-const weaponSkillTotalSchema = z.object({
-  key: z.string(),
-  taRate: z.string(),
-  hp: z.string(),
-  defense: z.string(),
-});
+// 武器のスキル総合値のスキーマ(構成は weaponSkillEffectSchema と同様)
+const weaponSkillTotalSchema = z.record(z.string(), z.string());
 
 const weaponSchema = itemBaseSchema.extend({
   key: z.string(),
@@ -125,7 +116,11 @@ const organizationSchema = z.object({
     additional: z.array(weaponSchema),
   }),
   weaponEffects: weaponSkillEffectSchema,
+  // 各スキル効果量の備考(自由記述)。既存データには存在しないため任意項目とする
+  weaponEffectNotes: weaponSkillEffectSchema.optional(),
   totalEffects: weaponSkillTotalSchema,
+  // 各スキル総合値の備考(自由記述)。既存データには存在しないため任意項目とする
+  totalEffectNotes: weaponSkillTotalSchema.optional(),
   summon: z.object({
     main: summonSchema,
     friend: summonSchema,
@@ -188,7 +183,6 @@ export {
   jobSchema,
 };
 
-
 // アクションテーブルの行操作イベントハンドラ
 export interface ActionTableRowOperationHandlers {
   onMoveUp: () => void;
@@ -227,7 +221,6 @@ export interface ActionTableCellConfig {
   isHeader: boolean;
   width: string;
 }
-
 
 // アクションテーブルの設定
 export interface ActionTableConfig {

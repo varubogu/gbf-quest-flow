@@ -80,11 +80,8 @@ export function createNewFlowData(): Flow {
             additionalSkill: '',
           })),
       },
-      weaponEffects: {
-        taRate: '',
-        hp: '',
-        defense: '',
-      },
+      weaponEffects: {},
+      weaponEffectNotes: {},
       summon: {
         main: { name: '', note: '' },
         friend: { name: '', note: '' },
@@ -95,11 +92,8 @@ export function createNewFlowData(): Flow {
           .fill(null)
           .map(() => ({ name: '', note: '' })),
       },
-      totalEffects: {
-        taRate: '',
-        hp: '',
-        defense: '',
-      },
+      totalEffects: {},
+      totalEffectNotes: {},
     },
     always: '',
     flow: [
@@ -122,7 +116,6 @@ export function createNewFlowData(): Flow {
  */
 export function newFlowDataSync(): void {
   try {
-
     // 現在のデータをoriginalDataとして保持
     const currentFlowData = useFlowStore.getState().getFlowData();
 
@@ -141,7 +134,6 @@ export function newFlowDataSync(): void {
 
     // カーソル位置をリセット
     setCurrentRow(0);
-
   } catch (error) {
     useErrorStore
       .getState()

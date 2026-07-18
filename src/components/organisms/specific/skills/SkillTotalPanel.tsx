@@ -20,7 +20,15 @@ export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Elemen
     };
   }, [flowData]);
 
-  if (!flowData || !skillTotalData) return null;
+  // メモ化されたスキル総合値の備考データを作成
+  const skillTotalNoteData = useMemo(() => {
+    if (!flowData) return null;
+    return {
+      ...flowData.organization.totalEffectNotes,
+    };
+  }, [flowData]);
+
+  if (!flowData || !skillTotalData || !skillTotalNoteData) return null;
 
   const handleSkillTotalChange = (field: keyof WeaponSkillTotal, value: string): void => {
     if (!flowData || !updateFlowData) return;
@@ -38,6 +46,40 @@ export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Elemen
     });
   };
 
+  const handleSkillTotalNoteChange = (field: keyof WeaponSkillTotal, value: string): void => {
+    if (!flowData || !updateFlowData) return;
+
+    const newSkillTotalNotes = {
+      ...flowData.organization.totalEffectNotes,
+      [field]: value,
+    };
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        totalEffectNotes: newSkillTotalNotes,
+      },
+    });
+  };
+
+  const handleSkillTotalRemove = (field: keyof WeaponSkillTotal): void => {
+    if (!flowData || !updateFlowData) return;
+
+    const newSkillTotal = { ...flowData.organization.totalEffects };
+    delete newSkillTotal[field];
+
+    const newSkillTotalNotes = { ...flowData.organization.totalEffectNotes };
+    delete newSkillTotalNotes[field];
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        totalEffects: newSkillTotal,
+        totalEffectNotes: newSkillTotalNotes,
+      },
+    });
+  };
+
   return (
     <div id="skill-total-panel">
       <SkillTable
@@ -45,7 +87,10 @@ export function SkillTotalPanel({ isEditing }: SkillTotalPanelProps): JSX.Elemen
         isEditing={isEditing}
         titleKey="totalAmount"
         values={skillTotalData}
+        notes={skillTotalNoteData}
         onChange={handleSkillTotalChange}
+        onNoteChange={handleSkillTotalNoteChange}
+        onRemove={handleSkillTotalRemove}
       />
     </div>
   );
