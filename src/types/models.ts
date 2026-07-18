@@ -1,4 +1,4 @@
-import { z } from 'astro:content';
+import { z } from 'astro/zod';
 
 // 画面のモード
 export type ViewMode = 'unloaded' | 'view' | 'edit' | 'new';
