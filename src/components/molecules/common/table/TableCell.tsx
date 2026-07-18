@@ -41,43 +41,33 @@ export const TableCell: React.FC<TableCellProps> = ({
   const { getStateClassName, getTextVariant } = useTableCellStateStyle();
   const { getTextareaClassName } = useTextareaStyle();
 
-  const {
-    isEditing,
-    setIsEditing,
-    value,
-    setValue,
-    textareaRef,
-    adjustTextareaHeight,
-  } = useActionCellState({ content });
+  const { isEditing, setIsEditing, value, setValue, textareaRef, adjustTextareaHeight } =
+    useActionCellState({ content });
 
-  const {
-    handleClick,
-    handleBlur,
-    handleKeyDown,
-    handleChange,
-    handlePaste,
-  } = useActionCellEvents({
-    content,
-    value,
-    isEditable,
-    field: field as keyof Action,
-    onChange,
-    onPasteRows,
-    setIsEditing,
-    setValue,
-    adjustTextareaHeight,
-    settings,
-  });
+  const { handleClick, handleBlur, handleKeyDown, handleChange, handlePaste } = useActionCellEvents(
+    {
+      content,
+      value,
+      isEditable,
+      field: field as keyof Action,
+      onChange,
+      onPasteRows,
+      setIsEditing,
+      setValue,
+      adjustTextareaHeight,
+      settings,
+    }
+  );
 
   return (
     <td
       className={cn(
-        "border-b border-r border-gray-400 p-0.5",
+        'border-b border-r border-gray-400 p-0.5',
         getBaseClassName({ isHeader, className }),
         getStateClassName({ isCurrentRow }),
         getAlignmentClass(alignment)
       )}
-      style={getBasePadding()}
+      style={isEditing ? { padding: 0 } : getBasePadding()}
       onClick={handleClick}
       data-testid={dataTestId}
       data-field={field}
@@ -94,9 +84,7 @@ export const TableCell: React.FC<TableCellProps> = ({
           rows={1}
         />
       ) : (
-        <Text variant={getTextVariant({ isCurrentRow, isHeader })}>
-          {content}
-        </Text>
+        <Text variant={getTextVariant({ isCurrentRow, isHeader })}>{content}</Text>
       )}
     </td>
   );
