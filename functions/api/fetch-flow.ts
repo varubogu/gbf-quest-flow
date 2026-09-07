@@ -7,7 +7,6 @@ const MAX_FLOW_BYTES = 1_000_000;
 
 interface PagesContext {
   request: Request;
-  fetch: typeof fetch;
 }
 
 function isPrivateIpv4(hostname: string): boolean {
@@ -79,7 +78,7 @@ export async function onRequestGet(context: PagesContext): Promise<Response> {
     const rewritten = rewriteCloudStorageUrl(target);
     assertPublicHttpsUrl(rewritten);
 
-    const response = await context.fetch(rewritten, {
+    const response = await fetch(rewritten, {
       method: 'GET',
       redirect: 'follow',
       headers: { Accept: 'application/json,text/plain,*/*' },

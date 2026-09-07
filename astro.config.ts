@@ -58,6 +58,7 @@ const removeTestIdPlugin = (): Plugin => {
 
 // https://astro.build/config
 export default defineConfig({
+  site: process.env.PUBLIC_SITE_URL || process.env.CF_PAGES_URL || 'http://localhost:4321',
   integrations: [react()],
   server: {
     port: 4321,
