@@ -22,19 +22,21 @@ export const TableControls: React.FC<TableControlsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="flex justify-between items-center p-2 sticky top-0 bg-white z-20">
+    <div className="flex justify-between items-center p-2 sticky top-0 bg-background z-20">
       <div className={`flex gap-2 ${buttonPosition === 'right' ? 'ml-auto' : ''}`}>
         <IconButton
           icon={ChevronUp}
           label={t('moveUp') as string}
           onClick={onMoveUp}
           disabled={currentRow <= 0}
+          className="min-h-11 min-w-11"
         />
         <IconButton
           icon={ChevronDown}
           label={t('moveDown') as string}
           onClick={onMoveDown}
           disabled={currentRow >= totalRows - 1}
+          className="min-h-11 min-w-11"
         />
       </div>
     </div>

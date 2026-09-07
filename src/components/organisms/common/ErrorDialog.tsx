@@ -1,10 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog } from '@headlessui/react';
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+  DialogClose,
+} from '@/components/ui/dialog';
 import useFlowStore from '@/core/stores/flowStore';
 import useErrorStore from '@/core/stores/errorStore';
 import { downloadFlow } from '@/core/facades/fileOperationFacade';
 import { formatErrorMessage } from '@/core/services/errorFactoryService';
+import { Button } from '@/components/ui/button';
 import type { FlowStore } from '@/types/flowStore.types';
 
 export function ErrorDialog(): React.ReactElement {
@@ -73,50 +80,41 @@ export function ErrorDialog(): React.ReactElement {
   };
 
   return (
-    <Dialog open={isErrorDialogOpen} onClose={clearError} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className={`mx-auto max-w-md rounded ${getSeverityColorClass()} p-6 shadow-xl`}>
-          <Dialog.Title className={`text-lg font-medium ${getSeverityTextColorClass()} mb-4 flex items-center`}>
-            <span className="mr-2">{getErrorIcon()}</span>
-            {t('errorOccurred')}
-          </Dialog.Title>
+    <Dialog open={isErrorDialogOpen} onClose={clearError}>
+      <DialogBackdrop />
+      <DialogPanel className={`max-w-md ${getSeverityColorClass()} p-6`}>
+        <DialogTitle
+          className={`text-lg font-medium ${getSeverityTextColorClass()} mb-4 flex items-center`}
+        >
+          <span className="mr-2">{getErrorIcon()}</span>
+          {t('errorOccurred')}
+        </DialogTitle>
 
-          <div className="mb-6">
-            <p className="text-gray-700 mb-4">{t('errorMessage')}:</p>
-            <pre className="bg-white/80 p-3 rounded text-sm overflow-auto max-h-40 border border-gray-200">
-              {error ? formatErrorMessage(error) : t('unknownError')}
-            </pre>
-          </div>
+        <div className="mb-6">
+          <p className="text-gray-700 mb-4">{t('errorMessage')}:</p>
+          <pre className="bg-white/80 p-3 rounded text-sm overflow-auto max-h-40 border border-gray-200">
+            {error ? formatErrorMessage(error) : t('unknownError')}
+          </pre>
+        </div>
 
-          <div className="flex flex-col gap-3">
-            {error?.recoverable && error.recoveryAction && (
-              <button
-                onClick={() => executeRecoveryAction()}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
-              >
-                {t('recoverFromError')}
-              </button>
-            )}
-
-            {flowData && (
-              <button
-                onClick={handleDownload}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-              >
-                {t('downloadBackup')}
-              </button>
-            )}
-
-            <button
-              onClick={clearError}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+        <div className="flex flex-col gap-3">
+          {error?.recoverable && error.recoveryAction && (
+            <Button
+              onClick={() => executeRecoveryAction()}
+              className="bg-green-500 text-white hover:bg-green-600"
             >
-              {t('close')}
-            </button>
-          </div>
-        </Dialog.Panel>
-      </div>
+              {t('recoverFromError')}
+            </Button>
+          )}
+
+          {flowData && <Button onClick={handleDownload}>{t('downloadBackup')}</Button>}
+
+          <Button variant="secondary" onClick={clearError}>
+            {t('close')}
+          </Button>
+        </div>
+        <DialogClose label={t('close') as string} className="hidden" />
+      </DialogPanel>
     </Dialog>
   );
 }

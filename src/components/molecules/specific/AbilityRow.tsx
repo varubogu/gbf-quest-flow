@@ -1,10 +1,10 @@
 import React from 'react';
 import type { JobAbility } from '@/types/types';
-import {
-  textInputBaseStyle,
-  textareaBaseStyle,
-} from '@/components/atoms/common/IconTextButton';
+import { textareaBaseStyle } from '@/components/atoms/common/IconTextButton';
 import { useTranslation } from 'react-i18next';
+import { HybridSuggestInput } from '@/components/molecules/common/HybridSuggestInput';
+import type { SuggestItem } from '@/types/suggest';
+import { suggestAbilities } from '@/core/facades/suggestFacade';
 import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 
@@ -13,7 +13,9 @@ interface AbilityRowProps {
   index: number;
   isEditing: boolean;
   totalAbilities: number;
+  jobKey?: string;
   onAbilityChange: (_index: number, _field: keyof JobAbility, _value: string) => void;
+  onAbilitySelect?: (_index: number, _item: SuggestItem) => void;
 }
 
 export const AbilityRow: React.FC<AbilityRowProps> = ({
@@ -21,7 +23,9 @@ export const AbilityRow: React.FC<AbilityRowProps> = ({
   index,
   isEditing,
   totalAbilities,
-  onAbilityChange
+  jobKey,
+  onAbilityChange,
+  onAbilitySelect,
 }) => {
   const { t } = useTranslation();
   const abilityNoteRef = useAutoResizeTextArea(ability.note);
@@ -35,11 +39,12 @@ export const AbilityRow: React.FC<AbilityRowProps> = ({
       )}
       <td className={tableCellBaseStyle}>
         {isEditing ? (
-          <input
-            type="text"
+          <HybridSuggestInput
             value={ability.name}
-            onChange={(e) => onAbilityChange(index, 'name', e.target.value)}
-            className={textInputBaseStyle}
+            onChange={(value) => onAbilityChange(index, 'name', value)}
+            onSelectItem={(item) => onAbilitySelect?.(index, item)}
+            onSuggest={(query) => suggestAbilities(t, query, jobKey)}
+            aria-label={t('characterAbilities') as string}
           />
         ) : (
           ability.name

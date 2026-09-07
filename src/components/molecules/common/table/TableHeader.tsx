@@ -9,11 +9,7 @@ interface TableHeaderProps {
   onAddRow?: (_index: number) => void;
 }
 
-export const TableHeader: React.FC<TableHeaderProps> = ({
-  className,
-  isEditMode,
-  onAddRow,
-}) => {
+export const TableHeader: React.FC<TableHeaderProps> = ({ className, isEditMode, onAddRow }) => {
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
   const alignments: Record<ActionTableColumn, TableAlignment> = {
     hp: 'right',
@@ -24,7 +20,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     note: 'left',
   };
 
-  const stickyClasses = isEditMode ? 'sticky top-0 z-10' : 'sticky top-12 z-10';
+  const stickyClasses = isEditMode
+    ? 'sticky top-0 z-10 bg-green-300'
+    : 'sticky top-0 z-10 bg-green-300';
 
   return (
     <thead className={stickyClasses}>
@@ -43,11 +41,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           </>
         )}
         {columns.map((column) => (
-          <TableHeaderCell
-            key={column}
-            column={column}
-            alignment={alignments[column]}
-          />
+          <TableHeaderCell key={column} column={column} alignment={alignments[column]} />
         ))}
       </tr>
     </thead>

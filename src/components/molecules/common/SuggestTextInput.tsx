@@ -2,20 +2,9 @@ import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 import { TextInput } from '@/components/atoms/common/TextInput';
 import type { TextInputProps } from '@/components/atoms/common/TextInput';
+import type { SuggestItem } from '@/types/suggest';
 
-/**
- * サジェスト候補アイテムのインターフェース
- */
-export interface SuggestItem {
-  /**
-   * サジェストアイテムの一意のID
-   */
-  id: string;
-  /**
-   * サジェストアイテムの表示名
-   */
-  label: string;
-}
+export type { SuggestItem };
 
 // TextInputPropsからonChangeとonSelectを除外した型を作成
 type TextInputPropsWithoutOnChange = Omit<TextInputProps, 'onChange' | 'onSelect'>;
@@ -59,7 +48,12 @@ export interface SuggestTextInputProps extends TextInputPropsWithoutOnChange {
    * サジェストの表示方向を強制的に指定
    * @default 'auto' - 自動的に上下を判断
    */
-  dropdownDirection?: 'up' | 'down' | 'auto';
+  dropdownDirection?: 'auto' | 'up' | 'down';
+  /**
+   * フォーカス時に候補を出す（空文字でも可）
+   * @default false
+   */
+  showOnFocus?: boolean;
 }
 
 /**
@@ -89,6 +83,8 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
       debounceMs = 300,
       defaultValue = '',
       dropdownDirection = 'auto',
+      showOnFocus = false,
+      onFocus,
       ...props
     },
     ref
@@ -137,7 +133,41 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
      *
      * @param e - 入力変更イベント
      */
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const requestSuggestions = React.useCallback(
+      (value: string): void => {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+
+        if (!showOnFocus && value.trim() === '') {
+          setSuggestions([]);
+          setIsOpen(false);
+          return;
+        }
+
+        debounceTimerRef.current = setTimeout(async () => {
+          try {
+            const items = await onSuggest(value);
+            if (!Array.isArray(items)) {
+              console.error('onSuggest must return an array');
+              setSuggestions([]);
+              setIsOpen(false);
+              return;
+            }
+            setSuggestions(items.slice(0, maxSuggestions));
+            setIsOpen(items.length > 0);
+            setHighlightedIndex(-1);
+          } catch (error) {
+            console.error('Failed to fetch suggestions:', error);
+            setSuggestions([]);
+            setIsOpen(false);
+          }
+        }, debounceMs);
+      },
+      [debounceMs, maxSuggestions, onSuggest, showOnFocus]
+    );
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
       const value = e.target.value;
       setInputValue(value);
 
@@ -145,39 +175,7 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
         onChange(value);
       }
 
-      // サジェスト候補を取得
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      if (value.trim() === '') {
-        setSuggestions([]);
-        setIsOpen(false);
-        return;
-      }
-
-      // デバウンスしてサジェスト候補を取得
-      debounceTimerRef.current = setTimeout(async () => {
-        try {
-          const items = await onSuggest(value);
-          if (!Array.isArray(items)) {
-            console.error('onSuggest must return an array');
-            setSuggestions([]);
-            setIsOpen(false);
-            return;
-          }
-          setSuggestions(items.slice(0, maxSuggestions));
-          setIsOpen(items.length > 0);
-          setHighlightedIndex(-1);
-
-          // ドロップダウンの表示方向を決定
-          determineDropdownDirection();
-        } catch (error) {
-          console.error('Failed to fetch suggestions:', error);
-          setSuggestions([]);
-          setIsOpen(false);
-        }
-      }, debounceMs);
+      requestSuggestions(value);
     };
 
     /**
@@ -356,7 +354,14 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
           value={inputValue}
           onChange={handleOriginalInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => inputValue.trim() !== '' && suggestions.length > 0 && setIsOpen(true)}
+          onFocus={(event) => {
+            if (showOnFocus) {
+              requestSuggestions(inputValue);
+            } else if (inputValue.trim() !== '' && suggestions.length > 0) {
+              setIsOpen(true);
+            }
+            onFocus?.(event);
+          }}
           {...props}
         />
 

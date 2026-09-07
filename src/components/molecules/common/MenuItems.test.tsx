@@ -12,6 +12,7 @@ vi.mock('react-i18next', () => ({
       const translations: Record<string, string> = {
         newData: '新規作成',
         loadData: '読み込み',
+        loadFromUrl: 'URLから開く',
         downloadData: 'ダウンロード',
         downloadOriginalData: '元データをダウンロード',
         edit: '編集',
@@ -31,33 +32,40 @@ let mockFlowData: Flow | null = null;
 let mockIsEditMode = false;
 
 vi.mock('@/core/stores/flowStore', () => ({
-  default: (selector: (_state: FlowStore) => Partial<FlowStore>): Partial<FlowStore> => selector({ flowData: mockFlowData } as FlowStore),
+  default: (selector: (_state: FlowStore) => Partial<FlowStore>): Partial<FlowStore> =>
+    selector({ flowData: mockFlowData } as FlowStore),
 }));
 
 vi.mock('@/core/stores/editModeStore', () => ({
-  default: (selector: (_state: EditModeStore) => Partial<EditModeStore>): Partial<EditModeStore> => selector({ isEditMode: mockIsEditMode } as EditModeStore),
+  default: (selector: (_state: EditModeStore) => Partial<EditModeStore>): Partial<EditModeStore> =>
+    selector({ isEditMode: mockIsEditMode } as EditModeStore),
 }));
 
 // Lucide-reactのアイコンコンポーネントをモック
-vi.mock('lucide-react', (): {
-  FileText: () => JSX.Element;
-  FolderOpen: () => JSX.Element;
-  Download: () => JSX.Element;
-  Edit2: () => JSX.Element;
-  Save: () => JSX.Element;
-  XCircle: () => JSX.Element;
-  Settings: () => JSX.Element;
-  HelpCircle: () => JSX.Element;
-} => ({
-  FileText: () => <div data-testid="icon-file-text">FileText</div>,
-  FolderOpen: () => <div data-testid="icon-folder-open">FolderOpen</div>,
-  Download: () => <div data-testid="icon-download">Download</div>,
-  Edit2: () => <div data-testid="icon-edit">Edit2</div>,
-  Save: () => <div data-testid="icon-save">Save</div>,
-  XCircle: () => <div data-testid="icon-x-circle">XCircle</div>,
-  Settings: () => <div data-testid="icon-settings">Settings</div>,
-  HelpCircle: () => <div data-testid="icon-help-circle">HelpCircle</div>,
-}));
+vi.mock(
+  'lucide-react',
+  (): {
+    FileText: () => JSX.Element;
+    FolderOpen: () => JSX.Element;
+    Link: () => JSX.Element;
+    Download: () => JSX.Element;
+    Edit2: () => JSX.Element;
+    Save: () => JSX.Element;
+    XCircle: () => JSX.Element;
+    Settings: () => JSX.Element;
+    HelpCircle: () => JSX.Element;
+  } => ({
+    FileText: () => <div data-testid="icon-file-text">FileText</div>,
+    FolderOpen: () => <div data-testid="icon-folder-open">FolderOpen</div>,
+    Link: () => <div data-testid="icon-link">Link</div>,
+    Download: () => <div data-testid="icon-download">Download</div>,
+    Edit2: () => <div data-testid="icon-edit">Edit2</div>,
+    Save: () => <div data-testid="icon-save">Save</div>,
+    XCircle: () => <div data-testid="icon-x-circle">XCircle</div>,
+    Settings: () => <div data-testid="icon-settings">Settings</div>,
+    HelpCircle: () => <div data-testid="icon-help-circle">HelpCircle</div>,
+  })
+);
 
 describe('MenuItems', () => {
   const onItemClickMock = vi.fn();
@@ -74,6 +82,7 @@ describe('MenuItems', () => {
     // 基本的なメニュー項目が表示されていることを確認
     expect(screen.getByText('新規作成')).toBeInTheDocument();
     expect(screen.getByText('読み込み')).toBeInTheDocument();
+    expect(screen.getByText('URLから開く')).toBeInTheDocument();
     expect(screen.getByText('設定')).toBeInTheDocument();
     expect(screen.getByText('ヘルプ')).toBeInTheDocument();
 
@@ -123,7 +132,11 @@ describe('MenuItems', () => {
         },
         member: { front: [], back: [] },
         weapon: {
-          main: { name: 'Test Weapon', note: 'Test Weapon Note', additionalSkill: 'Test Additional Skill' },
+          main: {
+            name: 'Test Weapon',
+            note: 'Test Weapon Note',
+            additionalSkill: 'Test Additional Skill',
+          },
           other: [],
           additional: [],
         },
@@ -171,7 +184,11 @@ describe('MenuItems', () => {
         },
         member: { front: [], back: [] },
         weapon: {
-          main: { name: 'Test Weapon', note: 'Test Weapon Note', additionalSkill: 'Test Additional Skill' },
+          main: {
+            name: 'Test Weapon',
+            note: 'Test Weapon Note',
+            additionalSkill: 'Test Additional Skill',
+          },
           other: [],
           additional: [],
         },

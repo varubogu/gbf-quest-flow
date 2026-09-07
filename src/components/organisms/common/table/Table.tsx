@@ -86,19 +86,19 @@ export function Table({
     <div
       ref={containerRef}
       id="flow-action-table"
-      className="flex flex-col h-full overflow-y-auto"
+      className="flex flex-col h-full overflow-y-auto overscroll-contain"
     >
-        <div className="sticky top-0 z-10">
-          {!isEditMode && (
-            <TableControls
-              buttonPosition={buttonPosition}
-              currentRow={currentRow}
-              totalRows={data.length}
-              onMoveUp={onMoveUp}
-              onMoveDown={onMoveDown}
-            />
+      <div className="sticky top-0 z-10">
+        {!isEditMode && (
+          <TableControls
+            buttonPosition={buttonPosition}
+            currentRow={currentRow}
+            totalRows={data.length}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
+          />
         )}
-        </div>
+      </div>
 
       <div>
         <table className="w-full border-separate border-spacing-0">

@@ -6,8 +6,10 @@ import type { FlowStore } from '@/types/flowStore.types';
 export const useJobPanelHandlers = (): {
   flowData: Flow;
   handleJobChange: (_field: keyof Job, _value: string) => void;
+  handleJobSelect: (_name: string, _key: string) => void;
   handleEquipmentChange: (_field: keyof JobEquipment, _value: string) => void;
   handleAbilityChange: (_index: number, _field: keyof JobAbility, _value: string) => void;
+  handleAbilitySelect: (_index: number, _name: string, _key: string) => void;
 } => {
   const flowData = useFlowStore((state: FlowStore) => state.flowData) as Flow;
 
@@ -19,6 +21,20 @@ export const useJobPanelHandlers = (): {
         job: {
           ...flowData.organization.job,
           [field]: value,
+        },
+      },
+    });
+  };
+
+  const handleJobSelect = (name: string, key: string): void => {
+    if (!flowData) return;
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        job: {
+          ...flowData.organization.job,
+          name,
+          key,
         },
       },
     });
@@ -61,10 +77,34 @@ export const useJobPanelHandlers = (): {
     });
   };
 
+  const handleAbilitySelect = (index: number, name: string, key: string): void => {
+    if (!flowData) return;
+    const newAbilities = [...flowData.organization.job.abilities];
+    const current = newAbilities[index];
+    if (!current) return;
+    newAbilities[index] = {
+      ...current,
+      name,
+      key,
+    };
+
+    updateFlowData({
+      organization: {
+        ...flowData.organization,
+        job: {
+          ...flowData.organization.job,
+          abilities: newAbilities,
+        },
+      },
+    });
+  };
+
   return {
     flowData,
     handleJobChange,
+    handleJobSelect,
     handleEquipmentChange,
-    handleAbilityChange
+    handleAbilityChange,
+    handleAbilitySelect,
   };
 };

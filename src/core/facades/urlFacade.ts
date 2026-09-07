@@ -5,7 +5,7 @@ import {
   updateUrlForViewMode as updateUrlForViewMode_Service,
   updateUrlForSaving as updateUrlForSaving_Service,
   createPopStateHandler as createPopStateHandler_Service,
-  parseCurrentUrl as parseCurrentUrl_Service
+  parseCurrentUrl as parseCurrentUrl_Service,
 } from '@/core/services/urlService';
 
 /**
@@ -19,7 +19,12 @@ import {
 /**
  * 現在のURLからモードとソースIDを解析する
  */
-export function parseCurrentUrl(): { mode: ViewMode; sourceId: string | null } {
+export function parseCurrentUrl(): {
+  mode: ViewMode;
+  sourceId: string | null;
+  dataId: string | null;
+  remoteUrl: string | null;
+} {
   return parseCurrentUrl_Service();
 }
 

@@ -6,7 +6,14 @@ import type { Action } from '@/types/models';
 
 describe('useTableScroll', () => {
   const mockOnRowSelect = vi.fn();
-  const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
+  const mockSingleAction: Action = {
+    hp: '',
+    prediction: '',
+    charge: '',
+    guard: '',
+    action: '',
+    note: '',
+  };
   const mockData: Action[] = Array<Action>(5).fill(mockSingleAction);
 
   const mockContainer = document.createElement('div') as HTMLDivElement & {
@@ -18,10 +25,12 @@ describe('useTableScroll', () => {
   // スクロール位置計算のためのモック
   const mockContainerRect = {
     top: 100,
+    bottom: 600,
     height: 500,
   };
   const mockTargetRect = {
-    top: 300,
+    top: 700,
+    bottom: 750,
     height: 50,
   };
 
@@ -90,7 +99,7 @@ describe('useTableScroll', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(1);
   });
 
-  it('行が選択されると自動的にその行が表示される位置までスクロールする', () => {
+  it('トラックパッドの小さなホイールは行送りしない', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
       useTableScroll({
@@ -102,14 +111,50 @@ describe('useTableScroll', () => {
       })
     );
 
-    // スクロール位置の計算が正しく行われ、scrollToが呼ばれることを確認
+    fireEvent.wheel(mockContainer, { deltaY: 12, deltaMode: 0 });
+
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+  });
+
+  it('画面外の行が選択されると自動的にその行までスクロールする', () => {
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
     expect(mockContainer.scrollTo).toHaveBeenCalledWith(
       expect.objectContaining({
-        behavior: 'smooth',
+        behavior: 'auto',
       })
     );
     const mockScrollTo = mockContainer.scrollTo as Mock;
     const scrollOptions = mockScrollTo.mock.lastCall?.[0] as ScrollToOptions;
     expect(typeof scrollOptions?.top).toBe('number');
+  });
+
+  it('画面内の行では自動スクロールしない', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 200,
+      bottom: 250,
+      height: 50,
+    });
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    expect(mockContainer.scrollTo).not.toHaveBeenCalled();
   });
 });

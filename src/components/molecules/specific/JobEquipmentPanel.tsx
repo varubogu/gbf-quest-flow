@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  textInputBaseStyle,
-  textareaBaseStyle,
-} from '@/components/atoms/common/IconTextButton';
+import { textareaBaseStyle } from '@/components/atoms/common/IconTextButton';
+import { HybridSuggestInput } from '@/components/molecules/common/HybridSuggestInput';
+import { rememberName, suggestHistory } from '@/core/facades/suggestFacade';
 import { tableCellBaseStyle } from '@/components/styles/TableStyles';
 import { useAutoResizeTextArea } from '@/core/hooks/ui/base/useAutoResizeTextArea';
 import type { JobEquipment } from '@/types/types';
@@ -17,7 +16,7 @@ interface JobEquipmentPanelProps {
 export const JobEquipmentPanel: React.FC<JobEquipmentPanelProps> = ({
   equipment,
   isEditing,
-  onEquipmentChange
+  onEquipmentChange,
 }) => {
   const { t } = useTranslation();
   const equipmentNoteRef = useAutoResizeTextArea(equipment.note);
@@ -27,11 +26,12 @@ export const JobEquipmentPanel: React.FC<JobEquipmentPanelProps> = ({
       <th className={tableCellBaseStyle}>{t('jobMainHand')}</th>
       <td className={tableCellBaseStyle}>
         {isEditing ? (
-          <input
-            type="text"
+          <HybridSuggestInput
             value={equipment.name}
-            onChange={(e) => onEquipmentChange('name', e.target.value)}
-            className={textInputBaseStyle}
+            onChange={(value) => onEquipmentChange('name', value)}
+            onSuggest={(query) => suggestHistory('equipment', query)}
+            onRemember={(value) => rememberName('equipment', value)}
+            aria-label={t('jobMainHand') as string}
           />
         ) : (
           equipment.name

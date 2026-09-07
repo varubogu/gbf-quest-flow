@@ -26,21 +26,19 @@ vi.mock('react-i18next', () => ({
 }));
 
 // @headlessui/reactのモックを修正
-vi.mock('@headlessui/react', () => {
+vi.mock('@/components/ui/dialog', () => {
   const Dialog = ({
     children,
     open,
-    _onClose,
   }: {
     children: React.ReactNode;
     open: boolean;
-    _onClose: () => void;
   }): JSX.Element | null => {
     if (!open) return null;
     return <div data-testid="dialog">{children}</div>;
   };
 
-  Dialog.Panel = ({
+  const DialogPanel = ({
     children,
     className,
   }: {
@@ -52,7 +50,7 @@ vi.mock('@headlessui/react', () => {
     </div>
   );
 
-  Dialog.Title = ({
+  const DialogTitle = ({
     children,
     className,
   }: {
@@ -64,7 +62,12 @@ vi.mock('@headlessui/react', () => {
     </h2>
   );
 
-  return { Dialog };
+  const DialogBackdrop = (): JSX.Element => <div data-testid="dialog-backdrop" />;
+  const DialogClose = ({ label }: { label: string }): JSX.Element => (
+    <button aria-label={label}>✕</button>
+  );
+
+  return { Dialog, DialogPanel, DialogTitle, DialogBackdrop, DialogClose };
 });
 
 vi.mock('@/core/stores/flowStore');

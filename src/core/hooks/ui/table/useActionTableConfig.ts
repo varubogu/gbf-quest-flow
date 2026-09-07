@@ -36,8 +36,7 @@ export const useActionTableConfig = ({
     return cn(
       gridClasses,
       'bg-green-300',
-      'sticky',
-      isEditMode ? 'top-0' : 'top-12',
+      'sticky top-0',
       'z-10',
       'shadow-sm',
       'border-b',
@@ -45,7 +44,7 @@ export const useActionTableConfig = ({
       'border-l',
       'border-r'
     );
-  }, [gridClasses, isEditMode]);
+  }, [gridClasses]);
 
   // データ行のクラスを生成する関数
   const getRowClasses = ({
@@ -64,7 +63,7 @@ export const useActionTableConfig = ({
       'border-l',
       'border-r',
       !isEditMode && index === currentRow
-        ? 'border border-yellow-500 bg-yellow-200'
+        ? 'border-2 border-primary bg-primary/15 ring-2 ring-primary/40'
         : !isEditMode && index < currentRow
           ? `opacity-50 ${baseBackground}`
           : baseBackground
@@ -102,8 +101,6 @@ export const isValidColumnConfig = (config: unknown): config is ActionTableColum
   });
 };
 
-export const isValidButtonPosition = (
-  position: unknown
-): position is ActionTableButtonPosition => {
+export const isValidButtonPosition = (position: unknown): position is ActionTableButtonPosition => {
   return position === 'left' || position === 'right';
 };

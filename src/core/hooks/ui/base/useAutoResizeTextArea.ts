@@ -1,30 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
+
+function getScrollableParent(element: HTMLElement): HTMLElement | Window {
+  let parent = element.parentElement;
+  while (parent) {
+    const { overflowY } = window.getComputedStyle(parent);
+    if (overflowY === 'auto' || overflowY === 'scroll') {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+  return window;
+}
 
 /**
- * テキストエリアの高さを内容に応じて自動調整するカスタムフック
- * @param value - テキストエリアの値
- * @param minHeight - 最小の高さ（オプション、デフォルト: 'auto'）
- * @returns テキストエリアのref
+ * テキストエリアの高さを内容に応じて自動調整する。
+ * ページジャンプを防ぐため、最寄りのスクロール容器の位置を復元する。
  */
-export const useAutoResizeTextArea = (value: string, minHeight: string = 'auto'): React.RefObject<HTMLTextAreaElement> => {
+export const useAutoResizeTextArea = (
+  value: string,
+  minHeight: string = 'auto'
+): RefObject<HTMLTextAreaElement | null> => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    // 現在のスクロール位置を保存
-    const scrollPos = window.scrollY;
+    const scroller = getScrollableParent(textarea);
+    const isWindowScroller = scroller === window;
+    const scrollPos = isWindowScroller ? window.scrollY : (scroller as HTMLElement).scrollTop;
 
-    // 高さをリセットして実際の高さを計算
     textarea.style.height = minHeight;
-    const scrollHeight = textarea.scrollHeight;
+    textarea.style.height = `${textarea.scrollHeight}px`;
 
-    // 新しい高さを設定
-    textarea.style.height = `${scrollHeight}px`;
-
-    // スクロール位置を復元（ページのジャンプを防ぐ）
-    window.scrollTo(0, scrollPos);
+    if (isWindowScroller) {
+      window.scrollTo(0, scrollPos);
+    } else {
+      (scroller as HTMLElement).scrollTop = scrollPos;
+    }
   }, [value, minHeight]);
 
   return textareaRef;

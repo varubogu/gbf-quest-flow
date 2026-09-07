@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Dialog as HeadlessDialog, Tab as HeadlessTab } from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel, DialogClose } from '@/components/ui/dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { WeaponPanel } from '../../organisms/specific/weapon/index';
 import { SummonPanel } from '../../organisms/specific/SummonPanel';
 import { JobPanel } from '../../organisms/specific/JobPanel';
@@ -18,129 +19,77 @@ interface OrganizationModalProps {
 
 export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState('job');
   const flowData = useFlowStore((state: FlowStore) => state.flowData);
   const isEditMode = useEditModeStore((state: EditModeStore) => state.isEditMode);
 
   if (!flowData) return null;
 
   return (
-    <HeadlessDialog open={isOpen} onClose={onClose}>
-      <div className="fixed inset-0 z-50">
-        {/* オーバーレイ - クリックで閉じる */}
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" onClick={onClose} />
-
-        {/* モーダルコンテンツ */}
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <HeadlessDialog.Panel
-            id="organization-modal"
-            role="dialog"
-            aria-labelledby="organization-modal-title"
-            className="relative bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
-            <HeadlessTab.Group
-              selectedIndex={selectedTab}
-              onChange={setSelectedTab}
-              className="h-full flex flex-col"
-            >
-              {/* ヘッダー部分 - 固定 */}
-              <div className="flex-none p-4 border-b bg-white">
-                <HeadlessTab.List className="flex space-x-1">
-                  <HeadlessTab
-                    className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }
-                  >
-                    {t('jobAndCharacters')}
-                  </HeadlessTab>
-                  <HeadlessTab
-                    className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }
-                  >
-                    {t('weapons')}
-                  </HeadlessTab>
-                  <HeadlessTab
-                    className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }
-                  >
-                    {t('summons')}
-                  </HeadlessTab>
-                  <HeadlessTab
-                    className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }
-                  >
-                    {t('video')}
-                  </HeadlessTab>
-                  <HeadlessTab
-                    className={({ selected }) =>
-                      `px-4 py-2 rounded-t-lg ${selected ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`
-                    }
-                  >
-                    {t('skillTotals')}
-                  </HeadlessTab>
-                </HeadlessTab.List>
+    <Dialog open={isOpen} onClose={onClose}>
+      <DialogBackdrop />
+      <DialogPanel
+        id="organization-modal"
+        role="dialog"
+        aria-labelledby="organization-modal-title"
+        className="w-full max-w-6xl h-[90dvh] flex flex-col"
+      >
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="h-full flex flex-col min-h-0"
+        >
+          <div className="flex-none p-3 sm:p-4 border-b bg-card pr-12">
+            <h2 id="organization-modal-title" className="sr-only">
+              {t('organization')}
+            </h2>
+            <TabsList>
+              <TabsTrigger value="job">{t('jobAndCharacters')}</TabsTrigger>
+              <TabsTrigger value="weapons">{t('weapons')}</TabsTrigger>
+              <TabsTrigger value="summons">{t('summons')}</TabsTrigger>
+              <TabsTrigger value="video">{t('video')}</TabsTrigger>
+              <TabsTrigger value="skills">{t('skillTotals')}</TabsTrigger>
+            </TabsList>
+          </div>
+          <div className="flex-1 min-h-0">
+            <TabsContent value="job">
+              <div className="p-3 sm:p-4">
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold mb-4">{t('jobCharacterTitle')}</h3>
+                  <JobPanel isEditing={isEditMode} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold mb-4">{t('characters')}</h3>
+                  <CharacterPanel isEditing={isEditMode} />
+                </div>
               </div>
-
-              {/* スクロール可能なコンテンツ領域 */}
-              <div className="flex-1 min-h-0">
-                <HeadlessTab.Panels className="h-full">
-                  <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div className="p-4">
-                      {/* ジョブ情報 */}
-                      <div className="mb-8">
-                        <h3 className="text-lg font-bold mb-4">{t('jobCharacterTitle')}</h3>
-                        <JobPanel isEditing={isEditMode} />
-                      </div>
-
-                      {/* キャラクター表 */}
-                      <div>
-                        <h3 className="text-lg font-bold mb-4">{t('characters')}</h3>
-                        <CharacterPanel isEditing={isEditMode} />
-                      </div>
-                    </div>
-                  </HeadlessTab.Panel>
-
-                  <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div className="p-4">
-                      <WeaponPanel isEditing={isEditMode} />
-                    </div>
-                  </HeadlessTab.Panel>
-
-                  <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div className="p-4">
-                      <SummonPanel isEditing={isEditMode} />
-                    </div>
-                  </HeadlessTab.Panel>
-
-                  <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div className="p-4">
-                      <VideoPanel isEditing={isEditMode} />
-                    </div>
-                  </HeadlessTab.Panel>
-
-                  <HeadlessTab.Panel className="h-full overflow-auto">
-                    <div id="skill-total-tab-panel" className="p-4">
-                      {/* スキル総合値情報 */}
-                      <div id="skill-total-panel-content">
-                        <SkillTotalPanel isEditing={isEditMode} />
-                      </div>
-                    </div>
-                  </HeadlessTab.Panel>
-                </HeadlessTab.Panels>
+            </TabsContent>
+            <TabsContent value="weapons">
+              <div className="p-3 sm:p-4">
+                <WeaponPanel isEditing={isEditMode} />
               </div>
-            </HeadlessTab.Group>
-
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-            >
-              ✕
-            </button>
-          </HeadlessDialog.Panel>
-        </div>
-      </div>
-    </HeadlessDialog>
+            </TabsContent>
+            <TabsContent value="summons">
+              <div className="p-3 sm:p-4">
+                <SummonPanel isEditing={isEditMode} />
+              </div>
+            </TabsContent>
+            <TabsContent value="video">
+              <div className="p-3 sm:p-4">
+                <VideoPanel isEditing={isEditMode} />
+              </div>
+            </TabsContent>
+            <TabsContent value="skills">
+              <div id="skill-total-tab-panel" className="p-3 sm:p-4">
+                <div id="skill-total-panel-content">
+                  <SkillTotalPanel isEditing={isEditMode} />
+                </div>
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
+        <DialogClose className="absolute top-2 right-2" label={t('close') as string} />
+      </DialogPanel>
+    </Dialog>
   );
 };
