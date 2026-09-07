@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   filterSuggestItems,
+  getAwakeSuggestItems,
   getChargeSuggestItems,
   getJobSuggestItems,
   getNameSuggestItems,
@@ -33,6 +34,12 @@ describe('suggestService', () => {
     const t = (key: string): string => (key === 'viking' ? 'ヴァイキング' : key);
     const items = getJobSuggestItems(t, 'ヴァイ');
     expect(items.some((item) => item.id === 'viking')).toBe(true);
+  });
+
+  it('覚醒候補は翻訳ラベルを使う', () => {
+    const t = (key: string): string => (key === 'attack' ? '攻撃' : key);
+    const items = getAwakeSuggestItems(t, '攻');
+    expect(items.some((item) => item.label === '攻撃')).toBe(true);
   });
 
   it('入力履歴を保存して候補に出す', () => {

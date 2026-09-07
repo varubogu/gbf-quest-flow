@@ -51,7 +51,7 @@ export function getJobSuggestItems(t: Translate, query: string): SuggestItem[] {
     toItems(
       keys.map((key) => ({
         id: key,
-        label: t(key, { ns: 'jobs', defaultValue: key }),
+        label: t(key, { defaultValue: key }),
       }))
     ),
     query
@@ -65,14 +65,13 @@ export function getAbilitySuggestItems(
 ): SuggestItem[] {
   const normalItems = normalAbilities.map((key) => ({
     id: `normal.${key}`,
-    label: t(`normal.${key}`, { ns: 'ability', defaultValue: key }),
+    label: t(`normal.${key}`, { defaultValue: key }),
   }));
   const jobItems = jobAbilities
     .filter((ability) => !jobKey || ability.jobs.includes(jobKey) || ability.jobs.length === 0)
     .map((ability) => ({
       id: ability.name,
       label: t(ability.name.replace(/^job\./, 'job.'), {
-        ns: 'ability',
         defaultValue: ability.name,
       }),
     }));
@@ -83,7 +82,7 @@ export function getAwakeSuggestItems(t: Translate, query: string): SuggestItem[]
   return filterSuggestItems(
     characterAwakeTypeSuggest.map((item) => ({
       id: String(item.id),
-      label: t(item.translationKey, { ns: 'awake', defaultValue: item.translationKey }),
+      label: t(item.translationKey, { defaultValue: item.translationKey }),
     })),
     query
   );
@@ -94,12 +93,12 @@ export function getQuestSuggestItems(t: Translate, query: string): SuggestItem[]
   for (const quest of questNames) {
     items.push({
       id: quest.name,
-      label: t(quest.name, { ns: 'quest', defaultValue: quest.name }),
+      label: t(quest.name, { defaultValue: quest.name }),
     });
     for (const alias of quest.alias) {
       items.push({
         id: alias,
-        label: t(alias, { ns: 'quest', defaultValue: alias }),
+        label: t(alias, { defaultValue: alias }),
       });
     }
   }
@@ -110,7 +109,7 @@ export function getSkillFieldSuggestItems(t: Translate, query: string): SuggestI
   return filterSuggestItems(
     skillEffectSettings.fields.map((field) => ({
       id: field.key,
-      label: t(`skill_${field.key}`, { ns: 'skill', defaultValue: field.key }),
+      label: t(`skill_${field.key}`, { defaultValue: field.key }),
     })),
     query,
     12
