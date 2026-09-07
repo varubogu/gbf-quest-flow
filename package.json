@@ -2,6 +2,9 @@
   "name": "eminent-ellipse",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev --host",
     "dev:e2e": "astro dev --host --port 4322",
