@@ -69,10 +69,5 @@
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "vitest": "^4.1.11"
-  },
-  "overrides": {
-    "eslint-plugin-import": {
-      "eslint": "$eslint"
-    }
   }
 }
