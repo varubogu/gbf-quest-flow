@@ -36,6 +36,11 @@ describe('useTableScroll', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', vi.fn());
     document.body.innerHTML = '';
     document.body.appendChild(mockContainer);
     document.body.appendChild(mockTarget);
@@ -156,5 +161,55 @@ describe('useTableScroll', () => {
     );
 
     expect(mockContainer.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('スクロールで選択行が画面外になったら見えている行を選択する', () => {
+    const visibleRow = document.createElement('div');
+    visibleRow.id = 'action-row-0';
+    visibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 150,
+      bottom: 200,
+      height: 50,
+    });
+    document.body.appendChild(visibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(0);
+  });
+
+  it('選択行が見えている間はスクロールしても選択を変えない', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 200,
+      bottom: 250,
+      height: 50,
+    });
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
 });

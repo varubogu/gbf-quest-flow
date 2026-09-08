@@ -12,8 +12,63 @@ interface UseTableScrollProps {
 }
 
 /**
+ * sticky ヘッダーぶんの上端オフセットを返す。
+ */
+function getStickyOffset(container: HTMLElement): number {
+  const containerRect = container.getBoundingClientRect();
+  let stickyHeight = 0;
+  container.querySelectorAll<HTMLElement>('.sticky').forEach((el) => {
+    stickyHeight = Math.max(stickyHeight, el.getBoundingClientRect().bottom - containerRect.top);
+  });
+  return stickyHeight;
+}
+
+/**
+ * 行が sticky を除いた表示領域と重なるか。
+ */
+function isRowIntersectingView(
+  row: HTMLElement,
+  container: HTMLElement,
+  stickyOffset: number
+): boolean {
+  const containerRect = container.getBoundingClientRect();
+  const rowRect = row.getBoundingClientRect();
+  const visibleTop = containerRect.top + stickyOffset;
+  return rowRect.bottom > visibleTop && rowRect.top < containerRect.bottom;
+}
+
+/**
+ * 表示領域上端に最も近い行インデックスを返す。
+ */
+function findTopVisibleRowIndex(
+  container: HTMLElement,
+  rowCount: number,
+  stickyOffset: number
+): number | null {
+  const containerRect = container.getBoundingClientRect();
+  const visibleTop = containerRect.top + stickyOffset;
+  let bestIndex: number | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (let index = 0; index < rowCount; index += 1) {
+    const row = document.getElementById(`action-row-${index}`);
+    if (!row) continue;
+    const rowRect = row.getBoundingClientRect();
+    if (rowRect.bottom <= visibleTop || rowRect.top >= containerRect.bottom) continue;
+    const distance = Math.abs(rowRect.top - visibleTop);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestIndex = index;
+    }
+  }
+
+  return bestIndex;
+}
+
+/**
  * 閲覧モードの行動表スクロール。
  * トラックパッドの慣性スクロールは奪わず、マウスホイールのみ行送りに使う。
+ * 通常スクロールで選択行が画面外に出たら、見えている行へ選択を移す。
  */
 export const useTableScroll = ({
   containerRef,
@@ -23,6 +78,7 @@ export const useTableScroll = ({
   isEditMode,
 }: UseTableScrollProps): void => {
   const lastScrolledRowRef = useRef<number | null>(null);
+  const skipAutoScrollRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -53,20 +109,53 @@ export const useTableScroll = ({
   }, [currentRow, data.length, onRowSelect, isEditMode, containerRef]);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container || isEditMode) return;
+
+    let frame = 0;
+    const syncSelectionToVisibleRow = (): void => {
+      frame = 0;
+      const stickyOffset = getStickyOffset(container);
+      const currentEl = document.getElementById(`action-row-${currentRow}`);
+      if (currentEl && isRowIntersectingView(currentEl, container, stickyOffset)) {
+        return;
+      }
+
+      const nextIndex = findTopVisibleRowIndex(container, data.length, stickyOffset);
+      if (nextIndex !== null && nextIndex !== currentRow) {
+        skipAutoScrollRef.current = true;
+        onRowSelect(nextIndex);
+      }
+    };
+
+    const handleScroll = (): void => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(syncSelectionToVisibleRow);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return (): void => {
+      container.removeEventListener('scroll', handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [containerRef, currentRow, data.length, isEditMode, onRowSelect]);
+
+  useEffect(() => {
     if (isEditMode) return;
 
     const container = containerRef.current;
     const target = document.getElementById(`action-row-${currentRow}`);
     if (!target || !container) return;
 
+    if (skipAutoScrollRef.current) {
+      skipAutoScrollRef.current = false;
+      lastScrolledRowRef.current = currentRow;
+      return;
+    }
+
     const containerRect = container.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
-    const stickyEls = container.querySelectorAll<HTMLElement>('.sticky');
-    let stickyHeight = 0;
-    stickyEls.forEach((el) => {
-      if (el === target) return;
-      stickyHeight = Math.max(stickyHeight, el.getBoundingClientRect().bottom - containerRect.top);
-    });
+    const stickyHeight = getStickyOffset(container);
 
     const isAbove = targetRect.top < containerRect.top + stickyHeight;
     const isBelow = targetRect.bottom > containerRect.bottom;
