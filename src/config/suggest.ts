@@ -1,9 +1,9 @@
-export enum characterAwakeType {
-  BALANCE,
-  ATTACK,
-  DEFENSE,
-  CONSECUTIVE, // 連続攻撃
-}
+export const characterAwakeType = {
+  BALANCE: 0,
+  ATTACK: 1,
+  DEFENSE: 2,
+  CONSECUTIVE: 3, // 連続攻撃
+} as const;
 
 export const characterAwakeTypeSuggest = [
   {
