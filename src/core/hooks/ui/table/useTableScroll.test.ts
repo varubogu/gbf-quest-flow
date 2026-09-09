@@ -143,10 +143,37 @@ describe('useTableScroll', () => {
     expect(typeof scrollOptions?.top).toBe('number');
   });
 
-  it('画面内の行では自動スクロールしない', () => {
+  it('画面内でも最上でない選択行はヘッダー直下へスクロールする', () => {
     mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
       top: 200,
       bottom: 250,
+      height: 50,
+    });
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    expect(mockContainer.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({
+        behavior: 'auto',
+      })
+    );
+    const mockScrollTo = mockContainer.scrollTo as Mock;
+    const scrollOptions = mockScrollTo.mock.lastCall?.[0] as ScrollToOptions;
+    expect(scrollOptions.top).toBe(100);
+  });
+
+  it('選択行が既に最上ならスクロールしない', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
       height: 50,
     });
     const containerRef = { current: mockContainer };

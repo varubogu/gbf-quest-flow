@@ -131,6 +131,7 @@ function findTopIntersectingRowIndex(
  * 閲覧モードの行動表スクロール。
  * トラックパッドの慣性スクロールは奪わず、マウスホイールのみ行送りに使う。
  * 通常スクロールでは、上端がヘッダーに隠れていない行のうち一番上を選択する。
+ * 上下ボタン等での選択変更では、移動先を sticky ヘッダー直下へ揃える。
  */
 export const useTableScroll = ({
   containerRef,
@@ -139,8 +140,8 @@ export const useTableScroll = ({
   onRowSelect,
   isEditMode,
 }: UseTableScrollProps): void => {
-  const lastScrolledRowRef = useRef<number | null>(null);
   const skipAutoScrollRef = useRef(false);
+  const skipScrollSyncRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -188,6 +189,7 @@ export const useTableScroll = ({
     };
 
     const handleScroll = (): void => {
+      if (skipScrollSyncRef.current) return;
       if (frame) return;
       frame = window.requestAnimationFrame(syncSelectionToVisibleRow);
     };
@@ -208,30 +210,31 @@ export const useTableScroll = ({
 
     if (skipAutoScrollRef.current) {
       skipAutoScrollRef.current = false;
-      lastScrolledRowRef.current = currentRow;
       return;
     }
 
     const containerRect = container.getBoundingClientRect();
     const targetRect = getRowRect(target);
     const stickyHeight = getStickyOffset(container);
-
-    const isAbove = targetRect.top < containerRect.top + stickyHeight;
-    const isBelow = targetRect.bottom > containerRect.bottom;
-    if (!isAbove && !isBelow && lastScrolledRowRef.current === currentRow) {
-      return;
-    }
-    if (!isAbove && !isBelow) {
-      lastScrolledRowRef.current = currentRow;
-      return;
-    }
-
     const desiredScrollTop =
       container.scrollTop + (targetRect.top - containerRect.top) - stickyHeight;
+    const maxScrollTop = container.scrollHeight - container.clientHeight;
+    const nextScrollTop =
+      maxScrollTop > 0
+        ? Math.max(0, Math.min(desiredScrollTop, maxScrollTop))
+        : Math.max(0, desiredScrollTop);
+
+    if (Math.abs(container.scrollTop - nextScrollTop) < FULLY_VISIBLE_EPSILON_PX) {
+      return;
+    }
+
+    skipScrollSyncRef.current = true;
     container.scrollTo({
-      top: desiredScrollTop,
+      top: nextScrollTop,
       behavior: 'auto',
     });
-    lastScrolledRowRef.current = currentRow;
+    window.requestAnimationFrame(() => {
+      skipScrollSyncRef.current = false;
+    });
   }, [currentRow, isEditMode, containerRef]);
 };
