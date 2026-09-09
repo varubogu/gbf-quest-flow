@@ -22,7 +22,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="flex justify-between items-center p-2 sticky top-0 bg-background z-20">
+    <div className="flex justify-between items-center p-2 bg-background">
       <div className={`flex gap-2 ${buttonPosition === 'right' ? 'ml-auto' : ''}`}>
         <IconButton
           icon={ChevronUp}

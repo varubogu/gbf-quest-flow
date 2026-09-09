@@ -20,13 +20,12 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className, isEditMode,
     note: 'left',
   };
 
-  const stickyClasses = isEditMode
-    ? 'sticky top-0 z-10 bg-green-300'
-    : 'sticky top-0 z-10 bg-green-300';
+  const stickyStyle = { top: 'var(--table-controls-height, 0px)' };
+  const stickyClasses = 'sticky z-10 bg-green-300';
 
   return (
-    <thead className={stickyClasses}>
-      <tr className={`${className} ${stickyClasses}`}>
+    <thead className={stickyClasses} style={stickyStyle}>
+      <tr className={`${className} ${stickyClasses}`} style={stickyStyle}>
         {isEditMode && (
           <>
             <th className="border-b border-r border-gray-400 bg-muted font-medium"></th>

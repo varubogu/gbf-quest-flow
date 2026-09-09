@@ -36,8 +36,6 @@ export const useActionTableConfig = ({
     return cn(
       gridClasses,
       'bg-green-300',
-      'sticky top-0',
-      'z-10',
       'shadow-sm',
       'border-b',
       'border-gray-400',

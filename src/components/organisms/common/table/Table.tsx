@@ -38,6 +38,27 @@ export function Table({
 }: TableProps): JSX.Element {
   const settings = useSettingsStore((state: SettingsStore) => state.settings);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const controlsWrapRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const applyControlsHeight = (): void => {
+      const height = controlsWrapRef.current?.offsetHeight ?? 0;
+      container.style.setProperty('--table-controls-height', `${height}px`);
+    };
+
+    applyControlsHeight();
+    const controls = controlsWrapRef.current;
+    if (!controls || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new ResizeObserver(applyControlsHeight);
+    observer.observe(controls);
+    return (): void => observer.disconnect();
+  }, [isEditMode]);
 
   // 設定とスタイルの管理
   const { headerClasses, getRowClasses } = useActionTableConfig({
@@ -88,8 +109,8 @@ export function Table({
       id="flow-action-table"
       className="flex flex-col h-full overflow-y-auto overscroll-contain"
     >
-      <div className="sticky top-0 z-10">
-        {!isEditMode && (
+      {!isEditMode && (
+        <div ref={controlsWrapRef} className="sticky top-0 z-20 bg-background">
           <TableControls
             buttonPosition={buttonPosition}
             currentRow={currentRow}
@@ -97,8 +118,8 @@ export function Table({
             onMoveUp={onMoveUp}
             onMoveDown={onMoveDown}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       <div>
         <table className="w-full border-separate border-spacing-0">

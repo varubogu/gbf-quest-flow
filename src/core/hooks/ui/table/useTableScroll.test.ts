@@ -190,17 +190,98 @@ describe('useTableScroll', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(0);
   });
 
-  it('選択行が見えている間はスクロールしても選択を変えない', () => {
+  it('先頭行が少し隠れたら次の完全可視行を選択する', () => {
+    mockTarget.remove();
+    const hiddenTopRow = document.createElement('div');
+    hiddenTopRow.id = 'action-row-0';
+    hiddenTopRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 90,
+      bottom: 140,
+      height: 50,
+    });
+    const fullyVisibleRow = document.createElement('div');
+    fullyVisibleRow.id = 'action-row-1';
+    fullyVisibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 140,
+      bottom: 190,
+      height: 50,
+    });
+    document.body.appendChild(hiddenTopRow);
+    document.body.appendChild(fullyVisibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(1);
+  });
+
+  it('上スクロールで最上の完全可視行に戻る', () => {
     mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
       top: 200,
       bottom: 250,
       height: 50,
     });
+    const topRow = document.createElement('div');
+    topRow.id = 'action-row-0';
+    topRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
+      height: 50,
+    });
+    const middleRow = document.createElement('div');
+    middleRow.id = 'action-row-1';
+    middleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 150,
+      bottom: 200,
+      height: 50,
+    });
+    document.body.appendChild(topRow);
+    document.body.appendChild(middleRow);
+
     const containerRef = { current: mockContainer };
     renderHook(() =>
       useTableScroll({
         containerRef,
         currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(0);
+  });
+
+  it('既に最上の完全可視行ならスクロールしても選択を変えない', () => {
+    mockTarget.remove();
+    const topRow = document.createElement('div');
+    topRow.id = 'action-row-0';
+    topRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
+      height: 50,
+    });
+    document.body.appendChild(topRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
         data: mockData,
         onRowSelect: mockOnRowSelect,
         isEditMode: false,

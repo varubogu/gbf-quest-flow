@@ -2,6 +2,7 @@ import { useEffect, type RefObject, useRef } from 'react';
 import type { Action } from '@/types/models';
 
 const MOUSE_WHEEL_DELTA_THRESHOLD = 40;
+const FULLY_VISIBLE_EPSILON_PX = 0.5;
 
 interface UseTableScrollProps {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -24,6 +25,23 @@ function getStickyOffset(container: HTMLElement): number {
 }
 
 /**
+ * 行が表示領域内に完全に収まっているか。
+ */
+function isRowFullyVisible(
+  row: HTMLElement,
+  container: HTMLElement,
+  stickyOffset: number
+): boolean {
+  const containerRect = container.getBoundingClientRect();
+  const rowRect = row.getBoundingClientRect();
+  const visibleTop = containerRect.top + stickyOffset;
+  return (
+    rowRect.top + FULLY_VISIBLE_EPSILON_PX >= visibleTop &&
+    rowRect.bottom - FULLY_VISIBLE_EPSILON_PX <= containerRect.bottom
+  );
+}
+
+/**
  * 行が sticky を除いた表示領域と重なるか。
  */
 function isRowIntersectingView(
@@ -38,9 +56,27 @@ function isRowIntersectingView(
 }
 
 /**
- * 表示領域上端に最も近い行インデックスを返す。
+ * 完全に見えている行のうち、最も上のインデックスを返す。
  */
-function findTopVisibleRowIndex(
+function findTopFullyVisibleRowIndex(
+  container: HTMLElement,
+  rowCount: number,
+  stickyOffset: number
+): number | null {
+  for (let index = 0; index < rowCount; index += 1) {
+    const row = document.getElementById(`action-row-${index}`);
+    if (!row) continue;
+    if (isRowFullyVisible(row, container, stickyOffset)) {
+      return index;
+    }
+  }
+  return null;
+}
+
+/**
+ * 表示領域と交差している行のうち、上端に最も近いインデックスを返す。
+ */
+function findTopIntersectingRowIndex(
   container: HTMLElement,
   rowCount: number,
   stickyOffset: number
@@ -53,9 +89,8 @@ function findTopVisibleRowIndex(
   for (let index = 0; index < rowCount; index += 1) {
     const row = document.getElementById(`action-row-${index}`);
     if (!row) continue;
-    const rowRect = row.getBoundingClientRect();
-    if (rowRect.bottom <= visibleTop || rowRect.top >= containerRect.bottom) continue;
-    const distance = Math.abs(rowRect.top - visibleTop);
+    if (!isRowIntersectingView(row, container, stickyOffset)) continue;
+    const distance = Math.abs(row.getBoundingClientRect().top - visibleTop);
     if (distance < bestDistance) {
       bestDistance = distance;
       bestIndex = index;
@@ -68,7 +103,7 @@ function findTopVisibleRowIndex(
 /**
  * 閲覧モードの行動表スクロール。
  * トラックパッドの慣性スクロールは奪わず、マウスホイールのみ行送りに使う。
- * 通常スクロールで選択行が画面外に出たら、見えている行へ選択を移す。
+ * 通常スクロールでは、完全に見えている行のうち一番上を選択する。
  */
 export const useTableScroll = ({
   containerRef,
@@ -116,12 +151,9 @@ export const useTableScroll = ({
     const syncSelectionToVisibleRow = (): void => {
       frame = 0;
       const stickyOffset = getStickyOffset(container);
-      const currentEl = document.getElementById(`action-row-${currentRow}`);
-      if (currentEl && isRowIntersectingView(currentEl, container, stickyOffset)) {
-        return;
-      }
-
-      const nextIndex = findTopVisibleRowIndex(container, data.length, stickyOffset);
+      const nextIndex =
+        findTopFullyVisibleRowIndex(container, data.length, stickyOffset) ??
+        findTopIntersectingRowIndex(container, data.length, stickyOffset);
       if (nextIndex !== null && nextIndex !== currentRow) {
         skipAutoScrollRef.current = true;
         onRowSelect(nextIndex);

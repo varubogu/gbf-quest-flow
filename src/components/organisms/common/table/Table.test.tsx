@@ -111,6 +111,30 @@ describe('ActionTable', () => {
     expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
 
+  it('閲覧モードではヘッダがコントロール下に張り付く', () => {
+    const { container } = render(
+      <Table
+        data={mockData}
+        currentRow={1}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
+
+    const tableContainer = container.querySelector('#flow-action-table') as HTMLDivElement | null;
+    if (!tableContainer) throw new Error('Table container not found');
+    expect(tableContainer.style.getPropertyValue('--table-controls-height')).toMatch(
+      /^\d+(\.\d+)?px$/
+    );
+
+    const header = container.querySelector('thead');
+    expect(header).toHaveClass('sticky');
+    expect(header).not.toHaveClass('top-0');
+    expect(header?.style.top).toBe('var(--table-controls-height, 0px)');
+  });
+
   it('編集モード中はスクロールが無効になる', () => {
     const { container } = render(
       <Table
