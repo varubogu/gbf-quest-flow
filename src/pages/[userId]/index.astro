@@ -2,10 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
-import {
-  getRoutingPathSummaryList,
-  type AstroContents,
-} from '@/lib/utils/routing';
+import { getRoutingPathSummaryList, type AstroContents } from '@/lib/utils/routing';
 import { ENV } from '@/const';
 
 export async function getStaticPaths() {
@@ -16,7 +13,7 @@ export async function getStaticPaths() {
 
 const { userId } = Astro.params;
 const { flowList } = Astro.props;
-const origin = ENV.PUBLIC_SITE_URL;
+const origin = ENV.PUBLIC_SITE_URL || Astro.site?.href || 'http://localhost:4321';
 ---
 
 <BaseLayout>
@@ -26,7 +23,9 @@ const origin = ENV.PUBLIC_SITE_URL;
       const url = new URL(flow.slug, origin);
       return (
         <div>
-          <a href={`${url}`} class="text-blue-600 underline">{flow.title}</a>
+          <a href={`${url}`} class="text-blue-600 underline">
+            {flow.title}
+          </a>
         </div>
       );
     })

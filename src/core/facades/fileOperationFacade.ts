@@ -11,6 +11,7 @@ import {
 import {
   loadFlowFromFile as loadFlowFromFile_Service,
   saveFlowToFile as saveFlowToFile_Service,
+  loadFlowFromQuery as loadFlowFromQuery_Service,
 } from '@/core/services/fileEventService';
 
 /**
@@ -57,6 +58,16 @@ export async function loadFlowFromFile(): Promise<void> {
 }
 
 /**
+ * URL またはコンテンツIDからフローデータを読み込む
+ */
+export async function loadFlowFromQuery(query: {
+  remoteUrl: string | null;
+  dataId: string | null;
+}): Promise<void> {
+  await loadFlowFromQuery_Service(query);
+}
+
+/**
  * 現在のフローデータをJSONファイルとして保存
  * @param fileName - 保存するファイル名（省略時はフロータイトルを使用）
  */
@@ -73,4 +84,3 @@ export async function saveFlowToFile(fileName?: string): Promise<void> {
 export async function saveFlow(flowData: Flow, sourceId: string | null = null): Promise<boolean> {
   return await saveFlow_Service(flowData, sourceId);
 }
-

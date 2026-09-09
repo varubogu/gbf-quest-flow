@@ -6,7 +6,14 @@ import type { Action } from '@/types/models';
 
 describe('useTableScroll', () => {
   const mockOnRowSelect = vi.fn();
-  const mockSingleAction: Action = { hp: '', prediction: '', charge: '', guard: '', action: '', note: '' };
+  const mockSingleAction: Action = {
+    hp: '',
+    prediction: '',
+    charge: '',
+    guard: '',
+    action: '',
+    note: '',
+  };
   const mockData: Action[] = Array<Action>(5).fill(mockSingleAction);
 
   const mockContainer = document.createElement('div') as HTMLDivElement & {
@@ -18,15 +25,22 @@ describe('useTableScroll', () => {
   // スクロール位置計算のためのモック
   const mockContainerRect = {
     top: 100,
+    bottom: 600,
     height: 500,
   };
   const mockTargetRect = {
-    top: 300,
+    top: 700,
+    bottom: 750,
     height: 50,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0);
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', vi.fn());
     document.body.innerHTML = '';
     document.body.appendChild(mockContainer);
     document.body.appendChild(mockTarget);
@@ -90,7 +104,7 @@ describe('useTableScroll', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(1);
   });
 
-  it('行が選択されると自動的にその行が表示される位置までスクロールする', () => {
+  it('トラックパッドの小さなホイールは行送りしない', () => {
     const containerRef = { current: mockContainer };
     renderHook(() =>
       useTableScroll({
@@ -102,14 +116,244 @@ describe('useTableScroll', () => {
       })
     );
 
-    // スクロール位置の計算が正しく行われ、scrollToが呼ばれることを確認
+    fireEvent.wheel(mockContainer, { deltaY: 12, deltaMode: 0 });
+
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
+  });
+
+  it('画面外の行が選択されると自動的にその行までスクロールする', () => {
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
     expect(mockContainer.scrollTo).toHaveBeenCalledWith(
       expect.objectContaining({
-        behavior: 'smooth',
+        behavior: 'auto',
       })
     );
     const mockScrollTo = mockContainer.scrollTo as Mock;
     const scrollOptions = mockScrollTo.mock.lastCall?.[0] as ScrollToOptions;
     expect(typeof scrollOptions?.top).toBe('number');
+  });
+
+  it('画面内でも最上でない選択行はヘッダー直下へスクロールする', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 200,
+      bottom: 250,
+      height: 50,
+    });
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    expect(mockContainer.scrollTo).toHaveBeenCalledWith(
+      expect.objectContaining({
+        behavior: 'auto',
+      })
+    );
+    const mockScrollTo = mockContainer.scrollTo as Mock;
+    const scrollOptions = mockScrollTo.mock.lastCall?.[0] as ScrollToOptions;
+    expect(scrollOptions.top).toBe(100);
+  });
+
+  it('選択行が既に最上ならスクロールしない', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
+      height: 50,
+    });
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    expect(mockContainer.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('スクロールで選択行が画面外になったら見えている行を選択する', () => {
+    const visibleRow = document.createElement('div');
+    visibleRow.id = 'action-row-0';
+    visibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 150,
+      bottom: 200,
+      height: 50,
+    });
+    document.body.appendChild(visibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(0);
+  });
+
+  it('先頭行が少し隠れたら次の完全可視行を選択する', () => {
+    mockTarget.remove();
+    const hiddenTopRow = document.createElement('div');
+    hiddenTopRow.id = 'action-row-0';
+    hiddenTopRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 90,
+      bottom: 140,
+      height: 50,
+    });
+    const fullyVisibleRow = document.createElement('div');
+    fullyVisibleRow.id = 'action-row-1';
+    fullyVisibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 140,
+      bottom: 190,
+      height: 50,
+    });
+    document.body.appendChild(hiddenTopRow);
+    document.body.appendChild(fullyVisibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(1);
+  });
+
+  it('次の行が画面より高くても上端が見えていれば選択する', () => {
+    mockTarget.remove();
+    const hiddenTopRow = document.createElement('div');
+    hiddenTopRow.id = 'action-row-0';
+    hiddenTopRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 90,
+      bottom: 140,
+      height: 50,
+    });
+    const tallVisibleRow = document.createElement('div');
+    tallVisibleRow.id = 'action-row-1';
+    tallVisibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 140,
+      bottom: 900,
+      height: 760,
+    });
+    document.body.appendChild(hiddenTopRow);
+    document.body.appendChild(tallVisibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(1);
+  });
+
+  it('上スクロールで最上の完全可視行に戻る', () => {
+    mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 200,
+      bottom: 250,
+      height: 50,
+    });
+    const topRow = document.createElement('div');
+    topRow.id = 'action-row-0';
+    topRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
+      height: 50,
+    });
+    const middleRow = document.createElement('div');
+    middleRow.id = 'action-row-1';
+    middleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 150,
+      bottom: 200,
+      height: 50,
+    });
+    document.body.appendChild(topRow);
+    document.body.appendChild(middleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 2,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(0);
+  });
+
+  it('既に最上の完全可視行ならスクロールしても選択を変えない', () => {
+    mockTarget.remove();
+    const topRow = document.createElement('div');
+    topRow.id = 'action-row-0';
+    topRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 100,
+      bottom: 150,
+      height: 50,
+    });
+    document.body.appendChild(topRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).not.toHaveBeenCalled();
   });
 });

@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
-import type {
-  ActionTableConfig,
-  ActionTableColumn,
-  ActionTableCellPosition,
-} from '@/types/models';
+import type { ActionTableConfig, ActionTableColumn, ActionTableCellPosition } from '@/types/models';
 import { cn } from '@/lib/utils/cn';
 
 interface UseActionTableStylesProps {
@@ -64,10 +60,7 @@ export const useActionTableStyles = ({
       .join(' ');
 
     const editModeColumns = isEditMode ? '56px 56px ' : '';
-    return cn(
-      COMMON_CLASSES.GRID_BASE,
-      `grid-cols-[${editModeColumns}${columnWidths}]`
-    );
+    return cn(COMMON_CLASSES.GRID_BASE, `grid-cols-[${editModeColumns}${columnWidths}]`);
   }, [config.columns, isEditMode]);
 
   // ヘッダー行のクラスを生成
@@ -76,7 +69,7 @@ export const useActionTableStyles = ({
       gridClasses,
       config.styles.headerBackground,
       COMMON_CLASSES.STICKY,
-      isEditMode ? COMMON_CLASSES.POSITION.TOP_0 : COMMON_CLASSES.POSITION.TOP_12,
+      isEditMode ? COMMON_CLASSES.POSITION.TOP_0 : COMMON_CLASSES.POSITION.TOP_0,
       COMMON_CLASSES.Z_INDEX.HEADER,
       COMMON_CLASSES.SHADOW,
       COMMON_CLASSES.BORDER.BOTTOM,
@@ -120,7 +113,14 @@ export const useActionTableStyles = ({
         isHeader && config.styles.headerBackground
       );
     };
-  }, [config.styles.borderColor, config.styles.selectedBackground, config.styles.headerBackground, currentRow, getRowBackground, isEditMode]);
+  }, [
+    config.styles.borderColor,
+    config.styles.selectedBackground,
+    config.styles.headerBackground,
+    currentRow,
+    getRowBackground,
+    isEditMode,
+  ]);
 
   // コントロールバーのクラスを生成
   const controlBarClasses = useMemo(() => {

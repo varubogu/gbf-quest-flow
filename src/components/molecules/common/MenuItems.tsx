@@ -2,6 +2,7 @@ import { Button } from '@/components/atoms/common/Button';
 import {
   FileText,
   FolderOpen,
+  Link,
   Download,
   Edit2,
   Save,
@@ -36,19 +37,24 @@ export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): J
   const menuItems: MenuItem[] = [
     { id: 'new', label: t('newData') as string, icon: FileText },
     { id: 'load', label: t('loadData') as string, icon: FolderOpen },
+    { id: 'loadUrl', label: t('loadFromUrl') as string, icon: Link },
     ...(flowData
       ? [
           {
             id: 'download',
-            label: isEditMode ? t('downloadOriginalData') as string : t('downloadData') as string,
+            label: isEditMode
+              ? (t('downloadOriginalData') as string)
+              : (t('downloadData') as string),
             icon: Download,
           },
           {
             id: 'edit',
-            label: isEditMode ? t('save') as string : t('edit') as string,
+            label: isEditMode ? (t('save') as string) : (t('edit') as string),
             icon: isEditMode ? Save : Edit2,
           },
-          ...(isEditMode ? [{ id: 'cancel', label: t('cancelEdit') as string, icon: XCircle }] : []),
+          ...(isEditMode
+            ? [{ id: 'cancel', label: t('cancelEdit') as string, icon: XCircle }]
+            : []),
         ]
       : []),
     { id: 'options', label: t('options') as string, icon: Settings },

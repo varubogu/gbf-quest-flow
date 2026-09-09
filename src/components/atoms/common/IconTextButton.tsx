@@ -25,9 +25,9 @@ export const IconTextButton = React.forwardRef<HTMLButtonElement, IconTextButton
         aria-label={label}
         {...props}
       >
-        {iconPosition === 'left' && <Icon className="h-5 w-5" />}
-        <span>{text}</span>
-        {iconPosition === 'right' && <Icon className="h-5 w-5" />}
+        {iconPosition === 'left' && <Icon className="h-5 w-5 shrink-0" />}
+        <span className="hidden md:inline">{text}</span>
+        {iconPosition === 'right' && <Icon className="h-5 w-5 shrink-0" />}
       </Button>
     );
   }

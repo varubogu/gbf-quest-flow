@@ -9,6 +9,8 @@ import { useTableCellStateStyle } from '@/core/hooks/ui/table/useTableCellStateS
 import { useActionCellEvents } from '@/core/hooks/ui/table/useActionCellEvents';
 import { useActionCellState } from '@/core/hooks/ui/table/useActionCellState';
 import { useTextareaStyle } from '@/core/hooks/ui/base/useTextareaStyle';
+import { HybridSuggestInput } from '@/components/molecules/common/HybridSuggestInput';
+import { suggestCharge, suggestGuard } from '@/core/facades/suggestFacade';
 
 interface TableCellProps {
   content: string;
@@ -72,7 +74,17 @@ export const TableCell: React.FC<TableCellProps> = ({
       data-testid={dataTestId}
       data-field={field}
     >
-      {isEditing ? (
+      {isEditing && (field === 'charge' || field === 'guard') ? (
+        <HybridSuggestInput
+          value={value}
+          onChange={(next) => {
+            setValue(next);
+            onChange?.(next);
+          }}
+          onSuggest={field === 'charge' ? suggestCharge : suggestGuard}
+          aria-label={field}
+        />
+      ) : isEditing ? (
         <textarea
           ref={textareaRef}
           value={value}

@@ -1,40 +1,33 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars */
-
-export enum characterAwakeType {
-  BALANCE,
-  ATTACK,
-  DEFENSE,
-  CONSECUTIVE, // 連続攻撃
-}
-
-/* eslint-enable @typescript-eslint/no-unused-vars, no-unused-vars */
+export const characterAwakeType = {
+  BALANCE: 0,
+  ATTACK: 1,
+  DEFENSE: 2,
+  CONSECUTIVE: 3, // 連続攻撃
+} as const;
 
 export const characterAwakeTypeSuggest = [
   {
+    id: 'none',
+    translationKey: 'none',
+  },
+  {
     id: characterAwakeType.BALANCE,
-    translationKey: 'balance'
+    translationKey: 'balance',
   },
   {
     id: characterAwakeType.ATTACK,
-    translationKey: 'attack'
+    translationKey: 'attack',
   },
   {
     id: characterAwakeType.DEFENSE,
-    translationKey: 'defense'
+    translationKey: 'defense',
   },
   {
     id: characterAwakeType.CONSECUTIVE,
-    translationKey: 'consecutive'
-  }
-]
+    translationKey: 'consecutive',
+  },
+];
 
-export const chargeAttackSelect = [
-  '〇',
-  '✖'
-]
+export const chargeAttackSelect = ['〇', '✖'];
 
-export const guardSelect = [
-  '〇',
-  '✖'
-]
-
+export const guardSelect = ['〇', '✖'];

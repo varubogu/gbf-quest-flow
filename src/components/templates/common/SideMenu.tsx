@@ -11,6 +11,7 @@ import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import { setIsEditMode } from '@/core/facades/editModeStoreFacade';
 import { loadFlowFromFile } from '@/core/facades/fileOperationFacade';
+import { LoadFromUrlForm } from '@/components/molecules/specific/LoadFromUrlForm';
 import { HamburgerMenu } from '../../molecules/common/HamburgerMenu';
 import { MenuItems } from '../../molecules/common/MenuItems';
 import { SettingsPanel } from '../../organisms/specific/settings/SettingsPanel';
@@ -61,7 +62,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
       case 'load':
         try {
           if (isEditMode) {
-            const cancelled = !await handleCancel();
+            const cancelled = !(await handleCancel());
             if (cancelled) break;
           }
 
@@ -76,8 +77,8 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
         }
         break;
 
-      case 'download':
-        { if (!flowData) {
+      case 'download': {
+        if (!flowData) {
           showNoDataAlert(t);
           break;
         }
@@ -89,7 +90,8 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
         }
 
         await downloadFlow(dataToDownload, getDownloadFilename(dataToDownload));
-        break; }
+        break;
+      }
 
       case 'edit':
         if (isEditMode) {
@@ -110,6 +112,10 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
         setIsOpen(false);
         break;
 
+      case 'loadUrl':
+        setMenuView('loadUrl');
+        break;
+
       case 'options':
         setMenuView('options');
         break;
@@ -128,15 +134,27 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
       <SheetTrigger asChild>
         <HamburgerMenu onClick={() => setIsOpen(true)} />
       </SheetTrigger>
-      <SheetContent side="left" className="w-[150px] sm:w-[250px]">
+      <SheetContent side="left" className="w-[min(92vw,22rem)] sm:w-[280px]">
         <SheetHeader>
-          <SheetTitle>{menuView === 'menu' ? t('menu') : t('options')}</SheetTitle>
+          <SheetTitle>
+            {menuView === 'menu'
+              ? t('menu')
+              : menuView === 'loadUrl'
+                ? t('loadFromUrl')
+                : t('options')}
+          </SheetTitle>
         </SheetHeader>
         {menuView === 'menu' ? (
-          <MenuItems
-            isLoading={isLoading}
-            onItemClick={handleMenuClick}
-          />
+          <MenuItems isLoading={isLoading} onItemClick={handleMenuClick} />
+        ) : menuView === 'loadUrl' ? (
+          <div className="mt-4">
+            <LoadFromUrlForm
+              onLoaded={() => {
+                setIsOpen(false);
+                setMenuView('menu');
+              }}
+            />
+          </div>
         ) : (
           <SettingsPanel onBack={() => setMenuView('menu')} />
         )}

@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import type { Plugin } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
+import { createRemoteFlowDevMiddleware } from './src/lib/remote-flow/devMiddleware';
 
 function removeTestIdPluginTransform(code: string, id: string): string {
-
   // HTML、Astro、JSX、TSXファイルのみを処理
   if (!/\.(html|astro|jsx|tsx)$/.test(id)) {
     return code;
@@ -14,10 +14,13 @@ function removeTestIdPluginTransform(code: string, id: string): string {
   // HTMLファイルまたはAstroコンポーネントの場合
   if (/\.(html|astro)$/.test(id)) {
     // 複数行にまたがるタグも処理できるように改良した正規表現
-    return code.replace(/(<[^>]*?)data-testid\s*=\s*(?<quote>["']).*?\k<quote>([^>]*?>)/gs, (_match: string, before: string, _, after: string) => {
-      // 前後の余分な空白を最適化
-      return `${before.trimEnd()} ${after.trimStart()}`.replace(/\s{2,}/g, ' ');
-    });
+    return code.replace(
+      /(<[^>]*?)data-testid\s*=\s*(?<quote>["']).*?\k<quote>([^>]*?>)/gs,
+      (_match: string, before: string, _, after: string) => {
+        // 前後の余分な空白を最適化
+        return `${before.trimEnd()} ${after.trimStart()}`.replace(/\s{2,}/g, ' ');
+      }
+    );
   }
 
   // JSX/TSXファイルの場合
@@ -49,12 +52,13 @@ const removeTestIdPlugin = (): Plugin => {
     name: 'remove-data-testid',
     enforce: 'post', // トランスパイル後に適用
     apply: 'build', // ビルド時のみ適用（開発時は適用しない）
-    transform: removeTestIdPluginTransform
-  }
-}
+    transform: removeTestIdPluginTransform,
+  };
+};
 
 // https://astro.build/config
 export default defineConfig({
+  site: process.env.PUBLIC_SITE_URL || process.env.CF_PAGES_URL || 'http://localhost:4321',
   integrations: [react()],
   server: {
     port: 4321,
@@ -63,6 +67,12 @@ export default defineConfig({
     plugins: [
       tailwindcss(),
       removeTestIdPlugin(),
+      {
+        name: 'remote-flow-dev',
+        configureServer(server): void {
+          server.middlewares.use(createRemoteFlowDevMiddleware(process.cwd()));
+        },
+      },
     ],
     build: {
       rollupOptions: {

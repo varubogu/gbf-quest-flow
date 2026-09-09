@@ -53,6 +53,10 @@
   "showHelp": "Showing help documentation.",
   "loadingFile": "Loading...",
   "failedToLoadFile": "Failed to load file:",
+  "loadFromUrl": "Open from URL",
+  "loadFromUrlHint": "Public JSON URL or content ID (e.g. sample)",
+  "loadFromUrlPlaceholder": "https://... or sample",
+  "failedToLoadFromUrl": "Failed to load from URL",
 
   "infoModalTitle": "Other Information",
   "flowTitle": "Title",
