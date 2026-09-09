@@ -129,10 +129,10 @@ describe('ActionTable', () => {
       /^\d+(\.\d+)?px$/
     );
 
-    const headerCell = container.querySelector('thead th');
-    expect(headerCell).toHaveClass('sticky');
-    expect(headerCell).not.toHaveClass('top-0');
-    expect((headerCell as HTMLElement).style.top).toBe('var(--table-controls-height, 0px)');
+    const header = container.querySelector('thead');
+    expect(header).toHaveClass('sticky');
+    expect(header).not.toHaveClass('top-0');
+    expect(header?.style.top).toBe('var(--table-controls-height, 0px)');
   });
 
   it('編集モード中はスクロールが無効になる', () => {

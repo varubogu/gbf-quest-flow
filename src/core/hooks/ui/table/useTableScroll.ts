@@ -43,16 +43,17 @@ function getStickyOffset(container: HTMLElement): number {
     container.style.getPropertyValue('--table-controls-height')
   );
   let stickyBottom = containerRect.top + (Number.isFinite(controlsHeight) ? controlsHeight : 0);
-  container.querySelectorAll<HTMLElement>('thead th').forEach((cell) => {
-    stickyBottom = Math.max(stickyBottom, cell.getBoundingClientRect().bottom);
+  container.querySelectorAll<HTMLElement>('thead, thead tr, thead th').forEach((el) => {
+    stickyBottom = Math.max(stickyBottom, el.getBoundingClientRect().bottom);
   });
   return Math.max(0, stickyBottom - containerRect.top);
 }
 
 /**
- * 行が表示領域内に完全に収まっているか。
+ * 行の上端が sticky に隠れておらず、表示領域にかかっているか。
+ * 行が高すぎて下端がはみ出していても、上端が見えていれば対象にする。
  */
-function isRowFullyVisible(
+function isRowTopFullyVisible(
   row: HTMLElement,
   container: HTMLElement,
   stickyOffset: number
@@ -62,7 +63,8 @@ function isRowFullyVisible(
   const visibleTop = containerRect.top + stickyOffset;
   return (
     rowRect.top + FULLY_VISIBLE_EPSILON_PX >= visibleTop &&
-    rowRect.bottom - FULLY_VISIBLE_EPSILON_PX <= containerRect.bottom
+    rowRect.top < containerRect.bottom &&
+    rowRect.bottom > visibleTop
   );
 }
 
@@ -81,7 +83,7 @@ function isRowIntersectingView(
 }
 
 /**
- * 完全に見えている行のうち、最も上のインデックスを返す。
+ * 上端がヘッダーに隠れていない行のうち、最も上のインデックスを返す。
  */
 function findTopFullyVisibleRowIndex(
   container: HTMLElement,
@@ -91,7 +93,7 @@ function findTopFullyVisibleRowIndex(
   for (let index = 0; index < rowCount; index += 1) {
     const row = document.getElementById(`action-row-${index}`);
     if (!row) continue;
-    if (isRowFullyVisible(row, container, stickyOffset)) {
+    if (isRowTopFullyVisible(row, container, stickyOffset)) {
       return index;
     }
   }
@@ -128,7 +130,7 @@ function findTopIntersectingRowIndex(
 /**
  * 閲覧モードの行動表スクロール。
  * トラックパッドの慣性スクロールは奪わず、マウスホイールのみ行送りに使う。
- * 通常スクロールでは、完全に見えている行のうち一番上を選択する。
+ * 通常スクロールでは、上端がヘッダーに隠れていない行のうち一番上を選択する。
  */
 export const useTableScroll = ({
   containerRef,

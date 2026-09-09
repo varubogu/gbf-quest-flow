@@ -226,6 +226,42 @@ describe('useTableScroll', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(1);
   });
 
+  it('次の行が画面より高くても上端が見えていれば選択する', () => {
+    mockTarget.remove();
+    const hiddenTopRow = document.createElement('div');
+    hiddenTopRow.id = 'action-row-0';
+    hiddenTopRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 90,
+      bottom: 140,
+      height: 50,
+    });
+    const tallVisibleRow = document.createElement('div');
+    tallVisibleRow.id = 'action-row-1';
+    tallVisibleRow.getBoundingClientRect = vi.fn().mockReturnValue({
+      top: 140,
+      bottom: 900,
+      height: 760,
+    });
+    document.body.appendChild(hiddenTopRow);
+    document.body.appendChild(tallVisibleRow);
+
+    const containerRef = { current: mockContainer };
+    renderHook(() =>
+      useTableScroll({
+        containerRef,
+        currentRow: 0,
+        data: mockData,
+        onRowSelect: mockOnRowSelect,
+        isEditMode: false,
+      })
+    );
+
+    mockOnRowSelect.mockClear();
+    fireEvent.scroll(mockContainer);
+
+    expect(mockOnRowSelect).toHaveBeenCalledWith(1);
+  });
+
   it('上スクロールで最上の完全可視行に戻る', () => {
     mockTarget.getBoundingClientRect = vi.fn().mockReturnValue({
       top: 200,
