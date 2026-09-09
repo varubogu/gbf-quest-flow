@@ -20,16 +20,22 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className, isEditMode,
     note: 'left',
   };
 
-  const stickyStyle = { top: 'var(--table-controls-height, 0px)' };
-  const stickyClasses = 'sticky z-10 bg-green-300';
+  const stickyStyle: React.CSSProperties = { top: 'var(--table-controls-height, 0px)' };
+  const headerCellStickyClasses = 'sticky z-10 bg-green-300';
 
   return (
-    <thead className={stickyClasses} style={stickyStyle}>
-      <tr className={`${className} ${stickyClasses}`} style={stickyStyle}>
+    <thead className="bg-green-300">
+      <tr className={className}>
         {isEditMode && (
           <>
-            <th className="border-b border-r border-gray-400 bg-muted font-medium"></th>
-            <th className="border-b border-r border-gray-400 bg-muted font-medium text-center">
+            <th
+              className={`${headerCellStickyClasses} border-b border-r border-gray-400 bg-muted font-medium`}
+              style={stickyStyle}
+            ></th>
+            <th
+              className={`${headerCellStickyClasses} border-b border-r border-gray-400 bg-muted font-medium text-center`}
+              style={stickyStyle}
+            >
               <button
                 onClick={() => onAddRow?.(-1)}
                 className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer mx-auto"

@@ -104,10 +104,17 @@ describe('TableHeader', () => {
   });
 
   it('ヘッダーはコントロール高さのCSS変数で張り付く', () => {
-    const header = screen.getByRole('rowgroup');
-    expect(header).toHaveClass('sticky');
-    expect(header).not.toHaveClass('top-0');
-    expect(header.style.top).toBe('var(--table-controls-height, 0px)');
+    rendered.rerender(
+      <table>
+        <TableHeader {...defaultProps} isEditMode={true} />
+      </table>
+    );
+    const extraHeaderCells = screen.getAllByRole('columnheader');
+    extraHeaderCells.slice(0, 2).forEach((cell) => {
+      expect(cell).toHaveClass('sticky');
+      expect(cell).not.toHaveClass('top-0');
+      expect(cell.style.top).toBe('var(--table-controls-height, 0px)');
+    });
   });
 
   it('各カラムが正しい配置で表示される', () => {

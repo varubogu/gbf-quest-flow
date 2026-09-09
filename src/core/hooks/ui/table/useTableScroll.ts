@@ -13,15 +13,40 @@ interface UseTableScrollProps {
 }
 
 /**
- * sticky ヘッダーぶんの上端オフセットを返す。
+ * display:grid な tr でもセルから正しい矩形を取る。
+ */
+function getRowRect(row: HTMLElement): DOMRect {
+  const cells = row.querySelectorAll('td, th');
+  if (cells.length === 0) {
+    return row.getBoundingClientRect();
+  }
+  let top = Number.POSITIVE_INFINITY;
+  let bottom = Number.NEGATIVE_INFINITY;
+  let left = Number.POSITIVE_INFINITY;
+  let right = Number.NEGATIVE_INFINITY;
+  cells.forEach((cell) => {
+    const rect = cell.getBoundingClientRect();
+    top = Math.min(top, rect.top);
+    bottom = Math.max(bottom, rect.bottom);
+    left = Math.min(left, rect.left);
+    right = Math.max(right, rect.right);
+  });
+  return new DOMRect(left, top, right - left, bottom - top);
+}
+
+/**
+ * 上下ボタンとヘッダーセルぶんの上端オフセットを返す。
  */
 function getStickyOffset(container: HTMLElement): number {
   const containerRect = container.getBoundingClientRect();
-  let stickyHeight = 0;
-  container.querySelectorAll<HTMLElement>('.sticky').forEach((el) => {
-    stickyHeight = Math.max(stickyHeight, el.getBoundingClientRect().bottom - containerRect.top);
+  const controlsHeight = Number.parseFloat(
+    container.style.getPropertyValue('--table-controls-height')
+  );
+  let stickyBottom = containerRect.top + (Number.isFinite(controlsHeight) ? controlsHeight : 0);
+  container.querySelectorAll<HTMLElement>('thead th').forEach((cell) => {
+    stickyBottom = Math.max(stickyBottom, cell.getBoundingClientRect().bottom);
   });
-  return stickyHeight;
+  return Math.max(0, stickyBottom - containerRect.top);
 }
 
 /**
@@ -33,7 +58,7 @@ function isRowFullyVisible(
   stickyOffset: number
 ): boolean {
   const containerRect = container.getBoundingClientRect();
-  const rowRect = row.getBoundingClientRect();
+  const rowRect = getRowRect(row);
   const visibleTop = containerRect.top + stickyOffset;
   return (
     rowRect.top + FULLY_VISIBLE_EPSILON_PX >= visibleTop &&
@@ -50,7 +75,7 @@ function isRowIntersectingView(
   stickyOffset: number
 ): boolean {
   const containerRect = container.getBoundingClientRect();
-  const rowRect = row.getBoundingClientRect();
+  const rowRect = getRowRect(row);
   const visibleTop = containerRect.top + stickyOffset;
   return rowRect.bottom > visibleTop && rowRect.top < containerRect.bottom;
 }
@@ -90,7 +115,7 @@ function findTopIntersectingRowIndex(
     const row = document.getElementById(`action-row-${index}`);
     if (!row) continue;
     if (!isRowIntersectingView(row, container, stickyOffset)) continue;
-    const distance = Math.abs(row.getBoundingClientRect().top - visibleTop);
+    const distance = Math.abs(getRowRect(row).top - visibleTop);
     if (distance < bestDistance) {
       bestDistance = distance;
       bestIndex = index;
@@ -186,7 +211,7 @@ export const useTableScroll = ({
     }
 
     const containerRect = container.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
+    const targetRect = getRowRect(target);
     const stickyHeight = getStickyOffset(container);
 
     const isAbove = targetRect.top < containerRect.top + stickyHeight;
