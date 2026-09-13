@@ -73,6 +73,7 @@ describe('useSheetAnimation', () => {
 
     expect(result.current.sheetClasses).toContain('left-0');
     expect(result.current.sheetClasses).toContain('-translate-x-full');
+    expect(result.current.sheetClasses).toContain('bg-background');
 
     act(() => {
       vi.advanceTimersByTime(20);

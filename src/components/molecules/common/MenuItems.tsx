@@ -66,8 +66,8 @@ export function MenuItems({ onItemClick, isLoading = false }: MenuItemsProps): J
       {menuItems.map((item) => (
         <Button
           key={item.id}
-          variant="ghost"
-          className="w-full justify-start gap-2"
+          variant="secondary"
+          className="w-full justify-start gap-2 bg-secondary text-secondary-foreground"
           onClick={() => onItemClick(item.id)}
           disabled={(isLoading && item.id === 'load') || item.disabled}
         >

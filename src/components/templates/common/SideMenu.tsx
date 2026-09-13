@@ -134,7 +134,7 @@ export function SideMenu({ onSave, onNew, onExitEditMode }: Props): JSX.Element 
       <SheetTrigger asChild>
         <HamburgerMenu onClick={() => setIsOpen(true)} />
       </SheetTrigger>
-      <SheetContent side="left" className="w-[min(92vw,22rem)] sm:w-[280px]">
+      <SheetContent side="left" className="w-[min(92vw,22rem)] sm:w-[280px] bg-background">
         <SheetHeader>
           <SheetTitle>
             {menuView === 'menu'

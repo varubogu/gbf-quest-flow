@@ -34,7 +34,10 @@ interface TabsListProps {
 export function TabsList({ children, className }: TabsListProps): React.ReactElement {
   return (
     <BaseTabs.List
-      className={cn('flex gap-1 overflow-x-auto overscroll-x-contain pb-px', className)}
+      className={cn(
+        'flex gap-1 overflow-x-auto overscroll-x-contain rounded-lg bg-muted p-1',
+        className
+      )}
       data-testid="tab-list"
     >
       {children}
@@ -54,9 +57,10 @@ export function TabsTrigger({ value, children, className }: TabsTriggerProps): R
       value={value}
       data-testid="tab"
       className={cn(
-        'shrink-0 rounded-t-lg px-3 py-2 text-sm sm:px-4 sm:text-base',
-        'text-muted-foreground hover:bg-accent',
-        'data-[selected]:bg-primary data-[selected]:text-primary-foreground',
+        'shrink-0 rounded-md px-3 py-2 text-sm font-medium sm:px-4 sm:text-base',
+        'text-muted-foreground hover:bg-background/80 hover:text-foreground',
+        'data-[active]:bg-primary data-[active]:text-primary-foreground data-[active]:shadow-sm',
+        'aria-[selected=true]:bg-primary aria-[selected=true]:text-primary-foreground',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
