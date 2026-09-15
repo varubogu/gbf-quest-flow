@@ -174,15 +174,10 @@ describe('InfoModal', () => {
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
 
-    it('オーバーレイをクリックするとonClose関数が呼ばれること', () => {
-      // このテストはモックの制約上、実際のオーバーレイクリックをシミュレートできないため、
-      // onClose関数が呼び出されることだけを確認します
-      // 実際のコンポーネントでは、オーバーレイのonClickイベントでonClose関数が呼ばれます
-
+    it('オーバーレイ用の backdrop を持つ', () => {
       render(<InfoModal isOpen={true} onClose={mockOnClose} />);
-
-      // onClose関数が存在することを確認
-      expect(mockOnClose).toBeDefined();
+      expect(screen.getByTestId('dialog-backdrop')).toBeInTheDocument();
+      expect(mockOnClose).not.toHaveBeenCalled();
     });
   });
 

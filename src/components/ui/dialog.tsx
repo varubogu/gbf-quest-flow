@@ -7,6 +7,8 @@ interface DialogProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  /** 外側クリックで閉じるか。編成確認などでは false。 */
+  closeOnOutsideClick?: boolean;
 }
 
 /**
@@ -17,10 +19,12 @@ export function Dialog({
   onClose,
   children,
   className,
+  closeOnOutsideClick = false,
 }: DialogProps): React.ReactElement | null {
   return (
     <BaseDialog.Root
       open={open}
+      disablePointerDismissal={!closeOnOutsideClick}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) {
           onClose();
@@ -28,7 +32,7 @@ export function Dialog({
       }}
     >
       <BaseDialog.Portal>
-        <div className={cn('fixed inset-0 z-50', className)} data-testid="dialog">
+        <div className={cn('fixed inset-0 z-[60]', className)} data-testid="dialog">
           {children}
         </div>
       </BaseDialog.Portal>
@@ -38,14 +42,12 @@ export function Dialog({
 
 interface DialogBackdropProps {
   className?: string;
-  onClick?: () => void;
 }
 
-export function DialogBackdrop({ className, onClick }: DialogBackdropProps): React.ReactElement {
+export function DialogBackdrop({ className }: DialogBackdropProps): React.ReactElement {
   return (
     <BaseDialog.Backdrop
       className={cn('fixed inset-0 bg-black/40', className)}
-      onClick={onClick}
       data-testid="dialog-backdrop"
     />
   );

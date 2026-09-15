@@ -32,4 +32,34 @@ describe('Dialog', () => {
     fireEvent.click(screen.getByLabelText('閉じる'));
     expect(onClose).toHaveBeenCalled();
   });
+
+  it('外側クリックでは onClose しない', () => {
+    const onClose = vi.fn();
+    render(
+      <Dialog open onClose={onClose}>
+        <DialogBackdrop />
+        <DialogPanel>
+          <DialogTitle>確認</DialogTitle>
+        </DialogPanel>
+      </Dialog>
+    );
+
+    fireEvent.click(screen.getByTestId('dialog-backdrop'));
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('Escape キーで onClose する', () => {
+    const onClose = vi.fn();
+    render(
+      <Dialog open onClose={onClose}>
+        <DialogBackdrop />
+        <DialogPanel>
+          <DialogTitle>確認</DialogTitle>
+        </DialogPanel>
+      </Dialog>
+    );
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
+  });
 });

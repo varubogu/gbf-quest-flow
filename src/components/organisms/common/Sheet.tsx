@@ -82,10 +82,18 @@ export const SheetContent = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className={overlayClasses} onClick={() => context.setOpen(false)} />
-      <div className={`${sheetClasses} ${className}`}>
-        <div className="p-4">
+    <div className="fixed inset-0 z-[60]">
+      <div
+        className={overlayClasses}
+        data-testid="sheet-overlay"
+        onClick={() => context.setOpen(false)}
+      />
+      <div
+        className={`${sheetClasses} ${className}`}
+        data-testid="sheet-panel"
+        style={{ backgroundColor: '#ffffff' }}
+      >
+        <div className="flex h-full flex-col overflow-y-auto bg-white p-4">
           <button onClick={() => context.setOpen(false)} className="mb-4">
             {t('close')}
           </button>

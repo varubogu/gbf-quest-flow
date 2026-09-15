@@ -17,7 +17,13 @@ vi.mock('react-i18next', () => ({
 // useSheetAnimationフックをモック
 let mockIsVisible = true;
 vi.mock('@/core/hooks/ui/base/useSheetAnimation', () => ({
-  useSheetAnimation: ({ open, side }: { open: boolean; side: 'left' | 'right' }): {
+  useSheetAnimation: ({
+    open,
+    side,
+  }: {
+    open: boolean;
+    side: 'left' | 'right';
+  }): {
     isVisible: boolean;
     animateIn: boolean;
     overlayClasses: string;
@@ -132,7 +138,7 @@ describe('Sheet', () => {
     expect(screen.getByText('シートの内容')).toBeInTheDocument();
 
     // オーバーレイをクリック（mock-overlay-classesを持つ要素）
-    const overlay = screen.getByText('シートの内容').parentElement?.parentElement?.previousSibling;
+    const overlay = screen.getByTestId('sheet-overlay');
     fireEvent.click(overlay as Element);
 
     // onOpenChangeが呼ばれる
@@ -177,6 +183,7 @@ describe('Sheet', () => {
     const titleElement = screen.getByText('シートのタイトル');
     expect(titleElement).toHaveClass('text-lg');
     expect(titleElement).toHaveClass('font-bold');
+    expect(screen.getByTestId('sheet-panel')).toHaveStyle({ backgroundColor: '#ffffff' });
   });
 
   it('制御されたモードでSheetが動作すること', () => {
@@ -247,7 +254,7 @@ describe('Sheet', () => {
     );
 
     // シートのクラスを確認
-    const sheetElement = screen.getByText('右側のシート').parentElement?.parentElement;
+    const sheetElement = screen.getByTestId('sheet-panel');
     expect(sheetElement).toHaveClass('mock-sheet-classes');
     expect(sheetElement).toHaveClass('right');
     expect(sheetElement).toHaveClass('open');

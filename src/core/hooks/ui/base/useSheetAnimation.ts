@@ -32,11 +32,11 @@ export const useSheetAnimation = ({
     }
   }, [open]);
 
-  const overlayClasses = `fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out ${
-    open ? 'opacity-50' : 'opacity-0'
+  const overlayClasses = `fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-out ${
+    open ? 'opacity-100' : 'opacity-0'
   }`;
 
-  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-background text-foreground shadow-xl z-50 transform transition-transform duration-300 ease-out ${
+  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white text-foreground shadow-xl z-[60] transform transition-transform duration-300 ease-out ${
     animateIn ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
   }`;
 

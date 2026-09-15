@@ -73,7 +73,7 @@ describe('useSheetAnimation', () => {
 
     expect(result.current.sheetClasses).toContain('left-0');
     expect(result.current.sheetClasses).toContain('-translate-x-full');
-    expect(result.current.sheetClasses).toContain('bg-background');
+    expect(result.current.sheetClasses).toContain('bg-white');
 
     act(() => {
       vi.advanceTimersByTime(20);
@@ -108,7 +108,7 @@ describe('useSheetAnimation', () => {
       })
     );
 
-    expect(result.current.overlayClasses).toContain('opacity-50');
+    expect(result.current.overlayClasses).toContain('opacity-100');
 
     const { result: closedResult } = renderHook(() =>
       useSheetAnimation({
