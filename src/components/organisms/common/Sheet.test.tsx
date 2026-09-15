@@ -244,6 +244,23 @@ describe('Sheet', () => {
     expect(button).toHaveAttribute('aria-expanded', 'true');
   });
 
+  it('SheetContentがdocument.bodyへポータルされること', () => {
+    render(
+      <div data-testid="header-like">
+        <Sheet open={true}>
+          <SheetContent>
+            <div>シートの内容</div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    );
+
+    const panel = screen.getByTestId('sheet-panel');
+    expect(document.body.contains(panel)).toBe(true);
+    expect(screen.getByTestId('header-like').contains(panel)).toBe(false);
+    expect(screen.getByTestId('sheet-root')).toHaveClass('fixed', 'inset-0');
+  });
+
   it('SheetContentがsideプロパティに基づいて適切なクラスを適用すること', () => {
     render(
       <Sheet open={true}>

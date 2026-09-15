@@ -36,8 +36,10 @@ export const useSheetAnimation = ({
     open ? 'opacity-100' : 'opacity-0'
   }`;
 
-  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white text-foreground shadow-xl z-[60] transform transition-transform duration-300 ease-out ${
-    animateIn ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
+  const sideClass = side === 'left' ? 'left-0' : 'right-0';
+  const hiddenTranslate = side === 'left' ? '-translate-x-full' : 'translate-x-full';
+  const sheetClasses = `fixed top-0 ${sideClass} h-full w-64 bg-white text-foreground shadow-xl z-[60] transform transition-transform duration-300 ease-out ${
+    animateIn ? 'translate-x-0' : hiddenTranslate
   }`;
 
   return {

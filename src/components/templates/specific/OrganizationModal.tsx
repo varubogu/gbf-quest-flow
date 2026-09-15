@@ -26,7 +26,7 @@ export const OrganizationModal: React.FC<OrganizationModalProps> = ({ isOpen, on
   if (!flowData) return null;
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} closeOnOutsideClick={false}>
       <DialogBackdrop />
       <DialogPanel
         id="organization-modal"

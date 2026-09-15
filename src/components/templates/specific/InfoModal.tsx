@@ -41,7 +41,7 @@ export function InfoModal({ isOpen, onClose }: InfoModalProps): JSX.Element {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} closeOnOutsideClick={false}>
       <DialogBackdrop />
       <DialogPanel
         id="info-modal"
