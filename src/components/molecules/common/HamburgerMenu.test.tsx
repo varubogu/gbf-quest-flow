@@ -1,33 +1,23 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HamburgerMenu } from './HamburgerMenu';
-import type { JSX } from 'react';
-
-// IconButtonのモック
-vi.mock('@/components/atoms/common/IconButton', () => ({
-  IconButton: ({ onClick, label }: { onClick: () => void; label: string }): JSX.Element => (
-    <button onClick={onClick} aria-label={label} data-testid="mock-icon-button">
-      Menu Icon
-    </button>
-  ),
-}));
 
 describe('HamburgerMenu', () => {
-  it('IconButtonをレンダリングする', () => {
+  it('背景色付きのメニューボタンをレンダリングする', () => {
     const mockOnClick = vi.fn();
     render(<HamburgerMenu onClick={mockOnClick} />);
 
-    const button = screen.getByTestId('mock-icon-button');
+    const button = screen.getByRole('button', { name: 'メニューを開く' });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('aria-label', 'メニューを開く');
+    expect(button).toHaveClass('bg-primary');
+    expect(button).toHaveClass('text-primary-foreground');
   });
 
   it('クリック時にonClickコールバックを呼び出す', () => {
     const mockOnClick = vi.fn();
     render(<HamburgerMenu onClick={mockOnClick} />);
 
-    const button = screen.getByTestId('mock-icon-button');
-    fireEvent.click(button);
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }));
 
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });

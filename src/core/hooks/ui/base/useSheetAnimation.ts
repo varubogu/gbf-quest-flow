@@ -13,7 +13,10 @@ export interface UseSheetAnimationResult {
   sheetClasses: string;
 }
 
-export const useSheetAnimation = ({ open, side }: UseSheetAnimationProps): UseSheetAnimationResult => {
+export const useSheetAnimation = ({
+  open,
+  side,
+}: UseSheetAnimationProps): UseSheetAnimationResult => {
   const [isVisible, setIsVisible] = useState(open);
   const [animateIn, setAnimateIn] = useState(false);
 
@@ -29,12 +32,14 @@ export const useSheetAnimation = ({ open, side }: UseSheetAnimationProps): UseSh
     }
   }, [open]);
 
-  const overlayClasses = `fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out ${
-    open ? 'opacity-50' : 'opacity-0'
+  const overlayClasses = `fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-out ${
+    open ? 'opacity-100' : 'opacity-0'
   }`;
 
-  const sheetClasses = `fixed top-0 ${side}-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
-    animateIn ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
+  const sideClass = side === 'left' ? 'left-0' : 'right-0';
+  const hiddenTranslate = side === 'left' ? '-translate-x-full' : 'translate-x-full';
+  const sheetClasses = `fixed top-0 ${sideClass} h-full w-64 bg-white text-foreground shadow-xl z-[60] transform transition-transform duration-300 ease-out ${
+    animateIn ? 'translate-x-0' : hiddenTranslate
   }`;
 
   return {

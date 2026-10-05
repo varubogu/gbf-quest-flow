@@ -24,14 +24,15 @@ interface UseTranslationResult {
 // i18nのモック
 vi.mock('react-i18next', () => ({
   useTranslation: (): UseTranslationResult => ({
-    t: (key: string): string => ({
-      hpColumn: 'HP',
-      triggerColumn: '予兆',
-      ougiColumn: '奥義',
-      guardColumn: 'ガード',
-      actionColumn: 'アクション',
-      notesColumn: 'メモ',
-    }[key] || key),
+    t: (key: string): string =>
+      ({
+        hpColumn: 'HP',
+        triggerColumn: '予兆',
+        ougiColumn: '奥義',
+        guardColumn: 'ガード',
+        actionColumn: 'アクション',
+        notesColumn: 'メモ',
+      })[key] || key,
   }),
   initReactI18next: {
     type: '3rdParty',
@@ -49,7 +50,11 @@ describe('TableHeader', () => {
   let rendered: RenderResult;
 
   beforeEach(() => {
-    rendered = render(<table><TableHeader {...defaultProps} /></table>);
+    rendered = render(
+      <table>
+        <TableHeader {...defaultProps} />
+      </table>
+    );
   });
 
   it('通常モードで正しくヘッダーが表示される', () => {
@@ -66,7 +71,11 @@ describe('TableHeader', () => {
   });
 
   it('編集モードで追加ボタンが表示される', () => {
-    rendered.rerender(<table><TableHeader {...defaultProps} isEditMode={true} /></table>);
+    rendered.rerender(
+      <table>
+        <TableHeader {...defaultProps} isEditMode={true} />
+      </table>
+    );
 
     // 追加ボタンが表示されていることを確認
     const addButton = screen.getByRole('button');
@@ -74,7 +83,11 @@ describe('TableHeader', () => {
   });
 
   it('追加ボタンクリックで正しくイベントが発火する', () => {
-    rendered.rerender(<table><TableHeader {...defaultProps} isEditMode={true} /></table>);
+    rendered.rerender(
+      <table>
+        <TableHeader {...defaultProps} isEditMode={true} />
+      </table>
+    );
 
     const addButton = screen.getByRole('button');
     addButton.click();
@@ -88,6 +101,13 @@ describe('TableHeader', () => {
     // テーブルヘッダー行にクラス名が適用されていることを確認
     const headerRow = screen.getByRole('row');
     expect(headerRow).toHaveClass('test-header-class');
+  });
+
+  it('ヘッダーはコントロール高さのCSS変数で張り付く', () => {
+    const header = screen.getByRole('rowgroup');
+    expect(header).toHaveClass('sticky');
+    expect(header).not.toHaveClass('top-0');
+    expect(header.style.top).toBe('var(--table-controls-height, 0px)');
   });
 
   it('各カラムが正しい配置で表示される', () => {

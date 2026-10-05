@@ -18,20 +18,27 @@ export interface HistoryState {
 /**
  * 現在のURLからモードとソースIDを解析する
  */
-export function parseCurrentUrl(): { mode: ViewMode; sourceId: string | null } {
+export function parseCurrentUrl(): {
+  mode: ViewMode;
+  sourceId: string | null;
+  dataId: string | null;
+  remoteUrl: string | null;
+} {
   try {
     const searchParams = new URLSearchParams(window.location.search);
     const mode = searchParams.get('mode') as ViewMode | null;
     const pathParts = window.location.pathname.split('/').filter(Boolean);
-    const sourceId = pathParts.length > 0 ? pathParts[0] : null;
+    const sourceId = pathParts.length > 0 ? pathParts.join('/') : null;
 
     return {
       mode: mode || 'view',
-      sourceId: sourceId || null
+      sourceId: sourceId || null,
+      dataId: searchParams.get('d'),
+      remoteUrl: searchParams.get('url'),
     };
   } catch (error) {
     handleError(error, 'URL解析中');
-    return { mode: 'view', sourceId: null };
+    return { mode: 'view', sourceId: null, dataId: null, remoteUrl: null };
   }
 }
 
@@ -62,10 +69,9 @@ export function updateUrl(
       state.isSaving = true;
     }
 
-    let url: URL; // 現在のドメインで初期化
+    let url: URL;
     const origin = window.location.origin;
-    const relativePath = sourceId  || '';
-    // モードに応じてURLを生成
+    const relativePath = sourceId || '';
     if (mode === 'new') {
       url = new URL('?mode=new', origin);
     } else if (mode === 'edit') {
@@ -75,6 +81,17 @@ export function updateUrl(
     } else {
       url = new URL(relativePath, origin);
     }
+
+    const currentParams = new URLSearchParams(window.location.search);
+    const dataId = currentParams.get('d');
+    const remoteUrl = currentParams.get('url');
+    if (dataId) {
+      url.searchParams.set('d', dataId);
+    }
+    if (remoteUrl) {
+      url.searchParams.set('url', remoteUrl);
+    }
+
     history.pushState(state, '', url);
   } catch (error) {
     handleError(error, 'URL更新中');

@@ -1,21 +1,11 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils/cn';
 import { TextInput } from '@/components/atoms/common/TextInput';
 import type { TextInputProps } from '@/components/atoms/common/TextInput';
+import type { SuggestItem } from '@/types/suggest';
 
-/**
- * サジェスト候補アイテムのインターフェース
- */
-export interface SuggestItem {
-  /**
-   * サジェストアイテムの一意のID
-   */
-  id: string;
-  /**
-   * サジェストアイテムの表示名
-   */
-  label: string;
-}
+export type { SuggestItem };
 
 // TextInputPropsからonChangeとonSelectを除外した型を作成
 type TextInputPropsWithoutOnChange = Omit<TextInputProps, 'onChange' | 'onSelect'>;
@@ -59,7 +49,12 @@ export interface SuggestTextInputProps extends TextInputPropsWithoutOnChange {
    * サジェストの表示方向を強制的に指定
    * @default 'auto' - 自動的に上下を判断
    */
-  dropdownDirection?: 'up' | 'down' | 'auto';
+  dropdownDirection?: 'auto' | 'up' | 'down';
+  /**
+   * フォーカス時に候補を出す（空文字でも可）
+   * @default false
+   */
+  showOnFocus?: boolean;
 }
 
 /**
@@ -89,6 +84,8 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
       debounceMs = 300,
       defaultValue = '',
       dropdownDirection = 'auto',
+      showOnFocus = false,
+      onFocus,
       ...props
     },
     ref
@@ -111,6 +108,14 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
     const rootRef = React.useRef<HTMLDivElement>(null);
     /** デバウンスタイマーへの参照 */
     const debounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    /** ポータル表示する候補リストの画面座標 */
+    const [menuBox, setMenuBox] = React.useState<{
+      top: number;
+      bottom: number;
+      left: number;
+      width: number;
+    } | null>(null);
 
     /**
      * 外部refとinternalRefを結合するための関数
@@ -137,7 +142,41 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
      *
      * @param e - 入力変更イベント
      */
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const requestSuggestions = React.useCallback(
+      (value: string): void => {
+        if (debounceTimerRef.current) {
+          clearTimeout(debounceTimerRef.current);
+        }
+
+        if (!showOnFocus && value.trim() === '') {
+          setSuggestions([]);
+          setIsOpen(false);
+          return;
+        }
+
+        debounceTimerRef.current = setTimeout(async () => {
+          try {
+            const items = await onSuggest(value);
+            if (!Array.isArray(items)) {
+              console.error('onSuggest must return an array');
+              setSuggestions([]);
+              setIsOpen(false);
+              return;
+            }
+            setSuggestions(items.slice(0, maxSuggestions));
+            setIsOpen(items.length > 0);
+            setHighlightedIndex(-1);
+          } catch (error) {
+            console.error('Failed to fetch suggestions:', error);
+            setSuggestions([]);
+            setIsOpen(false);
+          }
+        }, debounceMs);
+      },
+      [debounceMs, maxSuggestions, onSuggest, showOnFocus]
+    );
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
       const value = e.target.value;
       setInputValue(value);
 
@@ -145,39 +184,7 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
         onChange(value);
       }
 
-      // サジェスト候補を取得
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      if (value.trim() === '') {
-        setSuggestions([]);
-        setIsOpen(false);
-        return;
-      }
-
-      // デバウンスしてサジェスト候補を取得
-      debounceTimerRef.current = setTimeout(async () => {
-        try {
-          const items = await onSuggest(value);
-          if (!Array.isArray(items)) {
-            console.error('onSuggest must return an array');
-            setSuggestions([]);
-            setIsOpen(false);
-            return;
-          }
-          setSuggestions(items.slice(0, maxSuggestions));
-          setIsOpen(items.length > 0);
-          setHighlightedIndex(-1);
-
-          // ドロップダウンの表示方向を決定
-          determineDropdownDirection();
-        } catch (error) {
-          console.error('Failed to fetch suggestions:', error);
-          setSuggestions([]);
-          setIsOpen(false);
-        }
-      }, debounceMs);
+      requestSuggestions(value);
     };
 
     /**
@@ -248,11 +255,22 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
       }
     };
 
+    const updateMenuBox = React.useCallback((): void => {
+      if (!rootRef.current) return;
+      const rect = rootRef.current.getBoundingClientRect();
+      setMenuBox({
+        top: rect.top,
+        bottom: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+      });
+    }, []);
+
     /**
      * ドロップダウンの表示方向を決定する
      * 画面の半分より下にある場合は上方向に表示
      */
-    const determineDropdownDirection = React.useCallback(() => {
+    const determineDropdownDirection = React.useCallback((): void => {
       if (dropdownDirection !== 'auto') {
         setShowDropUp(dropdownDirection === 'up');
         return;
@@ -264,7 +282,6 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
       const windowHeight = window.innerHeight;
       const elementMiddleY = rect.top + rect.height / 2;
 
-      // 画面の半分より下にある場合は上方向に表示
       setShowDropUp(elementMiddleY > windowHeight / 2);
     }, [dropdownDirection]);
 
@@ -278,7 +295,7 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
        *
        * @param e - マウスイベント
        */
-      const handleClickOutside = (e: MouseEvent) => {
+      const handleClickOutside = (e: MouseEvent): void => {
         if (
           suggestionsRef.current &&
           !suggestionsRef.current.contains(e.target as Node) &&
@@ -319,17 +336,20 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
      * ウィンドウのリサイズ時にドロップダウンの方向を再計算
      */
     React.useEffect(() => {
-      const handleResize = () => {
+      const handleResize = (): void => {
         if (isOpen) {
           determineDropdownDirection();
+          updateMenuBox();
         }
       };
 
       window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', handleResize, true);
       return () => {
         window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', handleResize, true);
       };
-    }, [isOpen, determineDropdownDirection]);
+    }, [isOpen, determineDropdownDirection, updateMenuBox]);
 
     /**
      * サジェストが開かれた時にドロップダウンの方向を計算
@@ -337,8 +357,9 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
     React.useEffect(() => {
       if (isOpen) {
         determineDropdownDirection();
+        updateMenuBox();
       }
-    }, [isOpen, determineDropdownDirection]);
+    }, [isOpen, determineDropdownDirection, updateMenuBox]);
 
     /**
      * TextInputのonChangeを内部のhandleInputChangeに変換するためのラッパー
@@ -356,36 +377,52 @@ export const SuggestTextInput = React.forwardRef<HTMLInputElement, SuggestTextIn
           value={inputValue}
           onChange={handleOriginalInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => inputValue.trim() !== '' && suggestions.length > 0 && setIsOpen(true)}
+          onFocus={(event) => {
+            if (showOnFocus) {
+              requestSuggestions(inputValue);
+            } else if (inputValue.trim() !== '' && suggestions.length > 0) {
+              setIsOpen(true);
+            }
+            onFocus?.(event);
+          }}
           {...props}
         />
 
-        {isOpen && (
-          <div
-            className={cn(
-              'absolute z-10 w-full overflow-auto rounded-md border border-input py-1 shadow-md bg-white',
-              showDropUp ? 'bottom-full mb-1' : 'top-full mt-1'
-            )}
-            style={{ maxHeight: '200px' }}
-            ref={suggestionsRef}
-            role="listbox"
-          >
-            {suggestions.map((item, index) => (
-              <div
-                key={item.id}
-                className={cn(
-                  'cursor-pointer px-3 py-2 text-sm hover:text-accent-foreground hover:bg-gray-300',
-                  index === highlightedIndex && 'bg-gray-200'
-                )}
-                onClick={() => handleSuggestionClick(item)}
-                role="option"
-                aria-selected={index === highlightedIndex}
-              >
-                {item.label}
-              </div>
-            ))}
-          </div>
-        )}
+        {isOpen &&
+          menuBox &&
+          createPortal(
+            <div
+              className={cn(
+                'fixed z-[200] overflow-auto rounded-md border border-input py-1 shadow-md bg-white'
+              )}
+              style={{
+                maxHeight: '200px',
+                left: menuBox.left,
+                width: menuBox.width,
+                ...(showDropUp
+                  ? { bottom: window.innerHeight - menuBox.top + 4 }
+                  : { top: menuBox.bottom + 4 }),
+              }}
+              ref={suggestionsRef}
+              role="listbox"
+            >
+              {suggestions.map((item, index) => (
+                <div
+                  key={item.id}
+                  className={cn(
+                    'cursor-pointer px-3 py-2 text-sm hover:text-accent-foreground hover:bg-gray-300',
+                    index === highlightedIndex && 'bg-gray-200'
+                  )}
+                  onClick={() => handleSuggestionClick(item)}
+                  role="option"
+                  aria-selected={index === highlightedIndex}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>,
+            document.body
+          )}
       </div>
     );
   }

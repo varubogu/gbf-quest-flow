@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, type JSX } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useSheetAnimation } from '@/core/hooks/ui/base/useSheetAnimation';
 
@@ -80,19 +81,30 @@ export const SheetContent = ({
   });
 
   if (!isVisible) return null;
+  if (typeof document === 'undefined') return null;
 
-  return (
-    <div className="fixed inset-0 z-50">
-      <div className={overlayClasses} onClick={() => context.setOpen(false)} />
-      <div className={`${sheetClasses} ${className}`}>
-        <div className="p-4">
+  // header の backdrop-blur が fixed の包含ブロックになるため、viewport 基準で描画する
+  return createPortal(
+    <div className="fixed inset-0 z-[60]" data-testid="sheet-root">
+      <div
+        className={overlayClasses}
+        data-testid="sheet-overlay"
+        onClick={() => context.setOpen(false)}
+      />
+      <div
+        className={`${sheetClasses} ${className}`}
+        data-testid="sheet-panel"
+        style={{ backgroundColor: '#ffffff' }}
+      >
+        <div className="flex h-full flex-col overflow-y-auto bg-white p-4">
           <button onClick={() => context.setOpen(false)} className="mb-4">
             {t('close')}
           </button>
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

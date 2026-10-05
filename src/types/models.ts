@@ -34,7 +34,7 @@ export type ActionTableColumnConfig = {
 };
 
 // UI関連の型定義
-export type MenuView = 'menu' | 'options';
+export type MenuView = 'menu' | 'options' | 'loadUrl';
 export type ButtonVariant = 'default' | 'ghost';
 export type TextVariant = 'default' | 'muted' | 'dimmed';
 export type IconPosition = Side;

@@ -13,7 +13,8 @@ import { useKeyboardShortcuts } from '@/core/hooks/ui/base/useKeyboardShortcuts'
 import { useFlowDataModification } from '@/core/hooks/domain/flow/useFlowDataModification';
 import { handleFlowSave, handleNewFlow, handleExitEditMode } from '@/core/facades/flowEventService';
 import * as flowFacade from '@/core/facades/flowFacade';
-import { setupHistoryListener } from '@/core/facades/urlFacade';
+import { setupHistoryListener, parseCurrentUrl } from '@/core/facades/urlFacade';
+import { loadFlowFromQuery } from '@/core/facades/fileOperationFacade';
 
 interface Props {
   initialData?: Flow | null;
@@ -21,7 +22,11 @@ interface Props {
   sourceId?: string | null;
 }
 
-function BodyContent({ initialData = null, initialMode = 'view', sourceId = null }: Props): React.ReactElement {
+function BodyContent({
+  initialData = null,
+  initialMode = 'view',
+  sourceId = null,
+}: Props): React.ReactElement {
   const [isLoading, setIsLoading] = useState(true);
   const initializedRef = useRef(false);
 
@@ -100,7 +105,7 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
         if (initialData) {
           flowFacade.setFlowData(initialData);
         }
-      }
+      },
     });
 
     return cleanup;
@@ -123,6 +128,14 @@ function BodyContent({ initialData = null, initialMode = 'view', sourceId = null
           flowFacade.setFlowData(initialData);
           if (initialMode === 'edit') {
             startEdit();
+          }
+        } else {
+          const parsed = parseCurrentUrl();
+          if (parsed.remoteUrl || parsed.dataId) {
+            await loadFlowFromQuery({
+              remoteUrl: parsed.remoteUrl,
+              dataId: parsed.dataId,
+            });
           }
         }
         setIsLoading(false);

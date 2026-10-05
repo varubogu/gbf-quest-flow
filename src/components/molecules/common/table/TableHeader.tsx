@@ -9,11 +9,7 @@ interface TableHeaderProps {
   onAddRow?: (_index: number) => void;
 }
 
-export const TableHeader: React.FC<TableHeaderProps> = ({
-  className,
-  isEditMode,
-  onAddRow,
-}) => {
+export const TableHeader: React.FC<TableHeaderProps> = ({ className, isEditMode, onAddRow }) => {
   const columns: ActionTableColumn[] = ['hp', 'prediction', 'charge', 'guard', 'action', 'note'];
   const alignments: Record<ActionTableColumn, TableAlignment> = {
     hp: 'right',
@@ -24,15 +20,22 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     note: 'left',
   };
 
-  const stickyClasses = isEditMode ? 'sticky top-0 z-10' : 'sticky top-12 z-10';
+  const stickyStyle: React.CSSProperties = { top: 'var(--table-controls-height, 0px)' };
+  const stickyClasses = 'sticky z-10 bg-green-300';
 
   return (
-    <thead className={stickyClasses}>
-      <tr className={`${className} ${stickyClasses}`}>
+    <thead className={stickyClasses} style={stickyStyle}>
+      <tr className={`${className} ${stickyClasses}`} style={stickyStyle}>
         {isEditMode && (
           <>
-            <th className="border-b border-r border-gray-400 bg-muted font-medium"></th>
-            <th className="border-b border-r border-gray-400 bg-muted font-medium text-center">
+            <th
+              className={`${stickyClasses} border-b border-r border-gray-400 bg-muted font-medium`}
+              style={stickyStyle}
+            ></th>
+            <th
+              className={`${stickyClasses} border-b border-r border-gray-400 bg-muted font-medium text-center`}
+              style={stickyStyle}
+            >
               <button
                 onClick={() => onAddRow?.(-1)}
                 className="w-6 h-6 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer mx-auto"
@@ -43,11 +46,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
           </>
         )}
         {columns.map((column) => (
-          <TableHeaderCell
-            key={column}
-            column={column}
-            alignment={alignments[column]}
-          />
+          <TableHeaderCell key={column} column={column} alignment={alignments[column]} />
         ))}
       </tr>
     </thead>

@@ -46,7 +46,7 @@ describe('ActionTable', () => {
     expect(mockOnRowSelect).toHaveBeenCalledWith(2);
   });
 
-  it('タッチパッドのスクロールは累積値に基づいて移動する', async () => {
+  it('タッチパッドの慣性スクロールは行送りに使わない', async () => {
     const { container } = render(
       <Table
         data={mockData}
@@ -61,16 +61,12 @@ describe('ActionTable', () => {
     const tableContainer = container.querySelector('.flex.flex-col.h-full.overflow-y-auto');
     if (!tableContainer) throw new Error('Table container not found');
 
-    // 閾値未満のスクロール
     await act(async () => {
       fireEvent.wheel(tableContainer, { deltaY: 10, deltaMode: 0 });
+      fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
+      fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
     });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
-
-    // 閾値を超えるスクロール（複数回の累積）
-    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
-    fireEvent.wheel(tableContainer, { deltaY: 20, deltaMode: 0 });
-    expect(mockOnRowSelect).toHaveBeenCalledWith(2);
   });
 
   it('最初の行より上、最後の行より下にはスクロールできない', () => {
@@ -113,6 +109,30 @@ describe('ActionTable', () => {
     // 最後の行より下にスクロールしようとする
     fireEvent.wheel(lastTableContainer, { deltaY: 100, deltaMode: 1 });
     expect(mockOnRowSelect).not.toHaveBeenCalled();
+  });
+
+  it('閲覧モードではヘッダがコントロール下に張り付く', () => {
+    const { container } = render(
+      <Table
+        data={mockData}
+        currentRow={1}
+        buttonPosition="right"
+        onRowSelect={mockOnRowSelect}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />
+    );
+
+    const tableContainer = container.querySelector('#flow-action-table') as HTMLDivElement | null;
+    if (!tableContainer) throw new Error('Table container not found');
+    expect(tableContainer.style.getPropertyValue('--table-controls-height')).toMatch(
+      /^\d+(\.\d+)?px$/
+    );
+
+    const header = container.querySelector('thead');
+    expect(header).toHaveClass('sticky');
+    expect(header).not.toHaveClass('top-0');
+    expect(header?.style.top).toBe('var(--table-controls-height, 0px)');
   });
 
   it('編集モード中はスクロールが無効になる', () => {

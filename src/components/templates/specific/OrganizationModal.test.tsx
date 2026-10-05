@@ -25,123 +25,96 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-// @headlessui/reactのモック
-vi.mock('@headlessui/react', () => {
-  // Dialogコンポーネント
-  function Dialog(props: { children: React.ReactNode; open: boolean; onClose: () => void }): JSX.Element | null {
-    const { children, open } = props;
+// Dialog のモック
+vi.mock('@/components/ui/dialog', async () => {
+  const React = await import('react');
+  const CloseContext = React.createContext<() => void>(() => undefined);
+
+  function Dialog(props: {
+    children: React.ReactNode;
+    open: boolean;
+    onClose: () => void;
+  }): JSX.Element | null {
+    const { children, open, onClose } = props;
     if (!open) return null;
     return (
-      <div data-testid="dialog">
-        {children}
-      </div>
+      <CloseContext.Provider value={onClose}>
+        <div data-testid="dialog">{children}</div>
+      </CloseContext.Provider>
     );
   }
-
-  Dialog.Panel = function DialogPanel(props: {
+  function DialogBackdrop(): JSX.Element {
+    return <div data-testid="dialog-backdrop" />;
+  }
+  function DialogPanel(props: {
     children: React.ReactNode;
     className?: string;
     id?: string;
     role?: string;
-    'aria-labelledby'?: string
+    'aria-labelledby'?: string;
   }): JSX.Element {
-    const { children, className, id, role, 'aria-labelledby': ariaLabelledby } = props;
     return (
       <div
         data-testid="dialog-panel"
-        className={className}
-        id={id}
-        role={role}
-        aria-labelledby={ariaLabelledby}
+        className={props.className}
+        id={props.id}
+        role={props.role}
+        aria-labelledby={props['aria-labelledby']}
       >
-        {children}
+        {props.children}
       </div>
     );
-  };
-
-  // Tabコンポーネント
-  function Tab(
-    props: { children: React.ReactNode; className?: string | ((_props: { selected: boolean }) => string) }
-  ): JSX.Element {
-    const { children, className } = props;
-    const selected = true; // 常にselectedをtrueとして扱う
+  }
+  function DialogTitle(props: {
+    children: React.ReactNode;
+    className?: string;
+    id?: string;
+  }): JSX.Element {
     return (
-      <button
-        data-testid="tab"
-        className={typeof className === 'function' ? className({ selected }) : className}
-        onClick={() => {}}
-      >
-        {children}
+      <h2 data-testid="dialog-title" className={props.className} id={props.id}>
+        {props.children}
+      </h2>
+    );
+  }
+  function DialogClose(props: { label: string; className?: string }): JSX.Element {
+    const onClose = React.useContext(CloseContext);
+    return (
+      <button aria-label={props.label} className={props.className} onClick={onClose}>
+        ✕
       </button>
     );
   }
-
-  function TabGroup(props: {
-    children: React.ReactNode | ((_props: { selectedIndex: number }) => React.ReactNode);
-    selectedIndex?: number;
-    onChange?: (_index: number) => void;
-    className?: string
-  }): JSX.Element {
-    const { children, selectedIndex = 0, className } = props;
-    return (
-      <div data-testid="tab-group" className={className}>
-        {typeof children === 'function' ? children({ selectedIndex }) : children}
-      </div>
-    );
-  }
-
-  function TabList(props: { children: React.ReactNode; className?: string }): JSX.Element {
-    const { children, className } = props;
-    return (
-      <div data-testid="tab-list" className={className}>
-        {children}
-      </div>
-    );
-  }
-
-  function TabPanels(props: { children: React.ReactNode; className?: string }): JSX.Element {
-    const { children, className } = props;
-    return (
-      <div data-testid="tab-panels" className={className}>
-        {children}
-      </div>
-    );
-  }
-
-  function TabPanel(props: { children: React.ReactNode; className?: string }): JSX.Element {
-    const { children, className } = props;
-    return (
-      <div data-testid="tab-panel" className={className}>
-        {children}
-      </div>
-    );
-  }
-
-  // Tabオブジェクトの構築
-  const HeadlessTab = Tab as unknown as {
-    Group: typeof TabGroup;
-    List: typeof TabList;
-    Panels: typeof TabPanels;
-    Panel: typeof TabPanel;
-  };
-  HeadlessTab.Group = TabGroup;
-  HeadlessTab.List = TabList;
-  HeadlessTab.Panels = TabPanels;
-  HeadlessTab.Panel = TabPanel;
-
-  return { Dialog, Tab: HeadlessTab };
+  return { Dialog, DialogBackdrop, DialogPanel, DialogTitle, DialogClose };
 });
 
 // 子コンポーネントのモック
-vi.mock('@/components/organisms/specific/job/JobPanel', () => ({
+vi.mock('@/components/ui/tabs', () => {
+  function Tabs(props: { children: React.ReactNode; className?: string }): JSX.Element {
+    return <div className={props.className}>{props.children}</div>;
+  }
+  function TabsList(props: { children: React.ReactNode }): JSX.Element {
+    return <div data-testid="tab-list">{props.children}</div>;
+  }
+  function TabsTrigger(props: { children: React.ReactNode }): JSX.Element {
+    return <button data-testid="tab">{props.children}</button>;
+  }
+  function TabsContent(props: { children: React.ReactNode }): JSX.Element {
+    return <div data-testid="tab-panel">{props.children}</div>;
+  }
+  return { Tabs, TabsList, TabsTrigger, TabsContent };
+});
+
+vi.mock('@/components/organisms/specific/JobPanel', () => ({
   JobPanel: ({ isEditing }: { isEditing: boolean }): JSX.Element => (
     <div data-testid="job-panel">JobPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
   ),
 }));
 
-vi.mock('@/components/organisms/specific/character/CharacterPanel', () => ({
+vi.mock('@/components/organisms/specific/charactor/index', () => ({
   CharacterPanel: ({ isEditing }: { isEditing: boolean }): JSX.Element => (
-    <div data-testid="character-panel">CharacterPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
+    <div data-testid="character-panel">
+      CharacterPanel (isEditing: {isEditing ? 'true' : 'false'})
+    </div>
   ),
 }));
 
@@ -159,7 +132,9 @@ vi.mock('@/components/organisms/specific/summon/SummonPanel', () => ({
 
 vi.mock('@/components/organisms/specific/skills/SkillTotalPanel', () => ({
   SkillTotalPanel: ({ isEditing }: { isEditing: boolean }): JSX.Element => (
-    <div data-testid="skill-total-panel">SkillTotalPanel (isEditing: {isEditing ? 'true' : 'false'})</div>
+    <div data-testid="skill-total-panel">
+      SkillTotalPanel (isEditing: {isEditing ? 'true' : 'false'})
+    </div>
   ),
 }));
 
@@ -209,15 +184,22 @@ describe('OrganizationModal', () => {
     vi.clearAllMocks();
 
     // useFlowStoreのモック
-    (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
-      const state = { flowData: mockFlowData, updateFlowData: mockUpdateFlowData } as Partial<FlowStore>;
-      return selector(state as FlowStore);
-    });
+    (useFlowStore as unknown as Mock).mockImplementation(
+      (selector: (_state: FlowStore) => Partial<FlowStore>) => {
+        const state = {
+          flowData: mockFlowData,
+          updateFlowData: mockUpdateFlowData,
+        } as Partial<FlowStore>;
+        return selector(state as FlowStore);
+      }
+    );
 
     // useEditModeStoreのモック
-    (useEditModeStore as unknown as Mock).mockImplementation((selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
-      return selector({ isEditMode: false } as EditModeStore);
-    });
+    (useEditModeStore as unknown as Mock).mockImplementation(
+      (selector: (_state: EditModeStore) => Partial<EditModeStore>) => {
+        return selector({ isEditMode: false } as EditModeStore);
+      }
+    );
   });
 
   it('モーダルが表示されること', () => {
@@ -262,10 +244,12 @@ describe('OrganizationModal', () => {
 
   it('flowDataがnullの場合、nullを返すこと', () => {
     // flowDataをnullに設定
-    (useFlowStore as unknown as Mock).mockImplementation((selector: (_state: FlowStore) => Partial<FlowStore>) => {
-      const state = { flowData: null, updateFlowData: mockUpdateFlowData } as Partial<FlowStore>;
-      return selector(state as FlowStore);
-    });
+    (useFlowStore as unknown as Mock).mockImplementation(
+      (selector: (_state: FlowStore) => Partial<FlowStore>) => {
+        const state = { flowData: null, updateFlowData: mockUpdateFlowData } as Partial<FlowStore>;
+        return selector(state as FlowStore);
+      }
+    );
 
     const { container } = render(<OrganizationModal isOpen={true} onClose={mockOnClose} />);
 

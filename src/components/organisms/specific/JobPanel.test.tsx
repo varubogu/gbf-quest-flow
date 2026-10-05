@@ -22,76 +22,78 @@ vi.mock('react-i18next', () => ({
 }));
 
 // 新しいコンポーネントのモック
-vi.mock('@/components/molecules/specific/JobInfoPanel', () =>
-  {
-    interface JobInfoPanelProps {
-      job: Job;
-      _isEditing: boolean;
-      _onJobChange: (_field: keyof Job, _value: string) => void;
-    }
-    return {
-      JobInfoPanel: vi.fn(({ job, _isEditing, _onJobChange }: JobInfoPanelProps) => (
-        <tr data-testid="job-info-panel">
-          <td>ジョブ</td>
-          <td>{job.name}</td>
-          <td>{job.note}</td>
-        </tr>
-      )),
-    }
+vi.mock('@/components/molecules/specific/JobInfoPanel', () => {
+  interface JobInfoPanelProps {
+    job: Job;
+    _isEditing: boolean;
+    _onJobChange: (_field: keyof Job, _value: string) => void;
   }
-);
+  return {
+    JobInfoPanel: vi.fn(({ job, _isEditing, _onJobChange }: JobInfoPanelProps) => (
+      <tr data-testid="job-info-panel">
+        <td>ジョブ</td>
+        <td>{job.name}</td>
+        <td>{job.note}</td>
+      </tr>
+    )),
+  };
+});
 
-vi.mock('@/components/molecules/specific/JobEquipmentPanel', () =>
-  {
-    interface JobEquipmentPanelProps {
-      equipment: JobEquipment;
-      _isEditing: boolean;
-      _onEquipmentChange: (_field: keyof JobEquipment, _value: string) => void;
-    }
-    return {
-      JobEquipmentPanel: vi.fn(({ equipment, _isEditing, _onEquipmentChange }: JobEquipmentPanelProps) => (
+vi.mock('@/components/molecules/specific/JobEquipmentPanel', () => {
+  interface JobEquipmentPanelProps {
+    equipment: JobEquipment;
+    _isEditing: boolean;
+    _onEquipmentChange: (_field: keyof JobEquipment, _value: string) => void;
+  }
+  return {
+    JobEquipmentPanel: vi.fn(
+      ({ equipment, _isEditing, _onEquipmentChange }: JobEquipmentPanelProps) => (
         <tr data-testid="job-equipment-panel">
           <td>特殊装備</td>
           <td>{equipment.name}</td>
           <td>{equipment.note}</td>
         </tr>
-      )),
-    }
-  }
-);
+      )
+    ),
+  };
+});
 
-vi.mock('@/components/molecules/specific/AbilityRow', () =>
-  {
-    interface AbilityRowProps {
-      ability: JobAbility;
-      index: number;
-      _isEditing: boolean;
-      totalAbilities: number;
-      _onAbilityChange: (_index: number, _field: keyof JobAbility, _value: string) => void;
-    }
-    return {
-      AbilityRow: vi.fn(({ ability, index, _isEditing, totalAbilities, _onAbilityChange }: AbilityRowProps) => (
+vi.mock('@/components/molecules/specific/AbilityRow', () => {
+  interface AbilityRowProps {
+    ability: JobAbility;
+    index: number;
+    _isEditing: boolean;
+    totalAbilities: number;
+    _onAbilityChange: (_index: number, _field: keyof JobAbility, _value: string) => void;
+  }
+  return {
+    AbilityRow: vi.fn(
+      ({ ability, index, _isEditing, totalAbilities, _onAbilityChange }: AbilityRowProps) => (
         <tr data-testid={`ability-row-${index}`}>
           {index === 0 && <td rowSpan={totalAbilities}>アビリティ</td>}
           <td>{ability.name}</td>
           <td>{ability.note}</td>
         </tr>
-      )),
-    }
-  }
-);
+      )
+    ),
+  };
+});
 
 // カスタムフックのモック
 const handleJobChangeMock = vi.fn();
+const handleJobSelectMock = vi.fn();
 const handleEquipmentChangeMock = vi.fn();
 const handleAbilityChangeMock = vi.fn();
+const handleAbilitySelectMock = vi.fn();
 
 vi.mock('@/core/hooks/ui/specific/useJobPanelHandlers', () => ({
   useJobPanelHandlers: vi.fn(() => ({
     flowData: currentFlowData,
     handleJobChange: handleJobChangeMock,
+    handleJobSelect: handleJobSelectMock,
     handleEquipmentChange: handleEquipmentChangeMock,
     handleAbilityChange: handleAbilityChangeMock,
+    handleAbilitySelect: handleAbilitySelectMock,
   })),
 }));
 

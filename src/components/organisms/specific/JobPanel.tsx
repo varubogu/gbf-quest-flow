@@ -20,8 +20,10 @@ export function JobPanel({ isEditing }: JobPanelProps): JSX.Element | null {
   const {
     flowData,
     handleJobChange,
+    handleJobSelect,
     handleEquipmentChange,
-    handleAbilityChange
+    handleAbilityChange,
+    handleAbilitySelect,
   } = useJobPanelHandlers();
 
   if (!flowData) return null;
@@ -46,6 +48,7 @@ export function JobPanel({ isEditing }: JobPanelProps): JSX.Element | null {
             job={flowData.organization.job}
             isEditing={isEditing}
             onJobChange={handleJobChange}
+            onJobSelect={(item) => handleJobSelect(item.label, item.id)}
           />
 
           {/* 特殊装備情報 */}
@@ -63,7 +66,11 @@ export function JobPanel({ isEditing }: JobPanelProps): JSX.Element | null {
               index={index}
               isEditing={isEditing}
               totalAbilities={flowData.organization.job.abilities.length}
+              jobKey={flowData.organization.job.key || flowData.organization.job.name}
               onAbilityChange={handleAbilityChange}
+              onAbilitySelect={(abilityIndex, item) =>
+                handleAbilitySelect(abilityIndex, item.label, item.id)
+              }
             />
           ))}
         </tbody>

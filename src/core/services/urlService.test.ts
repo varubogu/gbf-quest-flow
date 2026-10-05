@@ -37,6 +37,8 @@ describe('urlService', () => {
       expect(result).toEqual({
         mode: 'view',
         sourceId: null,
+        dataId: null,
+        remoteUrl: null,
       });
     });
 
@@ -49,6 +51,8 @@ describe('urlService', () => {
       expect(result).toEqual({
         mode: 'view',
         sourceId: 'test-id',
+        dataId: null,
+        remoteUrl: null,
       });
     });
 
@@ -61,7 +65,19 @@ describe('urlService', () => {
       expect(result).toEqual({
         mode: 'edit',
         sourceId: null,
+        dataId: null,
+        remoteUrl: null,
       });
+    });
+
+    it('d と url クエリを返す', () => {
+      window.location.pathname = '/';
+      window.location.search = '?d=sample&url=https%3A%2F%2Fexample.com%2Fa.json';
+
+      const result = parseCurrentUrl();
+
+      expect(result.dataId).toBe('sample');
+      expect(result.remoteUrl).toBe('https://example.com/a.json');
     });
 
     it('パスとクエリパラメータの両方がある場合、正しいモードとソースIDを返す', () => {
@@ -73,6 +89,8 @@ describe('urlService', () => {
       expect(result).toEqual({
         mode: 'edit',
         sourceId: 'test-id',
+        dataId: null,
+        remoteUrl: null,
       });
     });
   });
@@ -156,7 +174,7 @@ describe('urlService', () => {
       // 各ハンドラーが正しく呼び出されたことを確認
       expect(handlers.onModeChange).toHaveBeenCalledWith('edit');
       expect(handlers.onSourceChange).toHaveBeenCalledWith('test-id');
-      expect(handlers.onFlowDataChange).toHaveBeenCalledWith(mockEvent.state.flowData);
+      expect(handlers.onFlowDataChange).toHaveBeenCalledWith({ title: 'テスト' });
     });
   });
 });

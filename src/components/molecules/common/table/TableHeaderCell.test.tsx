@@ -12,7 +12,7 @@ vi.mock('@/config/actionTable', () => ({
     guard: 'guardColumn',
     action: 'actionColumn',
     note: 'notesColumn',
-  }
+  },
 }));
 
 interface UseTranslationResult {
@@ -24,14 +24,14 @@ vi.mock('react-i18next', () => ({
   useTranslation: (): UseTranslationResult => ({
     t: (key: string): string => {
       const translations: Record<string, string> = {
-        'hpColumn': 'HP',
-        'actionColumn': 'アクション',
-        'notesColumn': 'メモ',
-        'customKey': 'カスタム値'
+        hpColumn: 'HP',
+        actionColumn: 'アクション',
+        notesColumn: 'メモ',
+        customKey: 'カスタム値',
       };
       return translations[key] || key;
-    }
-  })
+    },
+  }),
 }));
 
 describe('TableHeaderCell', () => {
@@ -41,7 +41,9 @@ describe('TableHeaderCell', () => {
   });
 
   it('カスタム翻訳キーが指定された場合、その翻訳が表示される', () => {
-    renderTableHeaderCell(<TableHeaderCell column="custom" alignment="left" translationKey="customKey" />);
+    renderTableHeaderCell(
+      <TableHeaderCell column="custom" alignment="left" translationKey="customKey" />
+    );
     expect(screen.getByText('カスタム値')).toBeInTheDocument();
   });
 
@@ -51,7 +53,9 @@ describe('TableHeaderCell', () => {
   });
 
   it('alignmentに応じてテキスト配置が設定される', () => {
-    const { rerender } = renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
+    const { rerender } = renderTableHeaderCell(
+      <TableHeaderCell column="action" alignment="left" />
+    );
     let cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveStyle({ textAlign: 'left' });
 
@@ -84,5 +88,13 @@ describe('TableHeaderCell', () => {
     renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
     const cell = screen.getByText('アクション').closest('th');
     expect(cell).toHaveAttribute('data-field', 'action');
+  });
+
+  it('ヘッダーセルはコントロール高さのCSS変数で張り付く', () => {
+    renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
+    const cell = screen.getByText('アクション').closest('th');
+    expect(cell).toHaveClass('sticky');
+    expect(cell).toHaveClass('bg-green-300');
+    expect(cell).toHaveStyle({ top: 'var(--table-controls-height, 0px)' });
   });
 });

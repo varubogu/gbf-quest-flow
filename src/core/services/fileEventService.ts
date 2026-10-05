@@ -9,6 +9,8 @@ import useFlowStore from '@/core/stores/flowStore';
 import useEditModeStore from '@/core/stores/editModeStore';
 import useCursorStore from '@/core/stores/cursorStore';
 import { updateUrlForViewMode } from '@/core/services/urlService';
+import { fetchFlowFromQuery, type RemoteFlowQuery } from '@/core/services/remoteFlowService';
+import type { Flow } from '@/types/models';
 
 /**
  * ファイル操作関連のサービス
@@ -19,12 +21,21 @@ import { updateUrlForViewMode } from '@/core/services/urlService';
  */
 
 // ファイル操作関数の再エクスポート
-export {
-  readJsonFile,
-  createFileInput,
-  selectFile,
-  saveJsonToFile
-} from './fileOperationService';
+export { readJsonFile, createFileInput, selectFile, saveJsonToFile } from './fileOperationService';
+
+/**
+ * 読み込んだフローをストアに反映する
+ */
+export function applyLoadedFlow(data: Flow, sourceId: string | null = null): void {
+  clearHistory();
+  useCursorStore.getState().setCurrentRow(0);
+  useEditModeStore.setState({ isEditMode: false });
+  useFlowStore.setState({
+    flowData: data,
+    originalData: null,
+  });
+  updateUrlForViewMode(sourceId, data);
+}
 
 /**
  * JSONファイルからフローデータを読み込む
@@ -43,32 +54,23 @@ export async function loadFlowFromFile(): Promise<void> {
       throw new Error('ファイルからデータを読み込めませんでした');
     }
 
-    // 履歴をクリア
-    clearHistory();
-
-    // カーソル位置をリセット
-    useCursorStore.getState().setCurrentRow(0);
-
-    // 編集モードをリセット
-    useEditModeStore.setState({ isEditMode: false });
-
-    // flowStoreを更新
-    useFlowStore.setState({
-      flowData: data,
-      originalData: null,
-    });
-
-    // 更新後の状態を確認
-    const updatedState = useFlowStore.getState();
-    if (!updatedState.flowData) {
-      console.error('loadFlowFromFile: 状態の更新に失敗しました', updatedState);
-    }
-
-    // URLを更新
-    updateUrlForViewMode(null, data);
+    applyLoadedFlow(data);
   } catch (error) {
     console.error('ファイル読み込みエラー:', error);
     handleFileOperationError(error, 'ファイルの読み込み中にエラーが発生しました');
+    throw error;
+  }
+}
+
+/**
+ * URL またはコンテンツIDからフローデータを読み込む
+ */
+export async function loadFlowFromQuery(query: RemoteFlowQuery): Promise<void> {
+  try {
+    const data = await fetchFlowFromQuery(query);
+    applyLoadedFlow(data, query.dataId);
+  } catch (error) {
+    handleFileOperationError(error, 'URLからの読み込み中にエラーが発生しました');
     throw error;
   }
 }
@@ -92,4 +94,4 @@ export async function saveFlowToFile(fileName?: string): Promise<void> {
     handleFileOperationError(error, 'ファイルの保存中にエラーが発生しました');
     throw error;
   }
-};
+}

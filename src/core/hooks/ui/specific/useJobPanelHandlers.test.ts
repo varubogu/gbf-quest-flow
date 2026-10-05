@@ -55,13 +55,15 @@ const mockFlowData: Flow = {
 let currentFlowData: Flow | null = mockFlowData;
 vi.mock('@/core/stores/flowStore', () => ({
   __esModule: true,
-  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) => selector({ flowData: currentFlowData } as FlowStore))
+  default: vi.fn((selector: (_state: FlowStore) => Partial<FlowStore>) =>
+    selector({ flowData: currentFlowData } as FlowStore)
+  ),
 }));
 
 // flowFacadeのモック
 const updateFlowDataMock = vi.fn();
 vi.mock('@/core/facades/flowFacade', () => ({
-  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args))
+  updateFlowData: vi.fn((...args) => updateFlowDataMock(...args)),
 }));
 
 describe('useJobPanelHandlers', () => {
@@ -89,6 +91,25 @@ describe('useJobPanelHandlers', () => {
         job: {
           ...mockFlowData.organization.job,
           name: '新しいジョブ',
+        },
+      },
+    });
+  });
+
+  it('handleJobSelectでジョブ名とキーを同時に更新すること', () => {
+    const { result } = renderHook(() => useJobPanelHandlers());
+
+    act(() => {
+      result.current.handleJobSelect('ベルセルク', 'berserk');
+    });
+
+    expect(updateFlowDataMock).toHaveBeenCalledWith({
+      organization: {
+        ...mockFlowData.organization,
+        job: {
+          ...mockFlowData.organization.job,
+          name: 'ベルセルク',
+          key: 'berserk',
         },
       },
     });

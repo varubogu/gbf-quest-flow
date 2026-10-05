@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.2'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Unit tests
+        run: bun run test -- --run
+      - name: Lint
+        run: bun run lint
+      - name: Build
+        run: bun run build
+        env:
+          PUBLIC_SITE_URL: https://gbf-quest-flow.pages.dev
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: E2E (mobile viewport)
+        run: bunx playwright test e2e/scenario/mobile_usability.spec.ts
