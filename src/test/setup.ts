@@ -1,13 +1,8 @@
 /// <reference types="vitest" />
-/// <reference types="@testing-library/jest-dom" />
-import { beforeAll, beforeEach, afterEach, afterAll, vi, expect } from 'vitest';
+import '@testing-library/jest-dom/vitest';
+import { beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { server } from './mocks/server';
-import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
-
-expect.extend(matchers);
-
-
 
 // matchMediaのモック
 Object.defineProperty(window, 'matchMedia', {
@@ -64,7 +59,6 @@ Object.defineProperty(window, 'ResizeObserver', {
   value: MockResizeObserver,
 });
 
-
 // コンソールエラーの抑制設定
 const originalConsoleError = console.error;
 beforeAll(() => {
@@ -80,7 +74,7 @@ beforeAll(() => {
     }
     originalConsoleError(...args);
   };
-  return server.listen({ onUnhandledRequest: 'error' });
+  return server.listen({ onUnhandledFrame: 'error' });
 });
 
 beforeEach(() => {
@@ -94,7 +88,7 @@ beforeEach(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globalThis.jest = {
     advanceTimersByTime: vi.advanceTimersByTime.bind(vi),
-  }
+  };
 });
 
 // MSWのセットアップ

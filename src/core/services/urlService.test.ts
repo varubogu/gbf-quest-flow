@@ -3,34 +3,26 @@ import { parseCurrentUrl, updateUrl, createPopStateHandler } from './urlService'
 import type { Flow } from '@/types/models';
 
 describe('urlService', () => {
-  // モックの設定
-  const originalHistory = window.history;
-  const originalLocation = window.location;
+  /**
+   * jsdom 30 では window.location が置き換え不能なため、
+   * history.pushState で現在の URL を切り替える。
+   */
+  const setUrl = (pathname: string, search: string): void => {
+    window.history.pushState({}, '', `${pathname}${search}`);
+  };
 
   beforeEach(() => {
-    // history.pushStateのモック
-    window.history.pushState = vi.fn();
-
-    // window.locationのモック
-    Reflect.deleteProperty(window, 'location');
-    window.location = {
-      ...originalLocation,
-      pathname: '/',
-      search: '',
-    } as Location;
+    setUrl('/', '');
   });
 
   afterEach(() => {
-    // モックをリセット
-    vi.resetAllMocks();
-    window.history = originalHistory;
-    window.location = originalLocation;
+    vi.restoreAllMocks();
+    window.history.pushState({}, '', '/');
   });
 
   describe('parseCurrentUrl', () => {
     it('パスが空の場合、正しいモードとソースIDを返す', () => {
-      window.location.pathname = '/';
-      window.location.search = '';
+      setUrl('/', '');
 
       const result = parseCurrentUrl();
 
@@ -43,8 +35,7 @@ describe('urlService', () => {
     });
 
     it('パスにソースIDがある場合、正しいモードとソースIDを返す', () => {
-      window.location.pathname = '/test-id';
-      window.location.search = '';
+      setUrl('/test-id', '');
 
       const result = parseCurrentUrl();
 
@@ -57,8 +48,7 @@ describe('urlService', () => {
     });
 
     it('クエリパラメータにモードがある場合、正しいモードとソースIDを返す', () => {
-      window.location.pathname = '/';
-      window.location.search = '?mode=edit';
+      setUrl('/', '?mode=edit');
 
       const result = parseCurrentUrl();
 
@@ -71,8 +61,7 @@ describe('urlService', () => {
     });
 
     it('d と url クエリを返す', () => {
-      window.location.pathname = '/';
-      window.location.search = '?d=sample&url=https%3A%2F%2Fexample.com%2Fa.json';
+      setUrl('/', '?d=sample&url=https%3A%2F%2Fexample.com%2Fa.json');
 
       const result = parseCurrentUrl();
 
@@ -81,8 +70,7 @@ describe('urlService', () => {
     });
 
     it('パスとクエリパラメータの両方がある場合、正しいモードとソースIDを返す', () => {
-      window.location.pathname = '/test-id';
-      window.location.search = '?mode=edit';
+      setUrl('/test-id', '?mode=edit');
 
       const result = parseCurrentUrl();
 
@@ -96,6 +84,10 @@ describe('urlService', () => {
   });
 
   describe('updateUrl', () => {
+    beforeEach(() => {
+      vi.spyOn(window.history, 'pushState');
+    });
+
     it('新規モードの場合、正しいURLを設定する', () => {
       const flowData: Partial<Flow> = { title: 'テスト' };
 
@@ -164,9 +156,7 @@ describe('urlService', () => {
         },
       } as PopStateEvent;
 
-      // URLを設定
-      window.location.pathname = '/test-id';
-      window.location.search = '?mode=edit';
+      setUrl('/test-id', '?mode=edit');
 
       // ハンドラーを呼び出す
       handler(mockEvent);
