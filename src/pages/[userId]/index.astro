@@ -18,16 +18,14 @@ const origin = ENV.PUBLIC_SITE_URL || Astro.site?.href || 'http://localhost:4321
 
 <BaseLayout>
   <h2 class="text-2xl font-bold">{userId}の行動表リスト</h2>
-  {
-    flowList.map((flow) => {
-      const url = new URL(flow.slug, origin);
-      return (
-        <div>
-          <a href={`${url}`} class="text-blue-600 underline">
-            {flow.title}
-          </a>
-        </div>
-      );
-    })
-  }
+  {flowList.map((flow) => {
+    const url = new URL(flow.slug, origin);
+    return (
+      <div>
+        <a href={`${url}`} class="text-blue-600 underline">
+          {flow.title}
+        </a>
+      </div>
+    );
+  })}
 </BaseLayout>
