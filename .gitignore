@@ -29,6 +29,7 @@ pnpm-debug.log*
 # test results
 test-results/
 coverage/
+.vitest/
 
 # test files from build
 dist/**/*.test.*
