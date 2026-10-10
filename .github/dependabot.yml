@@ -1,16 +1,159 @@
 # To get started with Dependabot version updates, you'll need to specify which
 # package ecosystems to update and where the package manifests are located.
 # Please see the documentation for more information:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 # https://containers.dev/guide/dependabot
+#
+# package-ecosystem values follow the current GitHub supported-ecosystems list
+# (bun for bun.lock, devcontainers for devcontainer.json, github-actions for
+# workflow files). The previous npm entry is replaced by bun: this repository
+# has bun.lock and no package-lock.json, and the npm ecosystem does not update
+# bun.lock. CI installs with `bun install --frozen-lockfile`.
+#
+# Grouping:
+# - Each ecosystem has one minor/patch group so compatible updates share a PR.
+# - GitHub Actions majors share one group (checkout, setup-node, setup-bun, …).
+# - Bun majors are grouped by package family so coupled packages land together.
+# - 0.x packages are excluded from the minor/patch groups. Dependabot classifies
+#   a 0.y → 0.(y+1) bump as minor, but that bump is breaking for pre-1.0
+#   packages, so it should be reviewed on its own like a major.
+# There are no ignore rules in this file.
 
 version: 2
 updates:
+  # package.json + bun.lock at the repository root.
+  - package-ecosystem: 'bun'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Asia/Tokyo'
+    open-pull-requests-limit: 5
+    groups:
+      # Same-family majors. Listed before the catch-all so a major matches
+      # its family group. Patterns use Dependabot globs.
+      astro-major:
+        patterns:
+          - 'astro'
+          - '@astrojs/*'
+        update-types:
+          - 'major'
+      react-major:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
+        update-types:
+          - 'major'
+      eslint-major:
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - '@typescript-eslint/*'
+          - 'eslint-*'
+          - 'typescript-eslint'
+        update-types:
+          - 'major'
+      tailwind-major:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+        update-types:
+          - 'major'
+      i18next-major:
+        patterns:
+          - 'i18next'
+          - 'i18next-*'
+          - 'react-i18next'
+        update-types:
+          - 'major'
+      vitest-major:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+        update-types:
+          - 'major'
+      testing-library-major:
+        patterns:
+          - '@testing-library/*'
+        update-types:
+          - 'major'
+      playwright-major:
+        patterns:
+          - '@playwright/test'
+          - 'playwright'
+        update-types:
+          - 'major'
+      radix-major:
+        patterns:
+          - '@radix-ui/*'
+        update-types:
+          - 'major'
+      base-ui-major:
+        patterns:
+          - '@base-ui/*'
+        update-types:
+          - 'major'
+      bun-minor-and-patch:
+        patterns:
+          - '*'
+        exclude-patterns:
+          # 0.x: a minor bump is breaking. Keep these out of the safe group.
+          - 'class-variance-authority'
+          - 'prettier-plugin-astro'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # .devcontainer/devcontainer.json (and its lockfile). GitHub docs require
+  # directory "/" for the devcontainers ecosystem; Dependabot searches
+  # .devcontainer/devcontainer.json from the repository root.
   - package-ecosystem: 'devcontainers'
     directory: '/'
     schedule:
-      interval: weekly
-  - package-ecosystem: 'npm'
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Asia/Tokyo'
+    open-pull-requests-limit: 5
+    groups:
+      devcontainers-features-major:
+        patterns:
+          - 'ghcr.io/devcontainers/features/*'
+        update-types:
+          - 'major'
+      devcontainers-minor-and-patch:
+        patterns:
+          - '*'
+        exclude-patterns:
+          # 0.0.x: any bump is breaking, so do not fold it into minor/patch.
+          - 'ghcr.io/shyim/devcontainers-features/bun'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # .github/workflows/*.yml. GitHub docs require directory "/" for github-actions.
+  # Majors are grouped across actions so checkout / setup-node / setup-bun
+  # update together instead of one PR per action.
+  - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: weekly
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Asia/Tokyo'
+    open-pull-requests-limit: 5
+    groups:
+      github-actions-major:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+      github-actions-minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
