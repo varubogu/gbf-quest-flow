@@ -7,8 +7,6 @@ import { cleanup } from '@testing-library/react';
 
 expect.extend(matchers);
 
-
-
 // matchMediaのモック
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -64,7 +62,6 @@ Object.defineProperty(window, 'ResizeObserver', {
   value: MockResizeObserver,
 });
 
-
 // コンソールエラーの抑制設定
 const originalConsoleError = console.error;
 beforeAll(() => {
@@ -80,7 +77,7 @@ beforeAll(() => {
     }
     originalConsoleError(...args);
   };
-  return server.listen({ onUnhandledRequest: 'error' });
+  return server.listen({ onUnhandledFrame: 'error' });
 });
 
 beforeEach(() => {
@@ -94,7 +91,7 @@ beforeEach(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globalThis.jest = {
     advanceTimersByTime: vi.advanceTimersByTime.bind(vi),
-  }
+  };
 });
 
 // MSWのセットアップ
