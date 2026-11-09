@@ -93,8 +93,14 @@ describe('TableHeaderCell', () => {
   it('ヘッダーセルはコントロール高さのCSS変数で張り付く', () => {
     renderTableHeaderCell(<TableHeaderCell column="action" alignment="left" />);
     const cell = screen.getByText('アクション').closest('th');
+    if (!cell) throw new Error('header cell not found');
     expect(cell).toHaveClass('sticky');
     expect(cell).toHaveClass('bg-green-300');
-    expect(cell).toHaveStyle({ top: 'var(--table-controls-height, 0px)' });
+    // jsdom 31 の getComputedStyle は var() を解決するため、指定値は style から確認する。
+    expect(cell.style.top).toBe('var(--table-controls-height, 0px)');
+    expect(cell).toHaveStyle({ top: '0px' });
+
+    cell.style.setProperty('--table-controls-height', '48px');
+    expect(cell).toHaveStyle({ top: '48px' });
   });
 });
