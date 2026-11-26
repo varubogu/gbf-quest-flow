@@ -13,7 +13,10 @@ import {
   type SuggestHistoryKind,
 } from '@/core/services/suggestService';
 
-type Translate = (_key: string, _options?: Record<string, unknown>) => string;
+type Translate = {
+  (_key: string): string;
+  (_key: string, _options: { defaultValue: string }): string;
+};
 
 export function suggestJobs(t: Translate, query: string): SuggestItem[] {
   return getJobSuggestItems(t, query);
