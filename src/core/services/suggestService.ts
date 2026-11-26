@@ -17,7 +17,10 @@ interface SuggestHistory {
   equipment: string[];
 }
 
-type Translate = (_key: string, _options?: Record<string, unknown>) => string;
+type Translate = {
+  (_key: string): string;
+  (_key: string, _options: { defaultValue: string }): string;
+};
 
 /**
  * 入力文字列で候補を絞り込む。空文字なら先頭から返す。
